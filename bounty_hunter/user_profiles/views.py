@@ -12,17 +12,19 @@ from .models import UserProfileInfo, LinkedAccounts, UserAccount
 def profile(request, request_username):
     request_owner = get_object_or_404(UserAccount, username_text=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
-    linked_accs = LinkedAccounts.objects.filter(owner=request_owner)
+    linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
+    linked_accs_list_strs = []
+    for entry in linked_accs_list:
+        linked_accs_list_strs.append(entry.account_text)
+
+    linked_accs = ",".join(linked_accs_list_strs)
 
     headers = {
         "bio":user_profile.bio_text,
         "pfp":user_profile.profile_image,
-        "name":request_owner.username_text
+        "name":request_owner.username_text,
+        "accounts":(linked_accs)
     }
-
-    #adds account links to HttpResponse Dictionary
-    for i in range(0,len(linked_accs)):
-        headers["acc_link_"+str(i)] = linked_accs[i].account_text
 
     #temporary html template render
     template = loader.get_template("user_profiles/profile.html")
