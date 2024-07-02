@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-#temporary
 from django.template import loader
+from django.shortcuts import get_object_or_404
 
 from .models import UserProfileInfo, LinkedAccounts, UserAccount
 
+# this method assumes that every user has profile info by default. We can get aroud this by 
+# setting default profile stuff on account creation
+
 def profile(request, request_username):
-    request_owner = UserAccount.objects.get(username_text=request_username)
-    user_profile = UserProfileInfo.objects.get(owner=request_owner)
+    request_owner = get_object_or_404(UserAccount, username_text=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
     linked_accs = LinkedAccounts.objects.filter(owner=request_owner)
 
     headers = {
