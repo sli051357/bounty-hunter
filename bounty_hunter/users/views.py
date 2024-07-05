@@ -61,11 +61,8 @@ def log_out(request):
     logout(request)
     return redirect("/users/signin")
     
-# def edit_account():
-    # pass
 
 def delete_account(request, request_username):
-    
     if request.user.is_authenticated:
         print(request.user.username)
         print(request_username)
