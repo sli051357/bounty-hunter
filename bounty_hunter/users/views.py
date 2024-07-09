@@ -20,7 +20,7 @@ def profile(request, request_username):
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
     linked_accs_list_strs = []
     for entry in linked_accs_list:
-        linked_accs_list_strs.append(entry.account_text + ":" + entry.id)
+        linked_accs_list_strs.append(entry.account_text + ":" + str(entry.id))
     linked_accs = ",".join(linked_accs_list_strs)
 
     headers = {
@@ -71,7 +71,8 @@ def delete_account(request, request_username):
     else:
         return redirect("/users/signin")
 
-def edit_bio(request, request_username, new_bio):
+def edit_bio(request, request_username):
+    new_bio = request.POST["new_bio"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
@@ -83,7 +84,8 @@ def edit_bio(request, request_username, new_bio):
     else:
         return redirect("/users/signin")
 
-def edit_profile_pic(request, request_username, new_pic):
+def edit_profile_pic(request, request_username):
+    new_pic = request.POST["new_pic"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
@@ -95,22 +97,23 @@ def edit_profile_pic(request, request_username, new_pic):
     else:
         return redirect("/users/signin")
 
-def add_link(request, request_username, link):
+def add_link(request, request_username):
+    link = request.POST["link"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             new_link = LinkedAccounts(owner=request.user, account_text=link)
-            LinkedAccounts.save()
+            new_link.save()
             return redirect("/users/profiles/" + request.user.get_username())
         else:
             raise PermissionDenied
     else:
         return redirect("/users/signin")
 
-def remove_link(request, request_username, id):
+def remove_link(request, request_username):
+    id = request.POST["id"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
-            get_object_or_404(LinkedAccounts, id=id).delete()
-            LinkedAccounts.save()
+            LinkedAccounts.objects.filter(id=id).delete()
             return redirect("/users/profiles/" + request.user.get_username())
         else:
             raise PermissionDenied
