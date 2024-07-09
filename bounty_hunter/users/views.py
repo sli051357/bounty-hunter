@@ -5,10 +5,12 @@ from django.template import loader
 from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 
 from .models import UserProfileInfo, LinkedAccounts
 from django.shortcuts import redirect
+
+from django.core.exceptions import PermissionDenied
 
 # this method assumes that every user has profile info by default. We can get aroud this by 
 # setting default profile stuff on account creation
@@ -48,12 +50,35 @@ def sign_in_attempt(request):
 
     user = authenticate(username=request_username, password=request_password)
     if user is not None:
-        
         # can change this redirect to link to a different page ig
+        login(request, user)
         return redirect("/users/profiles/" + user.get_username())
     else:
         #in the future will add another redirect.
         return redirect("/users/signin")
+    
+def log_out(request):
+    logout(request)
+    return redirect("/users/signin")
+    
+
+def delete_account(request, request_username):
+    if request.user.is_authenticated:
+        print(request.user.username)
+        print(request_username)
+        if request.user.username == request_username:
+            user = get_object_or_404(User, username=request_username)
+            user.is_active = False
+            user.save()
+            return redirect("/users/profiles/" + user.get_username())
+        else:
+            raise PermissionDenied
+    else:
+        return redirect("/users/signin")
+
+    
+    
+
 
 
 
