@@ -12,6 +12,7 @@ class Favor(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Edit later to create dropdown search option -- must add assigned_favors
+    # related_name allows you to use User.assigned_favors to view all favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
 
     # store whether the favor is monetary/nonmonetary, then store dollar amount if monetary
@@ -31,15 +32,27 @@ class Favor(models.Model):
     PENDING = "Pending"
     COMPLETE = "Complete"
     INCOMPLETE = "Incomplete"
-    status_choices = {PENDING: "Pending", COMPLETE: "Complete", INCOMPLETE: "Incomplete",}
+    status_choices = [(PENDING, "Pending"), (COMPLETE, "Complete"), (INCOMPLETE, "Incomplete"),]
     status = models.CharField(max_length=10, choices=status_choices)
 
+    tags = models.ManyToManyField('Tag')
+
     def __str__(self):
+        return "Favor:%s (created by %s)" % (self.name, self.owner)
 
-
-#class Tag(models.Model):
-    #name = models.CharField(max_length=10, blank=True, null=True)
-    #color = models.CharField(max_length=7, validators=RegexValidator(regex=))
+# tag class
+class Tag(models.Model):
+    # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
+    name = models.CharField(max_length=10)
+    color = models.CharField(max_length=7, 
+                            validators=RegexValidator(regex=r"^#([a-f0-9]{6}|[a-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC"),
+                            help_text="Enter a valid hex code, ie #123456 or #ABC")
     
-    # preset or custom tag
-    #tag_type =
+    # preset or custom tag 
+    PRESET = "Preset"
+    CUSTOM = "Custom"
+    tag_type_choices = [(PRESET, "Preset"), (CUSTOM, "Custom"),]
+    tag_type = models.CharField(max_length=6, choices=tag_type_choices)
+
+    def __str__(self):
+        return self.name
