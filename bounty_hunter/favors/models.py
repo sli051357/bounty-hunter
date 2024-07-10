@@ -45,7 +45,7 @@ class Tag(models.Model):
     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
     name = models.CharField(max_length=10)
     color = models.CharField(max_length=7, 
-                            validators=RegexValidator(regex=r"^#([a-f0-9]{6}|[a-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC"),
+                            validators=[RegexValidator(regex=r"^#([a-f0-9]{6}|[a-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
     
     # preset or custom tag 
