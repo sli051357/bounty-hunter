@@ -9,6 +9,10 @@ import IconButton from './components/UI/IconButton';
 
 const Stack = createNativeStackNavigator();
 
+// On the frontend, requests for data will be managed via Axios in the 
+// http.js file. State management will be directed in the store/redux directory while using
+// React Redux and Redux-toolkit.
+
 export default function App() {
   return (
     <NavigationContainer>
@@ -18,19 +22,19 @@ export default function App() {
         name="UserProfile" 
         component={UserProfileScreen}
         options={{
-          title: "Profile",
+          title: "My Profile",
           headerStyle: {
-            backgroundColor: GLOBAL_STYLES.colors.blue700,
+            backgroundColor: GLOBAL_STYLES.colors.brown300,
           },
-          headerTintColor: 'white',
+          headerTintColor: GLOBAL_STYLES.colors.blue300,
           headerTitleAlign: 'center',
           headerRight: () => {
           return (
           <IconButton 
-            icon='settings-outline' 
-            color='white'
+            icon='settings-sharp' 
+            color={GLOBAL_STYLES.colors.blue300}
             onPress={() => console.log('Settings Page')}
-            />)}
+            iconSize={24}/>)}
         }}/>
       </Stack.Navigator>
     </NavigationContainer>
