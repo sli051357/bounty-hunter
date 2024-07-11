@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.http import HttpResponse
 from .models import Favor, Tag
 
@@ -12,8 +12,13 @@ def favor_list(request):
 # complete_favors, incomplete_favors, favors by name, etc
 
 # view a specific favor
-def favor_detail(request, favor_name):
-    favor = get_object_or_404(Favor.objects.all(), name=favor_name)
+#def favor_detail(request, favor_name):
+    #favor = get_object_or_404(Favor, name=favor_name)
+    #return render(request, 'favors/favor_detail.html', {"favor": favor})
+
+# view a specific favor based on id
+def favor_id_detail(request, favor_id):
+    favor = get_object_or_404(Favor, pk=favor_id)
     return render(request, 'favors/favor_detail.html', {"favor": favor})
 
 # view a list of all tags, with preset tags listed before custom tags
@@ -22,8 +27,12 @@ def tag_list(request):
     return render(request, 'favors/tag_list.html', {"tags": all_tags})
 
 # view a specific tag
-def tag_detail(request, tag_name):
-    tag = get_object_or_404(Tag.objects.all(), name=tag_name)
+#def tag_detail(request, tag_name):
+    #tag = get_object_or_404(Tag, name=tag_name)
+    #return render(request, 'favors/tag_detail.html', {"tag": tag})
+
+def tag_id_detail(request, tag_id):
+    tag = get_object_or_404(Tag, pk=tag_id)
     return render(request, 'favors/tag_detail.html', {"tag": tag})
 
 # TODO: create different lists for different types of tags

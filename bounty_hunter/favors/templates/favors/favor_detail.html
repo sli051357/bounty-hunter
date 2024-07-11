@@ -1,4 +1,7 @@
+<!DOCTYPE html>
+
 <h1> {{ favor.name }} </h1>
+<p> ID: {{ favor.id }} </p>
 <p> Owner: {{ favor.owner }} </p>
 <p> Created on: {{ favor.created_at }} </p>
 <p> Updated on: {{ favor.updated_at }} </p>
@@ -7,8 +10,3 @@
 <p> Dollar amount owed: {{ favor.total_owed_amt }} </p>
 <p> Privacy settings: {{ favor.privacy }} </p>
 <p> Status: {{ favor.status }} </p>
-<p> Tags: 
-    {% for tag in favor.tags %}
-        {{ tag.name }}
-    {% endfor %}
-</p>

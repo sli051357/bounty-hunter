@@ -1,6 +1,13 @@
+<!DOCTYPE html>
+
 <h1> {{ "Favor List" }}</h1>
+
+<body>
 <ul>
-    {% for favor in all_favors %}
-        <li><a href="{% url 'favor_detail' favor.favor_name %}">{{ favor.favor_name }}</a></li>
-    {% endfor %}
+   {% for favor in favors %}
+       <li><a href="/favors/{{ favor.id }}/">{{ favor.name }}</a></li>
+   {% endfor %}
 </ul>
+</body>
+
+

@@ -24,7 +24,7 @@ class Favor(models.Model):
     NONMONETARY = "Nonmonetary"
     total_owed_choices = [(MONETARY, "Monetary"), (NONMONETARY, "Nonmonetary"),]
     total_owed_type = models.CharField(max_length=11, choices=total_owed_choices)
-    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True)
+    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     
     # privacy settings
     PRIVATE = "Private"
@@ -52,6 +52,7 @@ class Tag(models.Model):
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
+    favors = models.ManyToManyField(Favor)
 
     # preset or custom tag 
     PRESET = "Preset"

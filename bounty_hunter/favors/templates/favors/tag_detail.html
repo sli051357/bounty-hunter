@@ -1,5 +1,8 @@
-<h1> {{ <tag class="name"></tag> }} </h1>
-<p> <font color="tag.color"> Color: {{ <tag class="color"></tag> }} </p>
-<p> Preset of custom: {{ <tag class="tag_type"></tag> }} </p>
-<p> Created on: {{ <tag class="created_at"></tag> }} </p>
-<p> Updated on: {{ <tag class="updated_at"></tag> }} </p>
+<!DOCTYPE html>
+
+<h1 style="color: {{ tag.color }}"> {{ tag.name }} </h1>
+<p> ID: {{ tag.id }} </p> 
+<p> Color: {{ tag.color }} </p> 
+<p> Preset or Custom: {{ tag.tag_type }} </p>
+<p> Created on: {{ tag.created_at}} </p>
+<p> Updated on: {{ tag.updated_at}} </p>
