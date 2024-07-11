@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils import timezone
+#from django.contrib.postgres.fields import ArrayField
 import datetime
 
 # Create your models here.
@@ -38,6 +39,7 @@ class Favor(models.Model):
     status_choices = [(PENDING, "Pending"), (COMPLETE, "Complete"), (INCOMPLETE, "Incomplete"),]
     status = models.CharField(max_length=10, choices=status_choices)
 
+    # tags = ArrayField(ArrayField(models.ManyToManyField("Tag")))
     tags = models.ManyToManyField('Tag', blank=True)
 
     def __str__(self):
