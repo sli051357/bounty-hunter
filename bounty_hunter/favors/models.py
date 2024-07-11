@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 # favor class
@@ -9,7 +11,7 @@ class Favor(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_favors")
     name = models.CharField(max_length=60)
     description = models.CharField(max_length=600)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     # Edit later to create dropdown search option -- must add assigned_favors
@@ -44,16 +46,20 @@ class Favor(models.Model):
 # tag class
 class Tag(models.Model):
     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=20)
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([a-f0-9]{6}|[a-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
-    
+    #owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tags")
+
     # preset or custom tag 
     PRESET = "Preset"
     CUSTOM = "Custom"
     tag_type_choices = [(PRESET, "Preset"), (CUSTOM, "Custom"),]
     tag_type = models.CharField(max_length=6, choices=tag_type_choices)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
