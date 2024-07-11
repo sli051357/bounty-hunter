@@ -5,7 +5,8 @@ from django.core.validators import RegexValidator
 # Create your models here.
 # favor class
 class Favor(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    # keep related_name?
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_favors")
     name = models.CharField(max_length=60)
     description = models.CharField(max_length=600)
     created_at = models.DateTimeField(auto_now_add=True)
