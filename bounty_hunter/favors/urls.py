@@ -2,9 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('favors/', views.favor_list, name="favor_list"), 
-    path('favors/<slug:favor_name>/', views.favor_details, name="favor_details"),
-    path('tags/', views.tag_list, name="tag_list"),
-    path('tags/<slug:tag_name>/', views.tag_details, name="tag_details")
+    # ex: /favors/
+    path("", views.favor_list, name="favor_list"), 
+    
+    # ex: /favors/First Favor
+    path("<slug:favor_name>/", views.favor_detail, name="favor_detail"),
+    # ex: /favors/tags/
+    path("tags/", views.tag_list, name="tag_list"),
+    # ex: /favors/tags/Shopping
+    path("tags/<slug:tag_name>/", views.tag_detail, name="tag_detail"),
+
+    # more paths: 
+
 ]
 

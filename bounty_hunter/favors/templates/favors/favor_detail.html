@@ -1,0 +1,14 @@
+<h1> {{ <favor class="name"></favor> }} </h1>
+<p> Owner: {{ <favor class="owner"></favor> }} </p>
+<p> Created on: {{ <favor class="created_at"></favor> }} </p>
+<p> Updated on: {{ <favor class="updated_at"></favor> }} </p>
+<p> Assigned to: {{ <favor class="assignee"></favor> }} </p>
+<p> Monetary or nonmonetary: {{ <favor class="total_owed_type"></favor> }} </p>
+<p> Dollar amount owed: {{ <favor class="total_owed_amt"></favor> }} </p>
+<p> Privacy settings: {{ <favor class="privacy"></favor> }} </p>
+<p> Status: {{ <favor class="status"></favor> }} </p>
+<p> Tags: 
+    {% for tag in <favor class="tags all"></favor> %}
+        {{ <tag class="name"></tag> }}
+    {% endfor %}
+</p>

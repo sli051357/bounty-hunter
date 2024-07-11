@@ -23,7 +23,7 @@ class Favor(models.Model):
     NONMONETARY = "Nonmonetary"
     total_owed_choices = [(MONETARY, "Monetary"), (NONMONETARY, "Nonmonetary"),]
     total_owed_type = models.CharField(max_length=11, choices=total_owed_choices)
-    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True)
     
     # privacy settings
     PRIVATE = "Private"
@@ -38,19 +38,18 @@ class Favor(models.Model):
     status_choices = [(PENDING, "Pending"), (COMPLETE, "Complete"), (INCOMPLETE, "Incomplete"),]
     status = models.CharField(max_length=10, choices=status_choices)
 
-    tags = models.ManyToManyField('Tag')
+    tags = models.ManyToManyField('Tag', blank=True)
 
     def __str__(self):
-        return "Favor:%s (created by %s)" % (self.name, self.owner)
+        return "%s - created by %s" % (self.name, self.owner)
 
 # tag class
 class Tag(models.Model):
     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
     name = models.CharField(max_length=20)
     color = models.CharField(max_length=7, 
-                            validators=[RegexValidator(regex=r"^#([a-f0-9]{6}|[a-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
+                            validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
-    #owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tags")
 
     # preset or custom tag 
     PRESET = "Preset"

@@ -1,0 +1,6 @@
+<h1> {{ "Favor List" }}</h1>
+<ul>
+    {% for favor in all_favors %}
+        <li><a href="{% url 'favor_detail' favor.favor_name %}">{{ favor.favor_name }}</a></li>
+    {% endfor %}
+</ul>
