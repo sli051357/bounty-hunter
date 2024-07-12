@@ -2,12 +2,33 @@
 
 <h1> {{ "Favor List" }}</h1>
 
-<body>
 <ul>
    {% for favor in favors %}
        <li><a href="/favors/{{ favor.id }}/">{{ favor.name }}</a></li>
    {% endfor %}
 </ul>
-</body>
 
+<h2>Create a New Favor</h2>
+    <form action="{% url 'create_favor' %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <label for="favor_name">Favor Name:</label>
+            <input id="favor_name" name="favor_name" type="text" required /> <br /> 
 
+            <label for="favor_description">Description:</label>
+            <textarea id="favor_description" name="favor_description" required></textarea> <br />
+
+            <label for="favor_assignee">Assign to:</label>
+            <input id="favor_assignee" name="favor_assignee" type="text" required /> <br />
+
+            <input type="radio" id="Monetary" name="favor_total_owed_type" value="Monetary">
+            <label for="Monetary">Monetary</label><br>
+
+            <input type="radio" id="Nonmonetary" name="favor_total_owed_type" value="Nonmonetary">
+            <label for="Nonmonetary">Nonmonetary</label><br>
+
+            <!-- add user input for total_owed_amt, privacy, status, tags -->
+
+        </fieldset>
+        <button type="submit" value="Submit">Create Favor</button>
+    </form>
