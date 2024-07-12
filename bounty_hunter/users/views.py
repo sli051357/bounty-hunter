@@ -13,6 +13,15 @@ from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 
 
+import os
+
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from django.utils.crypto import get_random_string
+
 # linked accounts will show up as the text and their ID. Use the ID to request edits and deletions.
 def profile(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -119,6 +128,39 @@ def remove_link(request, request_username):
             raise PermissionDenied
     else:
         return redirect("/users/signin")
+    
+
+
+@csrf_exempt
+def auth_receiver(request):
+    token = request.POST['credential']
+    try:
+        user_data = id_token.verify_oauth2_token(
+            token, requests.Request(), os.environ['GOOGLE_OAUTH_CLIENT_ID']
+        )
+    except ValueError:
+        return HttpResponse(status=403)
+    
+    request_username = request.session.user_data.email
+    request_password = get_random_string(length=150)
+
+    user = authenticate(username=request_username, password=request_password)
+
+    if user is None:
+        new_user = User(username=request_username, password=request_password, email=request_username)
+        new_user.save()
+        return redirect("/users/profiles/" + request_username)
+    else:
+        return redirect("/users/profiles/" + request_username)
+    
+
+    # In a real app, I'd also save any new user here to the database. See below for a real example I wrote for Photon Designer.
+    # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
+    
+
+
+    return redirect('sign_in')
+
     
 
 
