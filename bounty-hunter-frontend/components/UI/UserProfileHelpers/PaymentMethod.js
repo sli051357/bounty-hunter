@@ -3,10 +3,10 @@ import { View, Text, StyleSheet } from "react-native";
 import IconButton from "../IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 
-function PaymentMethod({payment, onPress}) {
+function PaymentMethod({icon, payment, onPress}) {
     return (
         <View style={styles.container}>
-            <IconButton icon='card-sharp' 
+            <IconButton icon={icon} 
             color={GLOBAL_STYLES.colors.brown700}
             onPress={onPress}
             iconSize={36}/>

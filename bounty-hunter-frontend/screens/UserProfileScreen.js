@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Image, TextInput, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, StyleSheet, Image, FlatList, ScrollView } from "react-native";
 import { useState } from "react";
 
 import { GLOBAL_STYLES } from "../constants/styles";
-import TitleWithButton from "../components/UI/TitleWithButton";
-import PaymentMethod from "../components/UI/UserProfileHelpers/PaymentMethod";
+import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../util/dummy-data.js';
+import EditAboutMe from "../components/UI/UserProfileHelpers/EditAboutMe.js";
+import EditPaymentMethods from "../components/UI/UserProfileHelpers/EditPaymentMethods.js";
+import FavorCard from "../components/FavorCard.js";
 
 
 // We will get username, ID, Rating, FriendNum, AboutMe, PaymentMethods, and RecentFavors
@@ -13,8 +14,8 @@ import PaymentMethod from "../components/UI/UserProfileHelpers/PaymentMethod";
 function UserProfileScreen({}){
     const [editAboutMe, setEditAboutMe] = useState(false);
     const [editPayment, setEditPayment] = useState(false);
-    const [aboutMe, setAboutMe] = useState('');
-    const [payments, setPayments] = useState(['Vemmo Test', 'Zelle Test', 'Wishlist']);
+    const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
+    const [payments, setPayments] = useState(DUMMY_USER_PROFILE.paymentMethods);
 
     function editAboutMeHandler(){
         setEditAboutMe((curr) => !curr);
@@ -25,81 +26,60 @@ function UserProfileScreen({}){
     }
 
     let aboutMeSection = 
-    <View>
-        <TitleWithButton
-        title='About Me'
-        titleColor={GLOBAL_STYLES.colors.orange300}
-        icon='create-sharp'
-        iconColor={GLOBAL_STYLES.colors.orange300}
-        onPress={editAboutMeHandler}/>
-        <Text style={[styles.text, styles.editBox]}>
-            {aboutMe}
-        </Text>
-    </View>;
+        <EditAboutMe aboutMe={aboutMe} 
+        onPress={[editAboutMeHandler]} 
+        isEditing={false}/>;
 
     if (editAboutMe){
         aboutMeSection = 
-        <View>
-            <TitleWithButton
-                title='About Me'
-                titleColor={GLOBAL_STYLES.colors.orange300}
-                icon='checkmark-circle-sharp'
-                iconColor={GLOBAL_STYLES.colors.orange300}
-                onPress={editAboutMeHandler}/>
-            <TextInput style={[styles.text, styles.editBox]} 
-            defaultValue="Some Default Value"
-            onChangeText={(text)=>changeAboutMeHandler(text)}
-            value={aboutMe}
-            multiline={true}
-            maxLength={175}/>
-                
-        </View>
+        <EditAboutMe aboutMe={aboutMe}
+        onPress={[editAboutMeHandler, changeAboutMeHandler]}
+        isEditing={true}/>
     }
 
+
+
     function editPaymentMethodHandler(){
-        setEditPayment(curr => !curr);
+        setEditPayment((curr) => !curr);
+    }
+
+    function deletePaymentMethod(payment) {
+        setPayments((curr) => 
+            curr.filter((currPayment) => 
+                payment !== currPayment));
     }
 
     let paymentMethodSection = 
-    <View>
-        <TitleWithButton
-        title='Payment Methods'
-        titleColor={GLOBAL_STYLES.colors.orange300}
-        icon='create-sharp'
-        iconColor={GLOBAL_STYLES.colors.orange300}
-        onPress={editPaymentMethodHandler}/>
-        {payments.map((payment) => <PaymentMethod payment={payment} onPress={() => {}}/>)}
-    </View>;
+            <EditPaymentMethods onPress={[editPaymentMethodHandler]}
+                isEditing={false} 
+                userData={payments}/>;
 
     if (editPayment) {
         paymentMethodSection = 
-        <View>
-            <TitleWithButton
-                title='About Me'
-                titleColor={GLOBAL_STYLES.colors.orange300}
-                icon='checkmark-circle-sharp'
-                iconColor={GLOBAL_STYLES.colors.orange300}
-                onPress={editPaymentMethodHandler}/>        
-        </View>
+                <EditPaymentMethods 
+                onPress={[editPaymentMethodHandler, deletePaymentMethod]}
+                isEditing={true} 
+                userData={payments}
+                />;
     }
 
     return (
         <ScrollView style={styles.page}>
             <View style={[styles.userMainDetails, styles.viewSpacing]}> 
                 <View style={styles.userMainDetailsView}>
-                    <Image style={styles.profilePicture} source={require('../assets/profile.jpeg')}/>
+                    <Image style={styles.profilePicture} source={require('../assets/batman.jpeg')}/>
                     <View>
-                        <Text style={styles.userDetailsText}>USERNAME</Text>
-                        <Text style={[styles.text, {textAlign: 'center'}]}>ID: 1234567</Text>
+                        <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.username}</Text>
+                        <Text style={[styles.text, {textAlign: 'center'}]}>ID: {DUMMY_USER_PROFILE.ID}</Text>
                     </View>
                 </View>
                 <View style={styles.userMainDetailsView}>
                     <View>
-                        <Text style={styles.userDetailsText}>###</Text>
+                        <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.rating}</Text>
                         <Text style={[styles.text, {textAlign: 'center'}]}>RATING</Text>
                     </View>
                     <View>
-                        <Text style={styles.userDetailsText}>###</Text>
+                        <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.friends.length}</Text>
                         <Text style={[styles.text, {textAlign: 'center'}]}>FRIENDS</Text>
                     </View>
                 </View>
@@ -111,6 +91,11 @@ function UserProfileScreen({}){
 
             <View style={styles.viewSpacing}>
                 {paymentMethodSection}
+            </View>
+
+            <View style={styles.viewSpacing}>
+                <Text style={styles.subtitle}>Recent Bounties</Text>
+                {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
             </View>
         </ScrollView>
     )
@@ -156,6 +141,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 4,
         borderWidth: 2
+    },
+    subtitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: GLOBAL_STYLES.colors.orange700
     }
 })
 export default UserProfileScreen;
