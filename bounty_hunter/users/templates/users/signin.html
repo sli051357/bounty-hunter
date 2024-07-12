@@ -1,9 +1,0 @@
-
-<form action="{% url 'signin_attempt' %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-	    <input name="username" type="text" value="" /> <br /> 
-        <input name="password" type="text" value="" /> <br /> 
-    </fieldset>
-	<button type="submit" value="Submit">Submit</button>
-</form>
