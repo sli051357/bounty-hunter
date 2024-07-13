@@ -11,7 +11,7 @@ urlpatterns = [
     # ex: /favors/tags/3
     path("tags/<int:tag_id>/", views.tag_id_detail, name="tag_id_detail"),
     # ex: /favors/create/
-    path("favors/create/", views.create_favor, name="create_favor"),
+    path("create/", views.create_favor, name="create_favor"),
 
     # ex: /favors/First Favor
     # path("<slug:favor_name>/", views.favor_detail, name="favor_detail"),

@@ -37,10 +37,14 @@ def create_favor(request):
         if favor_name and favor_description and favor_assignee:
             Favor.objects.create(name=favor_name, description=favor_description, assignee=favor_assignee)
             return redirect('favor_list')
+            # return render(request, 'favors/create_favor.html') # add context
         else:
             # Handle the error case if needed
-            return render(request, 'favor_list.html', {'error': 'All fields are required.'})
-    return redirect('favor_list')
+            # return render(request, 'favor_list.html', {'error': 'All fields are required.'})
+            return render(request, 'favors/create_favor.html', {'error': 'All fields are required.'}) # add context
+    # return redirect('favor_list')
+    # TODO: once a favor is created, display favor list page
+    return render(request, 'favors/create_favor.html') # add context
 
 # view a specific favor
 #def favor_detail(request, favor_name):
