@@ -29,6 +29,12 @@ def tag_detail(request, tag_id):
 
 # TODO: create different lists for different types of tags
 
+def create_favor(request):
+
+
+
+# --------------------------------------------------------------------
+
 # view a specific favor
 #def favor_detail(request, favor_name):
     #favor = get_object_or_404(Favor, name=favor_name)
