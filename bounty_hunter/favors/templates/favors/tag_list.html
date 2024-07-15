@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+
+<h1> {{ "Tags List" }}</h1>
+<ul>
+    {% for tag in tags %}
+        <li><a href="/favors/tags/{{ tag.id }}/">{{ tag.name }}</a></li>
+    {% endfor %}
+</ul>
