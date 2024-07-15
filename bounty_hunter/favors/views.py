@@ -1,6 +1,8 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from .models import Favor, Tag
+from .forms import FavorForm
 
 # Create your views here.
 # view a list of all favors, ordered by date of creation
@@ -14,7 +16,7 @@ def favor_list(request):
 # view a specific favor based on id
 def favor_detail(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id)
-    tags = Tag.objects.filter(favors=favor)
+    tags = favor.tags.all()
     return render(request, 'favors/favor_detail.html', {"favor": favor, "tags": tags})
 
 # view a list of all tags, with preset tags listed before custom tags
@@ -24,12 +26,24 @@ def tag_list(request):
 
 def tag_detail(request, tag_id):
     tag = get_object_or_404(Tag, pk=tag_id)
-    favors = tag.favors.all()
+    favors = Favor.objects.filter(tags=tag)
     return render(request, 'favors/tag_detail.html', {"tag": tag, "favors": favors})
 
 # TODO: create different lists for different types of tags
 
+# @login_required
 def create_favor(request):
+    if request.method =="POST":
+        form = FavorForm(request.POST)
+        if form.is_valid():
+            favor = form.save(commit=False)
+            favor.owner = request.user
+            favor.status = "Pending creation"
+            favor.save()
+            return redirect('favor_list')
+    else:
+        form = FavorForm()
+    return render(request, 'favors/create_favor.html', {'form': form})
 
 
 
