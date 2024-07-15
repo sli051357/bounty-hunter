@@ -13,6 +13,13 @@ export const DUMMY_USER_PROFILE = {
     recentFavors: []
 }
 
+/* 
+    - We need the ID for both sender and 
+    receiver to get accurate usernames and profile 
+    picture changed. Thus sender and receiver should 
+    have values of their unique ID.
+*/
+
 export const DUMMY_FAVORS_OF_PROFILE = [
     {
         sender: 'BATMAN2077',

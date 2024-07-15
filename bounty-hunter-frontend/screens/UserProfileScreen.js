@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, FlatList, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable, ScrollView } from "react-native";
 import { useState } from "react";
 
 import { GLOBAL_STYLES } from "../constants/styles";
@@ -6,12 +6,36 @@ import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../util/dummy-data.
 import EditAboutMe from "../components/UI/UserProfileHelpers/EditAboutMe.js";
 import EditPaymentMethods from "../components/UI/UserProfileHelpers/EditPaymentMethods.js";
 import FavorCard from "../components/FavorCard.js";
+import IconButton from "../components/UI/IconButton.js";
 
 
-// We will get username, ID, Rating, FriendNum, AboutMe, PaymentMethods, and RecentFavors
-// using the database. 
+/*
+    Implementation Details
+    (Currently UI outline for personal profile, no real usability just yet)
 
-function UserProfileScreen({}){
+        - 'user' prop is meant to give the needed Information of the user.
+        Refer to DUMMY_USER_PROFILE for the desired information.
+
+        - 'isPersonalProfile' prop renders page depending on if this is the user's 
+        personal profile or anothers profile. If this is user's profile, then edits are allowed.
+        Otherwise, then this page is for VIEWING ONLY and not suppose to be edited (bool value).
+            - If true, only About Me and Payment Methods can be altered on this page.
+            The user settings can control changes to USERNAME, Email, USER Picture, 
+            Password, and Delete Account.
+            - About me edits are to have a save or cancel button, which alters user about me
+            depending on edits.
+            - Payment Method changes are to have edit and save button. When adding payment method,
+            a pop up will be presented to handle the payment method and type. The delete will prompt a 
+            pop up that will confirm if the user wants to delete payment method. 
+            - The icon for payment methods should be copy links for when user views another account.
+        
+        Recent Bounties should only have the bounties of the past 30 days. Filter only by 'All', 'Owed',
+        'Receieved'. Sort by completed to in-progress and vice versa (no deleted bounties). Sort by date created. 
+
+
+*/ 
+
+function UserProfileScreen({ user, isPersonalProfile}){
     const [editAboutMe, setEditAboutMe] = useState(false);
     const [editPayment, setEditPayment] = useState(false);
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
@@ -95,6 +119,23 @@ function UserProfileScreen({}){
 
             <View style={styles.viewSpacing}>
                 <Text style={styles.subtitle}>Recent Bounties</Text>
+                <View style={styles.filterContainer}>
+                    <View style={styles.filterContainerPressable}>
+                        <Pressable>
+                            <Text style={styles.filterText}>All</Text>
+                        </Pressable>
+                        <Pressable>
+                            <Text style={styles.filterText}>Owed</Text>
+                        </Pressable>
+                        <Pressable>
+                            <Text style={styles.filterText}>Received</Text>
+                        </Pressable>
+                    </View>
+
+                    <Pressable>
+                        <IconButton icon='swap-vertical-sharp' color='grey' iconSize={22} onPress={() => console.log('Sort Button')}/>
+                    </Pressable>
+                </View>
                 {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
             </View>
         </ScrollView>
@@ -146,6 +187,21 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         color: GLOBAL_STYLES.colors.orange700
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    filterContainerPressable: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        gap: 6
+    },
+    filterText: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: GLOBAL_STYLES.colors.blue300
     }
 })
 export default UserProfileScreen;

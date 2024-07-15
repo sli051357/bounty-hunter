@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from '@react-navigation/native';
 
 import UserProfileScreen from './screens/UserProfileScreen';
+import BountiesList from './screens/BountiesList';
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 
@@ -18,6 +19,17 @@ export default function App() {
     <NavigationContainer>
       <StatusBar />
       <Stack.Navigator>
+        <Stack.Screen 
+          name="BountiesList" 
+          component={BountiesList}
+          options={{
+            title: "",
+            headerStyle: {
+              backgroundColor: GLOBAL_STYLES.colors.brown300,
+            },
+            headerTintColor: GLOBAL_STYLES.colors.blue300,
+            headerTitleAlign: 'center',
+          }}/>
         <Stack.Screen 
         name="UserProfile" 
         component={UserProfileScreen}
