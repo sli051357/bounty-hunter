@@ -31,6 +31,7 @@ def tag_detail(request, tag_id):
 
 # TODO: create different lists for different types of tags
 
+# create a new favor
 # @login_required
 def create_favor(request):
     if request.method =="POST":
@@ -45,6 +46,8 @@ def create_favor(request):
         form = FavorForm()
     return render(request, 'favors/create_favor.html', {'form': form})
 
+# create a new tag
+# @login_required
 def create_tag(request):
     if request.method == "POST":
         form = TagForm(request.POST)
@@ -57,6 +60,21 @@ def create_tag(request):
     else:
         form = TagForm()
     return render(request, 'favors/create_tag.html', {'form': form})
+
+# edit a favor 
+# @login_required
+def edit_favor(request, favor_id):
+    favor = get_object_or_404(Favor, pk=favor_id)
+    if request.method == "POST":
+        form = FavorForm(request.POST, instance=favor)
+        if form.is_valid():
+            form.save()
+            return redirect('favor_list')
+    else:
+        form = FavorForm(instance=favor)
+    return render(request, 'favors/edit_favor.html', {"form": form})
+
+
 
 
 
