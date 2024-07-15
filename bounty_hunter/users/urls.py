@@ -1,5 +1,7 @@
 from django.urls import path
+import rest_framework.authtoken.views
 from . import views
+
 
 urlpatterns = [
     path('profiles/<slug:request_username>/', views.profile, name="profile"),
@@ -8,9 +10,5 @@ urlpatterns = [
     path('profiles/<slug:request_username>/edit-profile-pic', views.edit_profile_pic, name="edit_profile_pic"),
     path('profiles/<slug:request_username>/add-link', views.add_link, name="add_link"),
     path('profiles/<slug:request_username>/remove-link', views.remove_link, name="remove_link"),
-    path('signin/', views.sign_in, name="signin"),
-    path('signin-attempt/', views.sign_in_attempt, name="signin_attempt"),    
-
-
-
+    path('api-token-auth/', rest_framework.authtoken.views.obtain_auth_token)
 ]
