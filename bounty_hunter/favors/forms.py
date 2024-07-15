@@ -8,3 +8,8 @@ class FavorForm(forms.ModelForm):
         # might need to add back 'status'
         fields = ['name', 'description', 'assignee', 'total_owed_type',
                   'total_owed_amt', 'privacy', 'tags']
+        
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ['name', 'color']

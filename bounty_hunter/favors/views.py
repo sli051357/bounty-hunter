@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Favor, Tag
-from .forms import FavorForm
+from .forms import FavorForm, TagForm
 
 # Create your views here.
 # view a list of all favors, ordered by date of creation
@@ -44,6 +44,19 @@ def create_favor(request):
     else:
         form = FavorForm()
     return render(request, 'favors/create_favor.html', {'form': form})
+
+def create_tag(request):
+    if request.method == "POST":
+        form = TagForm(request.POST)
+        if form.is_valid():
+            tag = form.save(commit=False)
+            # tag.owner = request.user
+            tag.tag_type = "Custom"
+            tag.save()
+            return redirect('tag_list')
+    else:
+        form = TagForm()
+    return render(request, 'favors/create_tag.html', {'form': form})
 
 
 

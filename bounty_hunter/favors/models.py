@@ -14,6 +14,7 @@ class Tag(models.Model):
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
+    # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_tags")
 
     # preset or custom tag 
     PRESET = "Preset"
@@ -29,7 +30,7 @@ class Tag(models.Model):
 
 # Favor class
 class Favor(models.Model):
-    # related_name? allows you to use User.owned_favors to see all favors they have created
+    # related_name allows you to use User.owned_favors to see all favors they have created
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
