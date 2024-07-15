@@ -23,9 +23,10 @@ function BountiesList(){
                         </Pressable>
                     </View>
 
-                    <Pressable>
+                    <View style={styles.filterContainer}>
+                        <IconButton icon='filter' color='grey' iconSize={22} onPress={() => console.log('Filter Button')}/>
                         <IconButton icon='swap-vertical-sharp' color='grey' iconSize={22} onPress={() => console.log('Sort Button')}/>
-                    </Pressable>
+                    </View>
                 </View>
                 {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
             </View>
@@ -45,6 +46,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: GLOBAL_STYLES.colors.blue300,
         textAlign: 'center'
+    },
+    viewSpacing: {
+        marginVertical: 8
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8
     },
     filterContainerPressable: {
         flexDirection: 'row',

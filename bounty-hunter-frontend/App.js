@@ -29,6 +29,13 @@ export default function App() {
             },
             headerTintColor: GLOBAL_STYLES.colors.blue300,
             headerTitleAlign: 'center',
+            headerRight: () => {
+              return (
+              <IconButton 
+                icon='add' 
+                color={GLOBAL_STYLES.colors.blue300}
+                onPress={() => console.log('Create Bounty Page')}
+                iconSize={28}/>)}
           }}/>
         <Stack.Screen 
         name="UserProfile" 
