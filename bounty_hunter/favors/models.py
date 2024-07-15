@@ -38,7 +38,7 @@ class Favor(models.Model):
     PENDING_DELETION = "Pending deletion"
     COMPLETE = "Complete"
     INCOMPLETE = "Incomplete"
-    status_choices = [(PENDING_CREATION, "Pending"), (PENDING_EDITS, "Pending edits"), 
+    status_choices = [(PENDING_CREATION, "Pending creation"), (PENDING_EDITS, "Pending edits"), 
                       (PENDING_DELETION, "Pending deletion"), (COMPLETE, "Complete"), 
                       (INCOMPLETE, "Incomplete"),]
     status = models.CharField(max_length=16, choices=status_choices)
@@ -53,7 +53,7 @@ class Tag(models.Model):
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
-    favors = models.ManyToManyField(Favor, related_name="tags", related_query_name="tag")
+    favors = models.ManyToManyField(Favor, related_name="tags", related_query_name="tag", blank=True)
 
     # preset or custom tag 
     PRESET = "Preset"
