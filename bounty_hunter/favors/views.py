@@ -12,18 +12,20 @@ def favor_list(request):
 # complete_favors, incomplete_favors, favors by name, etc
 
 # view a specific favor based on id
-def favor_id_detail(request, favor_id):
+def favor_detail(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id)
-    return render(request, 'favors/favor_detail.html', {"favor": favor})
+    tags = Tag.objects.filter(favors=favor)
+    return render(request, 'favors/favor_detail.html', {"favor": favor, "tags": tags})
 
 # view a list of all tags, with preset tags listed before custom tags
 def tag_list(request):
     all_tags = Tag.objects.order_by("-tag_type")
     return render(request, 'favors/tag_list.html', {"tags": all_tags})
 
-def tag_id_detail(request, tag_id):
+def tag_detail(request, tag_id):
     tag = get_object_or_404(Tag, pk=tag_id)
-    return render(request, 'favors/tag_detail.html', {"tag": tag})
+    favors = Tag.favors
+    return render(request, 'favors/tag_detail.html', {"tag": tag, "favors": favors})
 
 # TODO: create different lists for different types of tags
 

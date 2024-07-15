@@ -1,22 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from django.test import tag
 from django.utils import timezone
 #from django.contrib.postgres.fields import ArrayField
 import datetime
 
 # Create your models here.
-# favor class
+# Favor class
 class Favor(models.Model):
-    # keep related_name?
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_favors")
+    # related_name? allows you to use User.owned_favors to see all favors they have created
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # Edit later to create dropdown search option -- must add assigned_favors
-    # related_name allows you to use User.assigned_favors to view all favors
+    # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
 
     # store whether the favor is monetary/nonmonetary, then store dollar amount if monetary
@@ -33,26 +33,27 @@ class Favor(models.Model):
     privacy =  models.CharField(max_length=7, choices=privacy_choices)
     
     # status of the favor
-    PENDING = "Pending"
+    PENDING_CREATION = "Pending creation"
+    PENDING_EDITS = "Pending edits"
+    PENDING_DELETION = "Pending deletion"
     COMPLETE = "Complete"
     INCOMPLETE = "Incomplete"
-    status_choices = [(PENDING, "Pending"), (COMPLETE, "Complete"), (INCOMPLETE, "Incomplete"),]
-    status = models.CharField(max_length=10, choices=status_choices)
-
-    # tags = ArrayField(ArrayField(models.ManyToManyField("Tag")))
-    tags = models.ManyToManyField('Tag', blank=True)
+    status_choices = [(PENDING_CREATION, "Pending"), (PENDING_EDITS, "Pending edits"), 
+                      (PENDING_DELETION, "Pending deletion"), (COMPLETE, "Complete"), 
+                      (INCOMPLETE, "Incomplete"),]
+    status = models.CharField(max_length=16, choices=status_choices)
 
     def __str__(self):
         return "%s - created by %s" % (self.name, self.owner)
 
-# tag class
+# Tag class
 class Tag(models.Model):
     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
     name = models.CharField(max_length=20)
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
-    favors = models.ManyToManyField(Favor)
+    favors = models.ManyToManyField(Favor, related_name="tags", related_query_name="tag")
 
     # preset or custom tag 
     PRESET = "Preset"
