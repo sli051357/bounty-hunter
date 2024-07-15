@@ -46,6 +46,19 @@ def create_favor(request):
         form = FavorForm()
     return render(request, 'favors/create_favor.html', {'form': form})
 
+# edit a favor 
+# @login_required
+def edit_favor(request, favor_id):
+    favor = get_object_or_404(Favor, pk=favor_id)
+    if request.method == "POST":
+        form = FavorForm(request.POST, instance=favor)
+        if form.is_valid():
+            form.save()
+            return redirect('favor_list')
+    else:
+        form = FavorForm(instance=favor)
+    return render(request, 'favors/edit_favor.html', {"form": form})
+
 # create a new tag
 # @login_required
 def create_tag(request):
@@ -61,18 +74,18 @@ def create_tag(request):
         form = TagForm()
     return render(request, 'favors/create_tag.html', {'form': form})
 
-# edit a favor 
+# edit a tag 
 # @login_required
-def edit_favor(request, favor_id):
-    favor = get_object_or_404(Favor, pk=favor_id)
+def edit_tag(request, tag_id):
+    tag = get_object_or_404(Tag, pk=tag_id)
     if request.method == "POST":
-        form = FavorForm(request.POST, instance=favor)
+        form = TagForm(request.POST, instance=tag)
         if form.is_valid():
             form.save()
-            return redirect('favor_list')
+            return redirect('tag_list')
     else:
-        form = FavorForm(instance=favor)
-    return render(request, 'favors/edit_favor.html', {"form": form})
+        form = TagForm(instance=tag)
+    return render(request, 'favors/edit_tag.html', {"form": form})
 
 
 

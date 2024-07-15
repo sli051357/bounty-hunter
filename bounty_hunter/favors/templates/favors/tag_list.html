@@ -5,6 +5,7 @@
     {% for tag in tags %}
         <li>        
         <a href="{% url 'tag_detail' tag.id %}">{{ tag.name }}</a>
+        <a href="{% url 'edit_tag' tag.id %}">[edit]</a>
     </li>
     {% endfor %}
 </ul>
