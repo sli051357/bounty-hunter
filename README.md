@@ -1,3 +1,4 @@
+<<<<<<< README.md
 # Monetary Favor Tackers
 
 
@@ -94,3 +95,5 @@ If you have run out of energy or time for your project, put a note at the top of
 
 
 Or help one fainting robin
+If I can ease one life the aching
+Or cool one pain
