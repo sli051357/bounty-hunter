@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<title>Test</title>
+<style>
+div.container {
+background-color: #ffffff;
+}
+div.container p {
+font-family: Arial;
+font-size: 14px;
+font-style: normal;
+font-weight: normal;
+text-decoration: none;
+text-transform: none;
+color: #000000;
+background-color: #ffffff;
+}
+</style>
+
+<div class="container">
+<p> {{bio}}, {{pfp}}, {{name}}, {{accounts}} </p>
+</div>
+
+
+<form action="{% url 'edit_bio' name %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+	    <input name="new_bio" type="text" value="" /> <br /> 
+    </fieldset>
+	<button type="submit" value="Submit">Edit Bio</button>
+</form>
+
+
+<form action="{% url 'edit_profile_pic' name %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+	    <input name="new_profile_pic" type="image" value="" /> <br /> 
+    </fieldset>
+	<button type="submit" value="Submit">edit pfp</button>
+</form>
+
+
+<form action="{% url 'add_link' name %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+	    <input name="link" type="text" value="" /> <br /> 
+    </fieldset>
+	<button type="submit" value="Submit">add link</button>
+</form>
+
+<form action="{% url 'remove_link' name %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+	    <input name="id" type="text" value="" /> <br /> 
+    </fieldset>
+	<button type="submit" value="Submit">remove link</button>
+</form>
