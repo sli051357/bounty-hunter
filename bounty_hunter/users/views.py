@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse
 
 from django.template import loader
 from django.shortcuts import get_object_or_404
@@ -30,98 +30,95 @@ def profile(request, request_username):
         "accounts":linked_accs
     }
 
-    return JsonResponse(headers)
+    #temporary html template render
+    template = loader.get_template("users/profile.html")
+
+    return HttpResponse(template.render(headers,request))
 
 # sign in page
-# def sign_in(request):
-#     #temporary sign in template
-#     return render(request, "users/signin.html", {})
+def sign_in(request):
+    #temporary sign in template
+    return render(request, "users/signin.html", {})
 
 
 # if sign in successful, redirect to profile. Else, return sign in page with failed response
-# def sign_in_attempt(request):
-#     request_username = request.POST["username"]
-#     request_password = request.POST["password"]
+def sign_in_attempt(request):
+    request_username = request.POST["username"]
+    request_password = request.POST["password"]
 
-#     user = authenticate(username=request_username, password=request_password)
-#     if user is not None:
-#         # can change this redirect to link to a different page ig
-#         login(request, user)
-#         return redirect("/users/profiles/" + user.get_username())
-#     else:
-#         #in the future will add another redirect.
-#         return redirect("/users/signin")
+    user = authenticate(username=request_username, password=request_password)
+    if user is not None:
+        # can change this redirect to link to a different page ig
+        login(request, user)
+        return redirect("/users/profiles/" + user.get_username())
+    else:
+        #in the future will add another redirect.
+        return redirect("/users/signin")
     
 def log_out(request):
     logout(request)
-    return 
+    return redirect("/users/signin")
     
 
 def delete_account(request, request_username):
-    headers = {"success": False}
     if request.user.is_authenticated:
         if request.user.username == request_username:
             request.user.is_active = False
             request.user.save()
-            headers["success"] = True
-            return JsonResponse(headers)
+            return redirect("/users/profiles/" + request.user.get_username())
         else:
-            raise JsonResponse(headers)
+            raise PermissionDenied
     else:
-        return JsonResponse(headers)
+        return redirect("/users/signin")
 
 def edit_bio(request, request_username):
-    headers = {"success": False}
     new_bio = request.POST["new_bio"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
             profile.bio_text = new_bio
             profile.save()
-            return JsonResponse(headers)
+            return redirect("/users/profiles/" + request.user.get_username())
         else:
-            raise JsonResponse(headers)
+            raise PermissionDenied
     else:
-        return JsonResponse(headers)
+        return redirect("/users/signin")
 
 def edit_profile_pic(request, request_username):
-    headers = {"success": False}
     new_pic = request.POST["new_pic"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
             profile.profile_image = new_pic
             profile.save()
-            return JsonResponse(headers)
+            return redirect("/users/profiles/" + request.user.get_username())
         else:
-            raise JsonResponse(headers)
+            raise PermissionDenied
     else:
-        return JsonResponse(headers)
+        return redirect("/users/signin")
 
 def add_link(request, request_username):
-    headers = {"success": False}
     link = request.POST["link"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             new_link = LinkedAccounts(owner=request.user, account_text=link)
             new_link.save()
-            return JsonResponse(headers)
+            return redirect("/users/profiles/" + request.user.get_username())
         else:
-            raise JsonResponse(headers)
+            raise PermissionDenied
     else:
-        return JsonResponse(headers)
+        return redirect("/users/signin")
 
 def remove_link(request, request_username):
-    headers = {"success": False}
     id = request.POST["id"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             LinkedAccounts.objects.filter(id=id).delete()
-            return JsonResponse(headers)
+            return redirect("/users/profiles/" + request.user.get_username())
         else:
-            raise JsonResponse(headers)
+            raise PermissionDenied
     else:
-        return JsonResponse(headers)
+        return redirect("/users/signin")
     
 
 
