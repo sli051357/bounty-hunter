@@ -14,7 +14,7 @@ class Tag(models.Model):
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
                             help_text="Enter a valid hex code, ie #123456 or #ABC")
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_tags")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name="owned_tags")
 
     # preset or custom tag 
     PRESET = "Preset"

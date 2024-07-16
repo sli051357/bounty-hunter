@@ -39,7 +39,7 @@ def create_favor(request):
         if form.is_valid():
             favor = form.save(commit=False)
             favor.owner = request.user
-            favor.status = "Pending creation"
+            # favor.status = "Pending creation"
             favor.save()
             return redirect('favor_list')
     else:
@@ -53,7 +53,7 @@ def edit_favor(request, favor_id):
     if request.method == "POST":
         form = FavorForm(request.POST, instance=favor)
         if form.is_valid():
-            form.status = "Pending edits"
+            # form.status = "Pending edits"
             form.save()
             return redirect('favor_list')
     else:
@@ -67,6 +67,7 @@ def create_tag(request):
         form = TagForm(request.POST)
         if form.is_valid():
             tag = form.save(commit=False)
+            tag.owner = request.user
             # tag.owner = request.user
             tag.tag_type = "Custom"
             tag.save()

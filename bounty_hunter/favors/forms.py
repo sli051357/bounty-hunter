@@ -7,7 +7,7 @@ class FavorForm(forms.ModelForm):
         model = Favor
         # might need to add back 'status'
         fields = ['name', 'description', 'assignee', 'total_owed_type',
-                  'total_owed_amt', 'privacy', 'tags']
+                  'total_owed_amt', 'privacy', 'status', 'tags']
         
 class TagForm(forms.ModelForm):
     class Meta:
