@@ -15,11 +15,20 @@ def favor_list(request):
 # view a specific favor based on id
 def favor_detail(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id)
-    tags = list(favor.tags.all())
-    favor_data = {"name": favor.name, "id": favor.id, "description": favor.description, 
-                  "owner": favor.owner, "assignee": favor.assignee, "created_at": favor.created_at, 
-                  "updated_at": favor.updated_at, "total_owed_type": favor.total_owed_type, "totwal_owed_amt": favor.total_owed_amt,
-                  "privacy": favor.privacy, "status": favor.status, "tags": tags,}
+    tags = list(favor.tags.all().values())
+    favor_data = {"name": favor.name, 
+                  "id": favor.id, 
+                  "description": favor.description, 
+                  "owner": {"id": favor.owner.id, "email": favor.owner.email, "username": favor.owner.username}, 
+                  "assignee": {"id": favor.assignee.id, "email": favor.assignee.email, "username": favor.assignee.username}
+                  if favor.assignee else None, 
+                  "created_at": favor.created_at,
+                  "updated_at": favor.updated_at,
+                  "total_owed_type": favor.total_owed_type,
+                  "totwal_owed_amt": favor.total_owed_amt,
+                  "privacy": favor.privacy,
+                  "status": favor.status,
+                  "tags": tags,}
     # return render(request, 'favors/favor_detail.html', {"favor": favor, "tags": tags})
     return JsonResponse(favor_data)
 
@@ -33,13 +42,12 @@ def tag_list(request):
 def tag_detail(request, tag_id):
     tag = get_object_or_404(Tag, pk=tag_id)
     favors = list(Favor.objects.filter(tags=tag).values())
-    tag_data = {"name": tag.name, "id": tag.id, "color": tag.color, "favors": favors}
+    tag_data = {"name": tag.name,
+                "id": tag.id,
+                "color": tag.color,
+                "favors": favors}
     # return render(request, 'favors/tag_detail.html', {"tag": tag, "favors": favors})
     return JsonResponse(tag_data)
-
-# TODO: create different lists for different filters of favor list 
-# complete_favors, incomplete_favors, favors by name, etc
-# TODO: create different lists for different types of tags
 
 # create a new favor
 # @login_required
@@ -75,8 +83,8 @@ def edit_favor(request, favor_id):
             #form = FavorForm(instance=favor)
             return JsonResponse({"sucess": False, "errors": form.errors})
     else:
-        return JsonResponse({"error": "GET method not allowed"}, status=405)
         # return render(request, 'favors/edit_favor.html', {"form": form})
+        return JsonResponse({"error": "GET method not allowed"}, status=405)
 
 # create a new tag
 # @login_required
@@ -115,17 +123,3 @@ def edit_tag(request, tag_id):
         # return render(request, 'favors/edit_tag.html', {"form": form})
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
-
-
-
-# --------------------------------------------------------------------
-
-# view a specific favor
-#def favor_detail(request, favor_name):
-    #favor = get_object_or_404(Favor, name=favor_name)
-    #return render(request, 'favors/favor_detail.html', {"favor": favor})
-
-# view a specific tag
-#def tag_detail(request, tag_name):
-    #tag = get_object_or_404(Tag, name=tag_name)
-    #return render(request, 'favors/tag_detail.html', {"tag": tag})
