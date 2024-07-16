@@ -53,6 +53,7 @@ def edit_favor(request, favor_id):
     if request.method == "POST":
         form = FavorForm(request.POST, instance=favor)
         if form.is_valid():
+            form.status = "Pending edits"
             form.save()
             return redirect('favor_list')
     else:
