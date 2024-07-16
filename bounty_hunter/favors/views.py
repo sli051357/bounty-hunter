@@ -7,9 +7,41 @@ from .forms import FavorForm, TagForm
 # Create your views here.
 # view a list of all favors, ordered by date of creation
 def favor_list(request): 
-    all_favors = Favor.objects.order_by("-created_at")
-    favors_list = list(all_favors.values())
-    # return render(request, 'favors/favor_list.html', {"favors": all_favors})
+    favors = Favor.objects.all()
+    
+    # FILTERS - ex: /favors/?assignee=1&tag=4
+    # filter by owner using owner id
+    owner_id = request.GET.get('owner')
+    if owner_id:
+        favors = favors.filter(owner__id=owner_id)
+
+    # filter by assignee using assignee id 
+    assignee_id = request.GET.get('assignee')
+    if assignee_id:
+        favors = favors.filter(assignee__id=assignee_id)
+    
+    # filter by status
+    # favor_status = request.GET.get('status')
+    # if favor_status:
+        # favors = favors.filter(favor__status=favor_status)
+
+    # filter by tag using tag id
+    tag_id = request.GET.get('tag')
+    if tag_id:
+        favors = favors.filter(tags__id=tag_id)
+
+    # filter by privacy
+    # privacy_choice = request.GET.get('privacy')
+    #if privacy_choice:
+        #favors = favors.filter(privacy=privacy_choice)
+    
+    # SORT
+    # sort by ascending date
+
+
+    # sort by descending date
+
+    favors_list = list(favors.values())
     return JsonResponse({"favors": favors_list})
 
 # view a specific favor based on id
@@ -25,20 +57,18 @@ def favor_detail(request, favor_id):
                   "created_at": favor.created_at,
                   "updated_at": favor.updated_at,
                   "total_owed_type": favor.total_owed_type,
-                  "totwal_owed_amt": favor.total_owed_amt,
+                  "total_owed_amt": favor.total_owed_amt,
                   "privacy": favor.privacy,
                   "status": favor.status,
                   "tags": tags,}
-    # return render(request, 'favors/favor_detail.html', {"favor": favor, "tags": tags})
     return JsonResponse(favor_data)
 
 # view a list of all tags, with preset tags listed before custom tags
 def tag_list(request):
-    all_tags = Tag.objects.order_by("-tag_type")
-    tags_list = list(all_tags.values())
-    # return render(request, 'favors/tag_list.html', {"tags": all_tags})
+    tags_list = list(Tag.objects.order_by("-tag_type").values())
     return JsonResponse({"tags": tags_list})
 
+# view a specific tag based on id
 def tag_detail(request, tag_id):
     tag = get_object_or_404(Tag, pk=tag_id)
     favors = list(Favor.objects.filter(tags=tag).values())
@@ -46,7 +76,6 @@ def tag_detail(request, tag_id):
                 "id": tag.id,
                 "color": tag.color,
                 "favors": favors}
-    # return render(request, 'favors/tag_detail.html', {"tag": tag, "favors": favors})
     return JsonResponse(tag_data)
 
 # create a new favor
@@ -57,15 +86,12 @@ def create_favor(request):
         if form.is_valid():
             favor = form.save(commit=False)
             favor.owner = request.user
-            # favor.status = "Pending creation"
+            # favor.status = "Pending_creation"
             favor.save()
-            # return redirect('favor_list')
             return JsonResponse({"success": True, "favor_id": favor.id})
         else:
-            # form = FavorForm()
             return JsonResponse({"success": False, "errors": form.errors})
     else: 
-        #return render(request, 'favors/create_favor.html', {'form': form})
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
 # edit a favor 
@@ -75,15 +101,12 @@ def edit_favor(request, favor_id):
     if request.method == "POST":
         form = FavorForm(request.POST, instance=favor)
         if form.is_valid():
-            # form.status = "Pending edits"
+            # form.status = "Pending_edits"
             form.save()
-            # return redirect('favor_list')
-            return JsonResponse({"sucess": True})
+            return JsonResponse({"success": True})
         else:
-            #form = FavorForm(instance=favor)
-            return JsonResponse({"sucess": False, "errors": form.errors})
+            return JsonResponse({"success": False, "errors": form.errors})
     else:
-        # return render(request, 'favors/edit_favor.html', {"form": form})
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
 # create a new tag
@@ -94,16 +117,12 @@ def create_tag(request):
         if form.is_valid():
             tag = form.save(commit=False)
             tag.owner = request.user
-            # tag.owner = request.user
-            tag.tag_type = "Custom"
+            # tag.tag_type = "Custom"
             tag.save()
-            # return redirect('tag_list')
-            return JsonResponse({"success": True, "tag_ig": tag.id})
+            return JsonResponse({"success": True, "tag_id": tag.id})
         else:
-            # form = TagForm()
             return JsonResponse({"success": False, "errors": form.errors})
     else:
-        # return render(request, 'favors/create_tag.html', {'form': form})
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
 # edit a tag 
@@ -114,12 +133,9 @@ def edit_tag(request, tag_id):
         form = TagForm(request.POST, instance=tag)
         if form.is_valid():
             form.save()
-            # return redirect('tag_list')
             return JsonResponse({"success": True})
         else:
-            # form = TagForm(instance=tag)
             return JsonResponse({"success": False, "errors": form.errors})
     else:
-        # return render(request, 'favors/edit_tag.html', {"form": form})
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
