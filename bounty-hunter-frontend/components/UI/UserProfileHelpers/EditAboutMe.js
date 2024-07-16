@@ -2,8 +2,26 @@ import { View, Text, StyleSheet, TextInput} from "react-native";
 
 import TitleWithButton from "../TitleWithButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
+import './api/apiRequest.js';
+
 
 function EditAboutMe({aboutMe, onPress, isEditing}) {
+
+    const handleSaveAboutMe = async () => {
+        try {
+            // Call the updateUserBio function from apiRequest to update the bio
+            await apiRequest.updateUserBio(userId, aboutMe); // Replace userId with the actual user ID
+            // Optionally, you can notify the user that the bio was successfully updated
+            console.log('Bio updated successfully');
+
+            // Call onPress[0] to exit editing mode
+            onPress[0](); // change this to onpress to exit
+            
+        } catch (error) {
+            console.error('Failed to update bio:', error);
+            // Handle error (e.g., show error message to user)
+        }
+    };
 
     let editAboutMe = 
     <>
@@ -12,7 +30,7 @@ function EditAboutMe({aboutMe, onPress, isEditing}) {
         titleColor={GLOBAL_STYLES.colors.orange700}
         icon='create-sharp'
         iconColor={GLOBAL_STYLES.colors.orange700}
-        onPress={onPress[0]}/>
+        onPress={handleSaveAboutMe} /> {/* Call handleSaveAboutMe on save button press */}
         <Text style={[styles.text, styles.editBox]}>
             {aboutMe}
         </Text>
