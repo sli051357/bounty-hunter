@@ -1,23 +1,27 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Favor, Tag
+from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 
 # Create your views here.
 # view a list of all favors, ordered by date of creation
 def favor_list(request): 
     all_favors = Favor.objects.order_by("-created_at")
-    return render(request, 'favors/favor_list.html', {"favors": all_favors})
-
-# TODO: create different lists for different filters of favor list 
-# complete_favors, incomplete_favors, favors by name, etc
+    favors_list = list(all_favors.values())
+    # return render(request, 'favors/favor_list.html', {"favors": all_favors})
+    return JsonResponse({"favors": favors_list})
 
 # view a specific favor based on id
 def favor_detail(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id)
-    tags = favor.tags.all()
-    return render(request, 'favors/favor_detail.html', {"favor": favor, "tags": tags})
+    tags = list(favor.tags.all())
+    favor_data = {"id": favor.id, "name": favor.name, "description": favor.description, "owner": favor.owner,
+                  "assignee": favor.assignee, "created_at": favor.created_at, "updated_at": favor.updated_at, 
+                  "total_owed_type": favor.total_owed_type, "totwal_owed_amt": favor.total_owed_amt,
+                  "privacy": favor.privacy, "status": favor.status, "tags": tags,}
+    # return render(request, 'favors/favor_detail.html', {"favor": favor, "tags": tags})
+    return JsonResponse(favor_data)
 
 # view a list of all tags, with preset tags listed before custom tags
 def tag_list(request):
@@ -29,6 +33,8 @@ def tag_detail(request, tag_id):
     favors = Favor.objects.filter(tags=tag)
     return render(request, 'favors/tag_detail.html', {"tag": tag, "favors": favors})
 
+# TODO: create different lists for different filters of favor list 
+# complete_favors, incomplete_favors, favors by name, etc
 # TODO: create different lists for different types of tags
 
 # create a new favor
