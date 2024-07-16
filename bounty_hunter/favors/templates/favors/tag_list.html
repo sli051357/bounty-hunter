@@ -3,6 +3,9 @@
 <h1> {{ "Tags List" }}</h1>
 <ul>
     {% for tag in tags %}
-        <li><a href="/favors/tags/{{ tag.id }}/">{{ tag.name }}</a></li>
+        <li>        
+        <a href="{% url 'tag_detail' tag.id %}">{{ tag.name }}</a>
+        <a href="{% url 'edit_tag' tag.id %}">[edit]</a>
+    </li>
     {% endfor %}
 </ul>

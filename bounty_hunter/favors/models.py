@@ -7,14 +7,36 @@ from django.utils import timezone
 import datetime
 
 # Create your models here.
+# Tag class
+class Tag(models.Model):
+    # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
+    name = models.CharField(max_length=20)
+    color = models.CharField(max_length=7, 
+                            validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
+                            help_text="Enter a valid hex code, ie #123456 or #ABC")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name="owned_tags")
+
+    # preset or custom tag 
+    PRESET = "Preset"
+    CUSTOM = "Custom"
+    tag_type_choices = [(PRESET, "Preset"), (CUSTOM, "Custom"),]
+    tag_type = models.CharField(max_length=6, choices=tag_type_choices)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
 # Favor class
 class Favor(models.Model):
-    # related_name? allows you to use User.owned_favors to see all favors they have created
+    # related_name allows you to use User.owned_favors to see all favors they have created
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
@@ -45,24 +67,3 @@ class Favor(models.Model):
 
     def __str__(self):
         return "%s - created by %s" % (self.name, self.owner)
-
-# Tag class
-class Tag(models.Model):
-    # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
-    name = models.CharField(max_length=20)
-    color = models.CharField(max_length=7, 
-                            validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
-                            help_text="Enter a valid hex code, ie #123456 or #ABC")
-    favors = models.ManyToManyField(Favor, related_name="tags", related_query_name="tag", blank=True)
-
-    # preset or custom tag 
-    PRESET = "Preset"
-    CUSTOM = "Custom"
-    tag_type_choices = [(PRESET, "Preset"), (CUSTOM, "Custom"),]
-    tag_type = models.CharField(max_length=6, choices=tag_type_choices)
-
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name

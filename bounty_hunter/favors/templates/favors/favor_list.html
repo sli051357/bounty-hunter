@@ -4,7 +4,11 @@
 
 <ul>
    {% for favor in favors %}
-       <li><a href="/favors/{{ favor.id }}/">{{ favor.name }}</a></li>
+       <li>
+        <a href="{% url 'favor_detail' favor.id %}">{{ favor.name }}</a>
+        <a href="{% url 'edit_favor' favor.id %}">[edit]</a>
+        </li>
    {% endfor %}
 </ul>
+<p> <a href="{% url 'create_favor' %}">Create Favor</a> </p>
 
