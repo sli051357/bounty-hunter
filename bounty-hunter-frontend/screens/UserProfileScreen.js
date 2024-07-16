@@ -35,7 +35,7 @@ import IconButton from "../components/UI/IconButton.js";
 
 */ 
 
-function UserProfileScreen({ user, isPersonalProfile}){
+function UserProfileScreen({ user, isPersonalProfile }){
     const [editAboutMe, setEditAboutMe] = useState(false);
     const [editPayment, setEditPayment] = useState(false);
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
