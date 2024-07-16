@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
+
 const initialState = {
-    bountyList: []
+    bountyList: DUMMY_FAVORS_OF_PROFILE_Updated
 }
 
 const bountyListSlice = createSlice({
@@ -25,8 +27,9 @@ const bountyListSlice = createSlice({
         }, 
         removeBounty: (state, action) => {
             state.bountyList = state.bountyList.filter((bounty) => {
-                bounty.bountyId !== action.payload.bountyId
+                return bounty.bountyId !== action.payload;
             })
+
         },
         editBounty: (state, action) => {
             // Todo (refer to State manage sheet)

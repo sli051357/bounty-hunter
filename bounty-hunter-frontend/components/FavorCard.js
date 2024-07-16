@@ -16,9 +16,10 @@ Implementation Notes:
     be changed in the edit favor. 
 */
 
-function FavorCard({favor}){
+function FavorCard({favor, onPress}){
+    // console.log(favor.description);
     return (
-        <Pressable onPress={() => console.log('Bounty Card Works!')}>
+        <Pressable onPress={() => onPress(favor.bountyId)}>
             <View style={styles.container}>
                 <View style={[styles.innerContainer, {alignItems: 'flex-start'}]}>
                     <View style={styles.iconsContainer}>
@@ -33,7 +34,7 @@ function FavorCard({favor}){
                         source={require('../assets/profile.jpeg')}
                         />
                     </View>
-                    <Text style={styles.mainTextLeft}>{favor.receiver}</Text>
+                    <Text style={styles.mainTextLeft}>{favor.receiverId}</Text>
                     <Text style={styles.text}>{favor.description}</Text>
                 </View>
                 <View style={[styles.innerContainer, {alignItems: 'flex-end'}]}>

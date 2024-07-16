@@ -3,9 +3,22 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { GLOBAL_STYLES } from "../constants/styles";
 import IconButton from "../components/UI/IconButton";
 import FavorCard from "../components/FavorCard";
-import { DUMMY_FAVORS_OF_PROFILE } from "../util/dummy-data";
+// import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
+import { useDispatch, useSelector } from "react-redux";
+import { removeBounty } from "../store/bountyList";
 
 function BountiesList(){
+    const userBountyList = useSelector((state) => state.bountyList.bountyList);
+    const dispatch = useDispatch();
+    //console.log(userBountyList);
+
+    // This is a tester function, NOT ACTUAL IMPLEMENTATION!
+    function removeBountyHandler(bountyId){
+        console.log(bountyId);
+        dispatch(removeBounty(bountyId))
+    }
+
+
     return (
         <ScrollView style={styles.page}>
             <Text style={styles.mainHeader}>My Bounties</Text>
@@ -28,7 +41,7 @@ function BountiesList(){
                         <IconButton icon='swap-vertical-sharp' color='grey' iconSize={22} onPress={() => console.log('Sort Button')}/>
                     </View>
                 </View>
-                {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
+                {userBountyList.map((favor) => <FavorCard key={favor.bountyId} onPress={removeBountyHandler} favor={favor}/>)}
             </View>
         </ScrollView>
     )

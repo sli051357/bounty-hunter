@@ -18,7 +18,7 @@ const friendListSlice = createSlice({
         },
         removeFriend: (state, action) => {
             state.friendList = state.friendList.filter((friend) => {
-                friend.id !== action.payload.id
+                return friend.id !== action.payload.id
             })
         }
     }
