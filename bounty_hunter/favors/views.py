@@ -30,15 +30,30 @@ def favor_list(request):
     # TODO: filter by privacy
 
     # SORT
+    sort_method = request.GET.get('sort_by')
+    sort_order = request.GET.get('order')
 
-    # sort by alphabetical order
-
+    # sort by name (in alphabetical order)
+    if sort_method == 'name':
+        if sort_order == 'descending':
+            favors = favors.order_by('-name')
+        # if sort_order == 'ascending' or if none is specified, sort in ascending order
+        else:
+            favors = favors.order_by('name')
+        
     # sort by date
+    if sort_method == 'date':
+        if sort_order == 'descending':
+            favors = favors.order_by('-created_at')
+        else:
+            favors = favors.order_by('created_at')
 
     # sort by amount of money
-
-    # ascending or descending
-
+    if sort_method == 'amount':
+        if sort_order == 'descending':
+            favors = favors.order_by('-total_owed_amt')
+        else: 
+            favors = favors.order_by('total_owed_amt')
 
     favors_list = list(favors.values())
     return JsonResponse({"favors": favors_list})
