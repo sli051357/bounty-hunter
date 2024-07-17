@@ -44,12 +44,15 @@ function UserProfileScreen({ user, isPersonalProfile }){
 
     useEffect(() => {
         async function fetchUserData() {
-            const response = await apiService.getUserProfileById('MacUser23');
-            console.log(response.data);
-
+            try {
+                const response = await apiService.getUserBio('MacUser23');
+                console.log(response);
+            } catch (error) {
+                console.log(error)
+            }
         }
         fetchUserData();   
-    })
+    }, [])
 
     function editAboutMeHandler(){
         setEditAboutMe((curr) => !curr);

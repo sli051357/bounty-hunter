@@ -28,7 +28,7 @@ const apiService = {
     }, 
     deleteUser: async (id) => {
         try {
-            const response = await axiosInstance.get('/users/profiles/${id}/delete/');
+            const response = await axiosInstance.get(`/users/profiles/${id}/delete/`);
             return response.data;
         } catch (error) {
             throw error;
