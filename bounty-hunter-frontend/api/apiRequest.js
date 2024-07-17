@@ -2,9 +2,25 @@ import axiosInstance from "./axiosInstance";
 import axios from "axios";
 
 const apiService = {
-    getUserProfileById: async (id) => {
+    getUserBio: async (id) => {
         try {
-            const response = await axiosInstance.get(`/users/profiles/${id}`);
+            const response = await axiosInstance.get(`/users/profiles/${id}/bio`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }, 
+    getUserPic: async (id) => {
+        try {
+            const response = await axiosInstance.get(`/users/profiles/${id}/profile-pic`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }, 
+    getUserLinks: async (id) => {
+        try {
+            const response = await axiosInstance.get(`/users/profiles/${id}/links`);
             return response.data;
         } catch (error) {
             throw error;
