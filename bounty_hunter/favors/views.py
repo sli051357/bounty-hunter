@@ -9,7 +9,36 @@ from .forms import FavorForm, TagForm
 def favor_list(request): 
     favors = Favor.objects.all()
 
-    # filter and sort here
+    # FILTER
+    # filter by owner id
+    owner_id = request.GET.get('owner')
+    if owner_id:
+        favors = favors.filter(owner__id=owner_id)
+
+    # filter by assignee id
+    assignee_id = request.GET.get('assignee')
+    if assignee_id:
+        favors = favors.filter(assignee__id=assignee_id)
+
+    # TODO: filter by status
+
+    # filter by tag id
+    tag_id = request.GET.get('tag')
+    if tag_id:
+        favors = favors.filter(tag__id=tag_id)
+
+    # TODO: filter by privacy
+
+    # SORT
+
+    # sort by alphabetical order
+
+    # sort by date
+
+    # sort by amount of money
+
+    # ascending or descending
+
 
     favors_list = list(favors.values())
     return JsonResponse({"favors": favors_list})
