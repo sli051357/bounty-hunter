@@ -36,7 +36,7 @@ class Favor(models.Model):
     description = models.TextField(max_length=600)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField(Tag, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
 
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")

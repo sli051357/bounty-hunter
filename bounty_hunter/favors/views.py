@@ -21,13 +21,22 @@ def favor_list(request):
         favors = favors.filter(assignee__id=assignee_id)
 
     # TODO: filter by status
+    status = request.GET.get('status')
+    if status == "1":
+        favors = favors.filter(status="Pending_creation")
+    if status == "2":
+        favors = favors.filter(status="Pending_edits")
+    if status == "3":
+        favors = favors.filter(status="Pending_deletion")
+    if status == "4":
+        favors = favors.filter(status="Incomplete")
+    if status == "5":
+        favors = favors.filter(status="Complete")
 
     # filter by tag id
     tag_id = request.GET.get('tag')
     if tag_id:
-        favors = favors.filter(tag__id=tag_id)
-
-    # TODO: filter by privacy
+        favors = favors.filter(tags__id=tag_id)
 
     # SORT
     sort_method = request.GET.get('sort_by')
