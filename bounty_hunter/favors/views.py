@@ -5,41 +5,11 @@ from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 
 # Create your views here.
-# view a list of all favors, ordered by date of creation
+# view a list of all favors 
 def favor_list(request): 
     favors = Favor.objects.all()
-    
-    # FILTERS - ex: /favors/?assignee=1&tag=4
-    # filter by owner using owner id
-    owner_id = request.GET.get('owner')
-    if owner_id:
-        favors = favors.filter(owner__id=owner_id)
 
-    # filter by assignee using assignee id 
-    assignee_id = request.GET.get('assignee')
-    if assignee_id:
-        favors = favors.filter(assignee__id=assignee_id)
-    
-    # filter by status
-    # favor_status = request.GET.get('status')
-    # if favor_status:
-        # favors = favors.filter(favor__status=favor_status)
-
-    # filter by tag using tag id
-    tag_id = request.GET.get('tag')
-    if tag_id:
-        favors = favors.filter(tags__id=tag_id)
-
-    # filter by privacy
-    # privacy_choice = request.GET.get('privacy')
-    #if privacy_choice:
-        #favors = favors.filter(privacy=privacy_choice)
-    
-    # SORT
-    # sort by ascending date
-
-
-    # sort by descending date
+    # filter and sort here
 
     favors_list = list(favors.values())
     return JsonResponse({"favors": favors_list})
