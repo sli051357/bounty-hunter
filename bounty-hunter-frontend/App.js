@@ -9,6 +9,7 @@ import BountiesList from './screens/BountiesList';
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 import { store } from './store/redux/store';
+import FriendProfile from './screens/FriendProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,11 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="FriendProfile"
+              component={FriendProfile}
+            />
+
+            {/* <Stack.Screen
               name="BountiesList"
               component={BountiesList}
               options={{
@@ -58,7 +64,7 @@ export default function App() {
                 color={GLOBAL_STYLES.colors.blue300}
                 onPress={() => console.log('Settings Page')}
                 iconSize={24}/>)}
-            }}/>
+            }}/> */}
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
