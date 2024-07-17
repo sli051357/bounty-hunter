@@ -18,7 +18,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sli051357.bountyhunterfrontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"
