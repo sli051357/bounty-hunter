@@ -22,19 +22,23 @@ function FriendProfileScreen({ friend }){
 
     function editFavoriteStatus() {
         setFavorite((curr) => !curr);
-        console.log("pressed")
     }
 
     return(
         <ScrollView style={styles.page}>
             <View style={[styles.userMainDetails, styles.viewSpacing]}>
+
+                {/* Username Area */}
                 <View style={styles.userMainDetailsView}>
+                    {/* Profile */}
                     <Image style={styles.profilePicture} source={require('../assets/batman.jpeg')}/>
                     <View>
                         <Text style={styles.userDetailsText}>Nickname</Text>
-                        <View style={{flexDirection: 'row', textAlign: 'center'}}>
+                        <View style={{flexDirection: 'row', itemsAlign: 'center'}}>
+                            {/* ID */}
                             <Text style={[styles.text, {textAlign: 'center', marginRight: 10}]}>ID: Extra ID</Text>
-                            <Pressable onPress={editFavoriteStatus}>
+                            {/* Favorite Button (Changes based on status) */}
+                            <Pressable onPress={(editFavoriteStatus)}>
                                 {favorite ? (
                                     <AntDesign name="staro" size={24} color={GLOBAL_STYLES.colors.orange300} />
                                 ) : (
@@ -43,6 +47,22 @@ function FriendProfileScreen({ friend }){
                             </Pressable>
                         </View>
                     </View>
+                </View>
+
+                {/* Large Stats Area */}
+                <View style={styles.userMainDetailsView}>
+                    <View>
+                        <Text style={styles.userDetailsText}>###</Text>
+                        <Text style={styles.lightText}>rating</Text>
+                    </View>
+                    <View>
+                        <Text style={styles.userDetailsText}>##</Text>
+                        <Text style={styles.lightText}>friends</Text>
+                    </View>
+                </View>
+                <View styles={styles.userMainDetailsView}>
+                    <Text style={styles.userDetailsText}>##</Text>
+                    <Text style={styles.lightText}>net balance over # bounties</Text>
                 </View>
             </View>
         </ScrollView>
@@ -61,7 +81,14 @@ const styles = StyleSheet.create({
     },
     text: {
         color: GLOBAL_STYLES.colors.brown700,
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'BaiJamjuree-Regular',
+    },
+    lightText: {
+        color: GLOBAL_STYLES.colors.orange300,
+        fontSize: 18,
+        textAlign: 'center',
+        fontFamily: 'BaiJamjuree-Regular',
     },
     profilePicture: {
         width: 80,
@@ -78,10 +105,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     userDetailsText: {
+        fontFamily: 'BaiJamjuree-Bold',
         fontSize: 36,
-        fontWeight: 'bold',
         color: GLOBAL_STYLES.colors.blue300,
-        textAlign: 'center'
+        textAlign: 'center',
+        textTransform: 'uppercase',
+        marginBottom: -15,
     },
     editBox: {
         borderColor: GLOBAL_STYLES.colors.orange700,
