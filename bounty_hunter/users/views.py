@@ -10,9 +10,10 @@ from django.contrib.auth import authenticate, login, logout
 from .models import UserProfileInfo, LinkedAccounts
 from django.shortcuts import redirect
 
-from django.core.exceptions import PermissionDenied
-from verify_email.email_handler import send_verification_email
-from .forms import AccountCreationForm
+from django.core.mail import send_mail
+from rest_framework.authtoken.models import Token
+
+
 
 # linked accounts will show up as the text and their ID. Use the ID to request edits and deletions.
 def profile(request, request_username):
@@ -125,12 +126,21 @@ def remove_link(request, request_username):
         return JsonResponse(headers)
     
 def register_user(request):
-    form = AccountCreationForm()
-    form.username =request.POST["username"]
-    form.password =request.POST["password"]
-    form.email = request.POST["email"]
-    if form.is_valid():
-        inactive_user = send_verification_email(request, form)
+
+    username =request.POST["username"]
+    password =request.POST["password"]
+    email = request.POST["email"]
+    new_user = User(username=username,password=password,email=email,active=False)
+    new_token = Token.objects.create(user=new_user)
+
+    # send_mail(
+    # "Subject here",
+    # "Here is the message.",
+    # "from@example.com",
+    # ["to@example.com"],
+    # fail_silently=False,
+    #)
+
     return redirect('/users/sign-up/')
 
 
