@@ -23,6 +23,24 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator>
+          <Stack.Screen
+              name="UserProfile"
+              component={UserProfileScreen}
+              options={{
+                title: "My Profile",
+                headerStyle: {
+                  backgroundColor: GLOBAL_STYLES.colors.brown300,
+                },
+                headerTintColor: GLOBAL_STYLES.colors.blue300,
+                headerTitleAlign: 'center',
+                headerRight: () => {
+                return (
+                <IconButton
+                  icon='settings-sharp'
+                  color={GLOBAL_STYLES.colors.blue300}
+                  onPress={() => console.log('Settings Page')}
+                  iconSize={24}/>)}
+            }}/>
             <Stack.Screen
               name="BountiesList"
               component={BountiesList}
@@ -41,24 +59,7 @@ export default function App() {
                     onPress={() => console.log('Create Bounty Page')}
                     iconSize={28}/>)}
               }}/>
-            <Stack.Screen
-            name="UserProfile"
-            component={UserProfileScreen}
-            options={{
-              title: "My Profile",
-              headerStyle: {
-                backgroundColor: GLOBAL_STYLES.colors.brown300,
-              },
-              headerTintColor: GLOBAL_STYLES.colors.blue300,
-              headerTitleAlign: 'center',
-              headerRight: () => {
-              return (
-              <IconButton
-                icon='settings-sharp'
-                color={GLOBAL_STYLES.colors.blue300}
-                onPress={() => console.log('Settings Page')}
-                iconSize={24}/>)}
-            }}/>
+            
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
