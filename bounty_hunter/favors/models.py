@@ -55,13 +55,13 @@ class Favor(models.Model):
     privacy =  models.CharField(max_length=7, choices=privacy_choices)
     
     # status of the favor
-    PENDING_CREATION = "Pending creation"
-    PENDING_EDITS = "Pending edits"
-    PENDING_DELETION = "Pending deletion"
+    PENDING_CREATION = "Pending_creation"
+    PENDING_EDITS = "Pending_edits"
+    PENDING_DELETION = "Pending_deletion"
     COMPLETE = "Complete"
     INCOMPLETE = "Incomplete"
-    status_choices = [(PENDING_CREATION, "Pending creation"), (PENDING_EDITS, "Pending edits"), 
-                      (PENDING_DELETION, "Pending deletion"), (COMPLETE, "Complete"), 
+    status_choices = [(PENDING_CREATION, "Pending_creation"), (PENDING_EDITS, "Pending_edits"), 
+                      (PENDING_DELETION, "Pending_deletion"), (COMPLETE, "Complete"), 
                       (INCOMPLETE, "Incomplete"),]
     status = models.CharField(max_length=16, choices=status_choices)
 
