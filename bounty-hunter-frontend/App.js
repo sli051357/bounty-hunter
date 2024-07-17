@@ -4,8 +4,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 
-import UserProfileScreen from './screens/UserProfileScreen';
-import BountiesList from './screens/BountiesList';
+// import UserProfileScreen from './screens/UserProfileScreen';
+// import BountiesList from './screens/BountiesList';
+
+import WelcomeScreen from './screens/WelcomeScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import LoginScreen from './screens/LoginScreen';
+
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 import { store } from './store/redux/store';
@@ -23,7 +28,33 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen
+              <Stack.Screen
+              name='WelcomeScreen'
+              component={WelcomeScreen}
+              options={{
+                headerShown: false
+              }}/>
+              <Stack.Screen
+              name='SignUpScreen'
+              component={SignUpScreen}
+              options={{
+                }}/>
+              <Stack.Screen
+              name='LoginScreen'
+              component={LoginScreen}
+              options={{
+                }}/>
+
+
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </>
+    
+  );
+}
+
+{/* <Stack.Screen
               name="BountiesList"
               component={BountiesList}
               options={{
@@ -58,13 +89,6 @@ export default function App() {
                 color={GLOBAL_STYLES.colors.blue300}
                 onPress={() => console.log('Settings Page')}
                 iconSize={24}/>)}
-            }}/>
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
-    </>
-    
-  );
-}
+            }}/> */}
 
 
