@@ -1,9 +1,10 @@
 import axiosInstance from "./axiosInstance";
+import axios from "axios";
 
 const apiService = {
     getUserProfileById: async (id) => {
         try {
-            const response = await axiosInstance.get('/users/profiles/${id}/');
+            const response = await axiosInstance.get(`/users/profiles/${id}`);
             return response.data;
         } catch (error) {
             throw error;

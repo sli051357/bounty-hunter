@@ -7,6 +7,7 @@ import EditAboutMe from "../components/UI/UserProfileHelpers/EditAboutMe.js";
 import EditPaymentMethods from "../components/UI/UserProfileHelpers/EditPaymentMethods.js";
 import FavorCard from "../components/FavorCard.js";
 import IconButton from "../components/UI/IconButton.js";
+import apiService from "../api/apiRequest.js";
 
 
 /*
@@ -40,6 +41,15 @@ function UserProfileScreen({ user, isPersonalProfile }){
     const [editPayment, setEditPayment] = useState(false);
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
     const [payments, setPayments] = useState(DUMMY_USER_PROFILE.paymentMethods);
+
+    useEffect(() => {
+        async function fetchUserData() {
+            const response = await apiService.getUserProfileById('MacUser23');
+            console.log(response.data);
+
+        }
+        fetchUserData();   
+    })
 
     function editAboutMeHandler(){
         setEditAboutMe((curr) => !curr);
