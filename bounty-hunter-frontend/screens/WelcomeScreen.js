@@ -16,7 +16,7 @@ function WelcomeScreen(){
     return (
         <View style={styles.page}>
             <LinearGradient 
-            colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue700]}
+            colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
             style={styles.background}/>
             <View style={styles.container}>
                 <Text style={styles.header}>BOUNTY HUNTER</Text>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     header: {
         textAlign: 'center',
-        fontSize: 28,
+        fontSize: 32,
         color: GLOBAL_STYLES.colors.brown300,
         fontWeight: '900'
     },

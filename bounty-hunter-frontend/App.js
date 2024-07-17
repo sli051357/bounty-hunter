@@ -38,11 +38,16 @@ export default function App() {
               name='SignUpScreen'
               component={SignUpScreen}
               options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackTitleStyle: { color: GLOBAL_STYLES.colors.brown300}
                 }}/>
               <Stack.Screen
               name='LoginScreen'
               component={LoginScreen}
               options={{
+                headerTitle: '',
+                headerTransparent: true
                 }}/>
 
 
