@@ -11,7 +11,8 @@ from .models import UserProfileInfo, LinkedAccounts
 from django.shortcuts import redirect
 
 from django.core.exceptions import PermissionDenied
-
+from verify_email.email_handler import send_verification_email
+from .forms import AccountCreationForm
 
 # linked accounts will show up as the text and their ID. Use the ID to request edits and deletions.
 def profile(request, request_username):
@@ -32,10 +33,10 @@ def profile(request, request_username):
 
     return JsonResponse(headers)
 
-# sign in page
-# def sign_in(request):
-#     #temporary sign in template
-#     return render(request, "users/signin.html", {})
+#sign in page
+def sign_up(request):
+    #temporary sign in template
+    return render(request, "users/register.html")
 
 
 # if sign in successful, redirect to profile. Else, return sign in page with failed response
@@ -123,7 +124,14 @@ def remove_link(request, request_username):
     else:
         return JsonResponse(headers)
     
-
+def register_user(request):
+    form = AccountCreationForm()
+    form.username =request.POST["username"]
+    form.password =request.POST["password"]
+    form.email = request.POST["email"]
+    if form.is_valid():
+        inactive_user = send_verification_email(request, form)
+    return redirect('/users/sign-up/')
 
 
 
