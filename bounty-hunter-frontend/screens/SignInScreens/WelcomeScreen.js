@@ -3,8 +3,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Link } from "@react-navigation/native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import Button from "../components/UI/Button";
+import { GLOBAL_STYLES } from "../../constants/styles";
+import Button from "../../components/UI/Button";
 
 function WelcomeScreen(){
     const navigation = useNavigation();

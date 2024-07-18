@@ -7,13 +7,14 @@ import { Provider } from 'react-redux';
 // import UserProfileScreen from './screens/UserProfileScreen';
 // import BountiesList from './screens/BountiesList';
 
-import WelcomeScreen from './screens/WelcomeScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import LoginScreen from './screens/LoginScreen';
+import WelcomeScreen from './screens/SignInScreens/WelcomeScreen';
+import SignUpScreen from './screens/SignInScreens/SignUpScreen';
+import LoginScreen from './screens/SignInScreens/LoginScreen';
 
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 import { store } from './store/redux/store';
+import VerifyEmailScreen from './screens/SignInScreens/VerifyEmailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,15 +40,24 @@ export default function App() {
               component={SignUpScreen}
               options={{
                 headerTitle: '',
+                headerBackTitleVisible: false,
                 headerTransparent: true,
-                headerBackTitleStyle: { color: GLOBAL_STYLES.colors.brown300}
                 }}/>
               <Stack.Screen
               name='LoginScreen'
               component={LoginScreen}
               options={{
                 headerTitle: '',
-                headerTransparent: true
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                }}/>
+                <Stack.Screen
+              name='VerifyEmailScreen'
+              component={VerifyEmailScreen}
+              options={{
+                headerTitle: '',
+                headerBackTitleVisible: false,
+                headerTransparent: true,
                 }}/>
 
 

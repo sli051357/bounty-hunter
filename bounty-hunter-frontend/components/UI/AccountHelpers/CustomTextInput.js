@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         color: GLOBAL_STYLES.colors.brown300,
         padding: 4,
         borderWidth: 2,
-        width: '100%',
+        maxWidth: '100%',
         overflow: 'hidden'
     },
     helperText: {

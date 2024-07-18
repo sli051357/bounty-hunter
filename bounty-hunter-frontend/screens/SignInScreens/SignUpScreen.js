@@ -3,9 +3,9 @@ import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 // import { useNavigation } from "@react-navigation/native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import CustomTextInput from "../components/UI/AccountHelpers/CustomTextInput";
-import Button from "../components/UI/Button";
+import { GLOBAL_STYLES } from "../../constants/styles";
+import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
+import Button from "../../components/UI/Button";
 
 function SignUpScreen(){
     const [createUser, setCreateUser] = useState({
@@ -39,7 +39,7 @@ function SignUpScreen(){
         <SafeAreaView style={{flex: 1}}>
                 <ScrollView style={{flex: 1}} contentContainerStyle={styles.page}>
                         <KeyboardAvoidingView style={{flex: 1}} behavior="position">
-                            <View style={[styles.page, {marginTop: 100}]}>
+                            <View style={[styles.page]}>
                                 <View style={styles.container}>
                                     <Text style={styles.header}>Create Account</Text>
                                     <CustomTextInput
@@ -74,7 +74,11 @@ function SignUpScreen(){
                                     keyboardType='default'
                                     helperText=""
                                     secureTextEntry={true}/>
-                                    <Button />
+                                    <Button
+                                    title="Sign Up"
+                                    onPress={confirmChangesHandler}
+                                    buttonStyles={styles.buttonStyles}
+                                    containerStyle={{alignSelf: 'center'}}/>
                                 </View>
                             </View>
                         </KeyboardAvoidingView>
@@ -88,8 +92,9 @@ function SignUpScreen(){
 const styles = StyleSheet.create({
     page: {
         flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: '100%'
     },
     background: {
         position: 'absolute',
@@ -114,6 +119,11 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         alignSelf: 'center'
     },
+    buttonStyles: {
+        borderRadius: 6,
+        paddingHorizontal: 32,
+        paddingVertical: 8,
+    }
 })
 
 export default SignUpScreen;
