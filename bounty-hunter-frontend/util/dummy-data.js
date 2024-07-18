@@ -30,6 +30,7 @@ export const DUMMY_FAVORS_OF_PROFILE_Updated = [
         tags: ['Priority'],
         paymentType: 'monetary',
         paymentOwed: '100000000',
+        name: "Farm Payment",
         description: "Favor parent's farm!",
         status: 'completed',
         bountyEditHistory: []
@@ -42,6 +43,7 @@ export const DUMMY_FAVORS_OF_PROFILE_Updated = [
         tags: ['Priority', 'Non-negoible'],
         paymentType: 'nonmonetary',
         paymentOwed: 'JUSTICEEE!',
+        name: "JAIL!!!",
         description: "A mass psycho needs to return to Arkham Asylum! This favor is outstanding and no other form of payment",
         status: 'none',
         bountyEditHistory: []
@@ -54,6 +56,7 @@ export const DUMMY_FAVORS_OF_PROFILE_Updated = [
         tags: ['Technology'],
         paymentType: 'monetary',
         paymentOwed: '300000000',
+        name: "Tech",
         description: "Technology from Wayne-Tech. Need the funds for the technology!",
         status: 'completed',
         bountyEditHistory: [],
@@ -66,6 +69,7 @@ export const DUMMY_FAVORS_OF_PROFILE_Updated = [
         tags: ['priority'],
         paymentType: 'monetary',
         paymentOwed: '1000000',
+        name: "you suck",
         description: "Saving you in Batman vs Superman Movie!",
         status: 'deleted',
         bountyEditHistory: []

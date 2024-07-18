@@ -8,16 +8,6 @@ import IconButton from "../components/UI/IconButton.js";
 import { AntDesign } from '@expo/vector-icons';
 import PaymentMethod from "../components/UI/UserProfileHelpers/PaymentMethod.js"
 
-/*
-    Implementation Details:
-
-    - 'friend' prop is the required information of the other user.
-    Refer to DUMMY_USER_
-    
-
-
-*/ 
-
 function FriendProfileScreen({ friend }){
     const [ favorite, setFavorite ] = useState(DUMMY_FRIEND_INFO.favoriteStatus);
 
