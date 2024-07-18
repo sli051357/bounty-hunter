@@ -4,11 +4,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 
-import UserProfileScreen from './screens/UserProfileScreen';
-import BountiesList from './screens/BountiesList';
+// import UserProfileScreen from './screens/UserProfileScreen';
+// import BountiesList from './screens/BountiesList';
+
+import WelcomeScreen from './screens/SignInScreens/WelcomeScreen';
+import SignUpScreen from './screens/SignInScreens/SignUpScreen';
+import LoginScreen from './screens/SignInScreens/LoginScreen';
+
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 import { store } from './store/redux/store';
+import VerifyEmailScreen from './screens/SignInScreens/VerifyEmailScreen';
+import UpdatePasswordScreen from './screens/SignInScreens/UpdatePasswordScreen';
+import ReturnLoginScreen from './screens/SignInScreens/ReturnLoginScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +31,62 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen
+              <Stack.Screen
+              name='WelcomeScreen'
+              component={WelcomeScreen}
+              options={{
+                headerShown: false
+              }}/>
+              <Stack.Screen
+              name='SignUpScreen'
+              component={SignUpScreen}
+              options={{
+                headerTitle: '',
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                }}/>
+              <Stack.Screen
+              name='LoginScreen'
+              component={LoginScreen}
+              options={{
+                headerTitle: '',
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                }}/>
+              <Stack.Screen
+              name='VerifyEmailScreen'
+              component={VerifyEmailScreen}
+              options={{
+                headerTitle: '',
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                }}/>
+              <Stack.Screen
+              name='UpdatePasswordScreen'
+              component={UpdatePasswordScreen}
+              options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackVisible: false
+                }}/>
+              <Stack.Screen
+              name='ReturnLoginScreen'
+              component={ReturnLoginScreen}
+              options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackVisible: false
+                }}/>
+
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </>
+    
+  );
+}
+
+{/* <Stack.Screen
               name="BountiesList"
               component={BountiesList}
               options={{
@@ -58,13 +121,6 @@ export default function App() {
                 color={GLOBAL_STYLES.colors.blue300}
                 onPress={() => console.log('Settings Page')}
                 iconSize={24}/>)}
-            }}/>
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
-    </>
-    
-  );
-}
+            }}/> */}
 
 
