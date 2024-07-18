@@ -3,40 +3,97 @@ from django.contrib.auth.decorators import login_required
 from .models import Favor, Tag
 from django.http import JsonResponse
 from .forms import FavorForm, TagForm
+from django.db.models import Q
 
 # Create your views here.
 # view a list of all favors 
 def favor_list(request): 
-    favors = Favor.objects.all()
+    #favors = Favor.objects.all()
+
+    # AND/OR functionality using a Q object (default query uses AND)
+    and_or = request.GET.get('and_or')
+    or_query = False
+    query = Q()
+    if and_or == 'or':
+        or_query = True
+
+    def query_method(q, query_bool, field, user_input):
+        if query_bool == True:
+            q |= Q(**{field: user_input})
+        if query_bool == False:
+            q &= Q(**{field: user_input})
+        return q
 
     # FILTER
     # filter by owner id
     owner_id = request.GET.get('owner')
     if owner_id:
-        favors = favors.filter(owner__id=owner_id)
+        # favors = favors.filter(owner__id=owner_id)
+        #if or_query == True:
+        #    query |= Q(owner__id=owner_id)
+        #if or_query == False:
+        #    query &= Q(owner__id=owner_id)
+        query = query_method(query, or_query, 'owner__id', owner_id)
 
     # filter by assignee id
     assignee_id = request.GET.get('assignee')
     if assignee_id:
-        favors = favors.filter(assignee__id=assignee_id)
-
-    # TODO: filter by status
-    status = request.GET.get('status')
-    if status == "1":
-        favors = favors.filter(status="Pending_creation")
-    if status == "2":
-        favors = favors.filter(status="Pending_edits")
-    if status == "3":
-        favors = favors.filter(status="Pending_deletion")
-    if status == "4":
-        favors = favors.filter(status="Incomplete")
-    if status == "5":
-        favors = favors.filter(status="Complete")
+        #favors = favors.filter(assignee__id=assignee_id)
+        #if or_query == True:
+        #    query |= Q(assignee__id=assignee_id)
+        #if or_query == False:
+        #    query &= Q(assignee__id=assignee_id)
+        query = query_method(query, or_query, 'assignee__id', assignee_id)
 
     # filter by tag id
     tag_id = request.GET.get('tag')
     if tag_id:
-        favors = favors.filter(tags__id=tag_id)
+        # favors = favors.filter(tags__id=tag_id)
+        #if or_query == True:
+        #    query |= Q(tags__id=tag_id)
+        #if or_query == False:
+        #    query &= Q(tags__id=tag_id)
+        query = query_method(query, or_query, 'tags__id', tag_id)
+
+    # filter by status
+    status = request.GET.get('status')
+    if status == "1":
+        #favors = favors.filter(status="Pending_creation")
+        #if or_query == True:
+        #    query |= Q(status="Pending_creation")
+        #if or_query == False:
+        #    query &= Q(status="Pending_creation")
+        query = query_method(query, or_query, 'status', "Pending_creation")
+    if status == "2":
+        #favors = favors.filter(status="Pending_edits")
+        #if or_query == True:
+        #    query |= Q(status="Pending_edits")
+        #if or_query == False:
+        #    query &= Q(status="Pending_edits")
+        query = query_method(query, or_query, 'status', "Pending_edits")
+    if status == "3":
+        #favors = favors.filter(status="Pending_deletion")
+        #if or_query == True:
+        #    query |= Q(status="Pending_deletion")
+        #if or_query == False:
+        #    query &= Q(status="Pending_deletion")
+        query = query_method(query, or_query, 'status', "Pending_deletion")
+    if status == "4":
+        #favors = favors.filter(status="Incomplete")
+        #if or_query == True:
+        #    query |= Q(status="Incomplete")
+        #if or_query == False:
+        #    query &= Q(status="Incomplete")
+        query = query_method(query, or_query, 'status', "Incomplete")
+    if status == "5":
+        #favors = favors.filter(status="Complete")
+        #if or_query == True:
+        #    query |= Q(status="Complete")
+        #if or_query == False:
+        #    query &= Q(status="Complete")
+        query = query_method(query, or_query, 'status', "Complete")
+
+    favors = Favor.objects.filter(query)
 
     # SORT
     sort_method = request.GET.get('sort_by')
