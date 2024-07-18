@@ -10,6 +10,7 @@ from django.db.models import Q
 def favor_list(request): 
 
     # AND/OR functionality - default query uses AND
+    # for now, each category can only take 1 parameter
     and_or = request.GET.get('query')
     or_query = False
     query = Q()
