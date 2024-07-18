@@ -6,7 +6,6 @@ import { DUMMY_FRIEND_PROFILE, DUMMY_FRIEND_INFO, DUMMY_FAVORS_OF_FRIEND } from 
 import FavorCard from "../components/FavorCard.js";
 import IconButton from "../components/UI/IconButton.js";
 import { AntDesign } from '@expo/vector-icons';
-import TitleWithButton from "../components/UI/TitleWithButton.js";
 import PaymentMethod from "../components/UI/UserProfileHelpers/PaymentMethod.js"
 
 /*
@@ -116,9 +115,27 @@ function FriendProfileScreen({ friend }){
                 </View>
 
                 {/* Favors */}
-                <View styles={styles.viewSpacing}>
-                    
+                <View style={styles.viewSpacing}>
+                <Text style={styles.subtitle}>Recent Bounties</Text>
+                <View style={styles.filterContainer}>
+                    <View style={styles.filterContainerPressable}>
+                        <Pressable>
+                            <Text style={styles.filterText}>All</Text>
+                        </Pressable>
+                        <Pressable>
+                            <Text style={styles.filterText}>Owed</Text>
+                        </Pressable>
+                        <Pressable>
+                            <Text style={styles.filterText}>Received</Text>
+                        </Pressable>
+                    </View>
+
+                    <Pressable>
+                        <IconButton icon='swap-vertical-sharp' color='grey' iconSize={22} onPress={() => console.log('Sort Button')}/>
+                    </Pressable>
                 </View>
+                {DUMMY_FAVORS_OF_FRIEND.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
+            </View>
             </View>
         </ScrollView>
     )
