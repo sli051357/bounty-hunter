@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         gap: 6
     },
     filterText: {
-        fontWeight: 'bold',
+        fontFamily: 'BaiJamjuree-Bold',
         fontSize: 16,
         color: GLOBAL_STYLES.colors.blue300
     },

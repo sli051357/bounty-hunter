@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
         gap: 8,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginVertical: 8
+        marginVertical: 2,
     },
     title: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'BaiJamjuree-SemiBold',
         color: GLOBAL_STYLES.colors.brown700,
         textAlign: 'center'
     }

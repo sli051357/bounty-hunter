@@ -76,19 +76,20 @@ const styles = StyleSheet.create({
     },
     mainTextLeft: {
         fontSize: 22,
-        fontWeight: 'bold',
+        fontFamily: 'BaiJamjuree-Bold',
         color: GLOBAL_STYLES.colors.blue300,
         textAlign: 'left'
     },
     mainTextRight: {
         fontSize: 22,
-        fontWeight: 'bold',
+        fontFamily: 'BaiJamjuree-Bold',
         color: GLOBAL_STYLES.colors.blue300,
         textAlign: 'right'
     },
     text: {
         color: GLOBAL_STYLES.colors.brown700,
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: 'BaiJamjuree-Regular',
     }
 })
 
