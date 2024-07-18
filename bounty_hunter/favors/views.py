@@ -80,7 +80,25 @@ def favor_list(request):
         else: 
             favors = favors.order_by('total_owed_amt')
 
-    favors_list = list(favors.values())
+    #favors_list = list(favors.values())
+    favors_list = []
+
+    for f in favors:
+        tags = list(f.tags.all().values())
+        f_data = {"name": f.name, 
+                  "id": f.id, 
+                  "description": f.description, 
+                  "owner": f.owner.username,
+                  "assignee": f.assignee.username,
+                  "created_at": f.created_at,
+                  "updated_at": f.updated_at,
+                  "total_owed_type": f.total_owed_type,
+                  "total_owed_amt": f.total_owed_amt,
+                  "privacy": f.privacy,
+                  "status": f.status,
+                  "tags": tags,}
+        favors_list.append(f_data)
+
     return JsonResponse({"favors": favors_list})
 
 # view a specific favor based on id
@@ -91,8 +109,8 @@ def favor_detail(request, favor_id):
                   "id": favor.id, 
                   "description": favor.description, 
                   "owner": {"id": favor.owner.id, "email": favor.owner.email, "username": favor.owner.username}, 
-                  "assignee": {"id": favor.assignee.id, "email": favor.assignee.email, "username": favor.assignee.username}
-                  if favor.assignee else None, 
+                  "assignee": {"id": favor.assignee.id, "email": favor.assignee.email, "username": favor.assignee.username},
+                  #if favor.assignee else None, 
                   "created_at": favor.created_at,
                   "updated_at": favor.updated_at,
                   "total_owed_type": favor.total_owed_type,
