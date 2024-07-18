@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image, Pressable, ScrollView } from "react-nati
 import { useState } from "react";
 
 import { GLOBAL_STYLES } from "../constants/styles";
-import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../util/dummy-data.js';
+import { DUMMY_FRIEND_PROFILE, DUMMY_FRIEND_INFO, DUMMY_FAVORS_OF_FRIEND } from '../util/dummy-friend-data.js';
 import FavorCard from "../components/FavorCard.js";
 import IconButton from "../components/UI/IconButton.js";
 import { AntDesign } from '@expo/vector-icons';
@@ -34,9 +34,9 @@ function FriendProfileScreen({ friend }){
                     <Image style={styles.profilePicture} source={require('../assets/batman.jpeg')}/>
                     <View>
                         <Text style={styles.userDetailsText}>Nickname</Text>
-                        <View style={{flexDirection: 'row', itemsAlign: 'center'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             {/* ID */}
-                            <Text style={[styles.text, {textAlign: 'center', marginRight: 10}]}>ID: Extra ID</Text>
+                            <Text style={[styles.text, {marginRight: 10, marginTop: 2}]}>ID: Extra ID</Text>
                             {/* Favorite Button (Changes based on status) */}
                             <Pressable onPress={(editFavoriteStatus)}>
                                 {favorite ? (
@@ -56,13 +56,42 @@ function FriendProfileScreen({ friend }){
                         <Text style={styles.lightText}>rating</Text>
                     </View>
                     <View>
-                        <Text style={styles.userDetailsText}>##</Text>
+                        <Text style={styles.userDetailsText}>###</Text>
                         <Text style={styles.lightText}>friends</Text>
                     </View>
                 </View>
-                <View styles={styles.userMainDetailsView}>
-                    <Text style={styles.userDetailsText}>##</Text>
-                    <Text style={styles.lightText}>net balance over # bounties</Text>
+                <View style={[styles.userMainDetailsView]}>
+                    <View><Text style={styles.userDetailsText}>##</Text>
+                    <Text style={styles.lightText}>net balance over # bounties</Text></View>
+                </View>
+
+                {/* Create Bounty Button */}
+                {/* Shold switch to create bounty, currently only console logs*/}
+                <View style={styles.userMainDetailsView}>
+                    <Pressable 
+                        onPress={() => {console.log('create bounty')}}
+                        style={styles.blueButton}
+                    >
+                        <Text style={styles.buttonText}>CREATE BOUNTY</Text>
+                    </Pressable>
+                </View>
+
+                {/* Extra Stats Section */}
+                <View style={styles.viewSpacing}>
+                    <Text style={styles.subtitle}>Stats</Text>
+                    <View style={styles.userMainDetailsView}>
+                        <View>
+                            <Text style={[styles.text, {fontSize: 14}]}># bounties completed</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}># bounties owed by you</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>$ settled by you</Text>
+                        </View>
+
+                        <View>
+                            <Text style={[styles.text, {fontSize: 14}]}># bounties completed</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}># bounties owed by you</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>$ settled by you</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
         </ScrollView>
@@ -103,6 +132,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
+        backgroundColor: 'gray',
     },
     userDetailsText: {
         fontFamily: 'BaiJamjuree-Bold',
@@ -111,6 +141,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textTransform: 'uppercase',
         marginBottom: -15,
+        backgroundColor: 'white',
     },
     editBox: {
         borderColor: GLOBAL_STYLES.colors.orange700,
@@ -120,7 +151,7 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 28,
-        fontWeight: 'bold',
+        fontFamily: 'BaiJamjuree-Bold',
         color: GLOBAL_STYLES.colors.orange700
     },
     filterContainer: {
@@ -137,6 +168,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         color: GLOBAL_STYLES.colors.blue300
-    }
+    },
+    blueButton: {
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        backgroundColor: GLOBAL_STYLES.colors.blue300,
+        borderRadius: 5,     
+        alignItems: 'center',
+        justifyContent: 'center',   
+        alignSelf: 'flex-start',
+    },
+    buttonText: {
+        color: GLOBAL_STYLES.colors.brown300,
+        fontSize: 20,
+        fontFamily: 'BaiJamjuree-Bold',
+    },
 })
 export default FriendProfileScreen;
