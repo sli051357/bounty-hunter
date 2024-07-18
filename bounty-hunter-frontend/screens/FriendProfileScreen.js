@@ -6,6 +6,8 @@ import { DUMMY_FRIEND_PROFILE, DUMMY_FRIEND_INFO, DUMMY_FAVORS_OF_FRIEND } from 
 import FavorCard from "../components/FavorCard.js";
 import IconButton from "../components/UI/IconButton.js";
 import { AntDesign } from '@expo/vector-icons';
+import TitleWithButton from "../components/UI/TitleWithButton.js";
+import PaymentMethod from "../components/UI/UserProfileHelpers/PaymentMethod.js"
 
 /*
     Implementation Details:
@@ -18,11 +20,16 @@ import { AntDesign } from '@expo/vector-icons';
 */ 
 
 function FriendProfileScreen({ friend }){
-    const [ favorite, setFavorite ] = useState(false);
+    const [ favorite, setFavorite ] = useState(DUMMY_FRIEND_INFO.favoriteStatus);
 
     function editFavoriteStatus() {
         setFavorite((curr) => !curr);
     }
+
+    let payments = 
+    <>
+        
+    </>;
 
     return(
         <ScrollView style={styles.page}>
@@ -33,10 +40,10 @@ function FriendProfileScreen({ friend }){
                     {/* Profile */}
                     <Image style={styles.profilePicture} source={require('../assets/batman.jpeg')}/>
                     <View>
-                        <Text style={styles.userDetailsText}>Nickname</Text>
+                        <Text style={styles.userDetailsText}>{DUMMY_FRIEND_INFO.nickname}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             {/* ID */}
-                            <Text style={[styles.text, {marginRight: 10, marginTop: 2}]}>ID: Extra ID</Text>
+                            <Text style={[styles.text, {marginRight: 10, marginTop: 2}]}>ID: {DUMMY_FRIEND_PROFILE.ID}</Text>
                             {/* Favorite Button (Changes based on status) */}
                             <Pressable onPress={(editFavoriteStatus)}>
                                 {favorite ? (
@@ -52,17 +59,17 @@ function FriendProfileScreen({ friend }){
                 {/* Large Stats Area */}
                 <View style={styles.userMainDetailsView}>
                     <View>
-                        <Text style={styles.userDetailsText}>###</Text>
+                        <Text style={styles.userDetailsText}>{DUMMY_FRIEND_PROFILE.rating}</Text>
                         <Text style={styles.lightText}>rating</Text>
                     </View>
                     <View>
-                        <Text style={styles.userDetailsText}>###</Text>
+                        <Text style={styles.userDetailsText}>{DUMMY_FRIEND_PROFILE.friends.length}</Text>
                         <Text style={styles.lightText}>friends</Text>
                     </View>
                 </View>
                 <View style={[styles.userMainDetailsView]}>
-                    <View><Text style={styles.userDetailsText}>##</Text>
-                    <Text style={styles.lightText}>net balance over # bounties</Text></View>
+                    <View><Text style={styles.userDetailsText}>${DUMMY_FRIEND_INFO.owedByYou + DUMMY_FRIEND_INFO.owedByThem}</Text>
+                    <Text style={styles.lightText}>net balance over {DUMMY_FRIEND_INFO.bountiesCompleted + DUMMY_FRIEND_INFO.bountiesProgress} bounties</Text></View>
                 </View>
 
                 {/* Create Bounty Button */}
@@ -78,20 +85,39 @@ function FriendProfileScreen({ friend }){
 
                 {/* Extra Stats Section */}
                 <View style={styles.viewSpacing}>
-                    <Text style={styles.subtitle}>Stats</Text>
+                    <Text style={[styles.subtitle, {textAlign: 'center'}]}>Stats</Text>
                     <View style={styles.userMainDetailsView}>
                         <View>
-                            <Text style={[styles.text, {fontSize: 14}]}># bounties completed</Text>
-                            <Text style={[styles.text, {fontSize: 14}]}># bounties owed by you</Text>
-                            <Text style={[styles.text, {fontSize: 14}]}>$ settled by you</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>{DUMMY_FRIEND_INFO.bountiesCompleted} bounties completed</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>{DUMMY_FRIEND_INFO.bountiesByYou} bounties owed by you</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>${DUMMY_FRIEND_INFO.settledByYou} settled by you</Text>
                         </View>
 
                         <View>
-                            <Text style={[styles.text, {fontSize: 14}]}># bounties completed</Text>
-                            <Text style={[styles.text, {fontSize: 14}]}># bounties owed by you</Text>
-                            <Text style={[styles.text, {fontSize: 14}]}>$ settled by you</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>{DUMMY_FRIEND_INFO.bountiesProgress} bounties in progress</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>{DUMMY_FRIEND_INFO.bountiesByThem} bounties owed to you</Text>
+                            <Text style={[styles.text, {fontSize: 14}]}>${DUMMY_FRIEND_INFO.settledByThem} settled by them</Text>
                         </View>
                     </View>
+                </View>
+
+                {/* About Me */}
+                <View style={styles.viewSpacing}>
+                    <Text style={styles.subtitle}>About Me</Text>
+                    <Text style={styles.text}>{DUMMY_FRIEND_PROFILE.aboutMe}</Text>
+                </View>
+
+                {/* Payment Methods */}
+                <View style={styles.viewSpacing}>
+                    <Text style={styles.subtitle}>Payment Methods</Text>
+                    <>
+                        {DUMMY_FRIEND_PROFILE.paymentMethods.map((payment) => <PaymentMethod payment={payment} key={payment} icon='card-sharp' onPress={() => {}} />)}
+                    </>
+                </View>
+
+                {/* Favors */}
+                <View styles={styles.viewSpacing}>
+                    
                 </View>
             </View>
         </ScrollView>
@@ -132,7 +158,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        backgroundColor: 'gray',
     },
     userDetailsText: {
         fontFamily: 'BaiJamjuree-Bold',
@@ -141,7 +166,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textTransform: 'uppercase',
         marginBottom: -15,
-        backgroundColor: 'white',
     },
     editBox: {
         borderColor: GLOBAL_STYLES.colors.orange700,
@@ -152,7 +176,8 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 28,
         fontFamily: 'BaiJamjuree-Bold',
-        color: GLOBAL_STYLES.colors.orange700
+        color: GLOBAL_STYLES.colors.orange700,
+        marginBottom: -5,
     },
     filterContainer: {
         flexDirection: 'row',
@@ -177,6 +202,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',   
         alignSelf: 'flex-start',
+        marginBottom: 10,
     },
     buttonText: {
         color: GLOBAL_STYLES.colors.brown300,

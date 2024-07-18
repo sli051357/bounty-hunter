@@ -21,6 +21,8 @@ export const DUMMY_FRIEND_INFO = {
     nickname: 'Supes',
     bountiesCompleted: 10,
     bountiesProgress: 2,
+    bountiesByYou: 10,
+    bountiesByThem: 32,
     owedByYou: 20,
     owedByThem: 50,
     settledByYou: 125,
