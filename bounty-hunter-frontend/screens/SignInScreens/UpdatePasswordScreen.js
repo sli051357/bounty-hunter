@@ -4,32 +4,37 @@ import {
     StyleSheet, 
     SafeAreaView 
 } from "react-native";
-import { useState } from "react";
+
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "@react-navigation/native";
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 
-function LoginScreen(){
-    const [signInUser, setSignInUser] = useState({
-        ['username or email']: '',
-        password: '',
+
+function UpdatePasswordScreen(){
+    const navigation = useNavigation();
+
+    const [newPassword, setNewPassword] = useState({
+        ['new password']: '',
+        ['confirm new password']: ''
     });
 
-    function signInUserChangeHandler(text, type) {
-        setSignInUser((prevState) => ({
+    function newPasswordChangeHandler(text, type) {
+        setNewPassword((prevState) => ({
             ...prevState, [type]: text
         }))
     }
 
     function confirmChangesHandler() {
-        console.log(signInUser);
-        setSignInUser({
-            usernameOrEmail: '',
+        console.log(newPassword);
+        setNewPassword({
             password: '',
+            ['confirm password']: ''
         })
+        navigation.navigate('ReturnLoginScreen')
     }
 
     return (
@@ -40,28 +45,29 @@ function LoginScreen(){
             <SafeAreaView style={{flex: 1}}>
                             <View style={[styles.page]}>
                                 <View style={styles.container}>
-                                    <Text style={styles.header}>Login</Text>
+                                    <Text style={styles.header}>Update Password</Text>
+                                    <Text style={styles.description}>
+                                        Your email has been successfully verified.
+                                         Update your password below.
+                                    </Text>
                                     <CustomTextInput
-                                    typeTitle='username or email'
-                                    onPress={signInUserChangeHandler}
-                                    maxLength={64}
-                                    value={signInUser['username or email']}
+                                    typeTitle='new password'
+                                    onPress={newPasswordChangeHandler}
+                                    maxLength={22}
+                                    value={newPassword['new password']}
                                     keyboardType='default'
                                     helperText=""
-                                    secureTextEntry={false}/>
-                                    <View style={{width: '100%'}}>
-                                        <CustomTextInput
-                                        typeTitle='password'
-                                        onPress={signInUserChangeHandler}
-                                        maxLength={22}
-                                        value={signInUser.password}
-                                        keyboardType='default'
-                                        helperText=""
-                                        secureTextEntry={true}/>
-                                        <Link to={{screen: 'VerifyEmailScreen'}} style={[styles.description, styles.link]}>Forgot Password?</Link> 
-                                    </View>
+                                    secureTextEntry={true}/>
+                                    <CustomTextInput
+                                    typeTitle='confirm new password'
+                                    onPress={newPasswordChangeHandler}
+                                    maxLength={22}
+                                    value={newPassword['confirm new password']}
+                                    keyboardType='default'
+                                    helperText="Passwords do not match!"
+                                    secureTextEntry={true}/>
                                     <Button
-                                    title="Login"
+                                    title="Update Password"
                                     onPress={confirmChangesHandler}
                                     buttonStyles={styles.buttonStyles}
                                     containerStyle={{alignSelf: 'center'}}/>
@@ -109,13 +115,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
     },
     description: {
-        textAlign: 'right',
-        fontSize: 14,
+        textAlign: 'center',
+        fontSize: 22,
         color: GLOBAL_STYLES.colors.brown300,
     },
-    link: {
-        textDecorationLine: 'underline'
-    }
 })
 
-export default LoginScreen;
+export default UpdatePasswordScreen;

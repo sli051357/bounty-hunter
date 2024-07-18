@@ -15,6 +15,8 @@ import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 import { store } from './store/redux/store';
 import VerifyEmailScreen from './screens/SignInScreens/VerifyEmailScreen';
+import UpdatePasswordScreen from './screens/SignInScreens/UpdatePasswordScreen';
+import ReturnLoginScreen from './screens/SignInScreens/ReturnLoginScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,7 +53,7 @@ export default function App() {
                 headerBackTitleVisible: false,
                 headerTransparent: true,
                 }}/>
-                <Stack.Screen
+              <Stack.Screen
               name='VerifyEmailScreen'
               component={VerifyEmailScreen}
               options={{
@@ -59,7 +61,22 @@ export default function App() {
                 headerBackTitleVisible: false,
                 headerTransparent: true,
                 }}/>
-
+              <Stack.Screen
+              name='UpdatePasswordScreen'
+              component={UpdatePasswordScreen}
+              options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackVisible: false
+                }}/>
+              <Stack.Screen
+              name='ReturnLoginScreen'
+              component={ReturnLoginScreen}
+              options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackVisible: false
+                }}/>
 
           </Stack.Navigator>
         </NavigationContainer>
