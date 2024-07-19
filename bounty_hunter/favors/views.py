@@ -81,9 +81,11 @@ def favor_list(request):
         else: 
             favors = favors.order_by('total_owed_amt')
 
-    #favors_list = list(favors.values())
-    favors_list = []
+    # search favors 
+    
 
+    # display favors and corresponding tags
+    favors_list = []
     for f in favors:
         tags = list(f.tags.all().values())
         f_data = {"name": f.name, 
