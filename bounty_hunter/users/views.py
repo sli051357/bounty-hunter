@@ -15,6 +15,9 @@ from rest_framework.authtoken.models import Token
 
 from django.http import HttpResponseNotFound
 
+from PIL import Image
+from django.core.files import File
+
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
 
@@ -117,11 +120,11 @@ def remove_link(request, request_username):
     
 def register_user(request):
 
-    user_name =request.POST["username"]
-    pass_word =request.POST["password"]
+    username =request.POST["username"]
+    password =request.POST["password"]
     email = request.POST["email"]
 
-    new_user = User(username=user_name,password=pass_word,email=email,is_active=False)
+    new_user = User(username=username,password=password,email=email,is_active=False)
     try:
         new_user.save()
     except IntegrityError:
@@ -129,6 +132,11 @@ def register_user(request):
     
     new_token = Token.objects.create(user=new_user)
     new_token.save()
+
+    new_bio = UserProfileInfo(bio_text="No information given.", owner=new_user)
+    with open("res/default.png", 'rb') as f:
+        new_bio.profile_image.save('default_pfp.png', File(f), save=True)
+    new_bio.save()
 
     send_mail(
     subject="Verify Your Email",
@@ -145,7 +153,6 @@ def verify(request, token):
     request_user.is_active = True
     request_user.save()
     return redirect('/users/sign-up/')
-
 
 
 
