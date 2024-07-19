@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-
+from django.db import IntegrityError
 from django.template import loader
 from django.shortcuts import get_object_or_404
 
@@ -12,6 +12,11 @@ from django.shortcuts import redirect
 
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
+
+from django.http import HttpResponseNotFound
+
+EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
+BASE_URL = "http://127.0.0.1:8000/"
 
 
 
@@ -34,25 +39,10 @@ def profile(request, request_username):
 
     return JsonResponse(headers)
 
-#sign in page
+#temp sign in page
 def sign_up(request):
     #temporary sign in template
     return render(request, "users/register.html")
-
-
-# if sign in successful, redirect to profile. Else, return sign in page with failed response
-# def sign_in_attempt(request):
-#     request_username = request.POST["username"]
-#     request_password = request.POST["password"]
-
-#     user = authenticate(username=request_username, password=request_password)
-#     if user is not None:
-#         # can change this redirect to link to a different page ig
-#         login(request, user)
-#         return redirect("/users/profiles/" + user.get_username())
-#     else:
-#         #in the future will add another redirect.
-#         return redirect("/users/signin")
     
 def log_out(request):
     logout(request)
@@ -127,21 +117,35 @@ def remove_link(request, request_username):
     
 def register_user(request):
 
-    username =request.POST["username"]
-    password =request.POST["password"]
+    user_name =request.POST["username"]
+    pass_word =request.POST["password"]
     email = request.POST["email"]
-    new_user = User(username=username,password=password,email=email,active=False)
-    new_token = Token.objects.create(user=new_user)
 
-    # send_mail(
-    # "Subject here",
-    # "Here is the message.",
-    # "from@example.com",
-    # ["to@example.com"],
-    # fail_silently=False,
-    #)
+    new_user = User(username=user_name,password=pass_word,email=email,is_active=False)
+    try:
+        new_user.save()
+    except IntegrityError:
+        return HttpResponseNotFound("user already exists")         
+    
+    new_token = Token.objects.create(user=new_user)
+    new_token.save()
+
+    send_mail(
+    subject="Verify Your Email",
+    message=BASE_URL + "users/verify/" + str(new_token.key),
+    from_email=EMAIL_HOST_USER,
+    recipient_list=[email],
+    fail_silently=False
+    )
 
     return redirect('/users/sign-up/')
+
+def verify(request, token):
+    request_user = get_object_or_404(Token,key=token).user
+    request_user.is_active = True
+    request_user.save()
+    return redirect('/users/sign-up/')
+
 
 
 

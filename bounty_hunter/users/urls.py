@@ -13,7 +13,9 @@ urlpatterns = [
     path('get-token/', rest_framework.authtoken.views.obtain_auth_token),
     
     path('sign-up/', views.sign_up, name="sign_up"),
-    path('register/', views.register_user, name="register")
+    path('register/', views.register_user, name="register"),
+    path('verify/<slug:token>', views.verify, name="verify")
+
 
 
 ]
