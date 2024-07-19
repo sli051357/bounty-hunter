@@ -4,7 +4,9 @@ from . import views
 
 
 urlpatterns = [
-    path('profiles/<slug:request_username>/', views.profile, name="profile"),
+    path('profiles/<slug:request_username>/bio', views.bio, name="bio"),
+    path('profiles/<slug:request_username>/profile-pic', views.profile_pic, name="profile_pic"),
+    path('profiles/<slug:request_username>/links', views.linked_accs, name="links"),
     path('profiles/<slug:request_username>/delete/', views.delete_account, name="delete_account"),
     path('profiles/<slug:request_username>/edit-bio', views.edit_bio, name="edit_bio"),
     path('profiles/<slug:request_username>/edit-profile-pic', views.edit_profile_pic, name="edit_profile_pic"),
@@ -15,7 +17,5 @@ urlpatterns = [
     path('sign-up/', views.sign_up, name="sign_up"),
     path('register/', views.register_user, name="register"),
     path('verify/<slug:token>', views.verify, name="verify")
-
-
 
 ]

@@ -21,10 +21,29 @@ from django.core.files import File
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
 
+from django.core.exceptions import PermissionDenied
+import base64
 
 
-# linked accounts will show up as the text and their ID. Use the ID to request edits and deletions.
-def profile(request, request_username):
+def bio(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+    data = {
+        "bio":user_profile.bio_text
+    }
+    return JsonResponse(data=data)
+
+def profile_pic(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+
+    data = {
+        "pfp":base64.b64encode(user_profile.profile_image)
+    }
+
+    return JsonResponse(data=data)
+
+def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
@@ -33,14 +52,11 @@ def profile(request, request_username):
         linked_accs_list_strs.append(entry.account_text + ":" + str(entry.id))
     linked_accs = ",".join(linked_accs_list_strs)
 
-    headers = {
-        "bio":user_profile.bio_text,
-        "pfp":user_profile.profile_image,
-        "name":request_owner.username,
+    data = {
         "accounts":linked_accs
     }
 
-    return JsonResponse(headers)
+    return JsonResponse(data=data)
 
 #temp sign in page
 def sign_up(request):
