@@ -14,6 +14,7 @@ function SignUpScreen(){
         password: '',
         'confirm password': ''
     });
+    
 
     function createUserChangeHandler(text, type) {
         setCreateUser((prevState) => ({
