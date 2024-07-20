@@ -9,6 +9,8 @@ export const GLOBAL_STYLES = {
         blue700: '#191970', // Midnight Blue
         blue300: '#2480B3', // Light Blue
         orange700: '#D04306', // Dark Orange
-        orange300: '#F97239' // Light Orange
+        orange300: '#F97239', // Light Orange
+        error700: '#f37c13',
+        error300: '#fcdcbf',
     }
 }

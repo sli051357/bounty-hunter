@@ -2,9 +2,8 @@ import {
     View, 
     Text, 
     StyleSheet, 
-    SafeAreaView 
 } from "react-native";
-
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -16,7 +15,7 @@ import Button from "../../components/UI/Button";
 
 function VerifyEmailScreen(){
     const navigation = useNavigation();
-
+    const insets = useSafeAreaInsets();
     const [codeVerify, setCodeVerify] = useState('');
 
     function codeVerifyHandler(text){
@@ -34,31 +33,31 @@ function VerifyEmailScreen(){
         <LinearGradient
             colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
             style={styles.background}/>
-            <SafeAreaView style={{flex: 1}}>
-                            <View style={[styles.page]}>
-                                <View style={styles.container}>
-                                    <Text style={styles.header}>Verify Email</Text>
-                                    <Text style={styles.description}>
-                                        A verification code has been sent
-                                        to the email registered with this account.
-                                        Enter the verification code below.
-                                    </Text>
-                                    <CustomTextInput
-                                    typeTitle='Verification Code'
-                                    onPress={codeVerifyHandler}
-                                    maxLength={6}
-                                    value={codeVerify}
-                                    keyboardType='default'
-                                    helperText="Incorrect verfication code."
-                                    secureTextEntry={false}/>
-                                    <Button
-                                    title="Verify"
-                                    onPress={confirmChangesHandler}
-                                    buttonStyles={styles.buttonStyles}
-                                    containerStyle={{alignSelf: 'center'}}/>
-                                </View>
-                            </View>
-            </SafeAreaView>
+            <View style={{flex: 1, marginTop: insets.top+40}}>
+                <View style={[styles.page]}>
+                    <View style={styles.container}>
+                        <Text style={styles.header}>Verify Email</Text>
+                        <Text style={styles.description}>
+                            A verification code has been sent
+                            to the email registered with this account.
+                            Enter the verification code below.
+                        </Text>
+                        <CustomTextInput
+                        typeTitle='Verification Code'
+                        onPress={codeVerifyHandler}
+                        maxLength={6}
+                        value={codeVerify}
+                        keyboardType='default'
+                        helperText="Incorrect verfication code."
+                        secureTextEntry={false}/>
+                        <Button
+                        title="Verify"
+                        onPress={confirmChangesHandler}
+                        buttonStyles={styles.buttonStyles}
+                        containerStyle={{alignSelf: 'center'}}/>
+                    </View>
+                </View>
+            </View>
         </>
             
     )

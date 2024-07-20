@@ -7,7 +7,7 @@ const initialState = {
 const ratingSlice = createSlice({
     name: 'Rating',
     initialState: initialState,
-    reducer: {
+    reducers: {
         setRating: (state, action) => {
             state.rating = action.payload;
         }

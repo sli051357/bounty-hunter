@@ -1,10 +1,9 @@
 import { 
     View, 
     Text, 
-    StyleSheet, 
-    SafeAreaView 
+    StyleSheet,  
 } from "react-native";
-
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -16,7 +15,7 @@ import Button from "../../components/UI/Button";
 
 function UpdatePasswordScreen(){
     const navigation = useNavigation();
-
+    const insets = useSafeAreaInsets();
     const [newPassword, setNewPassword] = useState({
         ['new password']: '',
         ['confirm new password']: ''
@@ -42,38 +41,38 @@ function UpdatePasswordScreen(){
         <LinearGradient
             colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
             style={styles.background}/>
-            <SafeAreaView style={{flex: 1}}>
-                            <View style={[styles.page]}>
-                                <View style={styles.container}>
-                                    <Text style={styles.header}>Update Password</Text>
-                                    <Text style={styles.description}>
-                                        Your email has been successfully verified.
-                                         Update your password below.
-                                    </Text>
-                                    <CustomTextInput
-                                    typeTitle='new password'
-                                    onPress={newPasswordChangeHandler}
-                                    maxLength={22}
-                                    value={newPassword['new password']}
-                                    keyboardType='default'
-                                    helperText=""
-                                    secureTextEntry={true}/>
-                                    <CustomTextInput
-                                    typeTitle='confirm new password'
-                                    onPress={newPasswordChangeHandler}
-                                    maxLength={22}
-                                    value={newPassword['confirm new password']}
-                                    keyboardType='default'
-                                    helperText="Passwords do not match!"
-                                    secureTextEntry={true}/>
-                                    <Button
-                                    title="Update Password"
-                                    onPress={confirmChangesHandler}
-                                    buttonStyles={styles.buttonStyles}
-                                    containerStyle={{alignSelf: 'center'}}/>
-                                </View>
-                            </View>
-            </SafeAreaView>
+            <View style={{flex: 1, marginTop: insets.top+40}}>
+                <View style={[styles.page]}>
+                    <View style={styles.container}>
+                        <Text style={styles.header}>Update Password</Text>
+                        <Text style={styles.description}>
+                            Your email has been successfully verified.
+                             Update your password below.
+                        </Text>
+                        <CustomTextInput
+                        typeTitle='new password'
+                        onPress={newPasswordChangeHandler}
+                        maxLength={22}
+                        value={newPassword['new password']}
+                        keyboardType='default'
+                        helperText=""
+                        secureTextEntry={true}/>
+                        <CustomTextInput
+                        typeTitle='confirm new password'
+                        onPress={newPasswordChangeHandler}
+                        maxLength={22}
+                        value={newPassword['confirm new password']}
+                        keyboardType='default'
+                        helperText="Passwords do not match!"
+                        secureTextEntry={true}/>
+                        <Button
+                        title="Update Password"
+                        onPress={confirmChangesHandler}
+                        buttonStyles={styles.buttonStyles}
+                        containerStyle={{alignSelf: 'center'}}/>
+                    </View>
+                </View>
+            </View>
         </>
             
     )

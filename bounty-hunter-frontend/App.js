@@ -6,6 +6,8 @@ import {View, Text} from 'react-native';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { setAuthToken } from './store/authToken';
 import { PersistGate } from 'redux-persist/integration/react';
+import { SafeAreaView } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import UserProfileScreen from './screens/UserProfileScreen';
 import BountiesList from './screens/BountiesList';
@@ -81,16 +83,19 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
+  const username = useSelector(state => state.username);
   return (
-    <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}>
-      <Text style={{fontSize: 28, fontWeight: 'bold'}}>Welcome Authenticated User!</Text>
-    </View>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}>
+        <Text style={{fontSize: 28, fontWeight: 'bold'}}>Welcome {username.username}!</Text>
+      </View>
+    </SafeAreaView>
   )
 }
 
 function Root() {
   const authToken = useSelector(state => state.authToken);
-  console.log(authToken.authToken)
+  // console.log(authToken.authToken)
 
   if (authToken.authToken) {
     return <AuthenticatedStack />
@@ -103,11 +108,13 @@ export default function App() {
   return (
     <>
       <StatusBar />
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Root />
-        </PersistGate>
-      </Provider>
+      <SafeAreaProvider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <Root />
+          </PersistGate>
+        </Provider>
+      </SafeAreaProvider>
     </>
     
   );

@@ -2,17 +2,18 @@ import {
     View, 
     Text, 
     StyleSheet, 
-    SafeAreaView 
 } from "react-native";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 
 function LoginScreen(){
+    const insets = useSafeAreaInsets()
     const [signInUser, setSignInUser] = useState({
         ['username or email']: '',
         password: '',
@@ -34,40 +35,40 @@ function LoginScreen(){
 
     return (
         <>
-        <LinearGradient
+            <LinearGradient
             colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
             style={styles.background}/>
-            <SafeAreaView style={{flex: 1}}>
-                            <View style={[styles.page]}>
-                                <View style={styles.container}>
-                                    <Text style={styles.header}>Login</Text>
-                                    <CustomTextInput
-                                    typeTitle='username or email'
-                                    onPress={signInUserChangeHandler}
-                                    maxLength={64}
-                                    value={signInUser['username or email']}
-                                    keyboardType='default'
-                                    helperText=""
-                                    secureTextEntry={false}/>
-                                    <View style={{width: '100%'}}>
-                                        <CustomTextInput
-                                        typeTitle='password'
-                                        onPress={signInUserChangeHandler}
-                                        maxLength={22}
-                                        value={signInUser.password}
-                                        keyboardType='default'
-                                        helperText=""
-                                        secureTextEntry={true}/>
-                                        <Link to={{screen: 'VerifyEmailScreen'}} style={[styles.description, styles.link]}>Forgot Password?</Link> 
-                                    </View>
-                                    <Button
-                                    title="Login"
-                                    onPress={confirmChangesHandler}
-                                    buttonStyles={styles.buttonStyles}
-                                    containerStyle={{alignSelf: 'center'}}/>
-                                </View>
-                            </View>
-            </SafeAreaView>
+            <View style={{flex: 1, marginTop: insets.top+40}}>
+                <View style={styles.page}>
+                    <View style={styles.container}>
+                        <Text style={styles.header}>Login</Text>
+                        <CustomTextInput
+                        typeTitle='username or email'
+                        onPress={signInUserChangeHandler}
+                        maxLength={64}
+                        value={signInUser['username or email']}
+                        keyboardType='default'
+                        helperText=""
+                        secureTextEntry={false}/>
+                        <View style={{width: '100%'}}>
+                            <CustomTextInput
+                            typeTitle='password'
+                            onPress={signInUserChangeHandler}
+                            maxLength={22}
+                            value={signInUser.password}
+                            keyboardType='default'
+                            helperText=""
+                            secureTextEntry={true}/>
+                            <Link to={{screen: 'VerifyEmailScreen'}} style={[styles.description, styles.link]}>Forgot Password?</Link> 
+                        </View>
+                        <Button
+                        title="Login"
+                        onPress={confirmChangesHandler}
+                        buttonStyles={styles.buttonStyles}
+                        containerStyle={{alignSelf: 'center'}}/>
+                    </View>
+                </View>
+            </View>
         </>
             
     )
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     page: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         minWidth: '100%'
     },
     background: {
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         gap: 22,
         padding: 12,
-        marginHorizontal: '5%',
+        // marginHorizontal: '10%',
         width: '90%'
     },
     header: {
