@@ -2,17 +2,17 @@ import { View, TextInput, Text, StyleSheet } from "react-native";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 
 
-function CustomTextInput({typeTitle, onPress, maxLength, value, keyboardType, helperText, secureTextEntry}){
+function CustomTextInput({typeTitle, onPress, maxLength, value, keyboardType, helperText, secureTextEntry, isInValid}){
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>{typeTitle.toUpperCase()}</Text>
+            <Text style={[styles.label, isInValid && styles.textIsInvalid]}>{typeTitle.toUpperCase()}</Text>
             <TextInput 
             onChangeText={(text) => onPress(text, typeTitle)}
             numberOfLines={1}
             maxLength={maxLength}
             value={value}
             keyboardType={keyboardType}
-            style={styles.textInput}
+            style={[styles.textInput, isInValid && styles.inputIsInValid]}
             secureTextEntry={secureTextEntry}/>
             <Text style={styles.helperText}>{helperText}</Text>
         </View>
@@ -46,6 +46,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         textAlign: 'left',
         color: GLOBAL_STYLES.colors.brown300
+    },
+    textIsInvalid: {
+        color: GLOBAL_STYLES.colors.error700
+    },
+    inputIsInValid: {
+        borderColor: GLOBAL_STYLES.colors.error300
     }
 })
 

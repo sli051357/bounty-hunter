@@ -1,5 +1,4 @@
 import axiosInstance from "./axiosInstance";
-import axios from "axios";
 
 const apiService = {
     getUserBio: async (id) => {
