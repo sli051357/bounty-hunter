@@ -1,5 +1,7 @@
+import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import {View, Text, Button} from 'react-native';
@@ -26,6 +28,7 @@ import { store, persistor } from './store/redux/store';
 
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function AuthStack() {
   return (
@@ -81,15 +84,15 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
-  const username = useSelector(state => state.username);
-  const dispatch = useDispatch();
+  //const username = useSelector(state => state.username);
+  //const dispatch = useDispatch();
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor: 'red'}}>
-        <Text style={{fontSize: 28, fontWeight: 'bold'}}>Welcome {username.username}!</Text>
-        <Button onPress={() => dispatch(setAuthToken(''))} title='Logout'/>
-      </View>
-    </SafeAreaView>
+    <Tab.Navigator>
+      <Tab.Screen name="UserProfileScreen"
+      component={UserProfileScreen}/>
+      <Tab.Screen name='BountiesList'
+      component={BountiesList}/>
+    </Tab.Navigator>
   )
 }
 
