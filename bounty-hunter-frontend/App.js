@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Button} from 'react-native';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { setAuthToken } from './store/authToken';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -29,7 +29,6 @@ const Stack = createNativeStackNavigator();
 
 function AuthStack() {
   return (
-    <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name='WelcomeScreen'
@@ -78,16 +77,17 @@ function AuthStack() {
             headerBackVisible: false
             }}/>
       </Stack.Navigator>
-    </NavigationContainer>
   )
 }
 
 function AuthenticatedStack() {
   const username = useSelector(state => state.username);
+  const dispatch = useDispatch();
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}>
+      <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor: 'red'}}>
         <Text style={{fontSize: 28, fontWeight: 'bold'}}>Welcome {username.username}!</Text>
+        <Button onPress={() => dispatch(setAuthToken(''))} title='Logout'/>
       </View>
     </SafeAreaView>
   )
@@ -111,7 +111,9 @@ export default function App() {
       <SafeAreaProvider>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <Root />
+            <NavigationContainer>
+              <Root />
+            </NavigationContainer>
           </PersistGate>
         </Provider>
       </SafeAreaProvider>

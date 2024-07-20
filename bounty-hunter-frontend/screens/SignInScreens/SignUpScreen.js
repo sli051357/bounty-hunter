@@ -45,7 +45,7 @@ function SignUpScreen(){
         const passwordIsValid = createUser.password.length >= 8 && createUser.password.length < 23 && !createUser.password.includes(" ");
         const confirmPasswordIsValid = 
         createUser['confirm password'] === createUser.password && passwordIsValid;
-        console.log(createUser);
+        // console.log(createUser);
         if (!emailIsInValid || !usernameIsValid ||
             !passwordIsValid || !confirmPasswordIsValid){
                 setError({
@@ -63,6 +63,7 @@ function SignUpScreen(){
         });
     }
 
+    // Turn this into async function when axios is added
     function signUpHandler(formData) {
         setIsAuthenticating(true);
         try {
@@ -75,7 +76,7 @@ function SignUpScreen(){
             dispatch(setAuthToken('IsVerified'));
         } catch (error) {
             Alert.alert("Sign Up Failed", "Try again later");
-            console.log(error);
+            // console.log(error);
             setIsAuthenticating(false);
         }
     }

@@ -2,15 +2,20 @@ import {
     View, 
     Text, 
     StyleSheet, 
+    Alert
 } from "react-native";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 
+import { setAuthToken } from "../../store/authToken";
+import { setUsername } from "../../store/username";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
+import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
 
 function LoginScreen(){
     const insets = useSafeAreaInsets()
@@ -18,6 +23,12 @@ function LoginScreen(){
         ['username or email']: '',
         password: '',
     });
+    const [error, setError] = useState({
+        emailOrUsername: false,
+        password: false
+    })
+    const [isAuthenticateing, setIsAuthenticating] = useState(false);
+    const dispatch = useDispatch();
 
     function signInUserChangeHandler(text, type) {
         setSignInUser((prevState) => ({
@@ -25,12 +36,37 @@ function LoginScreen(){
         }))
     }
 
+    // Turn this into async function when axios is added
     function confirmChangesHandler() {
-        console.log(signInUser);
-        setSignInUser({
-            usernameOrEmail: '',
-            password: '',
-        })
+        setIsAuthenticating(true);
+        try {
+            // Will Set Up Axios Later:
+            // const token = await apiService.signIn(signInUser);
+            // dispatch(setAuthToken(token))
+            console.log(signInUser);
+            dispatch(setUsername(signInUser['username or email']));
+            dispatch(setAuthToken('IsVerified'));
+
+        } catch (error) {
+            setError({
+                emailOrUsername: true,
+                password: true
+            })
+            Alert.alert("Sign In Failed", "Try again later");
+            // console.log(error);
+            setIsAuthenticating(false);
+        }
+    }
+
+    if (isAuthenticateing) {
+        return (
+            <>
+                <LinearGradient
+                colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
+                style={styles.background}/>
+                <LoadingOverlay message="Creating user..."/>
+            </>
+        )
     }
 
     return (
@@ -49,7 +85,8 @@ function LoginScreen(){
                         value={signInUser['username or email']}
                         keyboardType='default'
                         helperText=""
-                        secureTextEntry={false}/>
+                        secureTextEntry={false}
+                        isInValid={error.emailOrUsername}/>
                         <View style={{width: '100%'}}>
                             <CustomTextInput
                             typeTitle='password'
@@ -57,8 +94,9 @@ function LoginScreen(){
                             maxLength={22}
                             value={signInUser.password}
                             keyboardType='default'
-                            helperText=""
-                            secureTextEntry={true}/>
+                            helperText={error.password && "Incorrect Password, Username, or Email."}
+                            secureTextEntry={true}
+                            isInValid={error.password}/>
                             <Link to={{screen: 'VerifyEmailScreen'}} style={[styles.description, styles.link]}>Forgot Password?</Link> 
                         </View>
                         <Button
