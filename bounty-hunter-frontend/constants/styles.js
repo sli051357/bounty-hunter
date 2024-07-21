@@ -5,6 +5,7 @@
 export const GLOBAL_STYLES = {
     colors: {
         brown700: '#592102', // Brown
+        brown500: '#F2B093',
         brown300: '#FFF7EB', // Light Brown
         blue700: '#191970', // Midnight Blue
         blue300: '#2480B3', // Light Blue

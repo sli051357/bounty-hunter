@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet, Image, Pressable, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../util/dummy-data.js';
-import EditAboutMe from "../components/UI/UserProfileHelpers/EditAboutMe.js";
-import EditPaymentMethods from "../components/UI/UserProfileHelpers/EditPaymentMethods.js";
-import FavorCard from "../components/FavorCard.js";
-import IconButton from "../components/UI/IconButton.js";
-import apiService from "../api/apiRequest.js";
+import { GLOBAL_STYLES } from "../../constants/styles";
+import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../../util/dummy-data.js';
+import EditAboutMe from "../../components/UI/UserProfileHelpers/EditAboutMe.js";
+import EditPaymentMethods from "../../components/UI/UserProfileHelpers/EditPaymentMethods.js";
+import FavorCard from "../../components/FavorCard.js";
+import IconButton from "../../components/UI/IconButton.js";
+import apiService from "../../api/apiRequest.js";
 
 
 /*
@@ -42,17 +42,17 @@ function UserProfileScreen({ user, isPersonalProfile }){
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
     const [payments, setPayments] = useState(DUMMY_USER_PROFILE.paymentMethods);
 
-    useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const response = await apiService.getUserBio('MacUser23');
-                console.log(response);
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        fetchUserData();   
-    }, [])
+    // useEffect(() => {
+    //     async function fetchUserData() {
+    //         try {
+    //             const response = await apiService.getUserBio('MacUser23');
+    //             console.log(response);
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    //     fetchUserData();   
+    // }, [])
 
     function editAboutMeHandler(){
         setEditAboutMe((curr) => !curr);
@@ -104,7 +104,7 @@ function UserProfileScreen({ user, isPersonalProfile }){
         <ScrollView style={styles.page}>
             <View style={[styles.userMainDetails, styles.viewSpacing]}> 
                 <View style={styles.userMainDetailsView}>
-                    <Image style={styles.profilePicture} source={require('../assets/batman.jpeg')}/>
+                    <Image style={styles.profilePicture} source={require('../../assets/batman.jpeg')}/>
                     <View>
                         <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.username}</Text>
                         <Text style={[styles.text, {textAlign: 'center'}]}>ID: {DUMMY_USER_PROFILE.ID}</Text>
