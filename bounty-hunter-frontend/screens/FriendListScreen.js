@@ -5,6 +5,7 @@ import { GLOBAL_STYLES } from '../constants/styles';
 import { DUMMY_USER_PROFILE } from '../util/dummy-data.js';
 
 import { AntDesign } from '@expo/vector-icons';
+import SearchBar from '../components/SearchBar'
 import CategoryBar from '../components/CategoryBar';
 import FriendCard from '../components/FriendCard'
 
@@ -13,6 +14,10 @@ function FriendListScreen() {
         <ScrollView style={styles.page}>
             <View>
                 <Text style={styles.headerText}>Friends</Text>
+            </View>
+
+            <View>
+                <SearchBar />
             </View>
 
             <View>

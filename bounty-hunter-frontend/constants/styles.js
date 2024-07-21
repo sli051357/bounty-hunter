@@ -10,5 +10,6 @@ export const GLOBAL_STYLES = {
         blue300: '#227BAA', // Light Blue
         orange700: '#D04306', // Dark Orange
         orange300: '#F2B093', // Light Orange
+        orange100: '#FBE1D2', // Super Light Orange
     }
 }

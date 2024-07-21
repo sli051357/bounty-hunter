@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useState } from 'react';
 
 import { GLOBAL_STYLES } from '../constants/styles.js';
@@ -6,7 +6,12 @@ import { DUMMY_USER_PROFILE } from '../util/dummy-data.js';
 
 import { AntDesign } from '@expo/vector-icons';
 
-function SearchBar() {
+{/*
+    Implementation Notes:
+    This is the bar that swaps between categories on the friend list page. Unfortunately I couldn't quite figure out how to do this without hardcoding each button individually, but I also don't see this sort of category thing being used on other pages, so maybe that will be okay (or someone smarter than me can help fix it lol)
+*/}
+
+function CategoryBar() {
     const [ button1, setButton1 ] = useState(true);
     const [ button2, setButton2 ] = useState(false);
     const [ button3, setButton3 ] = useState(false);
@@ -97,4 +102,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SearchBar;
+export default CategoryBar;
