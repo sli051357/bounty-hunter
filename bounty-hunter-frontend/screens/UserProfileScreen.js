@@ -137,7 +137,7 @@ function UserProfileScreen({ user, isPersonalProfile }){
                     </Pressable>
                 </View>
                 {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
-            </View>
+            </View>                       
         </ScrollView>
     )
 

@@ -1,40 +1,54 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { useState } from 'react';
 
 import { GLOBAL_STYLES } from '../constants/styles';
 import { DUMMY_USER_PROFILE } from '../util/dummy-data.js';
 
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, FontAwesome6 } from '@expo/vector-icons';
+
+{/* 
+  * Implementation Notes:
+    - "friend" is an object for a user's friend that includes their nickname, ID, and profile picture
+    - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
+  */}
 
 function FriendCard({ friend, imagePath }) {
     const [ favorite, setFavorite ] = useState(false);
 
-    function editFavoritestatus() {
+    function editFavoriteStatus() {
         setFavorite((curr) => !curr);
+    }
+
+    function createFavor() {
+        console.log("Favor created");
     }
 
     return (
         <View style={styles.card}>
+            {/* Profile Picture */}
             <Image style={styles.picture} source={imagePath}/>
 
+            {/* Friend Text */}
             <View>
-                <View style={styles.horizontalContainer}>
-                    <Text style={styles.usernameText}> Hello </Text>
-
-                    <Pressable onPress={(editFavoriteStatus)}>
-                        {favorite ? (
-                            <AntDesign name="staro" size={24} color={GLOBAL_STYLES.colors.orange300} />
-                        ) : (
-                            <AntDesign name="star" size={24} color={GLOBAL_STYLES.colors.orange700} />
-                        )}
-                    </Pressable>
-                </View>
-
-                <Text style={styles.userID}> Hello </Text>
+                <Text style={styles.usernameText}>{friend}</Text>
+                <Text style={styles.userID}>Username</Text>
             </View>
 
-            <View>
 
+            <View style={{marginLeft: 10, marginTop: -10}}>
+                <Pressable onPress={(editFavoriteStatus)}>
+                    {favorite ? (
+                        <AntDesign name="staro" size={24} color={GLOBAL_STYLES.colors.orange300} />
+                    ) : (
+                        <AntDesign name="star" size={24} color={GLOBAL_STYLES.colors.orange700} />
+                    )}
+                </Pressable>
+            </View>
+
+            <View style={styles.favorButton}>
+                <Pressable onPress={(createFavor)}>
+                    <FontAwesome6 name="money-bill-transfer" size={24} color={GLOBAL_STYLES.colors.brown700} />
+                </Pressable>
             </View>
         </View>
     )
@@ -44,30 +58,35 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: 'gray',
         alignItems: 'center',
-        margin: 5,
+        margin: 10,
     },
     picture: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+        width: 45,
+        height: 45,
+        borderRadius: 22.5,
+        marginRight: 10,
     },
     horizontalContainer: {
         flexDirection: 'row',
     },
     usernameText: {
-        fontFamiy: 'BaiJamjuree-Bold',
-        fontSize: 36,
+        fontFamily: 'BaiJamjuree-SemiBold',
+        fontSize: 20,
         color: GLOBAL_STYLES.colors.blue300,
-        marginRight: 10,
-        marginTop: 2,
     },
     userID: {
         fontFamily: 'BaiJamjuree-Regular',
-        fontSize: 18,
+        fontSize: 12,
         color: GLOBAL_STYLES.colors.brown700,
+        marginTop: -10,
     },
+    favorButton: {
+        marginLeft: 'auto',
+        backgroundColor: GLOBAL_STYLES.colors.orange300,
+        padding: 10,
+        borderRadius: 5,
+    }
 })
 
 export default FriendCard;

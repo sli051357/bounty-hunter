@@ -5,7 +5,7 @@ import { GLOBAL_STYLES } from '../constants/styles';
 import { DUMMY_USER_PROFILE } from '../util/dummy-data.js';
 
 import { AntDesign } from '@expo/vector-icons';
-import SearchBar from '../components/SearchBar'
+import CategoryBar from '../components/CategoryBar';
 import FriendCard from '../components/FriendCard'
 
 function FriendListScreen() {
@@ -16,13 +16,11 @@ function FriendListScreen() {
             </View>
 
             <View>
-                <SearchBar />
+                <CategoryBar />
             </View>
 
             <View>
-                <FriendCard 
-                    imagePath={require('../assets/batman.jpeg')}
-                />
+                {DUMMY_USER_PROFILE.friends.map((friend) => <FriendCard key={friend} friend={friend} imagePath = {require('../assets/batman.jpeg')} />)}
             </View>
         </ScrollView>
     )
@@ -32,15 +30,14 @@ const styles = StyleSheet.create({
     page: {
         backgroundColor: GLOBAL_STYLES.colors.brown300,
         flex: 1,
-        paddingHorizontal: '10%',
-        paddingTop: 16,
+        paddingHorizontal: '7%',
+        paddingTop: 50,
     },
     headerText: {
         fontFamily: 'BaiJamjuree-Bold',
         fontSize: 36,
         color: GLOBAL_STYLES.colors.blue300,
         textAlign: 'center',
-        textTransform: 'uppercase',
     },
 })
 
