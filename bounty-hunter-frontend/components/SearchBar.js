@@ -7,6 +7,10 @@ import { DUMMY_USER_PROFILE } from '../util/dummy-data.js';
 
 import { Ionicons } from '@expo/vector-icons';
 
+
+{/*
+    No real usability, only visual effects right now
+*/}
 function SearchBar() {
     const [text, onChangeText] = React.useState('');
     
