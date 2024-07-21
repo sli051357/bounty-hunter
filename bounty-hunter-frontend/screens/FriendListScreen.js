@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     page: {
         backgroundColor: GLOBAL_STYLES.colors.brown300,
         flex: 1,
-        paddingHorizontal: '7%',
+        paddingHorizontal: '5%',
         paddingTop: 50,
     },
     headerText: {

@@ -15,7 +15,7 @@ function SearchBar() {
         setButton1(true);
         setButton2(false);
         setButton3(false);
-        console.log('button 1 pressed' + button1);
+        console.log('button 1 pressed');
     }
 
     function clickButton2() {
@@ -34,37 +34,37 @@ function SearchBar() {
 
     return (
         <View style={styles.barContainer}>
-            <Pressable onPress={(clickButton1)}>
+            <Pressable onPress={(clickButton1)} style={{width: '25%'}}>
                 {button1 ? (
                     <View style={[styles.button, {backgroundColor: GLOBAL_STYLES.colors.orange700}]}>
-                        <Text style={styles.buttonText}>All (3)</Text>
+                        <Text style={styles.buttonText}>All ({DUMMY_USER_PROFILE.friends.length})</Text>
                     </View>
                 ) : (
-                    <View style={styles.button}>
+                    <View style={[styles.button]}>
                         <Text style={styles.buttonText}>All</Text>
                     </View>
                 )}
             </Pressable>
 
-            <Pressable onPress={(clickButton2)}>
+            <Pressable onPress={(clickButton2)} style={{width: '37.5%'}}>
                 {button2 ? (
                     <View style={[styles.button, {backgroundColor: GLOBAL_STYLES.colors.orange700}]}>
-                        <Text style={styles.buttonText}>Favorites (3)</Text>
+                        <Text style={styles.buttonText}>Favorites (##)</Text>
                     </View>
                 ) : (
-                    <View style={styles.button}>
+                    <View style={[styles.button]}>
                         <Text style={styles.buttonText}>Favorites</Text>
                     </View>
                 )}
             </Pressable>
 
-            <Pressable onPress={(clickButton3)}>
+            <Pressable onPress={(clickButton3)} style={{width: '37.5%'}}>
                 {button3 ? (
                     <View style={[styles.button, {backgroundColor: GLOBAL_STYLES.colors.orange700}]}>
-                        <Text style={styles.buttonText}>Requests (3)</Text>
+                        <Text style={styles.buttonText}>Requests (##)</Text>
                     </View>
                 ) : (
-                    <View style={styles.button}>
+                    <View style={[styles.button]}>
                         <Text style={styles.buttonText}>Requests</Text>
                     </View>
                 )}
@@ -85,8 +85,6 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: GLOBAL_STYLES.colors.orange300,
-        paddingLeft: 20,
-        paddingRight: 20,
         borderRadius: 100,
         alignItems: 'center',
         justifyContent: 'center',
