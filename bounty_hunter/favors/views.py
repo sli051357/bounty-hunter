@@ -54,7 +54,7 @@ def favor_list(request): # ex: favors/
         query = query_method(query, or_query, 'tags__id', tag_id)
 
     # filter by status (use the string constants)
-    status = request.GET.get('status') 
+    completed = request.GET.get('completed') 
 
     favors = Favor.objects.filter(query).distinct()
 
@@ -128,6 +128,8 @@ def favor_detail(request, favor_id):
                   "total_owed_type": favor.total_owed_type,
                   "total_owed_amt": favor.total_owed_amt,
                   "privacy": favor.privacy,
+                  "owner_status": favor.owner_status,
+                  "assignee_status": favor.assignee_status,
                   "is_active": favor.active, #only show active in frontend
                   "is_completed": favor.completed,
                   "tags": tags,}
