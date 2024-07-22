@@ -218,6 +218,7 @@ def create_new_password(request):
 
 def temp(request):
     context = {}
+    #temporary page for testing
     return render(request, "users/forgot.html", context)
 
 

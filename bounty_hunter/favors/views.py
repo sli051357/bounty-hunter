@@ -238,10 +238,12 @@ def help_change_status(sender_status, reciever_status, status, favor):
         if (sender_status) == CANCEL:
             return None
         sender_status = status
+
     else: #other's status is not NONE, it is a request. Now, owner can either cancel or accept:
         if status == CANCEL: #cancel, no change to favor
             sender_status = NONE
             reciever_status = NONE
+
         elif status == reciever_status: #accept changes
             favor = update_favor_from_status(favor, sender_status)
             sender_status = NONE
@@ -282,5 +284,9 @@ def update_favor_from_status(favor, status):
 def update_favor_with_edits(favor):
     #make the edits to the favor permanent
     return favor
+
+
+def show_change_status(request, favor_id):
+    return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
 

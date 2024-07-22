@@ -63,7 +63,7 @@ class Favor(models.Model):
     CANCEL = "Cancel" 
     NONE = "None"
 
-    status_choices = [(CREATE, "Create"),(DELETE,"Delete"),(EDIT, "Edit"),(CANCEL, "Cancel"),(COMPLETE, "Complete"), (INCOMPLETE, "Incomplete")]
+    status_choices = [(CREATE, "Create"),(DELETE,"Delete"),(EDIT, "Edit"),(CANCEL, "Cancel"),(COMPLETE, "Complete"), (INCOMPLETE, "Incomplete"), (NONE,"None")]
 
 
     #favor only has 1 status
