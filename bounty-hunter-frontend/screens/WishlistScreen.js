@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
         fontSize: 36,
         color: GLOBAL_STYLES.colors.blue300,
         textAlign: 'center',
+        marginBottom: 10,
     }
 })
 
