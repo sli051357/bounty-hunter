@@ -81,7 +81,7 @@ def favor_list(request): # ex: favors/
         else: 
             favors = favors.order_by('total_owed_amt')
 
-    # search favors 
+    # search favors by name
     search = request.GET.get('search')
     if search:
         favors = favors.filter(name__icontains=search)
