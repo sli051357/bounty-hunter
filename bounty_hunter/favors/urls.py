@@ -1,4 +1,5 @@
 from django.urls import path
+import rest_framework.authtoken.views
 from . import views
 
 urlpatterns = [
@@ -24,4 +25,3 @@ urlpatterns = [
     path("<int:favor_id>/test-change-status/",views.show_change_status, name="show_change_status")
 
 ]
-

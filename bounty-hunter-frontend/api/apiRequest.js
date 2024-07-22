@@ -78,6 +78,24 @@ const apiService = {
             throw error;
         }
     },
+
+    getFavorList: async (id, data) => {
+        try {
+            const response = await axiosInstance.get(`/favors/`, data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getSpecFavor: async (id, data) => {
+        try {
+            const response = await axiosInstance.get(`/favors/<int:favor_id>/`, data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
 };
 
 export default apiService;
