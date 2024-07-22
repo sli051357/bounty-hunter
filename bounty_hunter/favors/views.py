@@ -5,9 +5,25 @@ from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
 
-# Create your views here.
+
+CREATE = "Create"
+DELETE = "Delete"
+COMPLETE = "Complete"
+EDIT = "Edit"
+CANCEL = "Cancel" 
+NONE = "None"
+
+PENDING_CREATION = "Pending_creation" #1
+PENDING_EDITS = "Pending_edits" #2
+PENDING_DELETION = "Pending_deletion" #3
+INCOMPLETE = "Incomplete" #4
+COMPLETE = "Complete" #5
+PENDING_COMPLETION = "Pending_completion"
+# Ceate your views here.
 # view a list of all favors 
 def favor_list(request): # ex: favors/
+
+    update_favors(request.user)
 
     # AND/OR functionality - default query uses AND
     # for now, each category can only take 1 parameter
@@ -104,6 +120,7 @@ def favor_list(request): # ex: favors/
                   "tags": tags,}
         favors_list.append(f_data)
 
+
     return JsonResponse({"favors": favors_list})
 
 # view a specific favor based on id
@@ -148,7 +165,9 @@ def create_favor(request):
         if form.is_valid():
             favor = form.save(commit=False)
             favor.owner = request.user
-            # favor.status = "Pending_creation"
+            favor.points_value = 100
+            favor.owner_status = "Create"
+            favor.assignee_status = "None"
             favor.save()
             return JsonResponse({"success": True, "favor_id": favor.id})
         else:
@@ -200,4 +219,67 @@ def edit_tag(request, tag_id):
             return JsonResponse({"success": False, "errors": form.errors})
     else:
         return JsonResponse({"error": "GET method not allowed"}, status=405)
+
+# change status of a favor. Automatically determines if assignee or owner.
+def change_status(request, favor_id):
+    status = request.POST["status"]
+    favor = get_object_or_404(Favor, pk=favor_id)
+    if favor.owner == request.user:
+        (favor.owner_status,favor.assignee_status, favor.status) = help_change_status(favor.owner_status,favor.assignee_status, status, favor.status)
+    else:
+        (favor.assignee_status,favor.owner_status, favor.status) = help_change_status(favor.assignee_status,favor.owner_status, status, favor.status)
+
+    if favor == None:
+        return JsonResponse({"success": False})
+    
+    favor.save()
+    return JsonResponse({"success": True})
+
+#helper function changes status logic
+def help_change_status(sender_status, reciever_status, status, favor_status):
+    if reciever_status == NONE: # if assignee's status is default, owner can change to whatever they want, except cancel.
+        if (sender_status) == CANCEL:
+            return None
+        sender_status = status
+        favor_status = match_status(favor_status, sender_status, reciever_status)
+    else: #other's status is not NONE, it is a request. Now, owner can either cancel or accept:
+        if status == CANCEL: #cancel
+            sender_status = NONE
+            reciever_status = NONE
+            favor_status = match_status(favor_status, sender_status, reciever_status)
+        elif status == reciever_status: #accept changes
+            sender_status = status
+            favor_status = match_status(favor_status, sender_status, reciever_status)
+            sender_status = NONE
+            reciever_status = NONE
+        else: #not a valid status.
+            return None
+    return (sender_status, reciever_status, favor_status)
+
+    
+#helper function given statuses, sets favor status
+def match_status(favor_status, sender_status, reciever_status):
+    # if both NONE, do nothing.
+    if sender_status == NONE and reciever_status == NONE:
+        return favor_status 
+    
+    # Both are not none. So either they are 
+    # 1. both the same status and not None, so the status will be moved to the next state.
+    # 2. One state is cancel and the other is not NONE(given by other function). reset the status
+    # 3. One state is request chagne and the other is default. Therefore, it should be moved to that state.
+    match favor_status:
+        case PENDING_CREATION:
+            if sender_status == reciever_status:
+                favor_status = INCOMPLETE
+            elif sender_status == CANCEL or reciever_status == CANCEL:
+                favor_status = None ##delete the favor. Creation declined
+            else: 
+                
+
+        case PENDING_EDITS:
+
+        case PENDING_DELETION:
+        case INCOMPLETE:
+        case COMPLETE:
+
 
