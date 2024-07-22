@@ -54,17 +54,16 @@ class Favor(models.Model):
     privacy_choices = [(PRIVATE, "Private"), (PUBLIC, "Public"),]
     privacy =  models.CharField(max_length=7, choices=privacy_choices)
     
-    # status of the favor
-    PENDING_CREATION = "Pending_creation" #1
-    PENDING_EDITS = "Pending_edits" #2
-    PENDING_DELETION = "Pending_deletion" #3
-    INCOMPLETE = "Incomplete" #4
-    COMPLETE = "Complete" #5
-    status_choices = [(PENDING_CREATION, "Pending_creation"), (PENDING_EDITS, "Pending_edits"), 
-                      (PENDING_DELETION, "Pending_deletion"), (INCOMPLETE, "Incomplete"),
-                      (COMPLETE, "Complete"), ]
-    status = models.CharField(max_length=16, choices=status_choices)
+    CREATE = "Create"
+    DELETE = "Delete"
+    COMPLETE = "Complete"
+    INCOMPLETE = "Incomplete"
+    EDIT = "Edit"
+    CANCEL = "Cancel" 
+    NONE = "None"
 
+    status_choices = [CREATE,DELETE,COMPLETE,INCOMPLETE,EDIT]
+    status = models.CharField(max_length=16, choices=status_choices)
 
     points_value = models.IntegerField()
 
@@ -73,17 +72,9 @@ class Favor(models.Model):
     # if one status switches to Create, the other can either switch to Create or Cancel. One status switch also sets the status to Pending_[something]
     # cancel reests to None, None
     # Create Create switches to None, None, but also changes the favors status, like from Pending_creation to incomplete.
-    CREATE = "Create"
-    DELETE = "Delete"
-    COMPLETE = "Complete"
-    EDIT = "Edit"
-    CANCEL = "Cancel" 
-    NONE = "None"
-
-    request_choices = [CREATE,DELETE,COMPLETE,INCOMPLETE,EDIT]
-
-    owner_status = models.CharField(max_length=16, choices=request_choices)
-    assignee_status = models.CharField(max_length=16, choices=request_choices)
+    
+    owner_status = models.CharField(max_length=16, choices=status_choices)
+    assignee_status = models.CharField(max_length=16, choices=status_choices)
 
 
     def __str__(self):

@@ -4,26 +4,23 @@ from .models import Favor, Tag
 from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
+import datetime
+import types
 
 
 CREATE = "Create"
 DELETE = "Delete"
 COMPLETE = "Complete"
+INCOMPLETE = "Incomplete"
 EDIT = "Edit"
 CANCEL = "Cancel" 
 NONE = "None"
 
-PENDING_CREATION = "Pending_creation" #1
-PENDING_EDITS = "Pending_edits" #2
-PENDING_DELETION = "Pending_deletion" #3
-INCOMPLETE = "Incomplete" #4
-COMPLETE = "Complete" #5
-PENDING_COMPLETION = "Pending_completion"
+
+
 # Ceate your views here.
 # view a list of all favors 
 def favor_list(request): # ex: favors/
-
-    update_favors(request.user)
 
     # AND/OR functionality - default query uses AND
     # for now, each category can only take 1 parameter
@@ -56,18 +53,8 @@ def favor_list(request): # ex: favors/
     if tag_id:
         query = query_method(query, or_query, 'tags__id', tag_id)
 
-    # filter by status
-    status = request.GET.get('status')
-    if status == "1":
-        query = query_method(query, or_query, 'status', "Pending_creation")
-    if status == "2":
-        query = query_method(query, or_query, 'status', "Pending_edits")
-    if status == "3":
-        query = query_method(query, or_query, 'status', "Pending_deletion")
-    if status == "4":
-        query = query_method(query, or_query, 'status', "Incomplete")
-    if status == "5":
-        query = query_method(query, or_query, 'status', "Complete")
+    # filter by status (use the string constants)
+    status = request.GET.get('status') 
 
     favors = Favor.objects.filter(query).distinct()
 
@@ -116,7 +103,10 @@ def favor_list(request): # ex: favors/
                   "total_owed_type": f.total_owed_type,
                   "total_owed_amt": f.total_owed_amt,
                   "privacy": f.privacy,
-                  "status": f.status,
+                  "owner_status": f.owner_status,
+                  "assignee_status": f.assignee_status,
+                  "is_active": f.active, #only show active in frontend
+                  "is_completed": f.completed,
                   "tags": tags,}
         favors_list.append(f_data)
 
@@ -138,7 +128,8 @@ def favor_detail(request, favor_id):
                   "total_owed_type": favor.total_owed_type,
                   "total_owed_amt": favor.total_owed_amt,
                   "privacy": favor.privacy,
-                  "status": favor.status,
+                  "is_active": favor.active, #only show active in frontend
+                  "is_completed": favor.completed,
                   "tags": tags,}
     return JsonResponse(favor_data)
 
@@ -166,8 +157,10 @@ def create_favor(request):
             favor = form.save(commit=False)
             favor.owner = request.user
             favor.points_value = 100
-            favor.owner_status = "Create"
-            favor.assignee_status = "None"
+            favor.owner_status = CREATE
+            favor.assignee_status = NONE
+            favor.completed = False
+            favor.active = False
             favor.save()
             return JsonResponse({"success": True, "favor_id": favor.id})
         else:
@@ -225,9 +218,9 @@ def change_status(request, favor_id):
     status = request.POST["status"]
     favor = get_object_or_404(Favor, pk=favor_id)
     if favor.owner == request.user:
-        (favor.owner_status,favor.assignee_status, favor.status) = help_change_status(favor.owner_status,favor.assignee_status, status, favor.status)
+        (favor.owner_status,favor.assignee_status, favor) = help_change_status(favor.owner_status,favor.assignee_status, status, favor)
     else:
-        (favor.assignee_status,favor.owner_status, favor.status) = help_change_status(favor.assignee_status,favor.owner_status, status, favor.status)
+        (favor.assignee_status,favor.owner_status, favor) = help_change_status(favor.assignee_status,favor.owner_status, status, favor)
 
     if favor == None:
         return JsonResponse({"success": False})
@@ -236,50 +229,56 @@ def change_status(request, favor_id):
     return JsonResponse({"success": True})
 
 #helper function changes status logic
-def help_change_status(sender_status, reciever_status, status, favor_status):
+def help_change_status(sender_status, reciever_status, status, favor):
+    if sender_status == INCOMPLETE:
+        return None #no sending incomplete status
     if reciever_status == NONE: # if assignee's status is default, owner can change to whatever they want, except cancel.
         if (sender_status) == CANCEL:
             return None
         sender_status = status
-        favor_status = match_status(favor_status, sender_status, reciever_status)
     else: #other's status is not NONE, it is a request. Now, owner can either cancel or accept:
-        if status == CANCEL: #cancel
+        if status == CANCEL: #cancel, no change to favor
             sender_status = NONE
             reciever_status = NONE
-            favor_status = match_status(favor_status, sender_status, reciever_status)
         elif status == reciever_status: #accept changes
-            sender_status = status
-            favor_status = match_status(favor_status, sender_status, reciever_status)
+            favor = update_favor_from_status(favor, sender_status)
             sender_status = NONE
             reciever_status = NONE
         else: #not a valid status.
-            return None
-    return (sender_status, reciever_status, favor_status)
+            return (sender_status, reciever_status, None)
+        
+    return (sender_status, reciever_status, favor)
 
+def update_favor_from_status(favor, status):
+
+    #terrible switch case workaround because python is buttcheeks
+    consts = types.SimpleNamespace()
+    consts.INCOMPLETE = "Incomplete" #default
+    consts.CREATE = "Create" #1
+    consts.DELETE = "Delete" #2
+    consts.COMPLETE = "Complete" #3
+    consts.EDIT = "Edit" #4
+    consts.CANCEL = "Cancel"  #5
+    consts.NONE = "None" #6
+
+
+    match status:
+        case consts.DELETE:
+            favor.active = False 
+        case consts.CREATE:
+            favor.active = True
+            favor.created_at = datetime.date.today()
+            favor.updated_at = datetime.date.today()
+        case consts.COMPLETE:
+            favor.completed = True
+        case consts.EDIT:
+            favor.updated_at = datetime.date.today()
+            favor = update_favor_with_edits(favor)
     
-#helper function given statuses, sets favor status
-def match_status(favor_status, sender_status, reciever_status):
-    # if both NONE, do nothing.
-    if sender_status == NONE and reciever_status == NONE:
-        return favor_status 
-    
-    # Both are not none. So either they are 
-    # 1. both the same status and not None, so the status will be moved to the next state.
-    # 2. One state is cancel and the other is not NONE(given by other function). reset the status
-    # 3. One state is request chagne and the other is default. Therefore, it should be moved to that state.
-    match favor_status:
-        case PENDING_CREATION:
-            if sender_status == reciever_status:
-                favor_status = INCOMPLETE
-            elif sender_status == CANCEL or reciever_status == CANCEL:
-                favor_status = None ##delete the favor. Creation declined
-            else: 
-                
+    return favor
 
-        case PENDING_EDITS:
-
-        case PENDING_DELETION:
-        case INCOMPLETE:
-        case COMPLETE:
+def update_favor_with_edits(favor):
+    #make the edits to the favor permanent
+    return favor
 
 
