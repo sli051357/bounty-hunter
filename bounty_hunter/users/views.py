@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.template import loader
-from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -13,10 +12,13 @@ from django.shortcuts import redirect
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponse, Http404
+
 
 from PIL import Image
 from django.core.files import File
+
+from django.contrib import messages
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
@@ -45,7 +47,6 @@ def profile_pic(request, request_username):
 
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
-    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
     linked_accs_list_strs = []
     for entry in linked_accs_list:
@@ -169,6 +170,57 @@ def verify(request, token):
     request_user.is_active = True
     request_user.save()
     return redirect('/users/sign-up/')
+
+def reset_password(request):
+    email = request.POST["email"]
+    try:
+        attempt_user = get_object_or_404(User, email=email)
+    except Http404:
+        messages.add_message(request, messages.ERROR, "User does not exist.")
+        return redirect('temp')
+
+    user_token = get_object_or_404(Token, user=attempt_user)
+    
+    send_mail(
+    subject="Reset your Password",
+    message=BASE_URL + "users/reset-password/" + str(user_token.key),
+    from_email=EMAIL_HOST_USER,
+    recipient_list=[email],
+    fail_silently=False
+    )
+    messages.add_message(request, messages.SUCCESS, "Email sent!")
+    return redirect('temp')
+
+
+
+def show_create_new_password(request, token):
+    context = {"token":token}
+    return render(request, "users/reset-password.html", context)
+
+def create_new_password(request):
+    pass1 = request.POST["pass1"]
+    pass2 = request.POST["pass2"]
+    token = request.POST["token"]
+
+    if pass1 != pass2:
+        print("passwords dont match")
+        messages.add_message(request, messages.ERROR, "Passwords do not match.")
+        return redirect('temp')
+    
+    user = get_object_or_404(Token,key=token).user
+    user.password = pass1
+    user.save()
+
+    messages.add_message(request, messages.SUCCESS, "Password changed.")
+    print("changed password")
+    return redirect('temp')
+
+
+def temp(request):
+    context = {}
+    return render(request, "users/forgot.html", context)
+
+
 
 
 
