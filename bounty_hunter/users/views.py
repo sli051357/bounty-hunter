@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.template import loader
-from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -13,12 +12,13 @@ from django.shortcuts import redirect
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 
-from django.http import HttpResponseNotFound
-from django.http import Http404
+from django.http import HttpResponseNotFound, HttpResponse, Http404
 
 
 from PIL import Image
 from django.core.files import File
+
+from django.contrib import messages
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
@@ -176,6 +176,7 @@ def reset_password(request):
     try:
         attempt_user = get_object_or_404(User, email=email)
     except Http404:
+        messages.add_message(request, messages.ERROR, "User does not exist.")
         return redirect('temp')
 
     user_token = get_object_or_404(Token, user=attempt_user)
@@ -187,6 +188,7 @@ def reset_password(request):
     recipient_list=[email],
     fail_silently=False
     )
+    messages.add_message(request, messages.SUCCESS, "Email sent!")
     return redirect('temp')
 
 
@@ -201,11 +203,16 @@ def create_new_password(request):
     token = request.POST["token"]
 
     if pass1 != pass2:
-        return redirect('reset_password')
+        print("passwords dont match")
+        messages.add_message(request, messages.ERROR, "Passwords do not match.")
+        return redirect('temp')
     
     user = get_object_or_404(Token,key=token).user
     user.password = pass1
     user.save()
+
+    messages.add_message(request, messages.SUCCESS, "Password changed.")
+    print("changed password")
     return redirect('temp')
 
 
