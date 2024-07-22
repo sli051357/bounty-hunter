@@ -11,5 +11,8 @@ export const GLOBAL_STYLES = {
         orange700: '#D04306', // Dark Orange
         orange300: '#F2B093', // Light Orange
         orange100: '#FBE1D2', // Super Light Orange
+
+        error700: '#f37c13',
+        error300: '#fcdcbf',
     }
 }
