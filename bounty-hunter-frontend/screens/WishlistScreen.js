@@ -19,6 +19,7 @@ function WishlistScreen({ user }) {
                     imagePath={{uri: 'https://www.lego.com/cdn/cs/set/assets/bltc4a6c2103a34f22e/10313_alt2.png?format=webply&fit=bounds&quality=70&width=800&height=800&dpr=1.5'}}
                 />
             </View>
+            
         </ScrollView>
     )
 }
@@ -27,8 +28,8 @@ const styles = StyleSheet.create({
     page: {
         backgroundColor: GLOBAL_STYLES.colors.brown300,
         flex: 1,
-        paddingHorizontal: '5%',
         paddingTop: 100,
+        paddingHorizontal: '5%',
     },
     headerText: {
         fontFamily: 'BaiJamjuree-Bold',

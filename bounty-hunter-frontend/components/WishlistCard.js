@@ -6,20 +6,33 @@ import Hyperlink from 'react-native-hyperlink';
 import { GLOBAL_STYLES } from '../constants/styles';
 
 function WishlistCard({ title, description, price, imagePath }) {
+
+    function deleteItem() {
+        console.log('deleted');
+    }
+
     return (
-        <View style={styles.card}>
-            <View style={{width: '69%', flexWrap: 'wrap'}}>
-                <Text style={styles.titleText}>{title}</Text>
+        <View>
+            <View style={styles.card}>
+                <View style={{width: '69%', flexWrap: 'wrap'}}>
+                    <Text style={styles.titleText}>{title}</Text>
 
-                <Hyperlink linkDefault={true} linkStyle={styles.linkStyle}>
-                    <Text style={styles.descriptionText}>Test Test aaaa {description}</Text>
-                </Hyperlink>
+                    <Hyperlink linkDefault={true} linkStyle={styles.linkStyle}>
+                        <Text style={styles.descriptionText}>Test Test aaaa {description}</Text>
+                    </Hyperlink>
 
-                <Text style={styles.priceText}>${price}</Text>
+                    <Text style={styles.priceText}>${price}</Text>
+                </View>
+
+                <View>
+                    <Image style={styles.imageStyle} source={imagePath}/>
+                </View>
             </View>
 
-            <View>
-                <Image style={styles.imageStyle} source={imagePath}/>
+            <View style={{position: 'absolute', top: -15, left: -10,}}>
+                <Pressable onPress={(deleteItem)} style={styles.button}>
+                    <Text style={styles.buttonText}>—</Text>
+                </Pressable>
             </View>
         </View>
     )
@@ -63,6 +76,20 @@ const styles = StyleSheet.create({
         height: 100,
         marginLeft: 15,
     },
+    button: {
+        paddingTop: 3,
+        paddingBottom: 3,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: GLOBAL_STYLES.colors.blue300,
+        borderRadius: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        fontFamily: 'BaiJamjuree-Bold',
+        color: GLOBAL_STYLES.colors.brown300,
+    }
 })
 
 export default WishlistCard;
