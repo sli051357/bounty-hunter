@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
         backgroundColor: GLOBAL_STYLES.colors.brown300,
         flex: 1,
         paddingTop: 100,
-        paddingHorizontal: '5%',
     },
     headerText: {
         fontFamily: 'BaiJamjuree-Bold',

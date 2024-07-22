@@ -5,14 +5,15 @@ import Hyperlink from 'react-native-hyperlink';
 
 import { GLOBAL_STYLES } from '../constants/styles';
 
-function WishlistCard({ title, description, price, imagePath }) {
+function WishlistCard({ title, description, price, imagePath, isEditing }) {
 
     function deleteItem() {
         console.log('deleted');
     }
 
     return (
-        <View>
+        <View style={{paddingLeft: '5%', paddingRight: '5%'}}>
+            {/* Wishlist Card */}
             <View style={styles.card}>
                 <View style={{width: '69%', flexWrap: 'wrap'}}>
                     <Text style={styles.titleText}>{title}</Text>
@@ -29,10 +30,16 @@ function WishlistCard({ title, description, price, imagePath }) {
                 </View>
             </View>
 
-            <View style={{position: 'absolute', top: -15, left: -10,}}>
-                <Pressable onPress={(deleteItem)} style={styles.button}>
-                    <Text style={styles.buttonText}>—</Text>
-                </Pressable>
+            {/* Delete Button (Conditional rendering)*/}
+            <View style={{position: 'absolute', top: -15, left: 10,}}>
+                {isEditing ? (
+                    <Pressable onPress={(deleteItem)} style={styles.button}>
+                        <Text style={styles.buttonText}>—</Text>
+                    </Pressable>
+                ) : (
+                    <View></View>
+                )}
+                    
             </View>
         </View>
     )
