@@ -14,6 +14,8 @@ from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 
 from django.http import HttpResponseNotFound
+from django.http import Http404
+
 
 from PIL import Image
 from django.core.files import File
@@ -45,7 +47,6 @@ def profile_pic(request, request_username):
 
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
-    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
     linked_accs_list_strs = []
     for entry in linked_accs_list:
@@ -169,6 +170,50 @@ def verify(request, token):
     request_user.is_active = True
     request_user.save()
     return redirect('/users/sign-up/')
+
+def reset_password(request):
+    email = request.POST["email"]
+    try:
+        attempt_user = get_object_or_404(User, email=email)
+    except Http404:
+        return redirect('temp')
+
+    user_token = get_object_or_404(Token, user=attempt_user)
+    
+    send_mail(
+    subject="Reset your Password",
+    message=BASE_URL + "users/reset-password/" + str(user_token.key),
+    from_email=EMAIL_HOST_USER,
+    recipient_list=[email],
+    fail_silently=False
+    )
+    return redirect('temp')
+
+
+
+def show_create_new_password(request, token):
+    context = {"token":token}
+    return render(request, "users/reset-password.html", context)
+
+def create_new_password(request):
+    pass1 = request.POST["pass1"]
+    pass2 = request.POST["pass2"]
+    token = request.POST["token"]
+
+    if pass1 != pass2:
+        return redirect('reset_password')
+    
+    user = get_object_or_404(Token,key=token).user
+    user.password = pass1
+    user.save()
+    return redirect('temp')
+
+
+def temp(request):
+    context = {}
+    return render(request, "users/forgot.html", context)
+
+
 
 
 
