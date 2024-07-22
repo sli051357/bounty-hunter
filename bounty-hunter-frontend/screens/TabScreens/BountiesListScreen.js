@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import IconButton from "../components/UI/IconButton";
-import FavorCard from "../components/FavorCard";
+import { GLOBAL_STYLES } from "../../constants/styles";
+import IconButton from "../../components/UI/IconButton";
+import FavorCard from "../../components/FavorCard";
 // import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
 import { useDispatch, useSelector } from "react-redux";
-import { removeBounty } from "../store/bountyList";
+import { removeBounty } from "../../store/bountyList";
 
-function BountiesList(){
+function BountiesListScreen(){
     const userBountyList = useSelector((state) => state.bountyList.bountyList);
     const dispatch = useDispatch();
     //console.log(userBountyList);
@@ -82,4 +82,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default BountiesList;
+export default BountiesListScreen;

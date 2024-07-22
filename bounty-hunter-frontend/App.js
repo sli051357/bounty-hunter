@@ -3,27 +3,26 @@ import { StatusBar } from 'expo-status-bar';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import {View, Text, Button} from 'react-native';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import { setAuthToken } from './store/authToken';
+import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { SafeAreaView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { Text } from 'react-native';
 
-import UserProfileScreen from './screens/UserProfileScreen';
-import BountiesList from './screens/BountiesList';
+import UserProfileStackScreen from './screens/TabScreens/UserProfileStackScreen';
+import BountiesListScreen from './screens/TabScreens/BountiesListScreen';
 import WelcomeScreen from './screens/SignInScreens/WelcomeScreen';
 import SignUpScreen from './screens/SignInScreens/SignUpScreen';
 import LoginScreen from './screens/SignInScreens/LoginScreen';
 import VerifyEmailScreen from './screens/SignInScreens/VerifyEmailScreen';
 import UpdatePasswordScreen from './screens/SignInScreens/UpdatePasswordScreen';
 import ReturnLoginScreen from './screens/SignInScreens/ReturnLoginScreen';
-import LoadingOverlay from './components/UI/AccountHelpers/LoadingOverlay';
-
+import LeaderBoardScreen from './screens/TabScreens/LeaderBoardScreen';
+import WishListScreen from './screens/TabScreens/WishListScreen';
+import FriendListScreen from './screens/TabScreens/FriendListScreen';
+import { store, persistor } from './store/redux/store';
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
-import { store, persistor } from './store/redux/store';
 
 
 
@@ -31,6 +30,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function AuthStack() {
+  // console.log('Auth')
   return (
       <Stack.Navigator>
         <Stack.Screen
@@ -84,22 +84,83 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
-  //const username = useSelector(state => state.username);
-  //const dispatch = useDispatch();
+  // console.log('Authenticated')
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="UserProfileScreen"
-      component={UserProfileScreen}/>
-      <Tab.Screen name='BountiesList'
-      component={BountiesList}/>
+    <Tab.Navigator screenOptions={({route}) => ({
+      tabBarIcon: ({color, size, focused}) => {
+        let iconName; 
+        switch(route.name) {
+          case 'Leaderboard':
+            iconName = focused ? 'bar-chart' :
+              'bar-chart-outline';
+            break;
+          case 'Bounties':
+            iconName = focused ? 'briefcase' :
+               'briefcase-outline';
+            break;
+          case 'Friends':
+            iconName = focused ? 'people' :
+             'people-outline';
+            break;
+          case 'Wishlist':
+            iconName = focused ? 'gift' :
+              'gift-outline';
+            break;
+          case 'Profile':
+            iconName = focused ? 'person' :
+              'person-outline';
+        }
+        return <Ionicons name={iconName} 
+          size={size}
+          color={color}/>
+      },
+      tabBarLabel: ({children, color, focused}) => {
+        return (
+        <Text style={{fontSize: 12, color: {color}, fontWeight: focused ? 'bold' : 'normal'}}>
+          {children}
+        </Text>)
+      },
+      tabBarStyle: {
+        backgroundColor: GLOBAL_STYLES.colors.brown500,
+        color: GLOBAL_STYLES.colors.brown300,
+        height: 80,
+        // Work in Progress
+      }
+    })
+    }>
+      <Tab.Screen 
+      name="Leaderboard"
+      component={LeaderBoardScreen}
+      options={{
+        headerTitle: '',
+        headerTransparent: true,
+        headerShadowVisible: false
+      }}/>
+
+      <Tab.Screen 
+      name='Bounties'
+      component={BountiesListScreen}/>
+
+      <Tab.Screen 
+      name="Friends"
+      component={FriendListScreen}/>
+
+      <Tab.Screen 
+      name='Wishlist'
+      component={WishListScreen}/>
+
+      <Tab.Screen 
+      name='Profile'
+      component={UserProfileStackScreen}
+      options={{
+        headerShown: false
+      }}/>
     </Tab.Navigator>
   )
 }
 
 function Root() {
   const authToken = useSelector(state => state.authToken);
-  // console.log(authToken.authToken)
-
   if (authToken.authToken) {
     return <AuthenticatedStack />
   } else {
