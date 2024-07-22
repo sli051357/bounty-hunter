@@ -7,7 +7,7 @@ from django.db.models import Q
 
 # Create your views here.
 # view a list of all favors 
-def favor_list(request): 
+def favor_list(request): # ex: favors/
 
     # AND/OR functionality - default query uses AND
     # for now, each category can only take 1 parameter
@@ -81,9 +81,13 @@ def favor_list(request):
         else: 
             favors = favors.order_by('total_owed_amt')
 
-    #favors_list = list(favors.values())
-    favors_list = []
+    # search favors by name
+    search = request.GET.get('search')
+    if search:
+        favors = favors.filter(name__icontains=search)
 
+    # display favors and corresponding tags
+    favors_list = []
     for f in favors:
         tags = list(f.tags.all().values())
         f_data = {"name": f.name, 
