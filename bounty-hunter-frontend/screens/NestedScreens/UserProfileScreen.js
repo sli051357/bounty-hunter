@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, Image, Pressable, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
-import { GLOBAL_STYLES } from "../../constants/styles";
+import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../../util/dummy-data.js';
 import EditAboutMe from "../../components/UI/UserProfileHelpers/EditAboutMe.js";
 import EditPaymentMethods from "../../components/UI/UserProfileHelpers/EditPaymentMethods.js";
@@ -37,6 +38,7 @@ import apiService from "../../api/apiRequest.js";
 */ 
 
 function UserProfileScreen({ user, isPersonalProfile }){
+    const username = useSelector(state => state.username);
     const [editAboutMe, setEditAboutMe] = useState(false);
     const [editPayment, setEditPayment] = useState(false);
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
@@ -106,7 +108,7 @@ function UserProfileScreen({ user, isPersonalProfile }){
                 <View style={styles.userMainDetailsView}>
                     <Image style={styles.profilePicture} source={require('../../assets/batman.jpeg')}/>
                     <View>
-                        <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.username}</Text>
+                        <Text style={styles.userDetailsText}>{username.username.toUpperCase()}</Text>
                         <Text style={[styles.text, {textAlign: 'center'}]}>ID: {DUMMY_USER_PROFILE.ID}</Text>
                     </View>
                 </View>
@@ -149,7 +151,7 @@ function UserProfileScreen({ user, isPersonalProfile }){
                         <IconButton icon='swap-vertical-sharp' color='grey' iconSize={22} onPress={() => console.log('Sort Button')}/>
                     </Pressable>
                 </View>
-                {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor}/>)}
+                {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor} onPress={() => console.log('Favor Card Details')}/>)}
             </View>
         </ScrollView>
     )

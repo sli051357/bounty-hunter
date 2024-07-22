@@ -9,7 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from 'react-native';
 
-import UserProfileScreen from './screens/TabScreens/UserProfileScreen';
+import UserProfileStackScreen from './screens/TabScreens/UserProfileStackScreen';
 import BountiesListScreen from './screens/TabScreens/BountiesListScreen';
 import WelcomeScreen from './screens/SignInScreens/WelcomeScreen';
 import SignUpScreen from './screens/SignInScreens/SignUpScreen';
@@ -30,6 +30,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function AuthStack() {
+  // console.log('Auth')
   return (
       <Stack.Navigator>
         <Stack.Screen
@@ -83,8 +84,7 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
-  //const username = useSelector(state => state.username);
-  //const dispatch = useDispatch();
+  // console.log('Authenticated')
   return (
     <Tab.Navigator screenOptions={({route}) => ({
       tabBarIcon: ({color, size, focused}) => {
@@ -151,26 +151,9 @@ function AuthenticatedStack() {
 
       <Tab.Screen 
       name='Profile'
-      component={UserProfileScreen}
+      component={UserProfileStackScreen}
       options={{
-        headerTitle: '',
-        headerStyle: {
-          backgroundColor: GLOBAL_STYLES.colors.brown300
-        },
-        headerShadowVisible: false,
-        headerRight: () => {
-          return (
-            <IconButton 
-            icon='settings-outline'
-            color={GLOBAL_STYLES.colors.blue300}
-            onPress={() => console.log('setting page')}
-            iconSize={24}
-            />
-          )
-        },
-        headerRightContainerStyle: {
-          paddingRight: 14 
-        }
+        headerShown: false
       }}/>
     </Tab.Navigator>
   )
@@ -178,8 +161,6 @@ function AuthenticatedStack() {
 
 function Root() {
   const authToken = useSelector(state => state.authToken);
-  // console.log(authToken.authToken)
-
   if (authToken.authToken) {
     return <AuthenticatedStack />
   } else {
