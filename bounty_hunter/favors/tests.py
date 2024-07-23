@@ -1,7 +1,8 @@
+import decimal
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import Favor
+from .models import Favor, Tag
 from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE
 import datetime
 
@@ -98,7 +99,7 @@ class FavorListTestCase(TestCase):
             owner=self.user_owner, 
             assignee=self.user_assignee1,
             total_owed_type = "Monetary",
-            total_owed_amt = 5.00,
+            total_owed_amt = '5.25',
             completed = True
         )
         self.favor1.tags.set([self.tag1, self.tag2])
@@ -108,7 +109,7 @@ class FavorListTestCase(TestCase):
             owner=self.user_owner, 
             assignee=self.user_assignee2,
             total_owed_type = "Monetary",
-            total_owed_amt = 10.00,
+            total_owed_amt = '10.00',
             completed = False
         )
         self.favor2.tags.set([self.tag1])
@@ -127,7 +128,7 @@ class FavorListTestCase(TestCase):
             owner=self.user_owner, 
             assignee=self.user_assignee2,
             total_owed_type = "Monetary",
-            total_owed_amt = 5.50,
+            total_owed_amt = '5.50',
             completed = False
         )
         self.favor4.tags.set([self.tag3])
@@ -144,7 +145,7 @@ class FavorListTestCase(TestCase):
     # test for AND
     def test_and_query(self):
         self.maxDiff = None
-        url = reverse('favor_list') + '?query=and&assignee=2&tag=3'
+        url = reverse('favor_list') + f'?query=and&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
         response = self.client.get(url)
         output = response.json()
         expected_tags = list(self.favor3.tags.all().values())
@@ -175,7 +176,7 @@ class FavorListTestCase(TestCase):
     # test for OR
     def test_or_query(self):
         self.maxDiff = None
-        url = reverse('favor_list') + '?query=or&assignee=2&tag=3'
+        url = reverse('favor_list') + f'?query=or&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
         response = self.client.get(url)
         output = response.json()
         expected_f_data = []
@@ -201,21 +202,12 @@ class FavorListTestCase(TestCase):
         print("assignee1 id: ", self.user_assignee1.id)
         print("tag3 id: ", self.tag3.id)
         # Remove timestamps in output and expected data
-        '''
-        if output['favors']:
-            output['favors'][0] = self.remove_timestamps(output['favors'][0])
-            output['favors'][1] = self.remove_timestamps(output['favors'][1])
-            output['favors'][2] = self.remove_timestamps(output['favors'][2])
-        expected['favors'][0] = self.remove_timestamps(expected['favors'][0])
-        expected['favors'][1] = self.remove_timestamps(expected['favors'][1])
-        expected['favors'][2] = self.remove_timestamps(expected['favors'][2])
-               '''
+        output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
+        expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
         self.assertEqual(output, expected)
  
         
-    # test filter for all of the categories
-
-    # test sort for all categories
+    # test filter & sort with as many categories as possible
 
     # test searching
 
