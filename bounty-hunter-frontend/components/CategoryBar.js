@@ -11,7 +11,7 @@ import { AntDesign } from '@expo/vector-icons';
     This is the bar that swaps between categories on the friend list page. Unfortunately I couldn't quite figure out how to do this without hardcoding each button individually, but I also don't see this sort of category thing being used on other pages, so maybe that will be okay (or someone smarter than me can help fix it lol)
 */}
 
-function CategoryBar() {
+function CategoryBar({ stateChanger, list1, list2, list3 }) {
     const [ button1, setButton1 ] = useState(true);
     const [ button2, setButton2 ] = useState(false);
     const [ button3, setButton3 ] = useState(false);
@@ -20,21 +20,21 @@ function CategoryBar() {
         setButton1(true);
         setButton2(false);
         setButton3(false);
-        console.log('button 1 pressed');
+        stateChanger(1);
     }
 
     function clickButton2() {
         setButton1(false);
         setButton2(true);
         setButton3(false);
-        console.log('button 2 pressed');
+        stateChanger(2);
     }
 
     function clickButton3() {
         setButton1(false);
         setButton2(false);
         setButton3(true);
-        console.log('button 3 pressed');
+        stateChanger(3);
     }
 
     return (
@@ -42,7 +42,7 @@ function CategoryBar() {
             <Pressable onPress={(clickButton1)} style={{width: '25%'}}>
                 {button1 ? (
                     <View style={[styles.button, {backgroundColor: GLOBAL_STYLES.colors.orange700}]}>
-                        <Text style={styles.buttonText}>All ({DUMMY_USER_PROFILE.friends.length})</Text>
+                        <Text style={styles.buttonText}>All ({list1.length})</Text>
                     </View>
                 ) : (
                     <View style={[styles.button]}>
@@ -54,7 +54,7 @@ function CategoryBar() {
             <Pressable onPress={(clickButton2)} style={{width: '37.5%'}}>
                 {button2 ? (
                     <View style={[styles.button, {backgroundColor: GLOBAL_STYLES.colors.orange700}]}>
-                        <Text style={styles.buttonText}>Favorites (##)</Text>
+                        <Text style={styles.buttonText}>Favorites ({list2.length})</Text>
                     </View>
                 ) : (
                     <View style={[styles.button]}>
@@ -66,7 +66,7 @@ function CategoryBar() {
             <Pressable onPress={(clickButton3)} style={{width: '37.5%'}}>
                 {button3 ? (
                     <View style={[styles.button, {backgroundColor: GLOBAL_STYLES.colors.orange700}]}>
-                        <Text style={styles.buttonText}>Requests (##)</Text>
+                        <Text style={styles.buttonText}>Requests ({list3.length})</Text>
                     </View>
                 ) : (
                     <View style={[styles.button]}>

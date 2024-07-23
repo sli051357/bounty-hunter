@@ -13,7 +13,7 @@ import { AntDesign, FontAwesome6 } from '@expo/vector-icons';
   */}
 
 function FriendCard({ friend, imagePath }) {
-    const [ favorite, setFavorite ] = useState(false);
+    const [ favorite, setFavorite ] = useState(friend.fav);
 
     function editFavoriteStatus() {
         setFavorite((curr) => !curr);
@@ -30,7 +30,7 @@ function FriendCard({ friend, imagePath }) {
 
             {/* Friend Text */}
             <View>
-                <Text style={styles.usernameText}>{friend}</Text>
+                <Text style={styles.usernameText}>{friend.nickname}</Text>
                 <Text style={styles.userID}>Username</Text>
             </View>
 

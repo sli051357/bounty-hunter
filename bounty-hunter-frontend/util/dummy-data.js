@@ -3,8 +3,13 @@ export const DUMMY_USER_PROFILE = {
     username : 'BATMAN2077',
     ID: 'A12345678',
     rating: '92',
-    friends: ['Superman012', 'Joker13'
-        , 'SamCat2013', 'RoboCop_64', 'WonderWomen45'],
+    friends: [
+        {nickname: 'Superman012', fav: true},
+        {nickname: 'Joker13', fav: false},
+        {nickname: 'SamCat2013', fav: false},
+        {nickname: 'RoboCop_64', fav: false},
+        {nickname: 'WonderWoman45', fav: true}, 
+    ],
     aboutMe: 'JUSTICEEEEEEEEEE',
     paymentMethods: [
         'Venmo: JusticeLeagueLLC', 
