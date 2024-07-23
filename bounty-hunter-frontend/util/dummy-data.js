@@ -4,11 +4,11 @@ export const DUMMY_USER_PROFILE = {
     ID: 'A12345678',
     rating: '92',
     friends: [
-        {nickname: 'Superman012', fav: true},
-        {nickname: 'Joker13', fav: false},
-        {nickname: 'SamCat2013', fav: false},
-        {nickname: 'RoboCop_64', fav: false},
-        {nickname: 'WonderWoman45', fav: true}, 
+        {nickname: 'Superman012', id: 'A87654321', fav: true},
+        {nickname: 'Joker13', id:'J13503923', fav: false},
+        {nickname: 'SamCat2013', id: 'PU028385', fav: false},
+        {nickname: 'RoboCop_64', id: '0DK23JL', fav: false},
+        {nickname: 'WonderWoman45', id: 'A1309524', fav: true}, 
     ],
     aboutMe: 'JUSTICEEEEEEEEEE',
     paymentMethods: [

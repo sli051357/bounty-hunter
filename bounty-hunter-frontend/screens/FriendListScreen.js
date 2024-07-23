@@ -8,10 +8,22 @@ import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import SearchBar from '../components/SearchBar'
 import CategoryBar from '../components/CategoryBar';
 import FriendCard from '../components/FriendCard'
+import FriendRequest from '../components/FriendRequest'
 
 function FriendListScreen() {
     const [curScreen, setCurScreen] = useState(1);
     const [search, setSearch] = useState(false);
+
+    const DUMMY_REQUESTS = [
+        {
+            username: 'GreenGoblin123',
+            id: 'G10397593',
+        },
+        {
+            username: 'Hulk',
+            id: 'hulk',
+        }
+    ]
 
     function setSearchStatus() {
         setSearch((curr) => !curr);
@@ -23,13 +35,14 @@ function FriendListScreen() {
     }
 
     let content;
+    let navBar = <CategoryBar stateChanger={setCurScreen} list1={DUMMY_USER_PROFILE.friends} list2={DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true))} list3={DUMMY_REQUESTS}/>;
 
     // Friend List
     if (curScreen == 1) {
         content = 
         
         <View>
-            <CategoryBar stateChanger={setCurScreen} list1={DUMMY_USER_PROFILE.friends} list2={DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true))} list3={[1, 2]}/>
+            {navBar}
                
             {DUMMY_USER_PROFILE.friends.map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../assets/batman.jpeg')} />)}
         </View>
@@ -40,7 +53,7 @@ function FriendListScreen() {
         
         content = 
         <View>
-            <CategoryBar stateChanger={setCurScreen} list1={DUMMY_USER_PROFILE.friends} list2={DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true))} list3={[1, 2]}/>
+            {navBar}
 
             {DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true)).map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../assets/batman.jpeg')} />)}
         </View>
@@ -49,7 +62,9 @@ function FriendListScreen() {
     } else if (curScreen == 3) {
         content = 
         <View>
-            <CategoryBar stateChanger={setCurScreen} list1={DUMMY_USER_PROFILE.friends} list2={DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true))} list3={[1, 2]}/>
+            {navBar}
+
+            {DUMMY_REQUESTS.map((user) => <FriendRequest key={user.username} user={user} imagePath={require('../assets/batman.jpeg')} />)}
         </View>
 
     // Friend Search -  replace with actual search function
@@ -88,7 +103,7 @@ const styles = StyleSheet.create({
         backgroundColor: GLOBAL_STYLES.colors.brown300,
         flex: 1,
         paddingHorizontal: '5%',
-        paddingTop: 50,
+        paddingTop: 100,
     },
     headerText: {
         fontFamily: 'BaiJamjuree-Bold',

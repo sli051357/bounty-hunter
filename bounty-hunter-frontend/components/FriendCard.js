@@ -31,7 +31,7 @@ function FriendCard({ friend, imagePath }) {
             {/* Friend Text */}
             <View>
                 <Text style={styles.usernameText}>{friend.nickname}</Text>
-                <Text style={styles.userID}>Username</Text>
+                <Text style={styles.userID}>{friend.id}</Text>
             </View>
 
 
