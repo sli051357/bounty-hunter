@@ -156,3 +156,12 @@ export default apiService;
 //     path('profiles/<slug:request_username>/add-link', views.add_link, name="add_link"),
 //     path('profiles/<slug:request_username>/remove-link', views.remove_link, name="remove_link"),
 //     path('get-token/', rest_framework.authtoken.views.obtain_auth_token)
+
+//     path("", views.favor_list, name="favor_list"), 
+//     path("<int:favor_id>/", views.favor_detail, name="favor_detail"),
+//     path("create/", views.create_favor, name="create_favor"),
+//     path("<int:favor_id>/edit", views.edit_favor, name="edit_favor"),
+//     path("tags/", views.tag_list, name="tag_list"),
+//     path("tags/<int:tag_id>/", views.tag_detail, name="tag_detail"),
+//     path("tags/create", views.create_tag, name="create_tag"),
+//     path("tags/<int:tag_id>/edit/", views.edit_tag, name="edit_tag")
