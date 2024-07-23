@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
 
-import { GLOBAL_STYLES } from '../constants/styles';
-import { DUMMY_USER_PROFILE } from '../util/dummy-data.js';
+import { GLOBAL_STYLES } from '../../constants/styles.js';
+import { DUMMY_USER_PROFILE } from '../../util/dummy-data.js';
 
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import SearchBar from '../components/SearchBar'
-import CategoryBar from '../components/CategoryBar';
-import FriendCard from '../components/FriendCard'
-import FriendRequest from '../components/FriendRequest'
+import SearchBar from '../../components/SearchBar.js'
+import CategoryBar from '../../components/CategoryBar.js';
+import FriendCard from '../../components/FriendCard.js'
+import FriendRequest from '../../components/FriendRequest.js'
 
 function FriendListScreen() {
     const [curScreen, setCurScreen] = useState(1);
@@ -44,7 +44,7 @@ function FriendListScreen() {
         <View>
             {navBar}
                
-            {DUMMY_USER_PROFILE.friends.map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../assets/batman.jpeg')} />)}
+            {DUMMY_USER_PROFILE.friends.map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../../assets/batman.jpeg')} />)}
         </View>
 
     // Favorite Friends
@@ -55,7 +55,7 @@ function FriendListScreen() {
         <View>
             {navBar}
 
-            {DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true)).map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../assets/batman.jpeg')} />)}
+            {DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true)).map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../../assets/batman.jpeg')} />)}
         </View>
 
     // Requests
@@ -64,7 +64,7 @@ function FriendListScreen() {
         <View>
             {navBar}
 
-            {DUMMY_REQUESTS.map((user) => <FriendRequest key={user.username} user={user} imagePath={require('../assets/batman.jpeg')} />)}
+            {DUMMY_REQUESTS.map((user) => <FriendRequest key={user.username} user={user} imagePath={require('../../assets/batman.jpeg')} />)}
         </View>
 
     // Friend Search -  replace with actual search function
