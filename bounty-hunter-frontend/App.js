@@ -81,14 +81,6 @@ function AuthStack() {
             headerTransparent: true,
             headerBackVisible: false
             }}/>
-          <Stack.Screen
-          name="FriendList"
-          component={FriendListScreen}
-          options={{
-            headerTitle: '',
-            headerTransparent: true,
-            headerBackVisible: false
-          }}/>
       </Stack.Navigator>
   )
 }
@@ -102,6 +94,8 @@ function AuthenticatedStack() {
       component={UserProfileScreen}/>
       <Tab.Screen name='BountiesList'
       component={BountiesList}/>
+      <Tab.Screen name='FriendsList'
+      component={FriendListScreen}/>
     </Tab.Navigator>
   )
 }

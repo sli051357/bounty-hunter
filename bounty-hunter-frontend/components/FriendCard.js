@@ -38,9 +38,9 @@ function FriendCard({ friend, imagePath }) {
             <View style={{marginLeft: 10, marginTop: -10}}>
                 <Pressable onPress={(editFavoriteStatus)}>
                     {favorite ? (
-                        <AntDesign name="staro" size={24} color={GLOBAL_STYLES.colors.orange300} />
-                    ) : (
                         <AntDesign name="star" size={24} color={GLOBAL_STYLES.colors.orange700} />
+                    ) : (
+                        <AntDesign name="staro" size={24} color={GLOBAL_STYLES.colors.orange300} />
                     )}
                 </Pressable>
             </View>
