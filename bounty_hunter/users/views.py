@@ -27,7 +27,10 @@ def profile(request, request_username):
         "bio":user_profile.bio_text,
         "pfp":user_profile.profile_image,
         "name":request_owner.username,
-        "accounts":linked_accs
+        "accounts":linked_accs,
+        "rating score":user_profile.rating_score,
+        "friend count":user_profile.friend_count,
+        "status":user_profile.pubpriv_status
     }
 
     return JsonResponse(headers)
@@ -77,6 +80,40 @@ def edit_bio(request, request_username):
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
             profile.bio_text = new_bio
+            profile.save()
+            return JsonResponse(headers)
+        else:
+            raise JsonResponse(headers)
+    else:
+        return JsonResponse(headers)
+
+def rating_score(request, request_username):
+    headers = {"success": False}
+    new_score = request.POST["new_score"]
+    if new_score is not None:
+        profile = get_object_or_404(UserProfileInfo, owner=request.user)
+        profile.rating_score = new_score
+        profile.save()
+        headers = {"success": True}
+    return JsonResponse(headers)
+
+def friend_count(request, request_username):
+    headers = {"success": False}
+    new_friendcount = request.POST["new_friendcount"]
+    if new_friendcount is not None:
+        profile = get_object_or_404(UserProfileInfo, owner=request.user)
+        profile.friend_count = new_friendcount
+        profile.save()
+        headers = {"success": True}
+    return JsonResponse(headers)
+
+def pubpriv_status(request, request_username):
+    headers = {"success": False}
+    new_status = request.POST["new_status"]
+    if request.user.is_authenticated:
+        if request.user.username == request_username:
+            profile = get_object_or_404(UserProfileInfo, owner=request.user)
+            profile.bio_text = new_status
             profile.save()
             return JsonResponse(headers)
         else:

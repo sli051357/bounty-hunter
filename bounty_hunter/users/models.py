@@ -8,6 +8,9 @@ class UserProfileInfo(models.Model):
     bio_text = models.CharField(max_length=200)
     profile_image = models.ImageField()
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    rating_score = models.IntegerField(max_length=None, default=0)
+    friend_count = models.IntegerField(max_length=None, default=0)
+    pubpriv_status = models.BooleanField(default=True) # true = public
     def __str__(self):
         return self.owner.username
 

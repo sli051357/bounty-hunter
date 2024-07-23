@@ -9,6 +9,9 @@ urlpatterns = [
     path('profiles/<slug:request_username>/edit-bio', views.edit_bio, name="edit_bio"),
     path('profiles/<slug:request_username>/edit-profile-pic', views.edit_profile_pic, name="edit_profile_pic"),
     path('profiles/<slug:request_username>/add-link', views.add_link, name="add_link"),
+    path('profiles/<slug:request_username>/rating-score', views.rating_score, name="rating_score"),
+    path('profiles/<slug:request_username>/friend-count', views.friend_count, name="friend_count"),
+    path('profiles/<slug:request_username>/pubpriv-status', views.pubpriv_status, name="pubpriv_status"),
     path('profiles/<slug:request_username>/remove-link', views.remove_link, name="remove_link"),
     path('get-token/', rest_framework.authtoken.views.obtain_auth_token)
 ]
