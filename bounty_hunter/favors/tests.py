@@ -165,8 +165,8 @@ class FavorListTestCase(TestCase):
                   "is_completed": self.favor3.completed,
                   "tags": expected_tags,}
         expected = {"favors": [expected_f_data]}
-        print("assignee1 id: ", self.user_assignee1.id)
-        print("tag3 id: ", self.tag3.id)
+        # print("assignee1 id: ", self.user_assignee1.id)
+        # print("tag3 id: ", self.tag3.id)
         # Remove timestamps in output and expected data
         if output['favors']:
             output['favors'][0] = self.remove_timestamps(output['favors'][0])
@@ -199,8 +199,8 @@ class FavorListTestCase(TestCase):
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
-        print("assignee1 id: ", self.user_assignee1.id)
-        print("tag3 id: ", self.tag3.id)
+        #print("assignee1 id: ", self.user_assignee1.id)
+        #print("tag3 id: ", self.tag3.id)
         # Remove timestamps in output and expected data
         output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
@@ -232,8 +232,8 @@ class FavorListTestCase(TestCase):
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
-        print("assignee1 id: ", self.user_assignee1.id)
-        print("tag3 id: ", self.tag3.id)
+        #print("assignee1 id: ", self.user_assignee1.id)
+        #print("tag3 id: ", self.tag3.id)
         # Remove timestamps in output and expected data
         output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
@@ -265,10 +265,104 @@ class FavorListTestCase(TestCase):
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
-        print("SORT TEST output: ", output)
-        print("SORT TEST expected: ", expected)
         # Remove timestamps in output and expected data
         output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
         self.assertEqual(output, expected)
 
+class CreateFavorTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user_owner = User.objects.create_user(username='user1', password='password123!')
+        self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
+        self.client.login(username='user1', password='password123!')
+
+    def test_valid_create_favor(self):
+        f_data = {"name": "New Favor", 
+                    "description": "this is a new favor", 
+                    "owner": self.user_owner.id,
+                    "assignee": self.user_assignee.id,
+                    "total_owed_type": "Nonmonetary",
+                    "privacy": "Public",}
+        url = reverse('create_favor')
+        response = self.client.post(url, f_data)
+        output = response.json()
+        # print(output)
+        favor = Favor.objects.get(pk=output['favor_id'])
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(output['success'])
+        self.assertEqual(favor.name, "New Favor")
+        self.assertEqual(favor.owner, self.user_owner)
+        self.assertEqual(favor.assignee, self.user_assignee)
+        self.assertEqual(favor.total_owed_type, "Nonmonetary")
+        self.assertEqual(favor.privacy, "Public")
+
+    def test_invalid_create_favor(self):
+        f_data = {"name": "", 
+                    "description": "this is a new favor", 
+                    "owner": self.user_owner.id,
+                    "assignee": self.user_assignee.id,
+                    "total_owed_type": "Nonmonetary",
+                    "privacy": "Public",}
+        url = reverse('create_favor')
+        response = self.client.post(url, f_data)
+        output = response.json()
+        # print(output)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(output['success'])
+
+    def test_create_favor_get(self):
+        url = reverse('create_favor')
+        response = self.client.get(url)
+        output = response.json()
+        # print(output)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(output['error'], "GET method not allowed")
+
+class EditFavorTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user_owner = User.objects.create_user(username='user1', password='password123!')
+        self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
+        self.client.login(username='user1', password='password123!')
+
+        self.favor1 = Favor.objects.create(
+            name = "Favor 1",
+            description = "first favor",
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            total_owed_type = "Monetary",
+            total_owed_amt = '5.25',
+            completed = False,
+            privacy = "Private",
+        )
+
+    def test_valid_edit_favor(self):
+        new_data = {"name": "Edited Favor",  
+                    "description": "I edited this favor",
+                    "owner": self.user_owner.id,
+                    "assignee": self.user_assignee.id,
+                    "total_owed_type": "Nonmonetary", 
+                    "total_owed_amt": "",
+                    "privacy": "Public",}
+        url = reverse('edit_favor', args=[self.favor1.id])
+        response = self.client.post(url, new_data)
+        output = response.json()
+        print(output)
+        self.favor1.refresh_from_db()
+        print(self.favor1)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(output['success'])
+        self.assertEqual(self.favor1.name, "Edited Favor")
+        self.assertEqual(self.favor1.description, "I edited this favor")
+        self.assertEqual(self.favor1.owner, self.user_owner)
+        self.assertEqual(self.favor1.assignee, self.user_assignee)
+        self.assertEqual(self.favor1.total_owed_type, "Nonmonetary")
+        self.assertIsNone(self.favor1.total_owed_amt)
+        self.assertEqual(self.favor1.privacy, "Public")
+
+
+
+    #def test_invalid_edit_favor(self, ):
