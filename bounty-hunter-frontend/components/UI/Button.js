@@ -17,7 +17,7 @@ function Button({title, onPress, buttonStyles, containerStyle}){
 const styles = StyleSheet.create({
     text: {
         fontSize: 18,
-        color: 'black'
+        color: GLOBAL_STYLES.colors.brown300
     },
     pressed: {
         opacity: 0.75,
