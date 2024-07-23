@@ -4,11 +4,26 @@ import { useState } from 'react';
 import { GLOBAL_STYLES } from '../constants/styles';
 import WishlistCard from '../components/WishlistCard';
 
+import DUMMY_WISHLIST from '../util/wishlist'
+
 function WishlistScreen({ user }) {
+    const [isEditing, setIsEditing] = useState(false);
+
+    function isEditingHandler() {
+        setIsEditing((curr) => !curr);
+    }
+
     return (
+
         <ScrollView style={styles.page}>
             <View>
                 <Text style={styles.headerText}>My Wishlist</Text>
+            </View>
+
+            <View>
+                <Pressable onPress={(isEditingHandler)} style={styles.editButton}>
+                    <Text style={styles.editButtonText}>Edit</Text>
+                </Pressable>
             </View>
 
             <View>
@@ -19,6 +34,20 @@ function WishlistScreen({ user }) {
                     imagePath={{uri: 'https://www.lego.com/cdn/cs/set/assets/bltc4a6c2103a34f22e/10313_alt2.png?format=webply&fit=bounds&quality=70&width=800&height=800&dpr=1.5'}}
                 />
             </View>
+
+            <View>
+                {DUMMY_WISHLIST.map((item) => <WishlistCard key={item.title} isEditing={false}/>)}
+            </View>
+
+
+
+            {/* <View>
+                {isEditing ? (
+                    
+                ) : (
+
+                )}
+            </View> */}
             
         </ScrollView>
     )
