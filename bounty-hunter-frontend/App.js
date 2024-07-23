@@ -143,7 +143,12 @@ function AuthenticatedStack() {
 
       <Tab.Screen 
       name="Friends"
-      component={FriendListScreen}/>
+      component={FriendListScreen}
+      options={{
+        headerTitle: '',
+        headerTransparent: true,
+        headerShadowVisible: false 
+      }}/>
 
       <Tab.Screen 
       name='Wishlist'
