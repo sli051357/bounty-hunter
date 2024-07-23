@@ -1,95 +1,144 @@
 import axiosInstance from "./axiosInstance";
 
 const apiService = {
-    getUserBio: async (id) => {
+    getUserBio: async (userId) => {
         try {
-            const response = await axiosInstance.get(`/users/profiles/${id}/bio`);
+            const response = await axiosInstance.get(`/users/profiles/${userId}/bio`);
             return response.data;
         } catch (error) {
             throw error;
         }
     }, 
-    getUserPic: async (id) => {
+    getUserPic: async (userId) => {
         try {
-            const response = await axiosInstance.get(`/users/profiles/${id}/profile-pic`);
+            const response = await axiosInstance.get(`/users/profiles/${userId}/profile-pic`);
             return response.data;
         } catch (error) {
             throw error;
         }
     }, 
-    getUserLinks: async (id) => {
+    getUserLinks: async (userId) => {
         try {
-            const response = await axiosInstance.get(`/users/profiles/${id}/links`);
+            const response = await axiosInstance.get(`/users/profiles/${userId}/links`);
             return response.data;
         } catch (error) {
             throw error;
         }
     }, 
-    deleteUser: async (id) => {
+    deleteUser: async (userId) => {
         try {
-            const response = await axiosInstance.get(`/users/profiles/${id}/delete/`);
+            const response = await axiosInstance.get(`/users/profiles/${userId}/delete/`);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
     
-    updateUserBio: async (id, data) => {
+    updateUserBio: async (userId, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/edit-bio/', data);
+            const response = await axiosInstance.post(`/users/profiles/${userId}/edit-bio`, data);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
 
-    updateUserProfilePic: async (id, data) => {
+    updateUserProfilePic: async (userId, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/edit-profile-pic/', data);
+            const response = await axiosInstance.post(`/users/profiles/${userId}/edit-profile-pic`, data);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
 
-    addAccountLink: async (id, data) => {
+    addAccountLink: async (userId, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/add-link/', data);
+            const response = await axiosInstance.post(`/users/profiles/${userId}/add-link`, data);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
 
-    removeAccountLink: async (id, data) => {
+    removeAccountLink: async (userId, data) => {
         try {
-            const response = await axiosInstance.post('/users/get-token/', data);
+            const response = await axiosInstance.post(`/users/get-token/`, data);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
 
-    signIn: async (id, data) => {
+    signIn: async (userId, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/edit-bio', data);
+            // is the url supposed to be edit-bio?
+            const response = await axiosInstance.post(`/users/profiles/${userId}/edit-bio`, data);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
 
-    getFavorList: async (id, data) => {
+    getFavorList: async () => {
         try {
-            const response = await axiosInstance.get(`/favors/`, data);
+            const response = await axiosInstance.get(`/favors/`);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
-    getSpecFavor: async (id, data) => {
+    getSpecFavor: async (favorId) => {
         try {
-            const response = await axiosInstance.get(`/favors/<int:favor_id>/`, data);
+            const response = await axiosInstance.get(`/favors/${favorId}/`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    createFavor: async (data) => {
+        try {
+            const response = await axiosInstance.post(`/favors/create/`, data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    editFavor: async (favorId, data) => {
+        try {
+            const response = await axiosInstance.post(`/favors/${favorId}/edit`, data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getTags: async () => {
+        try {
+            const response = await axiosInstance.get(`/favors/tags/`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getSpecTag: async (tagId) => {
+        try {
+            const response = await axiosInstance.get(`/favors/tags/${tagId}/`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    createTag: async (data) => {
+        try {
+            const response = await axiosInstance.post(`/favors/tags/create`, data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    editTag: async (tagId, data) => {
+        try {
+            const response = await axiosInstance.post(`/favors/tags/${tagId}/edit/`);
             return response.data;
         } catch (error) {
             throw error;
