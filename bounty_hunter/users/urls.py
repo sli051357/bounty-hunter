@@ -20,8 +20,11 @@ urlpatterns = [
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
     path('forgot/', views.reset_password, name="forgot"),
     
-    
-     path('temp/', views.temp, name="temp"),
+    #temporary links for testing
+    path('temp/', views.temp, name="temp"),
+    path('sign-in/', views.sign_in, name="sign_in"),
+    path('sign-in/attempt', views.signin_attempt, name="signin_attempt"),
+
 
 
 

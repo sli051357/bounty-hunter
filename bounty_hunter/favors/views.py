@@ -218,13 +218,19 @@ def edit_tag(request, tag_id):
 # change status of a favor. Automatically determines if assignee or owner.
 def change_status(request, favor_id):
     status = request.POST["status"]
+    print("changing status to " + status)
+    print("logged on as "+ request.user.username)
+
     favor = get_object_or_404(Favor, pk=favor_id)
     if favor.owner == request.user:
+        print("sender is owner")
         (favor.owner_status,favor.assignee_status, favor) = help_change_status(favor.owner_status,favor.assignee_status, status, favor)
     else:
+        print("sender is reciever")
         (favor.assignee_status,favor.owner_status, favor) = help_change_status(favor.assignee_status,favor.owner_status, status, favor)
 
     if favor == None:
+        print("invalid input")
         return JsonResponse({"success": False})
     
     favor.save()
@@ -234,18 +240,23 @@ def change_status(request, favor_id):
 def help_change_status(sender_status, reciever_status, status, favor):
     if sender_status == INCOMPLETE:
         return None #no sending incomplete status
+    
     if reciever_status == NONE: # if assignee's status is default, owner can change to whatever they want, except cancel.
         if (sender_status) == CANCEL:
             return None
+        print("changed status request")
         sender_status = status
 
     else: #other's status is not NONE, it is a request. Now, owner can either cancel or accept:
         if status == CANCEL: #cancel, no change to favor
             sender_status = NONE
             reciever_status = NONE
+            print("cancelled request")
 
         elif status == reciever_status: #accept changes
-            favor = update_favor_from_status(favor, sender_status)
+            print("input status is same as recievers")
+            favor = update_favor_from_status(favor, status)
+            favor.save()
             sender_status = NONE
             reciever_status = NONE
         else: #not a valid status.
@@ -254,31 +265,23 @@ def help_change_status(sender_status, reciever_status, status, favor):
     return (sender_status, reciever_status, favor)
 
 def update_favor_from_status(favor, status):
+    if status == DELETE:
+        print("delete accepted")
+        favor.active = False 
+    elif status == CREATE:
+        print("create accepted")
+        favor.active = True
+        favor.created_at = datetime.date.today()
+        favor.updated_at = datetime.date.today()
+    elif status == COMPLETE:
+        print("complete accepted")
+        favor.completed = True
+    else:
+        print("edit accepted")
+        favor.updated_at = datetime.date.today()
+        favor = update_favor_with_edits(favor)
 
-    #terrible switch case workaround because python is buttcheeks
-    consts = types.SimpleNamespace()
-    consts.INCOMPLETE = "Incomplete" #default
-    consts.CREATE = "Create" #1
-    consts.DELETE = "Delete" #2
-    consts.COMPLETE = "Complete" #3
-    consts.EDIT = "Edit" #4
-    consts.CANCEL = "Cancel"  #5
-    consts.NONE = "None" #6
-
-
-    match status:
-        case consts.DELETE:
-            favor.active = False 
-        case consts.CREATE:
-            favor.active = True
-            favor.created_at = datetime.date.today()
-            favor.updated_at = datetime.date.today()
-        case consts.COMPLETE:
-            favor.completed = True
-        case consts.EDIT:
-            favor.updated_at = datetime.date.today()
-            favor = update_favor_with_edits(favor)
-    
+    favor.save()
     return favor
 
 def update_favor_with_edits(favor):

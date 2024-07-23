@@ -59,9 +59,23 @@ def linked_accs(request, request_username):
 
     return JsonResponse(data=data)
 
-#temp sign in page
-def sign_up(request):
+#temp sign in pages
+def sign_in(request):
     #temporary sign in template
+    return render(request, "users/signin.html")
+
+def signin_attempt(request):
+    username = request.POST["username"]
+    password = request.POST["password"]
+    user = authenticate(username=username,password=password)
+    if user is not None:
+        login(request,user=user)
+        print("logged in")
+        return redirect('/users/sign-up/')
+    
+    return redirect('/users/sign-up/')
+
+def sign_up(request):
     return render(request, "users/register.html")
     
 def log_out(request):
