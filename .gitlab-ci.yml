@@ -20,7 +20,7 @@ before_script:
 test:
   script:
     - cd bounty_hunter/
-    - python manage.py tes
+    - python manage.py test
     - cd ..
 
 run:
