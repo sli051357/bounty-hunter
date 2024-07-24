@@ -3,7 +3,8 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Favor, Tag
-from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE
+from django.core.exceptions import ObjectDoesNotExist
+from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE, EDIT
 import datetime
 
 class ChangeStatusTest(TestCase):
@@ -20,6 +21,43 @@ class ChangeStatusTest(TestCase):
             assignee_status=INCOMPLETE
         )
 
+        self.favora = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            owner_status=INCOMPLETE, 
+            assignee_status=INCOMPLETE
+        )
+
+        self.favorb = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            owner_status=DELETE, 
+            assignee_status=INCOMPLETE
+        )
+        self.dummyfavor = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            active = True,
+            owner_status=INCOMPLETE, 
+            assignee_status=INCOMPLETE
+        )
+
+
+        self.favorc = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            previous_favor = self.dummyfavor,
+            owner_status=EDIT, 
+            assignee_status=INCOMPLETE
+        )
+        
+        self.favord = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            owner_status=COMPLETE, 
+            assignee_status=INCOMPLETE
+        )
+
         self.favor2 = Favor.objects.create(
             owner=self.user_owner, 
             assignee=self.user_assignee,
@@ -27,7 +65,7 @@ class ChangeStatusTest(TestCase):
             assignee_status=INCOMPLETE
         )
 
-    def test_valid_transition_owner(self):
+    def test_cancel_created(self):
         self.client.login(username='owner', password='passwofdsfdsrd321!!!')
         response = self.client.post(reverse('change_status', args=[self.favor.id]), {'status': CANCEL})
         self.favor.refresh_from_db()
@@ -36,7 +74,34 @@ class ChangeStatusTest(TestCase):
         self.assertEqual(self.favor.assignee_status, DELETE)
         self.assertEqual(self.favor.active, False)
         self.assertEqual(self.favor.completed, False)
+        self.assertEqual(self.favor.deleted, True)
 
+    def test_cancel_delete(self):
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
+        response = self.client.post(reverse('change_status', args=[self.favorb.id]), {'status': CANCEL})
+        self.favorb.refresh_from_db()
+        self.assertEqual(response.json()['success'], True)
+        self.assertEqual(self.favorb.owner_status, INCOMPLETE)
+        self.assertEqual(self.favorb.assignee_status, INCOMPLETE)
+        self.assertEqual(self.favorb.active, True)
+        self.assertEqual(self.favorb.completed, False)
+        self.assertEqual(self.favorb.deleted, False)
+
+    def test_cancel_edit(self):
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
+        response = self.client.post(reverse('change_status', args=[self.favorc.id]), {'status': CANCEL})
+        self.assertRaises(Favor.DoesNotExist,self.favorc.refresh_from_db,)
+
+    def test_cancel_complete(self):
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
+        response = self.client.post(reverse('change_status', args=[self.favord.id]), {'status': CANCEL})
+        self.favord.refresh_from_db()
+        self.assertEqual(response.json()['success'], True)
+        self.assertEqual(self.favord.owner_status, INCOMPLETE)
+        self.assertEqual(self.favord.assignee_status, INCOMPLETE)
+        self.assertEqual(self.favord.active, True)
+        self.assertEqual(self.favord.completed, False)
+        self.assertEqual(self.favord.deleted, False)
 
     def test_valid_transition_assignee(self):
         self.client.login(username='assignee', password='passwofdsfrd321!!!')
@@ -64,6 +129,8 @@ class ChangeStatusTest(TestCase):
         self.assertEqual(response.json()['success'], False)
         self.assertEqual(self.favor.owner_status, CREATE)
         self.assertEqual(self.favor.assignee_status, INCOMPLETE)
+
+
 
 class FavorListTest(TestCase):
 
@@ -162,6 +229,7 @@ class FavorListTest(TestCase):
                   "owner_status": self.favor3.owner_status,
                   "assignee_status": self.favor3.assignee_status,
                   "is_active": self.favor3.active, #only show active in frontend
+                  "is_deleted": self.favor3.deleted,
                   "is_completed": self.favor3.completed,
                   "tags": expected_tags,}
         expected = {"favors": [expected_f_data]}
@@ -194,7 +262,8 @@ class FavorListTest(TestCase):
                     "privacy": f.privacy,
                     "owner_status": f.owner_status,
                     "assignee_status": f.assignee_status,
-                    "is_active": f.active, #only show active in frontend
+                    "is_active": f.active, 
+                    "is_deleted": f.deleted,
                     "is_completed": f.completed,
                     "tags": expected_tags,}
             expected_f_data.append(individual)
@@ -227,11 +296,13 @@ class FavorListTest(TestCase):
                     "privacy": f.privacy,
                     "owner_status": f.owner_status,
                     "assignee_status": f.assignee_status,
-                    "is_active": f.active, #only show active in frontend
+                    "is_active": f.active, 
+                    "is_deleted": f.deleted,
                     "is_completed": f.completed,
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
+    
         #print("assignee1 id: ", self.user_assignee1.id)
         #print("tag3 id: ", self.tag3.id)
         # Remove timestamps in output and expected data
@@ -240,7 +311,7 @@ class FavorListTest(TestCase):
         self.assertEqual(output, expected)
 
     # test searching
-    def test_filter_sort(self):
+    def test_filter_search(self):
         self.maxDiff = None
         url = reverse('favor_list') + f'?tag={self.tag1.id}&search=favor'
         response = self.client.get(url)
@@ -262,6 +333,7 @@ class FavorListTest(TestCase):
                     "assignee_status": f.assignee_status,
                     "is_active": f.active, #only show active in frontend
                     "is_completed": f.completed,
+                    "is_deleted": f.deleted,
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
@@ -347,21 +419,24 @@ class EditFavorTestCase(TestCase): # test edit favor in views.py
                     "total_owed_type": "Nonmonetary", 
                     "total_owed_amt": "",
                     "privacy": "Public",}
+
         url = reverse('edit_favor', args=[self.favor1.id])
         response = self.client.post(url, new_data)
+        
         output = response.json()
         #print(output)
+        new_favor = Favor.objects.get(pk=output["new_favor_pk"])
         self.favor1.refresh_from_db()
         #print(self.favor1)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(output['success'])
-        self.assertEqual(self.favor1.name, "Edited Favor")
-        self.assertEqual(self.favor1.description, "I edited this favor")
-        self.assertEqual(self.favor1.owner, self.user_owner)
-        self.assertEqual(self.favor1.assignee, self.user_assignee)
-        self.assertEqual(self.favor1.total_owed_type, "Nonmonetary")
-        self.assertIsNone(self.favor1.total_owed_amt)
-        self.assertEqual(self.favor1.privacy, "Public")
+        self.assertEqual(new_favor.name, "Edited Favor")
+        self.assertEqual(new_favor.description, "I edited this favor")
+        self.assertEqual(new_favor.owner, self.user_owner)
+        self.assertEqual(new_favor.assignee, self.user_assignee)
+        self.assertEqual(new_favor.total_owed_type, "Nonmonetary")
+        self.assertIsNone(new_favor.total_owed_amt)
+        self.assertEqual(new_favor.privacy, "Public")
 
     def test_invalid_edit_favor(self):
         new_data = {"name": "",  
