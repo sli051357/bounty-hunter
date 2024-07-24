@@ -13,7 +13,6 @@ class UserProfileInfo(models.Model):
     pubpriv_status = models.BooleanField(default=True) # true = public
     def __str__(self):
         return self.owner.username
-<<<<<<< HEAD
 
 #model for storing wishlist
 class Wishlist(models.Model):
@@ -24,9 +23,6 @@ class Wishlist(models.Model):
     def __str__(self):
         return self.name   
 
-=======
-    
->>>>>>> origin/dev
 
 #model for storing linked accounts. Many linked accounts may share a single owner.
 class LinkedAccounts(models.Model):
