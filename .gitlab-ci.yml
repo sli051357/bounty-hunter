@@ -32,7 +32,7 @@ run:
 
 pages:
   script:
-    
+  - echo "idk what this is either"
   artifacts:
     paths:
       - public
