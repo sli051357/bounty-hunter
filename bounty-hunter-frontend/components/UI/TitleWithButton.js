@@ -6,7 +6,7 @@ function TitleWithButton({title, titleColor, icon, iconColor, onPress}){
     return (
         <View style={styles.container}>
             <Text style={[styles.title, {color: titleColor}]}>{title}</Text>
-            <IconButton icon={icon} iconSize={24} color={iconColor} onPress={onPress}/>
+            <IconButton icon={icon} iconSize={28} color={iconColor} onPress={onPress}/>
         </View>
     )
 }

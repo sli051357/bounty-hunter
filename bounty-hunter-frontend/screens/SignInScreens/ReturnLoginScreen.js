@@ -1,15 +1,20 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useDispatch } from "react-redux";
 
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
+import { setAuthToken } from "../../store/authToken";
+
 
 function ReturnLoginScreen() {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     function returnToLoginHandler(){
-        navigation.navigate('LoginScreen');
+        dispatch(setAuthToken(''))
+        // navigation.navigate('LoginScreen');
     }
 
     return (
