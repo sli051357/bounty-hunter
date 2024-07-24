@@ -6,18 +6,31 @@ import { Feather, MaterialIcons } from '@expo/vector-icons'
 
 import WishlistCard from '../../components/Wishlist/WishlistCard.js';
 import WishlistDelete from '../../components/Wishlist/WishlistDelete.js';
+import WishlistAdd from '../../components/Wishlist/WishlistAdd.js';
 
 import DUMMY_WISHLIST from '../../util/wishlist.js'
 
 function WishlistScreen({ user }) {
     const [isEditing, setIsEditing] = useState(false);
+    const [isAddVisible, setIsAddVisible] = useState(false);
 
     function isEditingHandler() {
         setIsEditing((curr) => !curr);
     }
 
+    function considerAdd() {
+        console.log('consider adding item');
+        setIsAddVisible(true);
+    }
+
     function addItem() {
-        console.log('add item');
+        console.log('item added');
+        setIsAddVisible(false);
+    }
+
+    function cancelAdd() {
+        console.log('add item canceled');
+        setIsAddVisible(false);
     }
 
     return (
@@ -58,11 +71,13 @@ function WishlistScreen({ user }) {
                 { isEditing ? (
                     <View></View>
                 ):(
-                    <Pressable onPress={(addItem)} style={styles.addButton}>
+                    <Pressable onPress={(considerAdd)} style={styles.addButton}>
                         <MaterialIcons name="add" size={24} color={GLOBAL_STYLES.colors.orange700} />
                     </Pressable>
                 )}
             </View>
+
+            <WishlistAdd isVisible={isAddVisible} onYes={considerAdd} onNo={cancelAdd}/>
             
 
             {/* <View>

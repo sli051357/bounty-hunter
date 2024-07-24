@@ -55,7 +55,8 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
                     </Pressable>
                 )}
             </View>
-
+            
+            {/* Delete Item Popup */}
             <View>
                 <WishlistDelete isVisible={isDeleteVisible} onYes={deleteItem} onNo={cancelDelete}/>
             </View>

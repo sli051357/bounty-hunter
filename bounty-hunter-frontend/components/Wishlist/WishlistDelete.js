@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     modalContainer: {
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(153, 153, 153, 0.8)',
+        backgroundColor: GLOBAL_STYLES.colors.gray500,
         display: 'flex',
     },
     modalStyle: {
