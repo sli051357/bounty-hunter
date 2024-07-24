@@ -7,7 +7,7 @@ from django.db.models import Q
 import datetime
 import types
 from decimal import Decimal
-from django.utils.dateparse import parse_datetime
+from django.utils.dateparse import parse_date
 
 
 CREATE = "Create"
@@ -95,12 +95,13 @@ def favor_list(request): # ex: favors/
             query = query_method(query, or_query, 'completed', True)
             
     # filter by date range
-    start_date = request.GET.get('start_date')
+    start_date = request.GET.get('start_date') # ex: start_date=2002-01-30
     end_date = request.GET.get('end_date')
     if start_date and end_date:
-        start_date = parse_datetime(start_date)
-        end_date = parse_datetime(end_date)
-        query = query_method(query, or_query, (Q(created_at__gte = start_date) & Q(created_at__lte = end_date)))
+        start_date = parse_date(start_date)
+        end_date = parse_date(end_date)
+        q_in = (Q(created_at__gte = start_date) & Q(created_at__lte = end_date))
+        query = query_method(query, or_query, q_in)
 
     # filter by price range
     price_low = request.GET.get('price_low')
@@ -108,7 +109,8 @@ def favor_list(request): # ex: favors/
     if price_low and price_high:
         price_low = Decimal(price_low)
         price_high = Decimal(price_high)
-        query = query_method(query, or_query, (Q(total_owed_amt__gte = price_low) & Q(total_owed_amt__lte = price_high)))
+        q_in = (Q(total_owed_amt__gte = price_low) & Q(total_owed_amt__lte = price_high))
+        query = query_method(query, or_query, q_in)
     
     favors = Favor.objects.filter(query).distinct()
 
