@@ -343,14 +343,15 @@ def apply_transitions(favor):
         favor.active = True
         favor.deleted = False
 
-    #favor has been successfully edited, reset favor to regular
+    #favor has been successfully edited, reset favor to regular adn delete old favor
     elif curr_state in [STATES[10]]:
         favor.owner_status = INCOMPLETE
         favor.assignee_status = INCOMPLETE
-        favor.previous_favor = None
+        favor.previous_favor.delete()
         favor.completed = False
         favor.active = True
         favor.deleted = False
+        
     
     #if favor is deleted
     elif curr_state in [STATES[2]]:
