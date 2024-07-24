@@ -348,6 +348,7 @@ def apply_transitions(favor):
         favor.owner_status = INCOMPLETE
         favor.assignee_status = INCOMPLETE
         favor.previous_favor.delete()
+        favor.previous_favor = None
         favor.completed = False
         favor.active = True
         favor.deleted = False
