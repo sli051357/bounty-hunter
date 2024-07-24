@@ -15,11 +15,11 @@ INCOMPLETE = "Incomplete"
 EDIT = "Edit"
 CANCEL = "Cancel" 
 
-
 STATES =[(INCOMPLETE,INCOMPLETE), (CREATE,INCOMPLETE), (DELETE,DELETE), 
          (INCOMPLETE,COMPLETE), (COMPLETE,INCOMPLETE),(COMPLETE,COMPLETE),
          (DELETE,INCOMPLETE),(INCOMPLETE,DELETE),
          (EDIT,INCOMPLETE),(INCOMPLETE,EDIT),(EDIT,EDIT) ]
+
 
 
 TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
@@ -35,8 +35,8 @@ TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
                (STATES[7],(0,DELETE)):STATES[2],
                (STATES[6],(1,DELETE)):STATES[2],
 
-               (STATES[0],(0,DELETE)):STATES[4],#completion
-               (STATES[0],(1,DELETE)):STATES[3],
+               (STATES[0],(0,COMPLETE)):STATES[4],#completion
+               (STATES[0],(1,COMPLETE)):STATES[3],
                (STATES[4],(1,CANCEL)):STATES[0],
                (STATES[3],(1,CANCEL)):STATES[0],
                (STATES[4],(0,CANCEL)):STATES[0],
@@ -270,9 +270,7 @@ def edit_tag(request, tag_id):
             return JsonResponse({"success": False, "errors": form.errors})
     else:
         return JsonResponse({"error": "GET method not allowed"}, status=405)
-
     
-
 # change status of favor users for all statuses. 
 def change_status(request, favor_id):
     status = request.POST["status"]
@@ -321,6 +319,8 @@ def change_status(request, favor_id):
     
     return JsonResponse({"success": True})
 
+
+# updates favor based on current state of owner status and assignee status
 def apply_transitions(favor):
     curr_state = (favor.owner_status,favor.assignee_status)
     #if state has been created but not accepted:

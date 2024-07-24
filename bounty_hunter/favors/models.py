@@ -74,12 +74,7 @@ class Favor(models.Model):
 
     status_choices = [(CREATE, "Create"),(DELETE,"Delete"),(EDIT, "Edit"),(CANCEL, "Cancel"),(COMPLETE, "Complete"), (INCOMPLETE, "Incomplete")]
 
-
-    #favor only has 1 status
-    #status function as switches. Default: None, None
-    # if one status switches to Create, the other can either switch to Create or Cancel. One status switch also sets the status to Pending_[something]
-    # cancel reests to None, None
-    # Create Create switches to None, None, but also changes the favors status, like from Pending_creation to incomplete.
+    # these contain the state of the favor
     owner_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
     assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
 
