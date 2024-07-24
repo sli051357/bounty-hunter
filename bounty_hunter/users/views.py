@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from .models import UserProfileInfo, LinkedAccounts
+from .models import UserProfileInfo, LinkedAccounts, Wishlist
 from django.shortcuts import redirect
 
 from django.core.exceptions import PermissionDenied
@@ -34,6 +34,7 @@ def profile(request, request_username):
     }
 
     return JsonResponse(headers)
+
 
 # sign in page
 # def sign_in(request):
@@ -159,9 +160,45 @@ def remove_link(request, request_username):
             raise JsonResponse(headers)
     else:
         return JsonResponse(headers)
-    
 
+def wishlist(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_wishlist = get_object_or_404(UserProfileInfo, owner=request_owner)
 
+    headers = {
+        "item name":user_wishlist.name,
+        "item image":user_wishlist.photo
+    }
+
+    return JsonResponse(headers)
+
+def item_name(request, request_username):
+    headers = {"success": False}
+    name = request.POST["name"]
+    if request.user.is_authenticated:
+        if request.user.username == request_username:
+            item = get_object_or_404(UserProfileInfo, owner=request.user)
+            wishlist.name = name
+            item.save()
+            return JsonResponse(headers)
+        else:
+            raise JsonResponse(headers)
+    else:
+        return JsonResponse(headers)
+
+def item_photo(request, request_username):
+    headers = {"success": False}
+    pic = request.POST["pic"]
+    if request.user.is_authenticated:
+        if request.user.username == request_username:
+            photo = get_object_or_404(UserProfileInfo, owner=request.user)
+            wishlist.photo = pic
+            photo.save()
+            return JsonResponse(headers)
+        else:
+            raise JsonResponse(headers)
+    else:
+        return JsonResponse(headers)
 
 
 # Create your views here.

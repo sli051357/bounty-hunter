@@ -14,6 +14,15 @@ class UserProfileInfo(models.Model):
     def __str__(self):
         return self.owner.username
 
+#model for storing wishlist
+class Wishlist(models.Model):
+    name = models.CharField(max_length=30)
+    image = models.ImageField()
+    price = models.IntegerField(max_length=10, default=0)
+    description = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name   
+
 
 #model for storing linked accounts. Many linked accounts may share a single owner.
 class LinkedAccounts(models.Model):
