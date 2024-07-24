@@ -107,10 +107,12 @@ def favor_list(request): # ex: favors/
         else: 
             favors = favors.order_by('total_owed_amt')
 
-    # search favors by name
+    # search favors 
     search = request.GET.get('search')
     if search:
-        favors = favors.filter(name__icontains=search)
+        favors = favors.filter(Q(name__icontains=search) |  # by favor name
+                               Q(description__icontains=search) |   # by description
+                               Q(assignee__username__icontains=search))     # by assignee name
 
     # display favors and corresponding tags
     favors_list = []
