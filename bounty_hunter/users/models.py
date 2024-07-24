@@ -18,7 +18,7 @@ class UserProfileInfo(models.Model):
 class Wishlist(models.Model):
     name = models.CharField(max_length=30)
     image = models.ImageField()
-    price = models.IntegerField(max_length=10, default=0)
+    price = models.IntegerField(default=0)
     description = models.CharField(max_length=50)
     def __str__(self):
         return self.name   
