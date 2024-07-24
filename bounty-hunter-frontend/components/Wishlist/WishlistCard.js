@@ -3,12 +3,27 @@ import { useState } from 'react';
 
 import Hyperlink from 'react-native-hyperlink';
 
-import { GLOBAL_STYLES } from '../constants/styles';
+import { GLOBAL_STYLES } from '../../constants/styles';
+
+import WishlistDelete from './WishlistDelete';
 
 function WishlistCard({ title, description, price, imagePath, editStatus }) {
 
+    const [isDeleteVisible, setIsDeleteVisible] = useState(false);
+
+    function considerDelete() {
+        console.log('modal open');
+        setIsDeleteVisible(true);
+    }
+
     function deleteItem() {
-        console.log('deleted');
+        console.log('item deleted');
+        setIsDeleteVisible(false);
+    }
+
+    function cancelDelete() {
+        console.log('item not deleted');
+        setIsDeleteVisible(false);
     }
 
     return (
@@ -35,11 +50,14 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
                 {editStatus ? (
                     <View></View>
                 ) : (
-                    <Pressable onPress={(deleteItem)} style={styles.button}>
+                    <Pressable onPress={(considerDelete)} style={styles.button}>
                         <Text style={styles.buttonText}>—</Text>
                     </Pressable>
                 )}
-                    
+            </View>
+
+            <View>
+                <WishlistDelete isVisible={isDeleteVisible} onYes={deleteItem} onNo={cancelDelete}/>
             </View>
         </View>
     )

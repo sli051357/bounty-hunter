@@ -2,8 +2,10 @@ import { View, Text, StyleSheet, Image, Pressable, ScrollView} from 'react-nativ
 import { useState } from 'react';
 
 import { GLOBAL_STYLES } from '../../constants/styles';
-import WishlistCard from '../../components/WishlistCard';
 import { Feather, MaterialIcons } from '@expo/vector-icons'
+
+import WishlistCard from '../../components/Wishlist/WishlistCard.js';
+import WishlistDelete from '../../components/Wishlist/WishlistDelete.js';
 
 import DUMMY_WISHLIST from '../../util/wishlist.js'
 
@@ -61,6 +63,7 @@ function WishlistScreen({ user }) {
                     </Pressable>
                 )}
             </View>
+            
 
             {/* <View>
                 {DUMMY_WISHLIST.map((item) => <WishlistCard key={item.title} title={item.title} description={item.description} price={item.price} imagePath={{uri: item.imagePath}} isEditing={false} />)}
