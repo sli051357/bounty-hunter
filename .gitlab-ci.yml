@@ -24,6 +24,7 @@ test:
 run:
   script:
     #run everything commands
+   - echo "run the thing"
 
   artifacts:
     paths:
