@@ -350,9 +350,9 @@ class EditFavorTestCase(TestCase):
         url = reverse('edit_favor', args=[self.favor1.id])
         response = self.client.post(url, new_data)
         output = response.json()
-        print(output)
+        #print(output)
         self.favor1.refresh_from_db()
-        print(self.favor1)
+        #print(self.favor1)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(output['success'])
         self.assertEqual(self.favor1.name, "Edited Favor")
@@ -363,6 +363,106 @@ class EditFavorTestCase(TestCase):
         self.assertIsNone(self.favor1.total_owed_amt)
         self.assertEqual(self.favor1.privacy, "Public")
 
+    def test_invalid_edit_favor(self):
+        new_data = {"name": "",  
+                    "description": "I edited this favor",
+                    "owner": self.user_owner.id,
+                    "assignee": self.user_assignee.id,
+                    "total_owed_type": "Nonmonetary", 
+                    "total_owed_amt": "",
+                    "privacy": "Public",}
+        url = reverse('edit_favor', args=[self.favor1.id])
+        response = self.client.post(url, new_data)
+        output = response.json()
+        self.favor1.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(output['success'])
 
+class CreateTagTestCase(TestCase):
 
-    #def test_invalid_edit_favor(self, ):
+    def setUp(self):
+        self.client = Client()
+        self.user_owner = User.objects.create_user(username='user1', password='password123!')
+        self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
+        self.client.login(username='user1', password='password123!')
+
+    def test_valid_create_favor(self):
+        t_data = {"name": "Travel", 
+                    "color": "#11ab45", 
+                    "owner": self.user_owner.id,
+                    "tag_type": "Custom",}
+        url = reverse('create_tag')
+        response = self.client.post(url, t_data)
+        output = response.json()
+        # print(output)
+        tag = Tag.objects.get(pk=output['tag_id'])
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(output['success'])
+        self.assertEqual(tag.name, "Travel")
+        self.assertEqual(tag.owner, self.user_owner)
+        self.assertEqual(tag.color, "#11ab45")
+        self.assertEqual(tag.tag_type, "Custom")
+
+    def test_invalid_create_favor(self):
+        t_data = {"name": "Travel", 
+                    "color": "#ZXY", 
+                    "owner": self.user_owner.id,
+                    "tag_type": "Custom",}
+        url = reverse('create_tag')
+        response = self.client.post(url, t_data)
+        output = response.json()
+        # print(output)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(output['success'])
+
+    def test_create_favor_get(self):
+        url = reverse('create_tag')
+        response = self.client.get(url)
+        output = response.json()
+        # print(output)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(output['error'], "GET method not allowed")
+
+class EditTagTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user_owner = User.objects.create_user(username='user1', password='password123!')
+        self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
+        self.client.login(username='user1', password='password123!')
+
+        self.tag1 = Tag.objects.create(
+            name = "Food",
+            color = "#1234ab",
+            owner = self.user_owner,
+            tag_type = "Preset"
+        )
+
+    def test_valid_edit_favor(self):
+        new_data = {"name": "Grub",  
+                    "color": "#CFA",
+                    "owner": self.user_owner.id,
+                    "tag_type": "Custom",}
+        url = reverse('edit_tag', args=[self.tag1.id])
+        response = self.client.post(url, new_data)
+        output = response.json()
+        #print(output)
+        self.tag1.refresh_from_db()
+        #print(self.favor1)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(output['success'])
+        self.assertEqual(self.tag1.name, "Grub")
+        self.assertEqual(self.tag1.color, "#CFA")
+        self.assertEqual(self.tag1.tag_type, "Custom")
+
+    def test_invalid_edit_favor(self):
+        new_data = {"name": "",  
+                    "color": "#ABC",
+                    "owner": self.user_owner.id,
+                    "tag_type": "Preset",}
+        url = reverse('edit_tag', args=[self.tag1.id])
+        response = self.client.post(url, new_data)
+        output = response.json()
+        self.tag1.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(output['success'])
