@@ -1,9 +1,8 @@
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 
-function LoadingOverlay({ message }) {
+function LoadingOverlay({ message, backgroundColor }) {
     return (
-      <View style={styles.rootContainer}>
+      <View style={[styles.rootContainer, backgroundColor]}>
         <Text style={styles.message}>{message}</Text>
         <ActivityIndicator size="large" />
       </View>

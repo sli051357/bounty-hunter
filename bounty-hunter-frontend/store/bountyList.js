@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
 
 const initialState = {
-    bountyList: DUMMY_FAVORS_OF_PROFILE_Updated
+    bountyList: []
 }
 
 const bountyListSlice = createSlice({
@@ -20,8 +20,10 @@ const bountyListSlice = createSlice({
                 paymentType: action.payload.paymentType,
                 paymentOwed: action.payload.paymentOwed,
                 description: action.payload.description,
-                status: action.payload.description,
-                bountyEditHistory: action.payload.bountyEditHistory
+                status: action.payload.status,
+                bountyEditHistory: action.payload.bountyEditHistory,
+                privacyStatus: action.payload.privacyStatus
+
             }
             state.bountyList.push(bounty)
         }, 
