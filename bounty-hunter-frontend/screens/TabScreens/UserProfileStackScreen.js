@@ -3,6 +3,9 @@ import { useNavigation } from "@react-navigation/native";
 
 import UserProfileScreen from "../NestedScreens/UserProfileScreen";
 import UserSettingsScreen from "../NestedScreens/UserSettingsScreen";
+import VerifyEmailScreen from "../SignInScreens/VerifyEmailScreen";
+import UpdatePasswordScreen from "../SignInScreens/UpdatePasswordScreen";
+import ReturnLoginScreen from "../SignInScreens/ReturnLoginScreen";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import IconButton from "../../components/UI/IconButton";
 
@@ -40,6 +43,31 @@ function UserProfileStackScreen() {
                 headerShadowVisible: false,
                 headerTitleAlign: 'center'
             }}/>
+            <UserProfileStack.Screen
+            name='VerifyEmailScreen'
+            component={VerifyEmailScreen}
+            options={{
+                headerTitle: '',
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                }}/>
+            <UserProfileStack.Screen
+            name='UpdatePasswordScreen'
+            component={UpdatePasswordScreen}
+            options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackVisible: false
+                }}/>
+            <UserProfileStack.Screen
+            name='ReturnLoginScreen'
+            component={ReturnLoginScreen}
+            options={{
+                headerTitle: '',
+                headerTransparent: true,
+                headerBackVisible: false
+                }}/>
+
         </UserProfileStack.Navigator>
         
     )

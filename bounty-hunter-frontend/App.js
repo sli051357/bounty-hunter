@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Text } from 'react-native';
 
 import UserProfileStackScreen from './screens/TabScreens/UserProfileStackScreen';
-import BountiesListStackScreen from './screens/TabScreens/BountiesListStackScreen';
+import BountiesListScreen from './screens/TabScreens/BountiesListScreen';
 import WelcomeScreen from './screens/SignInScreens/WelcomeScreen';
 import SignUpScreen from './screens/SignInScreens/SignUpScreen';
 import LoginScreen from './screens/SignInScreens/LoginScreen';
@@ -139,10 +139,7 @@ function AuthenticatedStack() {
 
       <Tab.Screen 
       name='Bounties'
-      component={BountiesListStackScreen}
-      options={{
-        headerShown: false
-      }}/>
+      component={BountiesListScreen}/>
 
       <Tab.Screen 
       name="Friends"

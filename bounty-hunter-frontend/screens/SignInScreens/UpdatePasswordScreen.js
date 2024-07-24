@@ -39,7 +39,7 @@ function UpdatePasswordScreen(){
     return (
         <>
         <LinearGradient
-            colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+            colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
             style={styles.background}/>
             <View style={{flex: 1, marginTop: insets.top+40}}>
                 <View style={[styles.page]}>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     header: {
         textAlign: 'center',
         fontSize: 32,
-        color: GLOBAL_STYLES.colors.blue300,
+        color: GLOBAL_STYLES.colors.brown300,
         fontWeight: '900',
         alignSelf: 'center'
     },
@@ -112,12 +112,11 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         paddingHorizontal: 32,
         paddingVertical: 8,
-        backgroundColor: GLOBAL_STYLES.colors.blue300
     },
     description: {
         textAlign: 'center',
         fontSize: 22,
-        color: GLOBAL_STYLES.colors.brown700,
+        color: GLOBAL_STYLES.colors.brown300,
     },
 })
 

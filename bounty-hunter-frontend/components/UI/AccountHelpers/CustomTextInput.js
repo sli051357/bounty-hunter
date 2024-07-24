@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'left',
-        color: GLOBAL_STYLES.colors.brown700
+        color: GLOBAL_STYLES.colors.brown300
     },
     textInput: {
         fontSize: 16,
         borderRadius: 12,
-        borderColor: GLOBAL_STYLES.colors.brown700,
-        color: GLOBAL_STYLES.colors.brown700,
+        borderColor: GLOBAL_STYLES.colors.brown300,
+        color: GLOBAL_STYLES.colors.brown300,
         padding: 4,
         borderWidth: 2,
         maxWidth: '100%',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     helperText: {
         fontSize: 12,
         textAlign: 'left',
-        color: GLOBAL_STYLES.colors.brown700
+        color: GLOBAL_STYLES.colors.brown300
     },
     textIsInvalid: {
         color: GLOBAL_STYLES.colors.error700

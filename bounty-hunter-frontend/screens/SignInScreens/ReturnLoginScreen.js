@@ -13,13 +13,14 @@ function ReturnLoginScreen() {
     const dispatch = useDispatch();
 
     function returnToLoginHandler(){
-        navigation.navigate('LoginScreen');
+        dispatch(setAuthToken(''))
+        // navigation.navigate('LoginScreen');
     }
 
     return (
         <>
             <LinearGradient
-            colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+            colors={[GLOBAL_STYLES.colors.orange300, GLOBAL_STYLES.colors.blue300]}
             style={styles.background}/>
             <View style={styles.page}>
                 <Text style={styles.header}>Password Updated!</Text>
@@ -45,15 +46,14 @@ const styles = StyleSheet.create({
     header: {
         textAlign: 'center',
         fontSize: 32,
-        color: GLOBAL_STYLES.colors.blue300,
+        color: GLOBAL_STYLES.colors.brown300,
         fontWeight: '900',
-        alignSelf: 'center',
+        alignSelf: 'center'
     },
     buttonStyles: {
         borderRadius: 6,
         paddingHorizontal: 32,
         paddingVertical: 8,
-        backgroundColor: GLOBAL_STYLES.colors.blue300
     },
     background: {
         position: 'absolute',
