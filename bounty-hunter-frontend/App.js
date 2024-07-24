@@ -24,8 +24,6 @@ import { store, persistor } from './store/redux/store';
 import { GLOBAL_STYLES } from './constants/styles';
 import IconButton from './components/UI/IconButton';
 
-import WishlistScreen from './screens/WishlistScreen.js'
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -34,14 +32,6 @@ function AuthStack() {
   return (
       <Stack.Navigator>
         <Stack.Screen
-          name='WishlistScreen'
-          component={WishlistScreen}
-          options={{
-            headerTitle: '',
-            headerBackTitleVisible: false,
-            headerTransparent: true,
-          }}/>
-        {/* <Stack.Screen
           name='WelcomeScreen'
           component={WelcomeScreen}
           options={{
@@ -86,7 +76,7 @@ function AuthStack() {
             headerTitle: '',
             headerTransparent: true,
             headerBackVisible: false
-            }}/> */}
+            }}/>
       </Stack.Navigator>
   )
 }
@@ -160,7 +150,12 @@ function AuthenticatedStack() {
 
       <Tab.Screen 
       name='Wishlist'
-      component={WishListScreen}/>
+      component={WishListScreen}
+      options={{
+        headerTitle: '',
+        headerTransparent: true,
+        headerShadowVisible: false,
+      }}/>
 
       <Tab.Screen 
       name='Profile'

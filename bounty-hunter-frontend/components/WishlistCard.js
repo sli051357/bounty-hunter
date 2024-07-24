@@ -5,9 +5,7 @@ import Hyperlink from 'react-native-hyperlink';
 
 import { GLOBAL_STYLES } from '../constants/styles';
 
-function WishlistCard({ item, isEditing }) {
-
-    const imagePath = item.imagePath;
+function WishlistCard({ title, description, price, imagePath, isEditing }) {
 
     function deleteItem() {
         console.log('deleted');
@@ -18,17 +16,17 @@ function WishlistCard({ item, isEditing }) {
             {/* Wishlist Card */}
             <View style={styles.card}>
                 <View style={{width: '69%', flexWrap: 'wrap'}}>
-                    <Text style={styles.titleText}>{item.title}</Text>
+                    <Text style={styles.titleText}>{title}</Text>
 
                     <Hyperlink linkDefault={true} linkStyle={styles.linkStyle}>
-                        <Text style={styles.descriptionText}>{item.description}</Text>
+                        <Text style={styles.descriptionText}>{description}</Text>
                     </Hyperlink>
 
-                    <Text style={styles.priceText}>${item.price}</Text>
+                    <Text style={styles.priceText}>${price}</Text>
                 </View>
 
                 <View>
-                    <Image style={styles.imageStyle} source={{uri: {imagePath}}}/>
+                    <Image style={styles.imageStyle} source={imagePath}/>
                 </View>
             </View>
 
