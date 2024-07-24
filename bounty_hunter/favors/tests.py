@@ -6,7 +6,7 @@ from .models import Favor, Tag
 from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE
 import datetime
 
-class ChangeStatusTestCase(TestCase):
+class ChangeStatusTest(TestCase):
     
     def setUp(self):
         self.client = Client()
@@ -65,7 +65,7 @@ class ChangeStatusTestCase(TestCase):
         self.assertEqual(self.favor.owner_status, CREATE)
         self.assertEqual(self.favor.assignee_status, INCOMPLETE)
 
-class FavorListTestCase(TestCase):
+class FavorListTest(TestCase):
 
     def setUp(self):
         self.client = Client()
