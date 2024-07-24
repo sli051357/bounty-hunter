@@ -6,6 +6,8 @@ from .forms import FavorForm, TagForm
 from django.db.models import Q
 import datetime
 import types
+from decimal import Decimal
+from django.utils.dateparse import parse_datetime
 
 
 CREATE = "Create"
@@ -53,32 +55,61 @@ def favor_list(request): # ex: favors/
     if and_or == 'or':
         or_query = True
 
-    def query_method(q, query_bool, field, user_input):
-        if query_bool == True:
-            q |= Q(**{field: user_input})
-        if query_bool == False:
-            q &= Q(**{field: user_input})
+    def query_method(q, query_bool, q_input):
+        if query_bool:
+            q |= q_input
+        else:
+            q &= q_input
         return q
 
     # FILTER
     # filter by owner id
     owner_id = request.GET.get('owner')
     if owner_id:
-        query = query_method(query, or_query, 'owner__id', owner_id)
+        query = query_method(query, or_query, Q(owner__id=owner_id))
 
     # filter by assignee id
     assignee_id = request.GET.get('assignee')
     if assignee_id:
-        query = query_method(query, or_query, 'assignee__id', assignee_id)
+        query = query_method(query, or_query, Q(assignee__id=assignee_id))
 
     # filter by tag id
     tag_id = request.GET.get('tag')
     if tag_id:
-        query = query_method(query, or_query, 'tags__id', tag_id)
+        query = query_method(query, or_query, Q(tags__id=tag_id))
 
     # filter by status (use the string constants)
-    completed = request.GET.get('completed') 
+    status = request.GET.get('status') 
+    if status:
+        # owner_status = "Create", assignee_status = "None"
+        if status == 'sent':
+            query = query_method(query, or_query, (Q(owner_status = "Create") & Q(assignee_status = "Incomplete")))
+        # owner_status = "None", assignee_status = "Create"
+        if status == 'received':
+            query = query_method(query, or_query, (Q(owner_status = "Incomplete") & Q(assignee_status = "Create")))
+        # TODO "Incomplete"/"Incomplete", "Create"/"Create", ""
+        if status == 'incomplete':  
+            query = query_method(query, or_query, (Q(owner_status = "Incomplete") & Q(assignee_status = "Create")))
+        # gets completed favors (favor.completed == True)
+        if status == 'complete':
+            query = query_method(query, or_query, 'completed', True)
+            
+    # filter by date range
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date and end_date:
+        start_date = parse_datetime(start_date)
+        end_date = parse_datetime(end_date)
+        query = query_method(query, or_query, (Q(created_at__gte = start_date) & Q(created_at__lte = end_date)))
 
+    # filter by price range
+    price_low = request.GET.get('price_low')
+    price_high = request.GET.get('price_high')
+    if price_low and price_high:
+        price_low = Decimal(price_low)
+        price_high = Decimal(price_high)
+        query = query_method(query, or_query, (Q(total_owed_amt__gte = price_low) & Q(total_owed_amt__lte = price_high)))
+    
     favors = Favor.objects.filter(query).distinct()
 
     # SORT - default sorts from lowest id to highest
@@ -87,27 +118,39 @@ def favor_list(request): # ex: favors/
 
     # sort by name (in alphabetical order)
     if sort_method == 'name':
-        if sort_order == 'descending':
+        if sort_order == 'descending': 
             favors = favors.order_by('-name')
-        # if order is ascending or none is specified, sort in ascending order
-        else:
+        # Bounty title A-Z
+        else: # if order is ascending or none is specified, sort in ascending order
             favors = favors.order_by('name')
         
     # sort by date
     if sort_method == 'date':
-        if sort_order == 'descending':
+        # newest first 
+        if sort_order == 'descending': 
             favors = favors.order_by('-created_at')
-        else:
+        # oldest first 
+        else: 
             favors = favors.order_by('created_at')
 
     # sort by amount of money
     if sort_method == 'amount':
+        # price: highest to lowest
         if sort_order == 'descending':
             favors = favors.order_by('-total_owed_amt')
+        # price: lowest to highest
         else: 
             favors = favors.order_by('total_owed_amt')
 
-    # search favors 
+    # sort by assignee username
+    if sort_method == 'assignee':
+        if sort_order == 'descending':
+            favors = favors.order_by('-assignee__username')
+        # Friend name A-Z
+        else: 
+            favors = favors.order_by('assignee__username')
+
+    # SEARCH 
     search = request.GET.get('search')
     if search:
         favors = favors.filter(Q(name__icontains=search) |  # by favor name
@@ -134,7 +177,6 @@ def favor_list(request): # ex: favors/
                   "is_completed": f.completed,
                   "tags": tags,}
         favors_list.append(f_data)
-
 
     return JsonResponse({"favors": favors_list})
 
