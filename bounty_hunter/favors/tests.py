@@ -270,7 +270,7 @@ class FavorListTestCase(TestCase):
         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
         self.assertEqual(output, expected)
 
-class CreateFavorTestCase(TestCase):
+class CreateFavorTestCase(TestCase): # test create favor 
 
     def setUp(self):
         self.client = Client()
@@ -320,7 +320,7 @@ class CreateFavorTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertEqual(output['error'], "GET method not allowed")
 
-class EditFavorTestCase(TestCase):
+class EditFavorTestCase(TestCase): # test edit favor in views.py
 
     def setUp(self):
         self.client = Client()
@@ -378,7 +378,7 @@ class EditFavorTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(output['success'])
 
-class CreateTagTestCase(TestCase):
+class CreateTagTestCase(TestCase): # test create tag in views.py
 
     def setUp(self):
         self.client = Client()
@@ -423,7 +423,7 @@ class CreateTagTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertEqual(output['error'], "GET method not allowed")
 
-class EditTagTestCase(TestCase):
+class EditTagTestCase(TestCase): # test edit_tag in views.py
 
     def setUp(self):
         self.client = Client()
