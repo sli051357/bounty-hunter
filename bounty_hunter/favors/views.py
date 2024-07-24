@@ -16,7 +16,12 @@ EDIT = "Edit"
 CANCEL = "Cancel" 
 
 
-STATES =[(INCOMPLETE,INCOMPLETE), (CREATE,INCOMPLETE), (DELETE,DELETE), (INCOMPLETE,COMPLETE), (COMPLETE,INCOMPLETE),(COMPLETE,COMPLETE),(DELETE,INCOMPLETE),(INCOMPLETE,DELETE) ]
+STATES =[(INCOMPLETE,INCOMPLETE), (CREATE,INCOMPLETE), (DELETE,DELETE), 
+         (INCOMPLETE,COMPLETE), (COMPLETE,INCOMPLETE),(COMPLETE,COMPLETE),
+         (DELETE,INCOMPLETE),(INCOMPLETE,DELETE),
+         (EDIT,INCOMPLETE),(INCOMPLETE,EDIT),(EDIT,EDIT) ]
+
+
 TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
                (STATES[1],(0,CANCEL)): STATES[2],
                (STATES[1],(1,CANCEL)): STATES[2],
@@ -24,20 +29,30 @@ TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
                (STATES[0],(0,DELETE)): STATES[6],#deletion
                (STATES[0],(1,DELETE)):STATES[7],
                (STATES[6],(1,CANCEL)):STATES[0],
-               (STATES[7],(1,CANCEL)):STATES[6],
+               (STATES[7],(1,CANCEL)):STATES[0],
                (STATES[6],(0,CANCEL)):STATES[0],
-               (STATES[7],(0,CANCEL)):STATES[6],
+               (STATES[7],(0,CANCEL)):STATES[0],
                (STATES[7],(0,DELETE)):STATES[2],
                (STATES[6],(1,DELETE)):STATES[2],
 
                (STATES[0],(0,DELETE)):STATES[4],#completion
                (STATES[0],(1,DELETE)):STATES[3],
                (STATES[4],(1,CANCEL)):STATES[0],
-               (STATES[3],(1,CANCEL)):STATES[4],
+               (STATES[3],(1,CANCEL)):STATES[0],
                (STATES[4],(0,CANCEL)):STATES[0],
-               (STATES[3],(0,CANCEL)):STATES[4],
+               (STATES[3],(0,CANCEL)):STATES[0],
                (STATES[3],(0,DELETE)):STATES[5],
                (STATES[4],(1,DELETE)):STATES[5],
+
+               (STATES[0],(0,EDIT)):STATES[8],#edit
+               (STATES[0],(1,EDIT)):STATES[9],
+               (STATES[4],(1,CANCEL)):STATES[0],
+               (STATES[3],(1,CANCEL)):STATES[0],
+               (STATES[4],(0,CANCEL)):STATES[0],
+               (STATES[3],(0,CANCEL)):STATES[0],
+               (STATES[9],(0,EDIT)):STATES[10],
+               (STATES[8],(1,EDIT)):STATES[10],
+            
             
                 }
 
