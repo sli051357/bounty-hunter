@@ -5,7 +5,7 @@ import Hyperlink from 'react-native-hyperlink';
 
 import { GLOBAL_STYLES } from '../constants/styles';
 
-function WishlistCard({ title, description, price, imagePath, isEditing }) {
+function WishlistCard({ title, description, price, imagePath, editStatus }) {
 
     function deleteItem() {
         console.log('deleted');
@@ -32,12 +32,12 @@ function WishlistCard({ title, description, price, imagePath, isEditing }) {
 
             {/* Delete Button (Conditional rendering)*/}
             <View style={{position: 'absolute', top: -15, left: 10,}}>
-                {isEditing ? (
+                {editStatus ? (
+                    <View></View>
+                ) : (
                     <Pressable onPress={(deleteItem)} style={styles.button}>
                         <Text style={styles.buttonText}>—</Text>
                     </Pressable>
-                ) : (
-                    <View></View>
                 )}
                     
             </View>

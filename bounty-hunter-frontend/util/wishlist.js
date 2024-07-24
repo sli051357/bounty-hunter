@@ -10,5 +10,5 @@ export const DUMMY_WISHLIST = [
         description: 'Halp',
         price: '40',
         imagePath: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeqCZn8mNHtf_rafsttmqvfKDpmR-HH8v85g&s',
-    }
+    },
 ]
