@@ -1,5 +1,5 @@
 
-<form action="{% url 'signin_attempt' %}" method="post">
+<form action="attempt" method="post">
     {% csrf_token %}
     <fieldset>
 	    <input name="username" type="text" value="" /> <br /> 
