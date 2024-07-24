@@ -3,7 +3,8 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Favor, Tag
-from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE
+from django.core.exceptions import ObjectDoesNotExist
+from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE, EDIT
 import datetime
 
 class ChangeStatusTest(TestCase):
@@ -20,6 +21,43 @@ class ChangeStatusTest(TestCase):
             assignee_status=INCOMPLETE
         )
 
+        self.favora = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            owner_status=INCOMPLETE, 
+            assignee_status=INCOMPLETE
+        )
+
+        self.favorb = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            owner_status=DELETE, 
+            assignee_status=INCOMPLETE
+        )
+        self.dummyfavor = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            active = True,
+            owner_status=INCOMPLETE, 
+            assignee_status=INCOMPLETE
+        )
+
+
+        self.favorc = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            previous_favor = self.dummyfavor,
+            owner_status=EDIT, 
+            assignee_status=INCOMPLETE
+        )
+        
+        self.favord = Favor.objects.create(
+            owner=self.user_owner, 
+            assignee=self.user_assignee,
+            owner_status=COMPLETE, 
+            assignee_status=INCOMPLETE
+        )
+
         self.favor2 = Favor.objects.create(
             owner=self.user_owner, 
             assignee=self.user_assignee,
@@ -27,7 +65,7 @@ class ChangeStatusTest(TestCase):
             assignee_status=INCOMPLETE
         )
 
-    def test_valid_transition_owner(self):
+    def test_cancel_created(self):
         self.client.login(username='owner', password='passwofdsfdsrd321!!!')
         response = self.client.post(reverse('change_status', args=[self.favor.id]), {'status': CANCEL})
         self.favor.refresh_from_db()
@@ -36,7 +74,34 @@ class ChangeStatusTest(TestCase):
         self.assertEqual(self.favor.assignee_status, DELETE)
         self.assertEqual(self.favor.active, False)
         self.assertEqual(self.favor.completed, False)
+        self.assertEqual(self.favor.deleted, True)
 
+    def test_cancel_delete(self):
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
+        response = self.client.post(reverse('change_status', args=[self.favorb.id]), {'status': CANCEL})
+        self.favorb.refresh_from_db()
+        self.assertEqual(response.json()['success'], True)
+        self.assertEqual(self.favorb.owner_status, INCOMPLETE)
+        self.assertEqual(self.favorb.assignee_status, INCOMPLETE)
+        self.assertEqual(self.favorb.active, True)
+        self.assertEqual(self.favorb.completed, False)
+        self.assertEqual(self.favorb.deleted, False)
+
+    def test_cancel_edit(self):
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
+        response = self.client.post(reverse('change_status', args=[self.favorc.id]), {'status': CANCEL})
+        self.assertRaises(Favor.DoesNotExist,self.favorc.refresh_from_db,)
+
+    def test_cancel_complete(self):
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
+        response = self.client.post(reverse('change_status', args=[self.favord.id]), {'status': CANCEL})
+        self.favord.refresh_from_db()
+        self.assertEqual(response.json()['success'], True)
+        self.assertEqual(self.favord.owner_status, INCOMPLETE)
+        self.assertEqual(self.favord.assignee_status, INCOMPLETE)
+        self.assertEqual(self.favord.active, True)
+        self.assertEqual(self.favord.completed, False)
+        self.assertEqual(self.favord.deleted, False)
 
     def test_valid_transition_assignee(self):
         self.client.login(username='assignee', password='passwofdsfrd321!!!')

@@ -46,10 +46,10 @@ TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
 
                (STATES[0],(0,EDIT)):STATES[8],#edit
                (STATES[0],(1,EDIT)):STATES[9],
-               (STATES[4],(1,CANCEL)):STATES[0],
-               (STATES[3],(1,CANCEL)):STATES[0],
-               (STATES[4],(0,CANCEL)):STATES[0],
-               (STATES[3],(0,CANCEL)):STATES[0],
+               (STATES[8],(1,CANCEL)):STATES[0],
+               (STATES[9],(1,CANCEL)):STATES[0],
+               (STATES[8],(0,CANCEL)):STATES[0],
+               (STATES[9],(0,CANCEL)):STATES[0],
                (STATES[9],(0,EDIT)):STATES[10],
                (STATES[8],(1,EDIT)):STATES[10],
             
@@ -300,10 +300,10 @@ def change_status(request, favor_id):
     (favor.owner_status,favor.assignee_status) = TRANSITIONS[transition]
 
     #check if favor has been edited, and cancelled. assumes that the old/new favor has already been created.
-    DELETE_OLD = {(STATES[4],(1,CANCEL)):STATES[0],
-               (STATES[3],(1,CANCEL)):STATES[0],
-               (STATES[4],(0,CANCEL)):STATES[0],
-               (STATES[3],(0,CANCEL)):STATES[0]}
+    DELETE_OLD = {(STATES[8],(1,CANCEL)):STATES[0],
+               (STATES[9],(1,CANCEL)):STATES[0],
+               (STATES[8],(0,CANCEL)):STATES[0],
+               (STATES[9],(0,CANCEL)):STATES[0]}
     #if edits are cancelled, re-enable old favor and delete current one.
     if transition in DELETE_OLD:
         temp = favor.previous_favor
