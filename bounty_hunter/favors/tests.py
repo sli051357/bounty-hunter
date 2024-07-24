@@ -65,6 +65,8 @@ class ChangeStatusTest(TestCase):
         self.assertEqual(self.favor.owner_status, CREATE)
         self.assertEqual(self.favor.assignee_status, INCOMPLETE)
 
+
+
 class FavorListTest(TestCase):
 
     def setUp(self):
@@ -162,6 +164,7 @@ class FavorListTest(TestCase):
                   "owner_status": self.favor3.owner_status,
                   "assignee_status": self.favor3.assignee_status,
                   "is_active": self.favor3.active, #only show active in frontend
+                  "is_deleted": self.favor3.deleted,
                   "is_completed": self.favor3.completed,
                   "tags": expected_tags,}
         expected = {"favors": [expected_f_data]}
@@ -194,7 +197,8 @@ class FavorListTest(TestCase):
                     "privacy": f.privacy,
                     "owner_status": f.owner_status,
                     "assignee_status": f.assignee_status,
-                    "is_active": f.active, #only show active in frontend
+                    "is_active": f.active, 
+                    "is_deleted": f.deleted,
                     "is_completed": f.completed,
                     "tags": expected_tags,}
             expected_f_data.append(individual)
@@ -227,11 +231,13 @@ class FavorListTest(TestCase):
                     "privacy": f.privacy,
                     "owner_status": f.owner_status,
                     "assignee_status": f.assignee_status,
-                    "is_active": f.active, #only show active in frontend
+                    "is_active": f.active, 
+                    "is_deleted": f.deleted,
                     "is_completed": f.completed,
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
+    
         #print("assignee1 id: ", self.user_assignee1.id)
         #print("tag3 id: ", self.tag3.id)
         # Remove timestamps in output and expected data
@@ -240,7 +246,7 @@ class FavorListTest(TestCase):
         self.assertEqual(output, expected)
 
     # test searching
-    def test_filter_sort(self):
+    def test_filter_search(self):
         self.maxDiff = None
         url = reverse('favor_list') + f'?tag={self.tag1.id}&search=favor'
         response = self.client.get(url)
@@ -262,6 +268,7 @@ class FavorListTest(TestCase):
                     "assignee_status": f.assignee_status,
                     "is_active": f.active, #only show active in frontend
                     "is_completed": f.completed,
+                    "is_deleted": f.deleted,
                     "tags": expected_tags,}
             expected_f_data.append(individual)
         expected = {"favors": expected_f_data}
@@ -347,21 +354,24 @@ class EditFavorTestCase(TestCase): # test edit favor in views.py
                     "total_owed_type": "Nonmonetary", 
                     "total_owed_amt": "",
                     "privacy": "Public",}
+
         url = reverse('edit_favor', args=[self.favor1.id])
         response = self.client.post(url, new_data)
+        
         output = response.json()
         #print(output)
+        new_favor = Favor.objects.get(pk=output["new_favor_pk"])
         self.favor1.refresh_from_db()
         #print(self.favor1)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(output['success'])
-        self.assertEqual(self.favor1.name, "Edited Favor")
-        self.assertEqual(self.favor1.description, "I edited this favor")
-        self.assertEqual(self.favor1.owner, self.user_owner)
-        self.assertEqual(self.favor1.assignee, self.user_assignee)
-        self.assertEqual(self.favor1.total_owed_type, "Nonmonetary")
-        self.assertIsNone(self.favor1.total_owed_amt)
-        self.assertEqual(self.favor1.privacy, "Public")
+        self.assertEqual(new_favor.name, "Edited Favor")
+        self.assertEqual(new_favor.description, "I edited this favor")
+        self.assertEqual(new_favor.owner, self.user_owner)
+        self.assertEqual(new_favor.assignee, self.user_assignee)
+        self.assertEqual(new_favor.total_owed_type, "Nonmonetary")
+        self.assertIsNone(new_favor.total_owed_amt)
+        self.assertEqual(new_favor.privacy, "Public")
 
     def test_invalid_edit_favor(self):
         new_data = {"name": "",  
