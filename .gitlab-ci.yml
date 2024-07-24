@@ -19,7 +19,9 @@ before_script:
 
 test:
   script:
-    - python bounty_hunter/manage.py test
+    - cd bounty_hunter/
+    - python manage.py tes
+    - cd ..
 
 run:
   script:
