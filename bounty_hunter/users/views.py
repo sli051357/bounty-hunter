@@ -123,6 +123,9 @@ def edit_profile_pic(request, request_username):
             raise JsonResponse(headers)
     else:
         return JsonResponse(headers)
+    
+def rating_score(request, request_username):
+    
 
 def add_link(request, request_username):
     headers = {"success": False}
