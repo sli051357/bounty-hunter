@@ -61,6 +61,8 @@ TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
 # Ceate your views here.
 # view a list of all favors 
 def favor_list(request): # ex: favors/
+    # get current user
+    curr_user = request.user
 
     # AND/OR functionality - default query uses AND
     # for now, each category can only take 1 parameter
@@ -96,18 +98,20 @@ def favor_list(request): # ex: favors/
     # filter by status (use the string constants)
     status = request.GET.get('status') 
     if status:
-        # owner_status = "Create", assignee_status = "None"
+        # favors sent by user
         if status == 'sent':
-            query = query_method(query, or_query, (Q(owner_status = "Create") & Q(assignee_status = "Incomplete")))
-        # owner_status = "None", assignee_status = "Create"
-        if status == 'received':
-            query = query_method(query, or_query, (Q(owner_status = "Incomplete") & Q(assignee_status = "Create")))
-        # TODO "Incomplete"/"Incomplete", "Create"/"Create", ""
-        if status == 'incomplete':  
-            query = query_method(query, or_query, (Q(owner_status = "Incomplete") & Q(assignee_status = "Create")))
-        # gets completed favors (favor.completed == True)
-        if status == 'complete':
-            query = query_method(query, or_query, 'completed', True)
+            query = query_method(query, or_query, Q(owner__id=curr_user.id))
+        # favors received by user
+        elif status == 'received':
+            query = query_method(query, or_query, Q(assignee__id = curr_user.id))
+        # favors in progress
+        elif status == 'incomplete':  
+            q_input = (Q(active = True) & Q(completed = False) & Q(deleted = False))
+            query = query_method(query, or_query, q_input)
+        # completed favors
+        elif status == 'complete':
+            q_input = (Q(completed = True) & Q(deleted = False))
+            query = query_method(query, or_query, q_input)
             
     # filter by date range
     start_date = request.GET.get('start_date') # ex: start_date=2002-01-30
@@ -127,7 +131,10 @@ def favor_list(request): # ex: favors/
         q_in = (Q(total_owed_amt__gte = price_low) & Q(total_owed_amt__lte = price_high))
         query = query_method(query, or_query, q_in)
     
-    favors = Favor.objects.filter(query).distinct()
+    # get all favors owned by or assigned to the current user
+    favors = Favor.objects.filter(Q(owner__id=curr_user.id) | Q(assignee__id=curr_user.id))
+    # filter these favors by the query we've collected
+    favors = favors.filter(query).distinct()
 
     # SORT - default sorts from lowest id to highest
     sort_method = request.GET.get('sort_by')
@@ -191,7 +198,6 @@ def favor_list(request): # ex: favors/
                   "owner_status": f.owner_status,
                   "assignee_status": f.assignee_status,
                   "is_active": f.active, 
-                  "is_completed": f.active, 
                   "is_deleted": f.deleted, 
                   "is_completed": f.completed,
                   "tags": tags,}
