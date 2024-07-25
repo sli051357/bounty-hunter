@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
     const [nameText, onChangeNameText] = React.useState('');
+    const [priceText, onChangePriceText] = React.useState('');
+    const [linkText, onChangeLinkText] = React.useState('');
 
     return (
         <Modal visible={isVisible} transparent={true}>
@@ -21,17 +23,71 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                         <Text style={styles.titleText}>Add Item</Text>
                     </View>
 
+                    {/* Name Input */}
                     <View style={{marginTop: 15,}}>
                         <View style={{flexDirection: 'row',}}>
                             <Text style={styles.headerText}>Name </Text>
                             <Text style={[styles.headerText, {color: GLOBAL_STYLES.colors.blue700}]}>*</Text>
                         </View>
-
+                        
                         <TextInput
                             style={styles.textInput}
                             onChangeText={onChangeNameText}
                             value={nameText}
+                            placeholder="Insert name"
                         />
+                    </View>
+
+                    {/* Price Input */}
+                    <View style={{marginTop: 15,}}>
+                        <View style={{flexDirection: 'row',}}>
+                            <Text style={styles.headerText}>Price </Text>
+                            <Text style={[styles.headerText, {color: GLOBAL_STYLES.colors.blue700}]}>*</Text>
+                        </View>
+                        
+                        <TextInput
+                            inputMode='numeric'
+                            style={styles.textInput}
+                            onChangeText={onChangePriceText}
+                            value={priceText}
+                            placeholder="Insert price"
+                        />
+                    </View>
+
+                    {/* Link/Description */}
+                    <View style={{marginTop: 15,}}>
+                        <Text style={styles.headerText}>Link / Description </Text>
+                        
+                        <TextInput
+                            multiline={true}
+                            style={styles.textInput}
+                            onChangeText={onChangeLinkText}
+                            value={linkText}
+                            placeholder="Insert link/description"
+                        />
+                    </View>
+
+                    {/* Photo Upload */}
+                    <View style={{marginTop: 15}}>
+                        <Text style={styles.headerText}>Photo</Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row'}}>
+                        {/* Image Preview */}
+                        <View>
+
+                        </View>
+
+                        {/* Buttons */}
+                        <View>
+                            <Pressable style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.yellow300, borderColor: GLOBAL_STYLES.colors.brown700}]}>
+                                <Text style={{fontSize: 14, color: GLOBAL_STYLES.colors.brown700, fontFamily: 'BaiJamjuree-Regular'}}>Upload</Text>
+                            </Pressable>
+
+                            <Pressable style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange300, borderColor: GLOBAL_STYLES.colors.blue300,}]}>
+                                <Text style={{fontSize: 14, color: GLOBAL_STYLES.colors.blue300, fontfamily: 'BaiJamjuree-Regular'}}>Remove</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -66,6 +122,26 @@ const styles = StyleSheet.create({
         fontFamily: 'BaiJamjuree-SemiBold',
         color: GLOBAL_STYLES.colors.orange700,
     },
+    textInput: {
+        fontSize: 17,
+        fontFamily: 'BaiJamjuree-Regular',
+        color: GLOBAL_STYLES.colors.brown700,
+        borderWidth: 1.5,
+        borderColor: GLOBAL_STYLES.colors.brown700,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        alignItems: 'center',
+        borderRadius: 5,
+        marginVertical: 5,
+    },
+    photoButton: {
+        borderWidth: 1.5,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 10,
+        margin: 5,
+    }
 })
 
 export default WishlistAdd;

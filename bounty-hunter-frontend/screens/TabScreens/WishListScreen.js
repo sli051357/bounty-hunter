@@ -11,7 +11,7 @@ import WishlistAdd from '../../components/Wishlist/WishlistAdd.js';
 import DUMMY_WISHLIST from '../../util/wishlist.js'
 
 function WishlistScreen({ user }) {
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(true);
     const [isAddVisible, setIsAddVisible] = useState(false);
 
     function isEditingHandler() {

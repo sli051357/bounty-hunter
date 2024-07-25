@@ -17,7 +17,7 @@ function FriendListScreen() {
     // });
 
     const [curScreen, setCurScreen] = useState(1);
-    const [search, setSearch] = useState(false);
+    const [search, setSearch] = useState(true);
 
     const DUMMY_REQUESTS = [
         {
