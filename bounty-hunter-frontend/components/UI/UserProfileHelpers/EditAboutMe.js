@@ -24,55 +24,57 @@ function EditAboutMe({aboutMe, onPress, isEditing}) {
     // };
 
     let editAboutMe = 
-    <>
-        <TitleWithButton
-        title='About Me'
-        titleColor={GLOBAL_STYLES.colors.orange700}
-        icon='create-sharp'
-        iconColor={GLOBAL_STYLES.colors.orange700}
-        onPress={onPress[0]} /> 
-        <Text style={[styles.text, styles.editBox]}>
-            {aboutMe}
-        </Text>
-    </>; 
+    <View>
+        <Text style={styles.title}>About Me:</Text>
+        <Text style={[styles.text]}>{aboutMe}</Text>
+    </View>; 
 
     if (isEditing) {
         editAboutMe = 
-        <>
-            <View>
-                <TitleWithButton
-                    title='About Me'
-                    titleColor={GLOBAL_STYLES.colors.orange700}
-                    icon='checkmark-circle-sharp'
-                    iconColor={GLOBAL_STYLES.colors.orange700}
-                    onPress={onPress[0]}/>
-            </View>        
+        <View style={styles.container}>
+            <Text style={styles.title}>About Me:</Text>        
             <TextInput style={[styles.text, styles.editBox]} 
-            defaultValue="Some Default Value"
-            onChangeText={(text)=>onPress[1](text)}
+            defaultValue="Make your description!"
+            onChangeText={(text)=>onPress(text)}
             value={aboutMe}
             multiline={true}
             maxLength={175}/>  
-        </>
+        </View>
     }
 
-    return (
-            <View>
-                {editAboutMe}
-            </View>
-    )
+    return editAboutMe
 }
 
 const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        alignItems: 'stretch',
+        justifyContent: 'stretch',
+        gap: 4,
+        minHeight: 155, 
+        flex: 1
+    },
     text: {
         color: GLOBAL_STYLES.colors.brown700,
         fontSize: 18
     },
+    title: {
+        color: GLOBAL_STYLES.colors.orange700,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        fontSize: 18
+    },
     editBox: {
-        borderColor: GLOBAL_STYLES.colors.orange700,
+        fontSize: 18,
         borderRadius: 8,
-        padding: 4,
-        borderWidth: 2
+        borderColor: GLOBAL_STYLES.colors.brown700,
+        color: GLOBAL_STYLES.colors.brown700,
+        paddingHorizontal: 6,
+        paddingVertical: 8,
+        borderWidth: 2,
+        maxWidth: '100%',
+        overflow: 'hidden',
+        flex: 1 
     }
 })
 

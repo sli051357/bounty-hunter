@@ -99,14 +99,6 @@ function UserSettingsScreen() {
                 </View>
                 <View style={styles.viewSpacing}>
                     <TitleWithButton 
-                    title='Edit Profile Picture'
-                    titleColor={GLOBAL_STYLES.colors.orange700}
-                    icon='image-sharp'
-                    iconColor={GLOBAL_STYLES.colors.orange700}
-                    onPress={() => console.log('Change Profile Picture')}/>
-                </View>
-                <View style={styles.viewSpacing}>
-                    <TitleWithButton 
                     title='Logout'
                     titleColor={GLOBAL_STYLES.colors.orange700}
                     icon='log-out'
@@ -143,15 +135,15 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     changePasswordTitle: {
-        fontSize: 28,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontWeight: '600',
         color: GLOBAL_STYLES.colors.orange700
     },
     buttonStyles: {
         borderRadius: 6,
         paddingHorizontal: 12,
         paddingVertical: 8,
-        backgroundColor: GLOBAL_STYLES.colors.blue300,
+        backgroundColor: GLOBAL_STYLES.colors.orange700,
     },
 })
 
