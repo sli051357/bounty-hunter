@@ -47,7 +47,7 @@ class Favor(models.Model):
     active = models.BooleanField(default=False)
 
     #set to None if hasnt been edited.
-    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, blank=True)
+    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
