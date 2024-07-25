@@ -11,6 +11,9 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
     const [priceText, onChangePriceText] = React.useState('');
     const [linkText, onChangeLinkText] = React.useState('');
 
+    const [nameError, setNameError] = React.useState(false);
+    const [priceError, setPriceError] = React.useState(false);
+
     const [selectedImage, setSelectedImage] = React.useState(null);
 
     const pickImageAsync = async () => {
@@ -26,6 +29,32 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 
     function removeImage() {
         setSelectedImage(null);
+    }
+
+    function checkInputs() {
+        if (nameText === '') {
+            console.log('error 1');
+            setNameError(true);
+        } else {
+            setNameError(false);
+        }
+
+
+        if (priceText === '') {
+            console.log('error2');
+            setPriceError(true);
+        } else {
+            setPriceError(false);
+        }
+        
+        if ((nameError==true) && (priceError==true)) {
+            setPriceError(false);
+            setNameError(false);
+            onChangeNameText('');
+            onChangePriceText('');
+            onChangeLinkText('');
+            onYes();
+        }
     }
 
     return (
@@ -53,8 +82,14 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                             style={styles.textInput}
                             onChangeText={onChangeNameText}
                             value={nameText}
-                            placeholder="Insert name"
                         />
+
+                        { nameError ? (
+                            <Text style={styles.errorText}>This field is required.</Text>
+                        ) : (
+                            <View></View>
+                        )}
+                        
                     </View>
 
                     {/* Price Input */}
@@ -69,8 +104,13 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                             style={styles.textInput}
                             onChangeText={onChangePriceText}
                             value={priceText}
-                            placeholder="Insert price"
                         />
+
+                        { priceError ? (
+                            <Text style={styles.errorText}>This field is required.</Text>
+                        ) : (
+                            <View></View>
+                        )}
                     </View>
 
                     {/* Link/Description */}
@@ -82,7 +122,6 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                             style={styles.textInput}
                             onChangeText={onChangeLinkText}
                             value={linkText}
-                            placeholder="Insert link/description"
                         />
                     </View>
 
@@ -112,7 +151,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                     </View>
 
                     <View>
-                        <Pressable onPress={(onYes)} style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange700, borderWidth: 0,}]}>
+                        <Pressable onPress={(checkInputs)} style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange700, borderWidth: 0, marginTop: 20,}]}>
                             <Text style={{fontSize: 17, color: GLOBAL_STYLES.colors.brown300, fontFamily: 'BaiJamjuree-SemiBold'}}>Add Item</Text>
                         </Pressable>
                     </View>
@@ -176,6 +215,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginRight: 10,
         marginVertical: 10,
+    },
+    errorText: {
+        marginTop: 2,
+        color: GLOBAL_STYLES.colors.orange700,
+        fontFamily: 'BaiJamjuree-Regular',
+        fontSize: 14,
     }
 })
 
