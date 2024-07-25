@@ -8,6 +8,9 @@ class UserProfileInfo(models.Model):
     bio_text = models.CharField(max_length=200)
     profile_image = models.ImageField(upload_to='res/')
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    rating_score = models.IntegerField(default=0)
+    friend_count = models.IntegerField(default=0)
+    status = models.BooleanField(default=True) #True = public
     def __str__(self):
         return self.owner.username
     
@@ -19,4 +22,7 @@ class LinkedAccounts(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.account_text    
+    
+
+
 
