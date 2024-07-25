@@ -63,24 +63,24 @@ function CreateBountyScreen() {
 
     // Turn this into async function when axios is added
     function createFavorHandler() {
-        const favor = {
-            bountyId: (Math.floor(Math.random() * 1000)), // Dummy Bounty Id, async call in actual implementation
-            senderId: username, // Will be our unique Id
-            receiverId: favorDetails.assignee, // Same with Id
-            dateCreated: today,
-            tags: [],
-            paymentType: isMonetaryStatus ? 'Monetary' : 'Non-Monetary',
-            paymentOwed: favorDetails.totalOwed,
-            description: favorDetails.description,
-            status: 'In-Progress',
-            privacyStatus: favorDetails.privacyStatus,
-            bountyEditHistory: favorDetails.editHistory,
-
-        }
         setIsUploading(true);
         try {
             // Will Set up Axios Sign Up later
-            // const response = await apiService.createFavor(favor);
+            // const response = await apiService.createBounty(favor);
+            const favor = {
+                bountyId: (Math.floor(Math.random() * 1000)), // Dummy Bounty Id, async call in actual implementation, change to response
+                senderId: username, // Will be our unique Id
+                receiverId: favorDetails.assignee, // Same with Id
+                dateCreated: today,
+                tags: [],
+                paymentType: isMonetaryStatus ? 'Monetary' : 'Non-Monetary',
+                paymentOwed: favorDetails.totalOwed,
+                description: favorDetails.description,
+                status: 'In-Progress',
+                privacyStatus: favorDetails.privacyStatus,
+                bountyEditHistory: favorDetails.editHistory,
+    
+            }
             dispatch(addBounty(favor));
         } catch (error) {
             console.log(error);
