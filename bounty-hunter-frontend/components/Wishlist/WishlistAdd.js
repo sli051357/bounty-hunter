@@ -1,4 +1,4 @@
-import { Modal, View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
+import { Modal, View, Text, Pressable, StyleSheet, TextInput, ScrollView } from 'react-native';
 import React from 'react';
 import { GLOBAL_STYLES } from '../../constants/styles';
 
@@ -71,6 +71,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                         <Text style={styles.titleText}>Add Item</Text>
                     </View>
 
+                    <ScrollView>
                     {/* Name Input */}
                     <View style={{marginTop: 15,}}>
                         <View style={{flexDirection: 'row',}}>
@@ -149,6 +150,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                             </Pressable>
                         </View>
                     </View>
+                    </ScrollView>
 
                     <View>
                         <Pressable onPress={(checkInputs)} style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange700, borderWidth: 0, marginTop: 20,}]}>
