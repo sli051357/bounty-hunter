@@ -8,11 +8,25 @@ import WishlistCard from '../../components/Wishlist/WishlistCard.js';
 import WishlistDelete from '../../components/Wishlist/WishlistDelete.js';
 import WishlistAdd from '../../components/Wishlist/WishlistAdd.js';
 
-import DUMMY_WISHLIST from '../../util/wishlist.js'
 
 function WishlistScreen({ user }) {
     const [isEditing, setIsEditing] = useState(true);
     const [isAddVisible, setIsAddVisible] = useState(false);
+
+    const DUMMY_WISHLIST = [
+        {
+            title: 'Lego Set',
+            description: 'https://www.lego.com/en-us/product/wildflower-bouquet-10313',
+            price: '55',
+            imagePath: 'https://www.lego.com/cdn/cs/set/assets/bltc4a6c2103a34f22e/10313_alt2.png?format=webply&fit=bounds&quality=70&width=800&height=800&dpr=1.5'
+        },
+        {
+            title: 'CSE Tutoring (2hr)',
+            description: 'Halp',
+            price: '40',
+            imagePath: '',
+        },
+    ]
 
     function isEditingHandler() {
         setIsEditing((curr) => !curr);
@@ -54,17 +68,19 @@ function WishlistScreen({ user }) {
                 )}
                 
             </View>
-
+            
+            {/* Wishlist Mapping */}
             <View>
-                <WishlistCard
-                    title='Lego Set'
-                    description='https://www.lego.com/en-us/product/wildflower-bouquet-10313'
-                    price='55'
-                    imagePath={{uri: 'https://www.lego.com/cdn/cs/set/assets/bltc4a6c2103a34f22e/10313_alt2.png?format=webply&fit=bounds&quality=70&width=800&height=800&dpr=1.5'
-                    }}
-                    editStatus={isEditing}
-                />
-            </View>
+                {DUMMY_WISHLIST.map((item) => 
+                    <WishlistCard 
+                        key={item.title}
+                        title={item.title}
+                        description={item.description}
+                        price={item.price}
+                        imagePath={item.imagePath} 
+                        editStatus={isEditing} />
+                )}
+            </View> 
 
             {/* Add Button */}
             <View style={{position: 'absolute', left: '84%', top: '91%'}}>
@@ -77,22 +93,7 @@ function WishlistScreen({ user }) {
                 )}
             </View>
 
-            <WishlistAdd isVisible={isAddVisible} onYes={considerAdd} onNo={cancelAdd}/>
-            
-
-            {/* <View>
-                {DUMMY_WISHLIST.map((item) => <WishlistCard key={item.title} title={item.title} description={item.description} price={item.price} imagePath={{uri: item.imagePath}} isEditing={false} />)}
-            </View> */}
-
-
-
-            {/* <View>
-                {isEditing ? (
-                    
-                ) : (
-
-                )}
-            </View> */}
+            <WishlistAdd isVisible={isAddVisible} onYes={addItem} onNo={cancelAdd}/>
             
         </ScrollView>
     )

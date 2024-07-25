@@ -6,6 +6,7 @@ import Hyperlink from 'react-native-hyperlink';
 import { GLOBAL_STYLES } from '../../constants/styles';
 
 import WishlistDelete from './WishlistDelete';
+import WishlistImage from './WishlistImage';
 
 function WishlistCard({ title, description, price, imagePath, editStatus }) {
 
@@ -30,7 +31,7 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
         <View style={{paddingLeft: '5%', paddingRight: '5%'}}>
             {/* Wishlist Card */}
             <View style={styles.card}>
-                <View style={{width: '69%', flexWrap: 'wrap'}}>
+                <View style={{width: '69%', flexWrap: 'wrap',}}>
                     <Text style={styles.titleText}>{title}</Text>
 
                     <Hyperlink linkDefault={true} linkStyle={styles.linkStyle}>
@@ -40,8 +41,8 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
                     <Text style={styles.priceText}>${price}</Text>
                 </View>
 
-                <View>
-                    <Image style={styles.imageStyle} source={imagePath}/>
+                <View style={{marginLeft: 15,}}>
+                    <WishlistImage selectedImage={imagePath} />
                 </View>
             </View>
 
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'wrap',
+        marginBottom: 20,
     },
     titleText: {
         fontFamily: 'BaiJamjuree-Bold',
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         marginLeft: 15,
+        borderRadius: 10,
     },
     button: {
         paddingTop: 3,

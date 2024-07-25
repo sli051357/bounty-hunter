@@ -3,11 +3,30 @@ import React from 'react';
 import { GLOBAL_STYLES } from '../../constants/styles';
 
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import WishlistImage from './WishlistImage';
 
 function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
     const [nameText, onChangeNameText] = React.useState('');
     const [priceText, onChangePriceText] = React.useState('');
     const [linkText, onChangeLinkText] = React.useState('');
+
+    const [selectedImage, setSelectedImage] = React.useState(null);
+
+    const pickImageAsync = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setSelectedImage(result.assets[0].uri);
+        } 
+    }
+
+    function removeImage() {
+        setSelectedImage(null);
+    }
 
     return (
         <Modal visible={isVisible} transparent={true}>
@@ -15,7 +34,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                 <View style={styles.modalStyle}>
                     <View>
                         <Pressable onPress={onNo}>
-                            <Ionicons name="chevron-back" size={24} color={GLOBAL_STYLES.colors.brown700}/>
+                            <Ionicons name="chevron-back" size={24} color={GLOBAL_STYLES.colors.brown700} style={{marginBottom: 10}}/>
                         </Pressable>
                     </View>
 
@@ -74,20 +93,28 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 
                     <View style={{flexDirection: 'row'}}>
                         {/* Image Preview */}
-                        <View>
-
+                        
+                        <View style={{marginRight: 10,marginVertical: 10,}}>
+                            <WishlistImage selectedImage={selectedImage}/>
                         </View>
+                        
 
                         {/* Buttons */}
-                        <View>
-                            <Pressable style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.yellow300, borderColor: GLOBAL_STYLES.colors.brown700}]}>
+                        <View style={{marginTop: 10,}}>
+                            <Pressable onPress={(pickImageAsync)} style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.yellow300, borderColor: GLOBAL_STYLES.colors.brown700}]}>
                                 <Text style={{fontSize: 14, color: GLOBAL_STYLES.colors.brown700, fontFamily: 'BaiJamjuree-Regular'}}>Upload</Text>
                             </Pressable>
 
-                            <Pressable style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange300, borderColor: GLOBAL_STYLES.colors.blue300,}]}>
+                            <Pressable onPress={(removeImage)} style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange300, borderColor: GLOBAL_STYLES.colors.blue300,}]}>
                                 <Text style={{fontSize: 14, color: GLOBAL_STYLES.colors.blue300, fontfamily: 'BaiJamjuree-Regular'}}>Remove</Text>
                             </Pressable>
                         </View>
+                    </View>
+
+                    <View>
+                        <Pressable onPress={(onYes)} style={[styles.photoButton, {backgroundColor: GLOBAL_STYLES.colors.orange700, borderWidth: 0,}]}>
+                            <Text style={{fontSize: 17, color: GLOBAL_STYLES.colors.brown300, fontFamily: 'BaiJamjuree-SemiBold'}}>Add Item</Text>
+                        </Pressable>
                     </View>
                 </View>
             </View>
@@ -141,6 +168,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         margin: 5,
+    },
+    imagePreview: {
+        width: 100,
+        height: 100,
+        backgroundColor: 'blue',
+        borderRadius: 10,
+        marginRight: 10,
+        marginVertical: 10,
     }
 })
 
