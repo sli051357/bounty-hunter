@@ -11,8 +11,8 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
     const [priceText, onChangePriceText] = React.useState('');
     const [linkText, onChangeLinkText] = React.useState('');
 
-    const [nameError, setNameError] = React.useState(false);
-    const [priceError, setPriceError] = React.useState(false);
+    const [nameError, setNameError] = React.useState(true);
+    const [priceError, setPriceError] = React.useState(true);
 
     const [selectedImage, setSelectedImage] = React.useState(null);
 
@@ -33,7 +33,6 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 
     function checkInputs() {
         if (nameText === '') {
-            console.log('error 1');
             setNameError(true);
         } else {
             setNameError(false);
@@ -41,13 +40,12 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 
 
         if (priceText === '') {
-            console.log('error2');
             setPriceError(true);
         } else {
             setPriceError(false);
         }
         
-        if ((nameError==true) && (priceError==true)) {
+        if ((nameError===false) && (priceError===false)) {
             setPriceError(false);
             setNameError(false);
             onChangeNameText('');
