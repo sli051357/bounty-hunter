@@ -125,6 +125,38 @@ def edit_profile_pic(request, request_username):
         return JsonResponse(headers)
     
 def rating_score(request, request_username):
+    headers = {"success": False}
+    new_score = request.POST["new_score"]
+    if new_score is not None:
+        profile = get_object_or_404(UserProfileInfo, owner=request.user)
+        profile.rating_score = new_score
+        profile.save()
+        headers = {"success": True}
+    return JsonResponse(headers)
+
+def friend_count(request, request_username):
+    headers = {"success": False}
+    new_friendcount = request.POST["new_friendcount"]
+    if new_friendcount is not None:
+        profile = get_object_or_404(UserProfileInfo, owner=request.user)
+        profile.friend_count = new_friendcount
+        profile.save()
+        headers = {"success": True}
+    return JsonResponse(headers)
+
+def status(request, request_username):
+    headers = {"success": False}
+    new_status = request.POST["new_status"]
+    if request.user.is_authenticated:
+        if request.user.username == request_username:
+            profile = get_object_or_404(UserProfileInfo, owner=request.user)
+            profile.bio_text = new_status
+            profile.save()
+            return JsonResponse(headers)
+        else:
+            raise JsonResponse(headers)
+    else:
+        return JsonResponse(headers)
     
 
 def add_link(request, request_username):
