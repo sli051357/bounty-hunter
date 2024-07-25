@@ -1,0 +1,47 @@
+image: python:latest
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# https://pip.pypa.io/en/stable/topics/caching/
+cache:
+  paths:
+    - .cache/pip
+
+before_script:
+  - python --version ; pip --version  # For debugging
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt
+
+test:
+  script:
+    - cd bounty_hunter/
+    - python manage.py test
+    - cd ..
+
+run:
+  script:
+    #run everything commands
+   - echo "run the thing"
+
+  artifacts:
+    paths:
+      - build/*
+
+pages:
+  script:
+  - echo "idk what this is either"
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

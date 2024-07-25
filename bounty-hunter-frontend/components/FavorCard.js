@@ -34,13 +34,13 @@ function FavorCard({favor, onPress}){
                         source={require('../assets/profile.jpeg')}
                         />
                     </View>
-                    <Text style={styles.mainTextLeft}>{favor.receiver}</Text>
+                    <Text style={styles.mainTextLeft}>{favor.receiverId}</Text>
                     <Text style={styles.text}>{favor.description}</Text>
                 </View>
                 <View style={[styles.innerContainer, {alignItems: 'flex-end'}]}>
                     <Text style={styles.text}>Created: {favor.dateCreated}</Text>
                     <Text style={styles.mainTextRight}>{favor.paymentOwed}</Text>
-                    <Ionicons name='checkbox'
+                    <Ionicons name={favor.status === 'In-Progress' ? 'code-working' : 'checkbox'}
                         size={22}
                         color={GLOBAL_STYLES.colors.blue300}
                         style={styles.icon}/>
@@ -54,12 +54,13 @@ const styles = StyleSheet.create({
     container: {
         borderWidth: 3,
         width: '100%',
-        borderColor: GLOBAL_STYLES.colors.orange700,
+        borderColor: GLOBAL_STYLES.colors.brown500,
         flexDirection: 'row',
         borderRadius: 12,
         justifyContent: 'space-between',
         padding: 12,
-        marginVertical: 8
+        marginVertical: 8,
+        backgroundColor: GLOBAL_STYLES.colors.brown400
     },
     innerContainer: {
         flex: 1,

@@ -37,8 +37,18 @@ class Favor(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
-    active = models.BooleanField(default=False) #if the favor is active, set to false if deleted or not yet accepted.
+
+
+    deleted = models.BooleanField(default=False) 
     completed = models.BooleanField(default=False)
+
+    # is inactive if has been edited, or hasn't been accepted yet. Upon edits, old favor becomes inactive and new one becomes active. If accepted, old favor gets deleted, 
+    # if rejected reactivate old favor and delete new one.
+    active = models.BooleanField(default=False)
+
+    #set to None if hasnt been edited.
+    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
 
@@ -64,12 +74,7 @@ class Favor(models.Model):
 
     status_choices = [(CREATE, "Create"),(DELETE,"Delete"),(EDIT, "Edit"),(CANCEL, "Cancel"),(COMPLETE, "Complete"), (INCOMPLETE, "Incomplete")]
 
-
-    #favor only has 1 status
-    #status function as switches. Default: None, None
-    # if one status switches to Create, the other can either switch to Create or Cancel. One status switch also sets the status to Pending_[something]
-    # cancel reests to None, None
-    # Create Create switches to None, None, but also changes the favors status, like from Pending_creation to incomplete.
+    # these contain the state of the favor
     owner_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
     assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
 
