@@ -31,6 +31,14 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
         setSelectedImage(null);
     }
 
+    function clearInputs() {
+        setPriceError(true);
+        setNameError(true);
+        onChangeNameText('');
+        onChangePriceText('');
+        onChangeLinkText('');
+    }
+
     function checkInputs() {
         if (nameText === '') {
             setNameError(true);
@@ -46,13 +54,14 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
         }
         
         if ((nameError===false) && (priceError===false)) {
-            setPriceError(false);
-            setNameError(false);
-            onChangeNameText('');
-            onChangePriceText('');
-            onChangeLinkText('');
+            clearInputs();
             onYes();
         }
+    }
+
+    function cancelAdd() {
+        clearInputs();
+        onNo();
     }
 
     return (
@@ -60,7 +69,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
             <View style={styles.modalContainer}>
                 <View style={styles.modalStyle}>
                     <View>
-                        <Pressable onPress={onNo}>
+                        <Pressable onPress={cancelAdd}>
                             <Ionicons name="chevron-back" size={24} color={GLOBAL_STYLES.colors.brown700} style={{marginBottom: 10}}/>
                         </Pressable>
                     </View>
