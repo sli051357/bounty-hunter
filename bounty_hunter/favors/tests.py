@@ -212,6 +212,7 @@ class FavorListTest(TestCase):
     # test for AND
     def test_and_query(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?query=and&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
         response = self.client.get(url)
         output = response.json()
@@ -244,6 +245,7 @@ class FavorListTest(TestCase):
     # test for OR
     def test_or_query(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?query=or&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
         response = self.client.get(url)
         output = response.json()
@@ -278,6 +280,7 @@ class FavorListTest(TestCase):
     # test sort 
     def test_filter_sort(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?sort_by=amount&order=descending'
         response = self.client.get(url)
         output = response.json()
@@ -313,6 +316,7 @@ class FavorListTest(TestCase):
     # test searching
     def test_filter_search(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?tag={self.tag1.id}&search=favor'
         response = self.client.get(url)
         output = response.json()
