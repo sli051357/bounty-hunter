@@ -34,7 +34,7 @@ class Favor(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
-    created_at = models.DateTimeField(default=timezone.now().date()) # only gives date, not time
+    created_at = models.DateTimeField(default=timezone.now) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
 
@@ -47,7 +47,7 @@ class Favor(models.Model):
     active = models.BooleanField(default=False)
 
     #set to None if hasnt been edited.
-    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, blank=True)
 
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
