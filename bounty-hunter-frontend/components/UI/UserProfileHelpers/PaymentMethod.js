@@ -9,7 +9,7 @@ function PaymentMethod({icon, payment, onPress}) {
             <IconButton icon={icon} 
             color={GLOBAL_STYLES.colors.brown700}
             onPress={onPress}
-            iconSize={36}/>
+            iconSize={18}/>
             <Text style={styles.title}>{payment}</Text>
         </View>
     )
@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
-        fontWeight: 'bold',
         color: GLOBAL_STYLES.colors.brown700,
         textAlign: 'center'
     }

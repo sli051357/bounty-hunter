@@ -14,7 +14,7 @@ export const DUMMY_USER_PROFILE = {
     paymentMethods: [
         'Venmo: JusticeLeagueLLC', 
         'Zelle: AlfredMobile', 
-        'Wishlist: https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+        'Wishlist'
     ],
     recentFavors: []
 }
