@@ -6,7 +6,7 @@ from django.template import loader
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from .models import UserProfileInfo, LinkedAccounts
+from .models import UserProfileInfo, LinkedAccounts, Wishlist
 from django.shortcuts import redirect
 
 from django.core.mail import send_mail
@@ -26,6 +26,10 @@ BASE_URL = "http://127.0.0.1:8000/"
 from django.core.exceptions import PermissionDenied
 import base64
 
+from .forms import WishlistForm
+
+from django.views import View
+
 
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -34,7 +38,7 @@ def bio(request, request_username):
         "bio":user_profile.bio_text
     }
     return JsonResponse(data=data)
-
+    
 def profile_pic(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
@@ -236,6 +240,29 @@ def temp(request):
     return render(request, "users/forgot.html", context)
 
 
+#For Wishlist
+class WishlistView(View):
+    def get(self, request):
+        items = Wishlist.objects.all()
+        return render(request, 'wishlist/wishlist.html', {'items': items})
+
+class AddWishlistItemView(View):
+    def get(self, request):
+        form = WishlistForm()
+        return render(request, 'wishlist/add_item.html', {'form': form})
+    
+    def post(self, request):
+        form = WishlistForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('wishlist')
+        return render(request, 'wishlist/add_item.html', {'form': form})
+
+class RemoveWishlistItemView(View):
+    def post(self, request, pk):
+        item = Wishlist.objects.get(pk=pk)
+        item.delete()
+        return redirect('wishlist')
 
 
 
