@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
+// import { useFonts } from 'expo-font';
 
 import { GLOBAL_STYLES } from '../../constants/styles.js';
 import { DUMMY_USER_PROFILE } from '../../util/dummy-data.js';
@@ -11,8 +12,12 @@ import FriendCard from '../../components/FriendCard.js'
 import FriendRequest from '../../components/FriendRequest.js'
 
 function FriendListScreen() {
+    // const [loaded, error] = useFonts({
+    //     'BaiJamjuree-Regular': require('../../assets/fonts/BaiJamjuree-Regular.tff'),
+    // });
+
     const [curScreen, setCurScreen] = useState(1);
-    const [search, setSearch] = useState(false);
+    const [search, setSearch] = useState(true);
 
     const DUMMY_REQUESTS = [
         {
@@ -122,7 +127,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 'auto',
         marginBottom: 5,
-        marginRight: 10,
+        marginRight: '2.5%',
     }
 })
 
