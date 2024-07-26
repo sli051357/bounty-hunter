@@ -11,8 +11,11 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
     const [priceText, onChangePriceText] = React.useState('');
     const [linkText, onChangeLinkText] = React.useState('');
 
-    const [nameError, setNameError] = React.useState(true);
-    const [priceError, setPriceError] = React.useState(true);
+    let nameIsValid = true;
+    let priceIsValid = true;
+    const [nameValidRender, setNameValidRender] = React.useState(nameIsValid);
+    const [priceValidRender, setPriceValidRender] = React.useState(priceIsValid);
+    
 
     const [selectedImage, setSelectedImage] = React.useState(null);
 
@@ -32,28 +35,19 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
     }
 
     function clearInputs() {
-        setPriceError(true);
-        setNameError(true);
+        nameIsValid = false;
+        priceIsValid = false;
         onChangeNameText('');
         onChangePriceText('');
         onChangeLinkText('');
     }
 
     function checkInputs() {
-        if (nameText === '') {
-            setNameError(true);
-        } else {
-            setNameError(false);
-        }
-
-
-        if (priceText === '') {
-            setPriceError(true);
-        } else {
-            setPriceError(false);
-        }
-        
-        if ((nameError===false) && (priceError===false)) {
+        nameIsValid = nameText.length > 0;
+        priceIsValid = priceText.length > 0;
+        setNameValidRender(nameIsValid);
+        setPriceValidRender(priceIsValid);
+        if ((nameIsValid===true) && (priceIsValid===true)) {
             clearInputs();
             onYes();
         }
@@ -92,10 +86,10 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                             value={nameText}
                         />
 
-                        { nameError ? (
-                            <Text style={styles.errorText}>This field is required.</Text>
-                        ) : (
+                        { nameValidRender ? (
                             <View></View>
+                        ) : (
+                            <Text style={styles.errorText}>This field is required.</Text>
                         )}
                         
                     </View>
@@ -114,10 +108,10 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                             value={priceText}
                         />
 
-                        { priceError ? (
-                            <Text style={styles.errorText}>This field is required.</Text>
-                        ) : (
+                        { priceValidRender ? (
                             <View></View>
+                        ) : (
+                            <Text style={styles.errorText}>This field is required.</Text>
                         )}
                     </View>
 
