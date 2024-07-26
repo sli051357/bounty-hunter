@@ -10,4 +10,4 @@ class AccountCreationForm(forms.Form):
 class WishlistForm(forms.Form):
     class Meta:
         model = Wishlist
-        fields = ['title', 'price', 'URL', 'description', 'photo']
+        fields = ['title', 'price', 'URL', 'photo']
