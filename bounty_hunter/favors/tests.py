@@ -389,6 +389,14 @@ class FavorListTest(TestCase):
         #print("EXPECTED: ", expected)
         #print("OUTPUT: ", output)
         self.assertEqual(output, expected)
+    
+    def test_test(self):
+        self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
+        url = reverse('favor_list') + f'?price_low=&price_high=&sort_by='
+        response = self.client.get(url)
+        output = response.json()
+        print(output)
         
 class CreateFavorTestCase(TestCase): # test create favor 
 
