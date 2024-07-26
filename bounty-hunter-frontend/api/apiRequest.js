@@ -90,10 +90,19 @@ const apiService = {
 
     // takes user's filter, sort, and a search parameters (idk where we get the parameters from)
     // filterParams and sortParams = {}, searchParam = " "
-    viewFavorList: async (filterParams, sortParams, searchParam) => {
+    viewBountyList: async (filterParams, sortParams, searchParam) => {
         try {
             const params = new URLSearchParams({...filterParams, ...sortParams, search: searchParam})     // combines all params into one object of URL query format
             const response = await axiosInstance.get(`/favors?${params}`)   // puts params into url
+            return response.data
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    viewBounty: async (id) => {
+        try {
+            const response = await axiosInstance.get(`/favors/${id}`) 
             return response.data
         } catch (error) {
             throw error;
