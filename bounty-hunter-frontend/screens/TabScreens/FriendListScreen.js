@@ -55,7 +55,7 @@ function FriendListScreen() {
         <View>
             {navBar}
 
-            {DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true)).map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../../assets/batman.jpeg')} />)}
+            {DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav === true)).map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../../assets/batman.jpeg')} />)}
         </View>
 
     // Requests
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
         fontSize: 36,
         color: GLOBAL_STYLES.colors.blue300,
         textAlign: 'center',
-        marginBottom: -15,
     },
     button: {
         backgroundColor: GLOBAL_STYLES.colors.brown700,

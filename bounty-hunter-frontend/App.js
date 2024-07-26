@@ -8,6 +8,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
+import { useEffect } from 'react';
 
 import UserProfileStackScreen from './screens/TabScreens/UserProfileStackScreen';
 import BountiesListStackScreen from './screens/TabScreens/BountiesListStackScreen';
@@ -22,8 +25,6 @@ import WishListScreen from './screens/TabScreens/WishListScreen';
 import FriendListScreen from './screens/TabScreens/FriendListScreen';
 import { store, persistor } from './store/redux/store';
 import { GLOBAL_STYLES } from './constants/styles';
-import IconButton from './components/UI/IconButton';
-
 
 
 const Stack = createNativeStackNavigator();
@@ -133,8 +134,11 @@ function AuthenticatedStack() {
       component={LeaderBoardScreen}
       options={{
         headerTitle: '',
-        headerTransparent: true,
-        headerShadowVisible: false
+        //headerTransparent: true,
+        headerShadowVisible: false,
+        headerStyle: {
+          backgroundColor: GLOBAL_STYLES.colors.brown300
+        }
       }}/>
 
       <Tab.Screen 
@@ -177,6 +181,24 @@ function Root() {
 }
 
 export default function App() {
+
+  const [loaded, error] = useFonts({
+    'BaiJamjuree-Medium': require('./assets/fonts/BaiJamjuree-Medium.ttf'),
+    'BaiJamjuree-Regular': require('./assets/fonts/BaiJamjuree-Regular.ttf'),
+    'BaiJamjuree-SemiBold': require('./assets/fonts/BaiJamjuree-SemiBold.ttf'),
+    'BaiJamjuree-Bold': require('./assets/fonts/BaiJamjuree-Bold.ttf')
+  })
+
+  useEffect(() => {
+    if (loaded || error){
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
     <>
       <StatusBar />

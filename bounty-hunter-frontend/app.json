@@ -22,6 +22,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font", 
+        {
+          "fonts": ["assets/fonts/BaiJamjuree-Bold.ttf", 
+          "assets/fonts/BaiJamjuree-SemiBold.ttf", "assets/fonts/BaiJamjuree-Regular.ttf",
+          "assets/fonts/BaiJamjuree-Medium.ttf"]
+        }
+      ]
+    ]
   }
 }
