@@ -266,4 +266,3 @@ class RemoveWishlistItemView(View):
 
 
 
-# Create your views here.
