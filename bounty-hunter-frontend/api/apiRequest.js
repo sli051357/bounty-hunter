@@ -88,7 +88,7 @@ const apiService = {
         }
     },
 
-    // takes user's filter, sort, and a search parameters (idk where we get the parameters from)
+    // takes user's filter, sort, and a search parameters 
     // filterParams and sortParams = {}, searchParam = " "
     viewBountyList: async (filterParams, sortParams, searchParam) => {
         try {
