@@ -14,7 +14,7 @@ export const DUMMY_USER_PROFILE = {
     paymentMethods: [
         'Venmo: JusticeLeagueLLC', 
         'Zelle: AlfredMobile', 
-        'Wishlist: https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+        'Wishlist'
     ],
     recentFavors: []
 }
@@ -114,5 +114,39 @@ export const DUMMY_FAVORS_OF_PROFILE = [
         description: "Saving you in Batman vs Superman Movie!",
         status: 'deleted'
     }
+
+]
+
+export const DETAILED_FRIEND_LIST = [
+    {
+        friendId: 'A123456',
+        friendUsername: 'Batman2077',
+        friendProfilePic: './../assets/batman.jpeg',
+        friendRating: 100
+    },
+    {
+        friendId: 'A223456',
+        friendUsername: 'Superman7',
+        friendProfilePic: './../assets/profile.jpeg',
+        friendRating: 99
+    },
+    {
+        friendId: 'A323456',
+        friendUsername: 'WonderWomen45',
+        friendProfilePic: './../assets/profile.jpeg',
+        friendRating: 99
+    },
+    {
+        friendId: 'A423456',
+        friendUsername: 'FlashPoint',
+        friendProfilePic: './../assets/profile.jpeg',
+        friendRating: 82
+    },
+    {
+        friendId: 'A523456',
+        friendUsername: 'Joker',
+        friendProfilePic: './../assets/batman.jpeg',
+        friendRating: 44
+    },
 
 ]

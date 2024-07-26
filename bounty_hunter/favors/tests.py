@@ -183,6 +183,7 @@ class FavorListTest(TestCase):
 
         self.favor3 = Favor.objects.create(
             name = "Fav3",
+            description = "This is my third favor",
             owner=self.user_owner, 
             assignee=self.user_assignee1,
             total_owed_type = "Nonmonetary",
@@ -199,6 +200,15 @@ class FavorListTest(TestCase):
             completed = False
         )
         self.favor4.tags.set([self.tag3])
+
+        self.favor5 = Favor.objects.create(
+            name = "Fifthfavor",
+            owner=self.user_owner, 
+            assignee=self.user_assignee2,
+            total_owed_type = "Monetary",
+            total_owed_amt = '100.00',
+            completed = False
+        )
     
     def remove_timestamps(self, favor):
         # Remove timestamps for favor and its tags
@@ -212,6 +222,7 @@ class FavorListTest(TestCase):
     # test for AND
     def test_and_query(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?query=and&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
         response = self.client.get(url)
         output = response.json()
@@ -244,6 +255,7 @@ class FavorListTest(TestCase):
     # test for OR
     def test_or_query(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?query=or&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
         response = self.client.get(url)
         output = response.json()
@@ -278,11 +290,12 @@ class FavorListTest(TestCase):
     # test sort 
     def test_filter_sort(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?sort_by=amount&order=descending'
         response = self.client.get(url)
         output = response.json()
         expected_f_data = []
-        for f in list([self.favor2, self.favor4, self.favor1, self.favor3]):
+        for f in list([self.favor5, self.favor2, self.favor4, self.favor1, self.favor3]):
             expected_tags = list(f.tags.all().values())
             individual = {"name": f.name, 
                     "id": f.id, 
@@ -310,14 +323,15 @@ class FavorListTest(TestCase):
         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
         self.assertEqual(output, expected)
 
-    # test searching
+    # test searching (search title and description)
     def test_filter_search(self):
         self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
         url = reverse('favor_list') + f'?tag={self.tag1.id}&search=favor'
         response = self.client.get(url)
         output = response.json()
         expected_f_data = []
-        for f in list([self.favor1, self.favor2]):
+        for f in list([self.favor1, self.favor2, self.favor3]):
             expected_tags = list(f.tags.all().values())
             individual = {"name": f.name, 
                     "id": f.id, 
@@ -342,6 +356,40 @@ class FavorListTest(TestCase):
         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
         self.assertEqual(output, expected)
 
+    def test_filter_by_price(self):
+        self.maxDiff = None
+        self.client.login(username='user1', password='password123?')
+        url = reverse('favor_list') + f'?price_low=5.25&price_high=10.00&sort_by=amount'
+        response = self.client.get(url)
+        output = response.json()
+        expected_f_data = []
+        for f in list([self.favor1, self.favor4, self.favor2]):
+            expected_tags = list(f.tags.all().values())
+            individual = {"name": f.name, 
+                    "id": f.id, 
+                    "description": f.description, 
+                    "owner": f.owner.username,
+                    "assignee": f.assignee.username,
+                    "created_at": f.created_at,
+                    "updated_at": f.updated_at,
+                    "total_owed_type": f.total_owed_type,
+                    "total_owed_amt": f.total_owed_amt,
+                    "privacy": f.privacy,
+                    "owner_status": f.owner_status,
+                    "assignee_status": f.assignee_status,
+                    "is_active": f.active, #only show active in frontend
+                    "is_completed": f.completed,
+                    "is_deleted": f.deleted,
+                    "tags": expected_tags,}
+            expected_f_data.append(individual)
+        expected = {"favors": expected_f_data}
+        # Remove timestamps in output and expected data
+        output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
+        expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
+        #print("EXPECTED: ", expected)
+        #print("OUTPUT: ", output)
+        self.assertEqual(output, expected)
+        
 class CreateFavorTestCase(TestCase): # test create favor 
 
     def setUp(self):

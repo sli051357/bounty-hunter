@@ -36,7 +36,7 @@ const apiService = {
     
     updateUserBio: async (id, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/edit-bio/', data);
+            const response = await axiosInstance.post(`/users/profiles/${id}/edit-bio/`, data);
             return response.data;
         } catch (error) {
             throw error;
@@ -45,7 +45,7 @@ const apiService = {
 
     updateUserProfilePic: async (id, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/edit-profile-pic/', data);
+            const response = await axiosInstance.post(`users/profiles/${id}/edit-profile-pic/`, data);
             return response.data;
         } catch (error) {
             throw error;
@@ -54,7 +54,7 @@ const apiService = {
 
     addAccountLink: async (id, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/add-link/', data);
+            const response = await axiosInstance.post(`/users/profiles/${id}/add-link/`, data);
             return response.data;
         } catch (error) {
             throw error;
@@ -63,7 +63,7 @@ const apiService = {
 
     removeAccountLink: async (id, data) => {
         try {
-            const response = await axiosInstance.post('/users/get-token/', data);
+            const response = await axiosInstance.post(`/users/get-token/`, data);
             return response.data;
         } catch (error) {
             throw error;
@@ -72,12 +72,20 @@ const apiService = {
 
     signIn: async (id, data) => {
         try {
-            const response = await axiosInstance.post('/users/profiles/${id}/edit-bio', data);
+            const response = await axiosInstance.post(`/users/profiles/${id}/edit-bio`, data);
             return response.data;
         } catch (error) {
             throw error;
         }
     },
+    createBounty: async (data) => {
+        try {
+            const response = await axiosInstance.post('favors/create', data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 };
 
 export default apiService;

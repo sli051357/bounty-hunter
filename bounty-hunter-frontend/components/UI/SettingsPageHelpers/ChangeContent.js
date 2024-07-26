@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         borderWidth: 2
     },
     helperText: {
-        color: GLOBAL_STYLES.colors.blue300,
+        color: GLOBAL_STYLES.colors.brown700,
         fontWeight: '600',
         textAlign: 'left'
     }
