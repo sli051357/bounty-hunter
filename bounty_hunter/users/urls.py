@@ -20,6 +20,11 @@ urlpatterns = [
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
     path('forgot/', views.reset_password, name="forgot"),
     
+    #urls for wishlist
+    path('wishlist/', views.WishlistView.as_view(), name='wishlist'),
+    path('wishlist/add/', views.AddWishlistItemView.as_view(), name='add_wishlist_item'),
+    path('wishlist/remove/<int:pk>/', views.RemoveWishlistItemView.as_view(), name='remove_wishlist_item'),
+
     #temporary links for testing
     path('temp/', views.temp, name="temp"),
     path('sign-in/', views.sign_in, name="sign_in"),
