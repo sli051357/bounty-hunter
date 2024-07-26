@@ -82,22 +82,22 @@ def favor_list(request): # ex: favors/
     # FILTER
     # filter by owner id
     owner_id = request.GET.get('owner')
-    if owner_id:
+    if owner_id and owner_id != '':
         query = query_method(query, or_query, Q(owner__id=owner_id))
 
     # filter by assignee id
     assignee_id = request.GET.get('assignee')
-    if assignee_id:
+    if assignee_id and assignee_id != '':
         query = query_method(query, or_query, Q(assignee__id=assignee_id))
 
     # filter by tag id
     tag_id = request.GET.get('tag')
-    if tag_id:
+    if tag_id and tag_id != '':
         query = query_method(query, or_query, Q(tags__id=tag_id))
 
     # filter by status (use the string constants)
     status = request.GET.get('status') 
-    if status:
+    if status and status != '':
         # favors sent by user
         if status == 'sent':
             query = query_method(query, or_query, Q(owner__id=curr_user.id))
@@ -116,7 +116,7 @@ def favor_list(request): # ex: favors/
     # filter by date range
     start_date = request.GET.get('start_date') # ex: start_date=2002-01-30
     end_date = request.GET.get('end_date')
-    if start_date and end_date:
+    if (start_date and start_date != '') and (end_date and end_date != ''):
         start_date = parse_date(start_date)
         end_date = parse_date(end_date)
         q_in = (Q(created_at__gte = start_date) & Q(created_at__lte = end_date))
@@ -125,7 +125,7 @@ def favor_list(request): # ex: favors/
     # filter by price range
     price_low = request.GET.get('price_low')
     price_high = request.GET.get('price_high')
-    if price_low and price_high:
+    if (price_low and price_low != '') and (price_high and price_high != ''):
         price_low = Decimal(price_low)
         price_high = Decimal(price_high)
         q_in = (Q(total_owed_amt__gte = price_low) & Q(total_owed_amt__lte = price_high))
