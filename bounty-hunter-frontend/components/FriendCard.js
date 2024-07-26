@@ -33,7 +33,7 @@ function FriendCard({ friend, imagePath }) {
                     <Text style={styles.usernameText}>{friend.nickname}</Text>
                     <Text style={styles.userID}>{friend.id}</Text>
                 </View>
-                <View style={{marginLeft: 10}}>
+                <View style={{marginLeft: 15}}>
                     <Pressable onPress={(editFavoriteStatus)}>
                         {favorite ? (
                             <AntDesign name="star" size={24} color={GLOBAL_STYLES.colors.orange700} />
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         fontFamily: 'BaiJamjuree-SemiBold',
         fontSize: 20,
         color: GLOBAL_STYLES.colors.blue300,
+        marginBottom: -5,
     },
     userID: {
         fontFamily: 'BaiJamjuree-Regular',
