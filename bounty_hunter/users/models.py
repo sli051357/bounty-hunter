@@ -20,3 +20,10 @@ class LinkedAccounts(models.Model):
     def __str__(self):
         return self.account_text    
 
+#model for storing wishlist
+class Wishlist(models.Model):
+    title = models.CharField(max_length=100)
+    price = models.IntegerField(default=0)
+    URL = models.URLField(max_length=200, blank=True)
+    description = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to='res/')
