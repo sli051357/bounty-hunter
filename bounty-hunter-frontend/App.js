@@ -7,10 +7,11 @@ import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
+
 
 import UserProfileStackScreen from './screens/TabScreens/UserProfileStackScreen';
 import BountiesListStackScreen from './screens/TabScreens/BountiesListStackScreen';
@@ -25,6 +26,7 @@ import WishListScreen from './screens/TabScreens/WishListScreen';
 import FriendListScreen from './screens/TabScreens/FriendListScreen';
 import { store, persistor } from './store/redux/store';
 import { GLOBAL_STYLES } from './constants/styles';
+import InputEmailVerifyScreen from './screens/SignInScreens/InputEmailVerifyScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,6 +52,14 @@ function AuthStack() {
           <Stack.Screen
           name='LoginScreen'
           component={LoginScreen}
+          options={{
+            headerTitle: '',
+            headerBackTitleVisible: false,
+            headerTransparent: true,
+            }}/>
+          <Stack.Screen
+          name='InputEmailVerifyScreen'
+          component={InputEmailVerifyScreen}
           options={{
             headerTitle: '',
             headerBackTitleVisible: false,
@@ -90,7 +100,7 @@ function AuthenticatedStack() {
       tabBarIcon: ({color, size, focused}) => {
         let iconName; 
         switch(route.name) {
-          case 'Leaderboard':
+          case 'Rankings':
             iconName = focused ? 'bar-chart' :
               'bar-chart-outline';
             break;
@@ -112,24 +122,26 @@ function AuthenticatedStack() {
         }
         return <Ionicons name={iconName} 
           size={size}
-          color={color}/>
+          color={GLOBAL_STYLES.colors.brown300}/>
       },
-      tabBarLabel: ({children, color, focused}) => {
+      tabBarLabel: ({children, color, focused, size}) => {
         return (
-        <Text style={{fontSize: 12, color: {color}, fontWeight: focused ? 'bold' : 'normal'}}>
+        <Text style={{marginBottom: Platform.OS === 'android' ? 10 : 0,
+        fontSize: 14, color: GLOBAL_STYLES.colors.brown300, fontWeight: focused ? '700' : 'normal', 
+        textDecorationLine: focused ? 'underline': 'none'}}>
           {children}
         </Text>)
       },
       tabBarStyle: {
         backgroundColor: GLOBAL_STYLES.colors.brown500,
-        color: GLOBAL_STYLES.colors.brown300,
         height: 80,
-        // Work in Progress
+        //paddingTop: 4,
+        paddingHorizontal: 2
       }
     })
     }>
       <Tab.Screen 
-      name="Leaderboard"
+      name="Rankings"
       component={LeaderBoardScreen}
       options={{
         headerTitle: '',
