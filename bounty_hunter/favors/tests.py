@@ -597,3 +597,8 @@ class EditTagTestCase(TestCase): # test edit_tag in views.py
         self.tag1.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertFalse(output['success'])
+
+class DeleteTagTestCase(TestCase):
+
+    def test_delete_tag(self):
+        url = reverse 
