@@ -44,6 +44,7 @@ pages:
 deploy:
   stage: deploy
   script: 
+    - cd SDSC-cloud
     - ssh -i favor-key.pem ubuntu@132.249.238.228
     - cd monetary-favor-tackers/bounty_hunter
     - source ../venv/bin/activate
