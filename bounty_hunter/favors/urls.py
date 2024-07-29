@@ -8,7 +8,7 @@ urlpatterns = [
     path("<int:favor_id>/", views.favor_detail, name="favor_detail"),
     # create a new favor - ex: /favors/create
     path("create/", views.create_favor, name="create_favor"),
-    # edit a favor - ex: /favors/edit/1
+    # edit a favor - ex: /favors/1/edit
     path("<int:favor_id>/edit", views.edit_favor, name="edit_favor"),
     # view all tags - ex: /favors/tags
     path("tags/", views.tag_list, name="tag_list"),
@@ -16,8 +16,10 @@ urlpatterns = [
     path("tags/<int:tag_id>/", views.tag_detail, name="tag_detail"),
     # create a new tag - ex: /favors/tags/create
     path("tags/create", views.create_tag, name="create_tag"),
-    # edit a tag - ex: /favors/tags/edit/2
+    # edit a tag - ex: /favors/tags/2/edit/
     path("tags/<int:tag_id>/edit/", views.edit_tag, name="edit_tag"),
+    # delete a tag - ex: /favors/tags/2/delete
+    path("tags/<int:tag_id>/delete/", views.delete_tag, name="delete_tag"),
 
     # more paths for filters, editing/creating favors, etc
     path("<int:favor_id>/change-status/",views.change_status, name="change_status"),
