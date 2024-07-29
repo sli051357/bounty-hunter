@@ -417,5 +417,11 @@ def show_change_status(request, favor_id):
     return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
 # delete a tag based on tag id
-
+def delete_tag(request, tag_id):
+    tag = get_object_or_404(Tag, pk=tag_id)
+    if request.method == "DELETE":
+        tag.delete()
+        return JsonResponse({"success": True})
+    else:
+        return JsonResponse({"error": "must use DELETE method"}, status=405)
 
