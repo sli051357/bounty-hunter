@@ -416,4 +416,6 @@ def apply_transitions(favor):
 def show_change_status(request, favor_id):
     return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
+# delete a tag based on tag id
+
 
