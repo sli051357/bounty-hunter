@@ -19,7 +19,7 @@ urlpatterns = [
     # edit a tag - ex: /favors/tags/2/edit/
     path("tags/<int:tag_id>/edit/", views.edit_tag, name="edit_tag"),
     # delete a tag - ex: /favors/tags/2/delete
-    path("tags/<int:tag_id/delete/>", views.delete_tag, name="delete_tag"),
+    path("tags/<int:tag_id>/delete/", views.delete_tag, name="delete_tag"),
 
     # more paths for filters, editing/creating favors, etc
     path("<int:favor_id>/change-status/",views.change_status, name="change_status"),

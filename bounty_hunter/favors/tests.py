@@ -390,13 +390,13 @@ class FavorListTest(TestCase):
         #print("OUTPUT: ", output)
         self.assertEqual(output, expected)
     
-    def test_test(self):
-        self.maxDiff = None
-        self.client.login(username='user1', password='password123?')
-        url = reverse('favor_list') + f'?price_low=&price_high=&sort_by='
-        response = self.client.get(url)
-        output = response.json()
-        print(output)
+    #def test_test(self):
+    #    self.maxDiff = None
+    #    self.client.login(username='user1', password='password123?')
+    #    url = reverse('favor_list') + f'?price_low=&price_high=&sort_by='
+    #    response = self.client.get(url)
+    #    output = response.json()
+    #    print(output)
         
 class CreateFavorTestCase(TestCase): # test create favor 
 
@@ -600,5 +600,32 @@ class EditTagTestCase(TestCase): # test edit_tag in views.py
 
 class DeleteTagTestCase(TestCase):
 
+    def setUp(self):
+        self.client = Client()
+        self.user_owner = User.objects.create_user(username='user1', password='password123!')
+        self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
+        self.client.login(username='user1', password='password123!')
+
+        self.tag1 = Tag.objects.create(
+            name = "Food",
+            color = "#1234ab",
+            owner = self.user_owner,
+            tag_type = "Preset"
+        )
+
+        self.tag2 = Tag.objects.create(
+            name = "Travel",
+            color = "#5678BC",
+            owner = self.user_owner,
+            tag_type = "Preset"
+        )
+
     def test_delete_tag(self):
-        url = reverse 
+        url = reverse('delete_tag', args=[self.tag1.id])
+        response = self.client.delete(url)
+        output = response.json()
+        # print("all tags: ", Tag.objects.all())
+        # print("tags count: ", Tag.objects.all().count())
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(output['success'])
+        self.assertEqual(Tag.objects.all().count(), 1)
