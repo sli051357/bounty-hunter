@@ -629,3 +629,19 @@ class DeleteTagTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(output['success'])
         self.assertEqual(Tag.objects.all().count(), 1)
+
+    def test_delete_tag_get(self):
+        url = reverse('delete_tag', args=[self.tag1.id])
+        response = self.client.get(url)
+        output = response.json()
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(output['error'], "must use DELETE method")
+        self.assertEqual(Tag.objects.all().count(), 2)
+
+    def test_delete_tag_post(self):
+        url = reverse('delete_tag', args=[self.tag1.id])
+        response = self.client.post(url)
+        output = response.json()
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(output['error'], "must use DELETE method")
+        self.assertEqual(Tag.objects.all().count(), 2)
