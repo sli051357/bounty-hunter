@@ -43,5 +43,11 @@ pages:
 
 deploy:
   stage: deploy
-  script: echo "Define your deployment script!"
+  script: 
+    - ssh -i favor-key.pem ubuntu@132.249.238.228
+    - cd monetary-favor-tackers/bounty_hunter
+    - source ../venv/bin/activate
+    - git pull origin dev   # change to main later
+    - python manage.py runserver 0.0.0.0:8000
+    # server is open at http://132.249.238.228:8000
   environment: production
