@@ -20,9 +20,10 @@ const friendListSlice = createSlice({
             state.friendList = state.friendList.filter((friend) => {
                 return friend.id !== action.payload.id
             })
-        }
+        },
+        resetFriendList: () => initialState
     }
 });
 
-export const { addFriend, removeFriend } = friendListSlice.actions;
+export const { addFriend, removeFriend, resetFriendList } = friendListSlice.actions;
 export default friendListSlice.reducer;

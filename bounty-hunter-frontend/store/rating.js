@@ -10,9 +10,10 @@ const ratingSlice = createSlice({
     reducers: {
         setRating: (state, action) => {
             state.rating = action.payload;
-        }
+        },
+        resetRating: () => initialState
     }
 })
 
-export const { setRating } = ratingSlice.actions;
+export const { setRating, resetRating } = ratingSlice.actions;
 export default ratingSlice.reducer;
