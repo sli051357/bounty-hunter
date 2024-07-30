@@ -4,6 +4,12 @@ image: python:latest
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  REMOTE_HOST: "132.249.238.228"
+  REMOTE_USER: "ubuntu"
+  DEPLOY_DIR: "/home/ubuntu/monetary-favor-tackers"   # monetary-favor-tackers/bounty_hunter
+  VENV_DIR: "/home/ubuntu/monetary-favor-tackers/venv"  
+  SSH_PRIVATE_KEY: ""
+  GIT_SUBMODULE_STRATEGY: recursive
 
 # https://pip.pypa.io/en/stable/topics/caching/
 cache:
@@ -16,6 +22,11 @@ before_script:
   - virtualenv venv
   - source venv/bin/activate
   - pip install -r requirements.txt
+  - eval $(ssh-aget -s)   # starts ssh-agent 
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -  # adds private key to the ssh-agent
+  - mkdir -p ~/.ssh   # creates the .ssh directory 
+  - chmod 700 ~/.ssh  # changes .ssh permissions
+  - ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts  # adds key to known_hosts
 
 test:
   script:
