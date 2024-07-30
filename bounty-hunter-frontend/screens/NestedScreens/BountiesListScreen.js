@@ -21,12 +21,12 @@ function BountiesListScreen(){
 
     // DUMMY VALUES ///////////
     const DUMMY_SORT_VALUES = [
-        {name: 'Newest First', active: 'true'},
-        {name: 'Oldest First', active: 'false'},
-        {name: 'Friend Name A-Z', active: 'false'},
-        {name: 'Bounty Title A-Z', active: 'false'},
-        {name: 'Price (Highest to Lowest)', active: 'false'},
-        {name: 'Price (Lowest to Highest)', active: 'false'},
+        {name: 'Newest First', active: true},
+        {name: 'Oldest First', active: true},
+        {name: 'Friend Name A-Z', active: false},
+        {name: 'Bounty Title A-Z', active: true},
+        {name: 'Price (Highest to Lowest)', active: false},
+        {name: 'Price (Lowest to Highest)', active: false},
     ];
 
     // This is a tester function, NOT ACTUAL IMPLEMENTATION!
@@ -56,10 +56,10 @@ function BountiesListScreen(){
                         </View>
                         <View style={styles.buttonContainer}>
                             {/* Filter Button */}
-                            <IconButton icon='filter' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => setIsSortVisible(true)}/>
+                            <IconButton icon='filter' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => console.log('Filter Button')}/>
 
                             {/* Sort Button */}
-                            <IconButton icon='swap-vertical-sharp' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => console.log('Sort Button')}/>
+                            <IconButton icon='swap-vertical-sharp' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => setIsSortVisible(true)}/>
                         </View>
                     </View>
                     {userBountyList.map((favor) => <FavorCard key={favor.bountyId} onPress={removeBountyHandler} favor={favor}/>)}
