@@ -89,17 +89,17 @@ def get_incoming_friend_requests(request):
     data = {}
     for fr in friend_requests:
         data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
-    return data
+    return JsonResponse(data)
     
 
 #retrieves the list of friends
 # @login_required
 def get_friends_list(request):
-    friends = UserProfileInfo.objects.filter(owner=request.user).friends
-    data = []
-    for friend in friends:
-        data.append(friend.username)
-    return data
+    friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
+    data = {}
+    for friend in friends.all():
+        data[friend.username] = "friend :)"
+    return JsonResponse(data)
 
 
 # @login_required
@@ -116,8 +116,17 @@ def send_friend_request(request, username):
 def accept_friend_request(request, pk):
     fr = FriendRequest.objects.get(pk=pk)
     if request.user == fr.to_user:
-        UserProfileInfo.objects.get(owner=fr.to_user).objects.friends.add(fr.from_user)
-        UserProfileInfo.objects.get(owner=fr.from_user).objects.friends.add(fr.to_user)
+        UserProfileInfo.objects.get(owner=fr.to_user).friends.add(fr.from_user)
+        UserProfileInfo.objects.get(owner=fr.from_user).friends.add(fr.to_user)
+        fr.delete()
+        return JsonResponse({"success":True})
+    else:
+        return JsonResponse({"success":False})
+    
+# @login_required
+def reject_friend_request(request, pk):
+    fr = FriendRequest.objects.get(pk=pk)
+    if request.user == fr.to_user:
         fr.delete()
         return JsonResponse({"success":True})
     else:
