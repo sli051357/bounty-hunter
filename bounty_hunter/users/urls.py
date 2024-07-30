@@ -17,7 +17,9 @@ urlpatterns = [
     path('verify/<slug:token>', views.verify, name="verify"),
     path('reset-password/<slug:token>', views.show_create_new_password, name="reset_password"),
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
-    
+
+
+
     #temporary links for testing
     path('forgot/', views.reset_password, name="forgot"),
     path('sign-up/', views.sign_up, name="sign_up"),

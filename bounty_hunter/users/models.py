@@ -1,11 +1,11 @@
 from django.db import models
 import PIL
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import User
 # Create your models here.
 
 #model for storing bio and profile image. Each user has only one owner.
 class UserProfileInfo(models.Model):
-    friends = models.ManyToManyField("User",blank=True)
+    friends = models.ManyToManyField(User, related_name='friends',blank=True)
     bio_text = models.CharField(max_length=200)
     profile_image = models.ImageField(upload_to='res/')
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -13,8 +13,8 @@ class UserProfileInfo(models.Model):
         return self.owner.username
 
 class FriendRequest(models.Model):
-    from_user = models.ForeignKey("User", on_delete=models.CASCADE)    
-    to_user = models.ForeignKey("User", on_delete=models.CASCADE)    
+    from_user = models.ForeignKey(User, related_name='from_user',on_delete=models.CASCADE)    
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)    
 
 
 #model for storing linked accounts. Many linked accounts may share a single owner.
