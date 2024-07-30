@@ -10,20 +10,20 @@ function EditPaymentMethods({isEditing, userData, managePaymentsPage}) {
     async function copyPayment(payment) {
         await Clipboard.setStringAsync(payment)
     }
-
+    // console.log(userData)
     let payments = 
     <View style={styles.container}>
         <Text style={styles.title}>Payment Methods:</Text>
-        {userData.map((payment) => <PaymentMethod payment={payment} 
-        key={payment} icon='attach-outline' onPress={() => copyPayment(payment)}/>)}
+        {userData.map((payment) => <PaymentMethod paymentName={payment.paymentName} paymentUsername={payment.username}
+        key={payment.paymentName} icon='attach-outline' onPress={() => copyPayment(payment.username)}/>)}
     </View>; 
 
     if (isEditing) {
         payments = 
         <View style={styles.container}>
             <Text style={styles.title}>Payment Methods:</Text>
-            {userData.map((payment) => <PaymentMethod payment={payment} 
-            key={payment} icon='attach-outline' onPress={() => copyPayment(payment)}/>)}
+            {userData.map((payment) => <PaymentMethod paymentName={payment.paymentName} paymentUsername={payment.username}
+            key={payment.paymentName} icon='attach-outline' onPress={() => copyPayment(payment.username)}/>)}
             <Pressable onPress={managePaymentsPage}>
                 <Text style={styles.managePayments}>Manage linked accounts</Text>
             </Pressable>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         justifyContent: 'stretch',
         gap: 4,
-        minHeight: 155, 
+        // minHeight: 155, 
         flex: 1
     },
     text: {

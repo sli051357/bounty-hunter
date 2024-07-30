@@ -11,6 +11,7 @@ import FavorCard from "../../components/FavorCard.js";
 import IconButton from "../../components/UI/IconButton.js";
 import apiService from "../../api/apiRequest.js";
 import Button from "../../components/UI/Button.js";
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
 
 
 
@@ -45,8 +46,8 @@ function UserProfileScreen(){
     const username = useSelector(state => state.username);
     const [isEditing, setIsEditing] = useState(false);
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
-    const [payments, setPayments] = useState(DUMMY_USER_PROFILE.paymentMethods);
-
+    const payments = useSelector(state => state.paymentMethods.paymentMethods);
+    // console.log(payments)
     // useEffect(() => {
     //     async function fetchUserData() {
     //         try {
@@ -88,16 +89,14 @@ function UserProfileScreen(){
     if (isEditing) {
         paymentMethodSection = 
                 <EditPaymentMethods 
-                managePaymentsPage={() => navigation.navigate('Settings')}
+                managePaymentsPage={() => navigation.navigate('LinkedAccounts')}
                 isEditing={isEditing} 
                 userData={payments}
                 />;
     }
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} 
-        behavior="padding"   keyboardVerticalOffset={100}>
-            <ScrollView style={{flex: 1, backgroundColor: GLOBAL_STYLES.colors.brown300}}>
+            <ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
                 <View style={styles.page}>
                     <View style={[styles.userMainDetails]}>
                         <View style={styles.userMainDetailsTopView}>
@@ -139,8 +138,7 @@ function UserProfileScreen(){
                         {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor} onPress={() => console.log('Favor Card Details')}/>)}
                     </View>
                 </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+            </ScrollViewHelper>
     )
 
 }

@@ -9,6 +9,7 @@ import { View,
  } from "react-native";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 import ChangeContent from "../../components/UI/SettingsPageHelpers/ChangeContent";
@@ -18,7 +19,9 @@ import TitleWithButton from "../../components/UI/TitleWithButton";
 import ChangePasswordSettings from "../../components/UI/SettingsPageHelpers/ChangePasswordSettings";
 import Button from "../../components/UI/Button";
 
+
 function UserSettingsScreen() {
+    const navigation = useNavigation();
     const dispatch = useDispatch();
     const username = useSelector(state => state.username)
     const [currUsername, setCurrUsername] = useState(username.username);
@@ -111,7 +114,7 @@ function UserSettingsScreen() {
                     titleColor={GLOBAL_STYLES.colors.orange700}
                     icon='trash-bin-sharp'
                     iconColor={GLOBAL_STYLES.colors.orange700}
-                    onPress={() => console.log('Delete Page')}/>
+                    onPress={() => navigation.navigate('DeleteAccount')}/>
                 </View>
             </KeyboardAvoidingView>
         </ScrollView>

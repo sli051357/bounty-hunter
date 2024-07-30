@@ -38,7 +38,8 @@ function EditAboutMe({aboutMe, onPress, isEditing}) {
             onChangeText={(text)=>onPress(text)}
             value={aboutMe}
             multiline={true}
-            maxLength={175}/>  
+            maxLength={175}
+            textAlignVertical="top"/>  
         </View>
     }
 

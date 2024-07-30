@@ -3,8 +3,10 @@ import { useNavigation } from "@react-navigation/native";
 
 import UserProfileScreen from "../NestedScreens/UserProfileScreen";
 import UserSettingsScreen from "../NestedScreens/UserSettingsScreen";
+import UserLinkedAccountsScreen from "../NestedScreens/UserLinkedAccountsScreen";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import IconButton from "../../components/UI/IconButton";
+import DeleteAccountScreen from "../NestedScreens/DeleteAccountScreen";
 
 const UserProfileStack = createNativeStackNavigator();
 
@@ -39,6 +41,26 @@ function UserProfileStackScreen() {
                 },
                 headerShadowVisible: false,
                 headerTitleAlign: 'center'
+            }}/>
+            <UserProfileStack.Screen 
+            name="LinkedAccounts" 
+            component={UserLinkedAccountsScreen}
+            options={{
+                headerStyle: {
+                    backgroundColor: GLOBAL_STYLES.colors.brown300,
+                },
+                title: '',
+                headerShadowVisible: false,
+            }}/>
+            <UserProfileStack.Screen 
+            name="DeleteAccount" 
+            component={DeleteAccountScreen}
+            options={{
+                headerStyle: {
+                    backgroundColor: GLOBAL_STYLES.colors.brown300,
+                },
+                title: '',
+                headerShadowVisible: false,
             }}/>
         </UserProfileStack.Navigator>
         
