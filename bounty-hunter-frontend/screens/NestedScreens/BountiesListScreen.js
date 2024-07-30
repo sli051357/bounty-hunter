@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from 'react';
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 import IconButton from "../../components/UI/IconButton";
@@ -8,6 +9,7 @@ import FavorCard from "../../components/FavorCard";
 import { useDispatch, useSelector } from "react-redux";
 import { removeBounty } from "../../store/bountyList";
 import FloatingButton from "../../components/UI/FloatingButton";
+import SortModal from '../../components/FilterSort/SortModal';
 
 function BountiesListScreen(){
     const userBountyList = useSelector((state) => state.bountyList.bountyList);
@@ -15,10 +17,27 @@ function BountiesListScreen(){
     const dispatch = useDispatch();
     //console.log(userBountyList);
 
+    const [isSortVisible, setIsSortVisible] = useState(false);
+
+    // DUMMY VALUES ///////////
+    const DUMMY_SORT_VALUES = [
+        {name: 'Newest First', active: 'true'},
+        {name: 'Oldest First', active: 'false'},
+        {name: 'Friend Name A-Z', active: 'false'},
+        {name: 'Bounty Title A-Z', active: 'false'},
+        {name: 'Price (Highest to Lowest)', active: 'false'},
+        {name: 'Price (Lowest to Highest)', active: 'false'},
+    ];
+
     // This is a tester function, NOT ACTUAL IMPLEMENTATION!
     function removeBountyHandler(bountyId){
         console.log(bountyId);
         dispatch(removeBounty(bountyId))
+    }
+
+    // Handles sorting implementation
+    function sortHandler() {
+        setIsSortVisible(false);
     }
 
 
@@ -36,7 +55,10 @@ function BountiesListScreen(){
                             placeholderTextColor={GLOBAL_STYLES.colors.brown700}/>
                         </View>
                         <View style={styles.buttonContainer}>
-                            <IconButton icon='filter' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => console.log('Filter Button')}/>
+                            {/* Filter Button */}
+                            <IconButton icon='filter' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => setIsSortVisible(true)}/>
+
+                            {/* Sort Button */}
                             <IconButton icon='swap-vertical-sharp' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => console.log('Sort Button')}/>
                         </View>
                     </View>
@@ -47,6 +69,8 @@ function BountiesListScreen(){
             onPress={() => navigation.navigate('CreateBounty')}
             icon='add-sharp'
             color={GLOBAL_STYLES.colors.blue300}/>
+
+            <SortModal isVisible={isSortVisible} onClose={sortHandler} sortList={DUMMY_SORT_VALUES}/>
         </View>
     )
 }   
