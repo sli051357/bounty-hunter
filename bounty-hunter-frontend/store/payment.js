@@ -27,8 +27,9 @@ const paymentMethodsSlice = createSlice({
                 state.paymentMethods[1].username = ''
             }
         },
+        resetPaymentList: () => initialState
     }
 });
 
-export const { addPaymentMethod, removePaymentMethod } = paymentMethodsSlice.actions;
+export const { addPaymentMethod, removePaymentMethod, resetPaymentList } = paymentMethodsSlice.actions;
 export default paymentMethodsSlice.reducer;

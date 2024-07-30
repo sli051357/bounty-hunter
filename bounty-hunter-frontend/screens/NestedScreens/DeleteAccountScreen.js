@@ -1,13 +1,16 @@
 import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
-import { clearStore } from '../../store/redux/clearStore'
 import Button from "../../components/UI/Button";
+// import { useSelector } from "react-redux";
+import { resetApp } from "../../store/redux/resetApp";
 
 function DeleteAccountScreen() {
+
     // Turn into async await when we get Axios Api call
+    // Right now only deleted storage off device and clears redux store
     function deleteAccountHandler() {
-        clearStore();
+        resetApp();
     }
 
     return (

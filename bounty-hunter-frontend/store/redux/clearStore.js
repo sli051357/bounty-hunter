@@ -1,4 +1,4 @@
-import { persistor } from "./store";
+import { persistor } from "./store.js";
 
 export const clearStore = async () => {
     try {

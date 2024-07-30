@@ -10,9 +10,10 @@ const userNameSlice = createSlice({
     reducers: {
         setUsername: (state, action) => {
             state.username = action.payload
-        }
+        },
+        resetUsername: () => initialState
     }
 })
 
-export const { setUsername } = userNameSlice.actions;
+export const { setUsername, resetUsername } = userNameSlice.actions;
 export default userNameSlice.reducer;

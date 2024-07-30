@@ -10,9 +10,10 @@ const authTokenSlice = createSlice({
     reducers: {
         setAuthToken: (state, action) => {
             state.authToken = action.payload
-        }
+        },
+        resetAuthToken: () => initialState
     }
 })
 
-export const { setAuthToken } = authTokenSlice.actions;
+export const { setAuthToken, resetAuthToken } = authTokenSlice.actions;
 export default authTokenSlice.reducer;
