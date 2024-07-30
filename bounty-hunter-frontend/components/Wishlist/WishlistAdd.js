@@ -68,7 +68,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
                         </Pressable>
                     </View>
 
-                    <View style={{borderBottomWidth: 2, borderColor: GLOBAL_STYLES.colors.brown700, paddingBottom: 10, marginTop: 10,}}>
+                    <View style={{borderBottomWidth: 2, borderColor: GLOBAL_STYLES.colors.brown700, paddingBottom: 5, marginTop: 10,}}>
                         <Text style={styles.titleText}>Add Item</Text>
                     </View>
 
