@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'left',
-        color: GLOBAL_STYLES.colors.blue300
+        color: GLOBAL_STYLES.colors.brown700
     },
     textInput: {
         fontSize: 16,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     helperText: {
         fontWeight: '600',
         textAlign: 'left',
-        color: GLOBAL_STYLES.colors.blue300
+        color: GLOBAL_STYLES.colors.brown700
     },
     textIsInvalid: {
         color: GLOBAL_STYLES.colors.error700

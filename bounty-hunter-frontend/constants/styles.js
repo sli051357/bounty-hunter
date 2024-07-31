@@ -13,6 +13,9 @@ export const GLOBAL_STYLES = {
         orange700: '#D04306', // Dark Orange
         orange300: '#F2B093', // Light Orange
         orange100: '#FBE1D2', // Super Light Orange
+        yellow300: '#FFF0D5', // Light Yellow
+
+        gray500: 'rgba(153, 153, 153, 0.8)', // gray used for popups
 
         error700: '#f37c13',
         error300: '#fcdcbf',

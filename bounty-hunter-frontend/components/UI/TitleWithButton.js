@@ -6,7 +6,7 @@ function TitleWithButton({title, titleColor, icon, iconColor, onPress}){
     return (
         <View style={styles.container}>
             <Text style={[styles.title, {color: titleColor}]}>{title}</Text>
-            <IconButton icon={icon} iconSize={28} color={iconColor} onPress={onPress}/>
+            <IconButton icon={icon} iconSize={22} color={iconColor} onPress={onPress}/>
         </View>
     )
 }
@@ -16,11 +16,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        gap: 18
+        gap: 10,
+        marginBottom: 6
     },
     title: {
-        fontSize: 28,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontWeight: '600'
     }
 })
 

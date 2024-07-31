@@ -35,9 +35,10 @@ const bountyListSlice = createSlice({
         },
         editBounty: (state, action) => {
             // Todo (refer to State manage sheet)
-        }
+        },
+        resetBountyList: () => initialState
     }
 });
 
-export const { addBounty, removeBounty, editBounty } = bountyListSlice.actions;
+export const { addBounty, removeBounty, editBounty, resetBountyList } = bountyListSlice.actions;
 export default bountyListSlice.reducer;

@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from django.test import tag
 from django.utils import timezone
 #from django.contrib.postgres.fields import ArrayField
-import datetime
+from datetime import datetime
 
 # Create your models here.
 # Tag class
@@ -34,11 +34,21 @@ class Favor(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
-    active = models.BooleanField(default=False) #if the favor is active, set to false if deleted or not yet accepted.
+
+
+    deleted = models.BooleanField(default=False) 
     completed = models.BooleanField(default=False)
+
+    # is inactive if has been edited, or hasn't been accepted yet. Upon edits, old favor becomes inactive and new one becomes active. If accepted, old favor gets deleted, 
+    # if rejected reactivate old favor and delete new one.
+    active = models.BooleanField(default=False)
+
+    #set to None if hasnt been edited.
+    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
 

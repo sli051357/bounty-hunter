@@ -97,7 +97,7 @@ function LoginScreen(){
                             helperText={error.password && "Incorrect Password, Username, or Email."}
                             secureTextEntry={true}
                             isInValid={error.password}/>
-                            <Link to={{screen: 'VerifyEmailScreen'}} style={[styles.description, styles.link]}>Forgot Password?</Link> 
+                            <Link to={{screen: 'InputEmailVerifyScreen'}} style={[styles.description, styles.link]}>Forgot Password?</Link> 
                         </View>
                         <Button
                         title="Login"

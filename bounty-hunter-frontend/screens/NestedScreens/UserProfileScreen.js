@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Image, Pressable, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable, ScrollView, KeyboardAvoidingView } from "react-native";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_FAVORS_OF_PROFILE, DUMMY_USER_PROFILE } from '../../util/dummy-data.js';
@@ -9,6 +10,9 @@ import EditPaymentMethods from "../../components/UI/UserProfileHelpers/EditPayme
 import FavorCard from "../../components/FavorCard.js";
 import IconButton from "../../components/UI/IconButton.js";
 import apiService from "../../api/apiRequest.js";
+import Button from "../../components/UI/Button.js";
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
+
 
 
 /*
@@ -37,13 +41,13 @@ import apiService from "../../api/apiRequest.js";
 
 */ 
 
-function UserProfileScreen({ user, isPersonalProfile }){
+function UserProfileScreen(){
+    const navigation = useNavigation();
     const username = useSelector(state => state.username);
-    const [editAboutMe, setEditAboutMe] = useState(false);
-    const [editPayment, setEditPayment] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
-    const [payments, setPayments] = useState(DUMMY_USER_PROFILE.paymentMethods);
-
+    const payments = useSelector(state => state.paymentMethods.paymentMethods);
+    // console.log(payments)
     // useEffect(() => {
     //     async function fetchUserData() {
     //         try {
@@ -56,104 +60,85 @@ function UserProfileScreen({ user, isPersonalProfile }){
     //     fetchUserData();   
     // }, [])
 
-    function editAboutMeHandler(){
-        setEditAboutMe((curr) => !curr);
+    function toggleEdit()  {
+        setIsEditing(curr => !curr);
     }
 
-    function changeAboutMeHandler(text) {
+
+    function editAboutMeHandler(text) {
         setAboutMe(text);
     }
 
     let aboutMeSection = 
         <EditAboutMe aboutMe={aboutMe} 
-        onPress={[editAboutMeHandler]} 
-        isEditing={false}/>;
+        onPress={editAboutMeHandler} 
+        isEditing={isEditing}/>;
 
-    if (editAboutMe){
+    if (isEditing){
         aboutMeSection = 
         <EditAboutMe aboutMe={aboutMe}
-        onPress={[editAboutMeHandler, changeAboutMeHandler]}
-        isEditing={true}/>
-    }
-
-
-
-    function editPaymentMethodHandler(){
-        setEditPayment((curr) => !curr);
-    }
-
-    function deletePaymentMethod(payment) {
-        setPayments((curr) => 
-            curr.filter((currPayment) => 
-                payment !== currPayment));
+        onPress={editAboutMeHandler}
+        isEditing={isEditing}/>
     }
 
     let paymentMethodSection = 
-            <EditPaymentMethods onPress={[editPaymentMethodHandler]}
-                isEditing={false} 
-                userData={payments}/>;
+            <EditPaymentMethods
+            isEditing={isEditing} 
+            userData={payments}/>;
 
-    if (editPayment) {
+    if (isEditing) {
         paymentMethodSection = 
                 <EditPaymentMethods 
-                onPress={[editPaymentMethodHandler, deletePaymentMethod]}
-                isEditing={true} 
+                managePaymentsPage={() => navigation.navigate('LinkedAccounts')}
+                isEditing={isEditing} 
                 userData={payments}
                 />;
     }
 
     return (
-        <ScrollView style={styles.page}>
-            <View style={[styles.userMainDetails, styles.viewSpacing]}> 
-                <View style={styles.userMainDetailsView}>
-                    <Image style={styles.profilePicture} source={require('../../assets/batman.jpeg')}/>
-                    <View>
-                        <Text style={styles.userDetailsText}>{username.username.toUpperCase()}</Text>
-                        <Text style={[styles.text, {textAlign: 'center'}]}>ID: {DUMMY_USER_PROFILE.ID}</Text>
+            <ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
+                <View style={styles.page}>
+                    <View style={[styles.userMainDetails]}>
+                        <View style={styles.userMainDetailsTopView}>
+                            <View style={styles.imageAndUsernameView}>
+                                <Image style={styles.profilePicture} source={require('../../assets/batman.jpeg')}/>
+                                <View>
+                                    <Text style={styles.usernameStyles}>{username.username}</Text>
+                                    <Text style={styles.smallTextBrown}>#{DUMMY_USER_PROFILE.ID}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.editView}>
+                                {!isEditing ? 
+                                <>
+                                    <Pressable onPress={toggleEdit}>
+                                        <Text style={[styles.smallTextBrown, {textDecorationLine: 'underline'}]}>Edit</Text>
+                                    </Pressable>
+                                    <IconButton icon='pencil' color={GLOBAL_STYLES.colors.brown700} iconSize={18} onPress={toggleEdit}/>
+                                </> : 
+                                <Button title='Save' onPress={toggleEdit}
+                                containerStyle={{borderRadius: 20}}
+                                buttonStyles={{backgroundColor: GLOBAL_STYLES.colors.orange700, borderRadius: 20, paddingHorizontal: 6}}/>}
+                            </View>
+                        </View>
+                        <View style={styles.userMainDetailsBottomView}>
+                            <View style={styles.editView}>
+                                <Text style={[styles.smallTextOrange, {textAlign: 'center'}]}>Rating:</Text>
+                                <Text style={styles.scoreTextStyles}>{DUMMY_USER_PROFILE.rating}</Text>
+                            </View>
+                            <View style={styles.editView}>
+                                <Text style={[styles.smallTextOrange, {textAlign: 'center'}]}>Friend Count: </Text>
+                                <Text style={styles.scoreTextStyles}>{DUMMY_USER_PROFILE.friends.length}</Text>
+                            </View>
+                        </View>
+                    </View>        
+                    {aboutMeSection}
+                    {paymentMethodSection}
+                    <View style={styles.recentBountiesStyles}>
+                        <Text style={styles.subtitle}>Recent Bounties: </Text>
+                        {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor} onPress={() => console.log('Favor Card Details')}/>)}
                     </View>
                 </View>
-                <View style={styles.userMainDetailsView}>
-                    <View>
-                        <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.rating}</Text>
-                        <Text style={[styles.text, {textAlign: 'center'}]}>RATING</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.userDetailsText}>{DUMMY_USER_PROFILE.friends.length}</Text>
-                        <Text style={[styles.text, {textAlign: 'center'}]}>FRIENDS</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.viewSpacing}>
-                {aboutMeSection}
-            </View>
-
-            <View style={styles.viewSpacing}>
-                {paymentMethodSection}
-            </View>
-
-            <View style={styles.viewSpacing}>
-                <Text style={styles.subtitle}>Recent Bounties</Text>
-                <View style={styles.filterContainer}>
-                    <View style={styles.filterContainerPressable}>
-                        <Pressable>
-                            <Text style={styles.filterText}>All</Text>
-                        </Pressable>
-                        <Pressable>
-                            <Text style={styles.filterText}>Owed</Text>
-                        </Pressable>
-                        <Pressable>
-                            <Text style={styles.filterText}>Received</Text>
-                        </Pressable>
-                    </View>
-
-                    <Pressable>
-                        <IconButton icon='swap-vertical-sharp' color='grey' iconSize={22} onPress={() => console.log('Sort Button')}/>
-                    </Pressable>
-                </View>
-                {DUMMY_FAVORS_OF_PROFILE.map((favor) => <FavorCard key={favor.description} favor={favor} onPress={() => console.log('Favor Card Details')}/>)}
-            </View>
-        </ScrollView>
+            </ScrollViewHelper>
     )
 
 }
@@ -163,60 +148,71 @@ const styles = StyleSheet.create({
         backgroundColor: GLOBAL_STYLES.colors.brown300,
         flex: 1,
         paddingHorizontal: '10%',
-        paddingTop: 16,
+        paddingVertical: 12,
+        gap: 18,
+        alignItems: 'stretch', 
+        justifyContent: 'center',
     },
-    viewSpacing: {
-        marginBottom: 12
-    },
-    text: {
+    smallTextBrown: {
         color: GLOBAL_STYLES.colors.brown700,
         fontSize: 18
     },
-    profilePicture: {
-        width: 80,
-        height: 80,
-        borderRadius: 40 
+    smallTextOrange: {
+        color: GLOBAL_STYLES.colors.orange700,
+        fontSize: 18
     },
     userMainDetails: {
         flex: 1,
-        gap: 6,
+        gap: 28,
     },
-    userMainDetailsView: {
+    userMainDetailsTopView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    imageAndUsernameView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 16
+    },
+    profilePicture: {
+        width: 64,
+        height: 64,
+        borderRadius: 32 
+    },
+    usernameStyles: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: GLOBAL_STYLES.colors.blue300,
+        textAlign: 'left'
+    },
+    editView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2
+    },
+    userMainDetailsBottomView: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
     },
-    userDetailsText: {
-        fontSize: 36,
+    scoreTextStyles: {
         fontWeight: 'bold',
         color: GLOBAL_STYLES.colors.blue300,
+        fontSize: 22, 
         textAlign: 'center'
     },
-    editBox: {
-        borderColor: GLOBAL_STYLES.colors.orange700,
-        borderRadius: 8,
-        padding: 4,
-        borderWidth: 2
-    },
     subtitle: {
-        fontSize: 28,
+        color: GLOBAL_STYLES.colors.orange700,
         fontWeight: 'bold',
-        color: GLOBAL_STYLES.colors.orange700
+        textAlign: 'left',
+        fontSize: 18
     },
-    filterContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    filterContainerPressable: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        gap: 6
-    },
-    filterText: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: GLOBAL_STYLES.colors.blue300
+    recentBountiesStyles: {
+        flex: 1,
+        gap: 8
     }
 })
 export default UserProfileScreen;
