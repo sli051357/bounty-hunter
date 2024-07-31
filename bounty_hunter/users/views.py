@@ -20,11 +20,12 @@ from django.core.files import File
 
 from django.contrib import messages
 
+from django.core.exceptions import PermissionDenied
+import base64
+
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
 
-from django.core.exceptions import PermissionDenied
-import base64
 
 
 def bio(request, request_username):

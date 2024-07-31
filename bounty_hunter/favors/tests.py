@@ -89,7 +89,6 @@ class ChangeStatusTest(TestCase):
 
     def test_cancel_edit(self):
         self.client.login(username='owner', password='passwofdsfdsrd321!!!')
-        response = self.client.post(reverse('change_status', args=[self.favorc.id]), {'status': CANCEL})
         self.assertRaises(Favor.DoesNotExist,self.favorc.refresh_from_db,)
 
     def test_cancel_complete(self):

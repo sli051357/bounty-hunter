@@ -24,6 +24,7 @@ frontend-format:
   stage: format
   image: node:latest
   before_script:
+    - cd ./bounty-hunter-frontend/
     - npm install
   script:
     - npx eslint ./bounty-hunter-frontend --fix
