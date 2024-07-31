@@ -6,7 +6,7 @@ from django.template import loader
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from .models import UserProfileInfo, LinkedAccounts
+from .models import UserProfileInfo, LinkedAccounts, FriendRequest
 from django.shortcuts import redirect
 
 from django.core.mail import send_mail
@@ -20,11 +20,12 @@ from django.core.files import File
 
 from django.contrib import messages
 
+from django.core.exceptions import PermissionDenied
+import base64
+
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
 
-from django.core.exceptions import PermissionDenied
-import base64
 
 
 def bio(request, request_username):
@@ -81,8 +82,58 @@ def sign_up(request):
 def log_out(request):
     logout(request)
     return 
+
+#retrieves the list of friend requests    
+# @login_required
+def get_incoming_friend_requests(request):
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+    data = {}
+    for fr in friend_requests:
+        data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+    return JsonResponse(data)
     
 
+#retrieves the list of friends
+# @login_required
+def get_friends_list(request):
+    friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
+    data = {}
+    for friend in friends.all():
+        data[friend.username] = "friend :)"
+    return JsonResponse(data)
+
+
+# @login_required
+def send_friend_request(request, username):
+    from_user = request.user
+    to_user = User.objects.get(username=username)
+    friend_req, created = FriendRequest.objects.get_or_create(from_user=from_user,to_user=to_user)
+    if created:
+        return JsonResponse({"success":True})
+    else:
+        return JsonResponse({"success":False})
+
+# @login_required
+def accept_friend_request(request, pk):
+    fr = FriendRequest.objects.get(pk=pk)
+    if request.user == fr.to_user:
+        UserProfileInfo.objects.get(owner=fr.to_user).friends.add(fr.from_user)
+        UserProfileInfo.objects.get(owner=fr.from_user).friends.add(fr.to_user)
+        fr.delete()
+        return JsonResponse({"success":True})
+    else:
+        return JsonResponse({"success":False})
+    
+# @login_required
+def reject_friend_request(request, pk):
+    fr = FriendRequest.objects.get(pk=pk)
+    if request.user == fr.to_user:
+        fr.delete()
+        return JsonResponse({"success":True})
+    else:
+        return JsonResponse({"success":False})
+
+# @login_required
 def delete_account(request, request_username):
     headers = {"success": False}
     if request.user.is_authenticated:

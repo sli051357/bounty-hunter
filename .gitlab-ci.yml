@@ -1,65 +1,66 @@
-image: python:latest
+stages:          # List of stages for jobs, and their order of execution
+  - format
+  - build
+  - test
+  - deploy
 
-# Change pip's cache directory to be inside the project directory since we can
-# only cache local items.
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  REMOTE_HOST: "132.249.238.228"
-  REMOTE_USER: "ubuntu"
-  DEPLOY_DIR: "/home/ubuntu/monetary-favor-tackers"   # monetary-favor-tackers/bounty_hunter
-  VENV_DIR: "/home/ubuntu/monetary-favor-tackers/venv"  
-  SSH_PRIVATE_KEY: ""
-  GIT_SUBMODULE_STRATEGY: recursive
-
-# https://pip.pypa.io/en/stable/topics/caching/
-cache:
-  paths:
-    - .cache/pip
-
-before_script:
-  - python --version ; pip --version  # For debugging
-  - pip install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-  - pip install -r requirements.txt
-  - eval $(ssh-aget -s)   # starts ssh-agent 
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -  # adds private key to the ssh-agent
-  - mkdir -p ~/.ssh   # creates the .ssh directory 
-  - chmod 700 ~/.ssh  # changes .ssh permissions
-  - ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts  # adds key to known_hosts
-
-test:
+backend-format:
+  stage: format
+  image: python:latest
+  before_script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install ruff
   script:
+    - ruff check --fix
+    - ruff format 
+  cache: 
+    paths:
+      - py_modules/
+
+frontend-format:
+  stage: format
+  image: node:latest
+  before_script:
+    - cd bounty-hunter-frontend/
+    - npm ci
+  script:
+    - npx @biomejs/biome check --write .
+    - cd ..
+  cache:
+    paths:
+      - node_modules/
+
+
+build-job:       # build frontend app here
+  stage: build
+  script:
+    - echo "building app..."
+
+
+backend-unit-test:   
+  stage: test    
+  image: python:latest
+  script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
     - cd bounty_hunter/
     - python manage.py test
     - cd ..
 
-run:
+frontend-unit-test:   # put frontend tests here
+  stage: test    # It only starts when the job in the build stage completes successfully.
   script:
-    #run everything commands
-   - echo "run the thing"
+      - echo "frontend tests"
 
-  artifacts:
-    paths:
-      - build/*
-
-pages:
-  script:
-  - echo "idk what this is either"
-  artifacts:
-    paths:
-      - public
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-deploy:
-  stage: deploy
-  script: 
-    - cd SDSC-cloud
-    - ssh -i favor-key.pem ubuntu@132.249.238.228
-    - cd monetary-favor-tackers/bounty_hunter
-    - source ../venv/bin/activate
-    - git pull origin dev   # change to main later
-    - python manage.py runserver 0.0.0.0:8000
-    # server is open at http://132.249.238.228:8000
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
