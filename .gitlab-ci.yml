@@ -61,6 +61,19 @@ frontend-unit-test:   # put frontend tests here
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  before_script: 
+    - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
+    - chmod 600 favor-keu.pem   # keeps key permissions private
   script:
     - echo "Deploying application..."
+    - ssh -i favor-key.pem ubuntu@132.249.238.228
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+    - cd bounty_hunter
+    - git pull origin dev
+    - nohup python manage.py runserver 0.0.0.0:8000
     - echo "Application successfully deployed."
+  only:
+    - dev   # deploys from dev branch, change to main later
