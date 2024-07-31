@@ -12,13 +12,14 @@ build-job:       # build frontend app here
 backend-format:
   stage: format
   image: python:latest
+  script:
     - python --version ; pip --version  # For debugging
     - pip install virtualenv
     - virtualenv venv
     - source venv/bin/activate
     - pip install ruff
     - ruff --fix
-    - ruff format
+    - ruff format 
 
 backend-unit-test:   
   stage: test    
