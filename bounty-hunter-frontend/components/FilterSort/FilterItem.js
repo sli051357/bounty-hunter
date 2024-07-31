@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
         borderColor: GLOBAL_STYLES.colors.brown700,
         borderRadius: 100,
         alignSelf: 'flex-start',
-        margin: 5,
+        marginVertical: 5,
+        marginRight: 10,
     },
     itemText: {
         fontSize: 17,

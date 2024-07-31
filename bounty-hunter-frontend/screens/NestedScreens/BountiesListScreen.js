@@ -31,6 +31,20 @@ function BountiesListScreen(){
         {name: 'Price (Lowest to Highest)', active: false},
     ];
 
+    const DUMMY_STATUS_VALUES = [
+        {name: 'Sent', active: true},
+        {name: 'Received', active: false},
+        {name: 'In Progress', active: false},
+        {name: 'Completed', active: false},
+    ]
+
+    const DUMMY_TAG_VALUES = [
+        {name: '✈️ Travel', active: false},
+        {name: '🍜 Food', active: true},
+        {name: '👯 Friends', active: false},
+        {name: '🛍️ Shopping', active: false},
+    ]
+
     // This is a tester function, NOT ACTUAL IMPLEMENTATION!
     function removeBountyHandler(bountyId){
         console.log(bountyId);
@@ -77,7 +91,7 @@ function BountiesListScreen(){
 
             <SortModal isVisible={isSortVisible} onClose={sortHandler} sortList={DUMMY_SORT_VALUES}/>
 
-            <FilterModal isVisible={isFilterVisible} onClose={filterHandler} />
+            <FilterModal isVisible={isFilterVisible} onClose={filterHandler} statusList={DUMMY_STATUS_VALUES} tagList={DUMMY_TAG_VALUES}/>
         </View>
     )
 }   
