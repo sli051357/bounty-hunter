@@ -1,25 +1,45 @@
 stages:          # List of stages for jobs, and their order of execution
-  - build
   - format
+  - build
   - test
   - deploy
+
+backend-format:
+  stage: format
+  image: python:latest
+  before_script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install ruff
+  script:
+    - ruff check --fix
+    - ruff format 
+  cache: 
+    paths:
+      - py_modules/
+
+frontend-format:
+  stage: format
+  image: node:latest
+  before_script:
+    - npm install
+  script:
+    - npx eslint ./bounty-hunter-frontend --fix
+  only:
+    - merge_requests
+    - branches
+  cache:
+    paths:
+      - node_modules/
+
 
 build-job:       # build frontend app here
   stage: build
   script:
     - echo "building app..."
 
-backend-format:
-  stage: format
-  image: python:latest
-  script:
-    - python --version ; pip --version  # For debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-    - pip install ruff
-    - ruff --fix
-    - ruff format 
 
 backend-unit-test:   
   stage: test    
@@ -38,30 +58,6 @@ frontend-unit-test:   # put frontend tests here
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
       - echo "frontend tests"
-
-backend-lint-test:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
-  image: python:latest
-  script:
-    - python --version ; pip --version  # For debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-    - pip install ruff
-    - cd bounty_hunter/
-    - ruff check
-    - cd ..
-
-frontend-lint-test:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
-  image: node:latest
-  script:
-    - npm init --yes
-    - npm install 
-    - npx eslint .
-    - node_modules/.bin/eslint bounty-hunter-frontend/*.js
-    - node_modules/.bin/eslint bounty-hunter-frontend/*/*.js
-    - node_modules/.bin/eslint bounty-hunter-frontend/*/*/*.js
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
