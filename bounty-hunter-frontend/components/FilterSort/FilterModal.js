@@ -13,16 +13,49 @@ import dayjs from 'dayjs';
 
 function FilterModal({ isVisible, onClose, statusList, tagList }) {
     const [isCalendarVisible, setIsCalendarVisible] = useState(false);
-    const [range, setRange] = React.useState<{
-        startDate: DateType;
-        endDate: DateType;
-      }>({ startDate: undefined, endDate: undefined });
+    const [isStart, setIsStart] = useState(false);
+
+    const [startDate, setStartDate] = useState(dayjs());
+    const [endDate, setEndDate] = useState(dayjs());
+
+    let content;
+
+    // conditionally renders calendar modal
+    if (isStart) {
+        content = 
+        <FilterCalendar 
+            isVisible={isCalendarVisible} 
+            onClose={(updateStartDate)} 
+            date={startDate} 
+            setDate={setStartDate}
+            isStart={true}
+        />
+    } else {
+        content = 
+        <FilterCalendar 
+            isVisible={isCalendarVisible} 
+            onClose={(updateEndDate)} 
+            date={endDate} 
+            setDate={setEndDate}
+            isStart={false}
+        />
+    }
 
     function editStartDate() {
+        setIsStart(true);
         setIsCalendarVisible(true);
     }
 
     function updateStartDate() {
+        setIsCalendarVisible(false);
+    }
+
+    function editEndDate() {
+        setIsStart(false);
+        setIsCalendarVisible(true);
+    }
+
+    function updateEndDate() {
         setIsCalendarVisible(false);
     }
 
@@ -66,28 +99,34 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
                     </View>
 
                     { /* Date */ }
-                    {/* <View style={{marginTop: 10}}>
-                        <Text style={styles.subText}>Date</Text>
-                        <View style={{flexDirection: 'row', alignItems: 'center',}}>
-                            <Text style={styles.normText}>From:</Text>
-                            <Pressable onPress={(editStartDate)} style={styles.dateButton}>
-                                <Text style={styles.normText}>{startDate}</Text>
-                            </Pressable>
-                        </View>
-                    </View> */}
-
                     <View style={{marginTop: 10}}>
                         <Text style={styles.subText}>Date</Text>
-                        <DateTimePicker
-                            mode='multiple'
-                            dates={dates}
-                            onChange={(params) => setDates(params.dates)}
-                        />
-                    </View>
 
+                        <View style={{flexDirection: 'row', alignItems: 'center',}}>
+                            <View style={{width: '45%'}}>
+                                <Text style={styles.normText}>From:</Text>
+                                <Pressable onPress={(editStartDate)} style={styles.dateButton}>
+                                    <Text style={styles.normText}>
+                                        {dayjs(startDate).format('MMM DD, YYYY')}
+                                    </Text>
+                                </Pressable>
+                            </View>
+
+                            <View style={{width: '45%', marginLeft: 'auto'}}>
+                                <Text style={styles.normText}>To:</Text>
+                                <Pressable onPress={(editEndDate)} style={styles.dateButton}>
+                                    <Text style={styles.normText}>
+                                        {dayjs(endDate).format('MMM DD, YYYY')}
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
                     </ScrollView>
                     
-                    {/* <FilterCalendar isVisible={isCalendarVisible} theDate={startDate} setTheDate={setStartDate} isStart={true} onClose={updateStartDate}/> */}
+                    <View>
+                        {content}
+                    </View> 
                 </View>
             </View>
         </Modal>
@@ -128,9 +167,10 @@ const styles = StyleSheet.create({
     },
     dateButton: {
         backgroundColor: GLOBAL_STYLES.colors.yellow300,
-        width: 100,
-        height: 25,
-        marginLeft: 10,
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 2,
+        borderRadius: 5,
     }
 })
 
