@@ -24,9 +24,11 @@ frontend-format:
   stage: format
   image: node:latest
   before_script:
+    - cd bounty-hunter-frontend/
     - npm ci
   script:
     - npx @biomejs/biome check --write .
+    - cd ..
   cache:
     paths:
       - node_modules/
