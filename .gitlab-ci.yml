@@ -25,7 +25,7 @@ frontend-format:
   image: node:latest
   before_script:
     - cd ./bounty-hunter-frontend/
-    - npm install
+    - npm install --force
   script:
     - npx eslint . --fix
   only:
