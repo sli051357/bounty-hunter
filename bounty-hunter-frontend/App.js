@@ -21,7 +21,7 @@ import LoginScreen from './screens/SignInScreens/LoginScreen';
 import VerifyEmailScreen from './screens/SignInScreens/VerifyEmailScreen';
 import UpdatePasswordScreen from './screens/SignInScreens/UpdatePasswordScreen';
 import ReturnLoginScreen from './screens/SignInScreens/ReturnLoginScreen';
-import LeaderBoardScreen from './screens/TabScreens/LeaderBoardScreen';
+import LeaderBoardStackScreen from './screens/TabScreens/LeaderBoardStackScreen';
 import WishListScreen from './screens/TabScreens/WishListScreen';
 import FriendListScreen from './screens/TabScreens/FriendListScreen';
 import { store, persistor } from './store/redux/store';
@@ -142,14 +142,9 @@ function AuthenticatedStack() {
     }>
       <Tab.Screen 
       name="Rankings"
-      component={LeaderBoardScreen}
+      component={LeaderBoardStackScreen}
       options={{
-        headerTitle: '',
-        //headerTransparent: true,
-        headerShadowVisible: false,
-        headerStyle: {
-          backgroundColor: GLOBAL_STYLES.colors.brown300
-        }
+        headerShown: false
       }}/>
 
       <Tab.Screen 

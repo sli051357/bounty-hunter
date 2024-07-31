@@ -1,9 +1,12 @@
 import { View, Text, KeyboardAvoidingView, ScrollView, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { fullYear } from "../../util/date";
 import LeaderboardFriendTab from "../../components/LeaderboardFriendTab";
 import { DETAILED_FRIEND_LIST } from "../../util/dummy-data";
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper";
+
 /*
     Need an axios call to get current FriendList with
     - Friend ID,
@@ -14,11 +17,10 @@ import { DETAILED_FRIEND_LIST } from "../../util/dummy-data";
 */
 
 function LeaderBoardScreen() {
+    const navigation = useNavigation();
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} 
-        behavior="padding"   keyboardVerticalOffset={100}>
-            <ScrollView style={{flex: 1, backgroundColor: GLOBAL_STYLES.colors.brown300}}>
+            <ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
                 <View style={styles.page}>
                     <Text style={styles.mainHeader}>Leaderboard</Text>
                     <Text style={styles.dateHeader}>{fullYear}</Text>
@@ -26,12 +28,11 @@ function LeaderBoardScreen() {
                         {DETAILED_FRIEND_LIST.map((value, index) =>
                         <LeaderboardFriendTab username={value.friendUsername}
                         rating={value.friendRating} userImage={value.friendProfilePic}
-                        rank={index+1} friendProfilePage={() => console.log(`Friend Profile ${value.friendId}`)}
+                        rank={index+1} friendProfilePage={() => navigation.navigate('FriendProfile', {userId: 'A12309899'})}
                         key={value.friendId}/>)}
                     </View>
                 </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+            </ScrollViewHelper>
     )
 }
 
