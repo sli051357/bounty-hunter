@@ -1,5 +1,6 @@
 stages:          # List of stages for jobs, and their order of execution
   - build
+  - format
   - test
   - deploy
 
@@ -7,6 +8,17 @@ build-job:       # build frontend app here
   stage: build
   script:
     - echo "building app..."
+
+backend-format:
+  stage: format
+  image: python:latest
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install ruff
+    - ruff --fix
+    - ruff format
 
 backend-unit-test:   
   stage: test    
@@ -44,7 +56,8 @@ frontend-lint-test:   # This job also runs in the test stage.
   image: node:latest
   script:
     - npm init --yes
-    - npm install --save-dev eslint
+    - npm install 
+    - npx eslint .
     - node_modules/.bin/eslint bounty-hunter-frontend/*.js
     - node_modules/.bin/eslint bounty-hunter-frontend/*/*.js
     - node_modules/.bin/eslint bounty-hunter-frontend/*/*/*.js
