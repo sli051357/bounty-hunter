@@ -222,6 +222,7 @@ def favor_detail(request, favor_id):
                   "owner_status": favor.owner_status,
                   "assignee_status": favor.assignee_status,
                   "is_active": favor.active, #only show active in frontend
+                  "is_deleted": favor.deleted, 
                   "is_completed": favor.completed,
                   "tags": tags,}
     return JsonResponse(favor_data)
