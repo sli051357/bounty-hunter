@@ -24,7 +24,7 @@ const apiService = {
     }, 
 
     // username = "username"
-    // data = {"accounts":linked_accs}
+    // returns = {"accounts":linked_accs}
     getUserLinks: async (username) => {
         try {
             const response = await axiosInstance.get(`/users/profiles/${username}/links`);
