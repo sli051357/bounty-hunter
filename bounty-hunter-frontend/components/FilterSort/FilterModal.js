@@ -1,13 +1,30 @@
 import { Modal, View, Text, Pressable, StyleSheet, TextInput, ScrollView} from 'react-native';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { GLOBAL_STYLES } from '../../constants/styles';
 
 import { Ionicons } from '@expo/vector-icons';
 
 import FilterItem from './FilterItem';
 import SliderExample from './FilterSlider';
+import FilterCalendar from './FilterCalendar';
+
+import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
+import dayjs from 'dayjs';
 
 function FilterModal({ isVisible, onClose, statusList, tagList }) {
+    const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+    const [range, setRange] = React.useState<{
+        startDate: DateType;
+        endDate: DateType;
+      }>({ startDate: undefined, endDate: undefined });
+
+    function editStartDate() {
+        setIsCalendarVisible(true);
+    }
+
+    function updateStartDate() {
+        setIsCalendarVisible(false);
+    }
 
     return (
         <Modal visible={isVisible} transparent={true}>
@@ -48,7 +65,29 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
                         <SliderExample />
                     </View>
 
+                    { /* Date */ }
+                    {/* <View style={{marginTop: 10}}>
+                        <Text style={styles.subText}>Date</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center',}}>
+                            <Text style={styles.normText}>From:</Text>
+                            <Pressable onPress={(editStartDate)} style={styles.dateButton}>
+                                <Text style={styles.normText}>{startDate}</Text>
+                            </Pressable>
+                        </View>
+                    </View> */}
+
+                    <View style={{marginTop: 10}}>
+                        <Text style={styles.subText}>Date</Text>
+                        <DateTimePicker
+                            mode='multiple'
+                            dates={dates}
+                            onChange={(params) => setDates(params.dates)}
+                        />
+                    </View>
+
                     </ScrollView>
+                    
+                    {/* <FilterCalendar isVisible={isCalendarVisible} theDate={startDate} setTheDate={setStartDate} isStart={true} onClose={updateStartDate}/> */}
                 </View>
             </View>
         </Modal>
@@ -81,6 +120,17 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontFamily: 'BaiJamjuree-Medium',
         color: GLOBAL_STYLES.colors.orange700,
+    },
+    normText: {
+        fontSize: 17,
+        fontFamily: 'BaiJamjuree-Regular',
+        color: GLOBAL_STYLES.colors.brown700,
+    },
+    dateButton: {
+        backgroundColor: GLOBAL_STYLES.colors.yellow300,
+        width: 100,
+        height: 25,
+        marginLeft: 10,
     }
 })
 
