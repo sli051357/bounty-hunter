@@ -78,5 +78,5 @@ deploy-job:      # This job runs in the deploy stage.
       nohup python manage.py runserver 0.0.0.0:8000 &
       EOF 
     - echo "Application successfully deployed."
-  only:
-    - dev   # deploys from dev branch, change to main later
+  # only:
+  #  - dev   # deploys from dev branch, change to main later
