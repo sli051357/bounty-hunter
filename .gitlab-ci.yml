@@ -27,7 +27,7 @@ frontend-format:
     - cd ./bounty-hunter-frontend/
     - npm install
   script:
-    - npx eslint ./bounty-hunter-frontend --fix
+    - npx eslint . --fix
   only:
     - merge_requests
     - branches
