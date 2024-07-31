@@ -1,14 +1,19 @@
 import { Modal, View, Text, Pressable, StyleSheet, TextInput, ScrollView } from 'react-native';
 
 import DateTimePicker from 'react-native-ui-datepicker';
+import { DateType } from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { GLOBAL_STYLES } from '../../constants/styles';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function FilterCalendar({ isVisible, theDate, setTheDate, isStart, onClose }) {
-    const [date, setDate] = useState(dayjs());
+export default function FilterCalendar({ isVisible, date, setDate, isStart, onClose }) {
+    // const [date, setDate] = useState(dayjs());
+    // const [range, setRange] = React.useState<{
+    //     startDate: DateType,
+    //     endDate: DateType,
+    //   }>({ startDate: undefined, endDate: undefined });
 
     function returnDate() {
         onClose();
@@ -24,7 +29,11 @@ export default function FilterCalendar({ isVisible, theDate, setTheDate, isStart
                     </Pressable>
 
                     <View style={{borderBottomWidth: 2, borderColor: GLOBAL_STYLES.colors.brown700, paddingBottom: 5, marginVertical: 10,}}>
-                        <Text style={styles.titleText}>Select Start Date</Text>
+                        {isStart ? (
+                            <Text style={styles.titleText}>Select Start Date</Text>
+                        ) : (
+                            <Text style={styles.titleText}>Select End Date</Text>
+                        )}
                     </View>
 
                     <View style={{marginTop: 30, }}>
