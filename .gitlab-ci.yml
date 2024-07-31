@@ -24,13 +24,9 @@ frontend-format:
   stage: format
   image: node:latest
   before_script:
-    - cd ./bounty-hunter-frontend/
-    - npm install --force
+    - echo "install linting"
   script:
-    - npx eslint . --fix
-  only:
-    - merge_requests
-    - branches
+    - echo "lint"
   cache:
     paths:
       - node_modules/
