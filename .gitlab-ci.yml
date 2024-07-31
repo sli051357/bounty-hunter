@@ -1,4 +1,5 @@
 image: python:latest
+image: node:latest
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
@@ -9,6 +10,7 @@ variables:
 cache:
   paths:
     - .cache/pip
+    - .cache/npm
 
 before_script:
   - python --version ; pip --version  # For debugging
@@ -16,6 +18,16 @@ before_script:
   - virtualenv venv
   - source venv/bin/activate
   - pip install -r requirements.txt
+  - pip install ruff
+  - npm init --yes
+  - npm install --save-dev eslint
+
+eslint:
+  script:
+    - node_modules/.bin/eslint bounty-hunter-frontend/*.js
+    - node_modules/.bin/eslint bounty-hunter-frontend/*/*.js
+    - node_modules/.bin/eslint bounty-hunter-frontend/*/*/*.js
+    - ruff check
 
 test:
   script:
