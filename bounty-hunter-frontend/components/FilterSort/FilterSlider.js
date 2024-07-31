@@ -2,6 +2,8 @@ import React from 'react';
 import {Slider} from '@miblanchard/react-native-slider';
 import {AppRegistry, StyleSheet, View, Text} from 'react-native';
 
+import { GLOBAL_STYLES } from '../../constants/styles';
+
 class SliderExample extends React.Component {
     state = {
         sliderValue: [20, 80],
@@ -12,8 +14,8 @@ class SliderExample extends React.Component {
             <View style={styles.container}>
                 <Slider
                     animateTransitions
-                    maximumTrackTintColor='blue'
-                    minimumTrackTintColor='blue'
+                    maximumTrackTintColor={GLOBAL_STYLES.colors.orange300}
+                    minimumTrackTintColor={GLOBAL_STYLES.colors.orange300}
                     maximumValue={100}
                     minimumValue={0}
                     step={1}
