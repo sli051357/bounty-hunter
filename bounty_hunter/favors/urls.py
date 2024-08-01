@@ -22,6 +22,8 @@ urlpatterns = [
     path("tags/<int:tag_id>/delete/", views.delete_tag, name="delete_tag"),
     # for whoever is logged in, get net amount owed to the user
     path("amount-owed/<slug:to_user_username>", views.get_total_amt_owed, name="get_total_amt_owed"),
+    # view all notifications for a user
+    path('notifications/<slug:request_username>', views.notifs_list, name="notifs_list"),
 
     # more paths for filters, editing/creating favors, etc
     path("<int:favor_id>/change-status/",views.change_status, name="change_status"),

@@ -451,9 +451,9 @@ def delete_tag(request, tag_id):
     else:
         return JsonResponse({"error": "must use DELETE method"}, status=405)
 
-# get all notifications for a user
+# get all notifications that should be shown to a user
 def notifs_list(request, username):
-    notifs = list(Notification.objects.filter(user__username=username).values())
+    notifs = list(Notification.objects.filter(recipient__username=username).values())
 
 # create a new 'pending edits' notification to send to frontend 
 def edits_notif(favor_id, user, recipient):
