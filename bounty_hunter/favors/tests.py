@@ -7,6 +7,42 @@ from django.core.exceptions import ObjectDoesNotExist
 from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE, EDIT
 import datetime
 
+MONETARY = "Monetary"
+NONMONETARY = "Nonmonetary"
+
+
+class TotalAmtOwedTests(TestCase):
+    def setUp(self):
+        # Create users
+        self.user1 = User.objects.create_user(username='user1', password='pass')
+        self.user2 = User.objects.create_user(username='user2', password='pass')
+        
+        # Log in as user1
+        self.client.login(username='user1', password='pass')
+        
+        # Create favors
+        Favor.objects.create(owner=self.user2, assignee=self.user1, total_owed_amt=100, total_owed_type=MONETARY)
+        Favor.objects.create(owner=self.user1, assignee=self.user2, total_owed_amt=50, total_owed_type=MONETARY)
+    
+    def test_get_total_amt_owed(self):
+        response = self.client.get(reverse('get_total_amt_owed', kwargs={'to_user_username': 'user2'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'amount_owed': '50.00'})
+    
+    def test_no_favors(self):
+        response = self.client.get(reverse('get_total_amt_owed', kwargs={'to_user_username': 'user3'}))
+        self.assertEqual(response.status_code, 404)
+    
+    def test_balance_zero(self):
+        # Add favors to make the balance zero
+        Favor.objects.create(owner=self.user2, assignee=self.user1, total_owed_amt=50, total_owed_type=MONETARY)
+        
+        response = self.client.get(reverse('get_total_amt_owed', kwargs={'to_user_username': 'user2'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'amount_owed': '100.00'})
+
+
+
 class ChangeStatusTest(TestCase):
     
     def setUp(self):

@@ -4,6 +4,7 @@ from .models import Favor, Tag
 from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
+from django.contrib.auth.models import User
 import datetime
 import types
 from decimal import Decimal
@@ -57,6 +58,29 @@ TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
             
             
                 }
+
+MONETARY = "Monetary"
+NONMONETARY = "Nonmonetary"
+
+#gets the total amount current user owes to a user to display on the profile. Whenever this is called, it recalculates the amt, so the serverside balance is up to date.
+#@login_required
+def get_total_amt_owed(request,to_user_username):
+    to_user = get_object_or_404(User,username=to_user_username)
+    curr_user = request.user
+    # gets all monetary favors where curr_user owes money to to_user
+    pos_favors = Favor.objects.filter(Q(owner=to_user, assignee=curr_user, total_owed_type=MONETARY))
+
+    #gets all monetary favors where to_user owes money to curr_user
+    neg_favors = Favor.objects.filter(Q(owner=curr_user, assignee=to_user, total_owed_type=MONETARY))
+
+    balance = 0
+    for favor in pos_favors:
+        balance += favor.total_owed_amt
+
+    for favor in neg_favors:
+        balance -= favor.total_owed_amt
+    
+    return JsonResponse({"amount_owed": balance})
 
 # Ceate your views here.
 # view a list of all favors 
