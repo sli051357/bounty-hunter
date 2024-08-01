@@ -70,7 +70,7 @@ deploy-job:      # This job runs in the deploy stage.
     #- ssh-add favor_key
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-  #  - ssh-keyscan 132.249.238.228 >> ~/.ssh/known_hosts
+    - ssh-keyscan 132.249.238.228 >> ~/.ssh/known_hosts
   #  - mkdir -p ~/.ssh
   #  - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
   #  - chmod 600 favor-key.pem   # keeps key permissions private
