@@ -77,9 +77,7 @@ deploy-job:      # This job runs in the deploy stage.
   #  - ssh-keyscan -H 132.249.238.228 >> ~/.ssh/known_hosts  # adds host key to known hosts
   script:
     - echo "Deploying application..."
-    - ssh -v ubuntu@132.249.238.228 "echo Hello" #"
-        #echo 'Start of ssh'
-        #cd monetary-favor-tackers
+    - ssh -v ubuntu@132.249.238.228 "bash -c 'echo 'Start of ssh' && cd monetary-favor-tackers && echo 'Went into folder' '"
         #pip install virtualenv
         #virtualenv venv
         #source venv/bin/activate
@@ -87,7 +85,7 @@ deploy-job:      # This job runs in the deploy stage.
         #cd bounty_hunter
         #git pull origin dev
         #echo 'End of ssh'
-        # nohup python manage.py runserver 0.0.0.0:8000 &"
+        #nohup python manage.py runserver 0.0.0.0:8000 &"
     - echo "Application successfully deployed."
   # only:
   #  - dev   # deploys from dev branch change to main later
