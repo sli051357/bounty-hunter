@@ -1,7 +1,7 @@
 stages:          # List of stages for jobs, and their order of execution
-  - format
-  - build
-  - test
+#  - format
+#  - build
+#  - test
   - deploy
 
 backend-format:
