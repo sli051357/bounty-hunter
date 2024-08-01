@@ -66,17 +66,6 @@ deploy-job:      # This job runs in the deploy stage.
     - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
     - chmod 600 favor-key.pem   # keeps key permissions private
     - ssh-keyscan -H 132.249.238.228 >> ~/.ssh/known_hosts  # adds host key to known hosts
-  #before_script:
-  #  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client wget gnupg -y )'
-  #  - wget -qO- https://get.docker.com/gpg | apt-key add -
-  #  - eval $(ssh-agent -s)
-  #  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  #  - mkdir -p ~/.ssh
-  #  - touch ~/.ssh/config
-  #  - touch ~/.ssh/known_hosts
-  #  - chmod -R 400 ~/.ssh
-  #  - ssh-keyscan 132.249.238.228 >> ~/.ssh/known_hosts
-  #  - '[[ -f /.dockerinit ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - echo "Deploying application..."
     - ssh -i favor-key.pem ubuntu@132.249.238.228 "
