@@ -12,7 +12,7 @@ function InputFields({
 	children,
 	multiLineStyles,
 	multiline = false,
-	editable = true
+	editable = true,
 }) {
 	return (
 		<View style={[styles.container, multiLineStyles]}>

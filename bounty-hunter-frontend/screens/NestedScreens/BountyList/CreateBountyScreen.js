@@ -76,7 +76,10 @@ function CreateBountyScreen() {
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.createBounty(favor);
-			setFavorDetailsHandler([`Bounty Created on ${today}`], "bountyEditHistory");
+			setFavorDetailsHandler(
+				[`Bounty Created on ${today}`],
+				"bountyEditHistory",
+			);
 			const favor = {
 				bountyId: Math.floor(Math.random() * 1000), // Dummy Bounty Id, async call in actual implementation, change to response
 				senderId: username, // Will be our unique Id

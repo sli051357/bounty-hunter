@@ -49,7 +49,9 @@ function BountiesListScreen() {
 					{userBountyList.map((favor) => (
 						<FavorCard
 							key={favor.bountyId}
-							onPress={() => navigation.navigate("ViewBounty", { bountyId: favor.bountyId })}
+							onPress={() =>
+								navigation.navigate("ViewBounty", { bountyId: favor.bountyId })
+							}
 							favor={favor}
 						/>
 					))}

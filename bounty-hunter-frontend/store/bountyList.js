@@ -33,7 +33,9 @@ const bountyListSlice = createSlice({
 			});
 		},
 		editBounty: (state, action) => {
-			const bountyIndex = state.bountyList.findIndex((bounty) => bounty.bountyId === action.payload.bountyId);
+			const bountyIndex = state.bountyList.findIndex(
+				(bounty) => bounty.bountyId === action.payload.bountyId,
+			);
 			state.bountyList[bountyIndex] = action.payload;
 		},
 		resetBountyList: () => initialState,

@@ -12,28 +12,30 @@ import { editBounty, removeBounty } from "../../../store/bountyList";
 
 import { useState } from "react";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
+import BountyLogTab from "../../../components/UI/BountyListHelpers/BountyLogTab";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
 import SwitchTabs from "../../../components/UI/BountyListHelpers/SwitchTabs";
 import Button from "../../../components/UI/Button";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
-import BountyLogTab from "../../../components/UI/BountyListHelpers/BountyLogTab";
 
 function BountyDetailsScreen({ route }) {
-    const { bountyId } = route.params;
-    const username = useSelector(state => state.username.username);
-    const bountyList = useSelector(state => state.bountyList.bountyList);
-    const currBounty = bountyList.find((bounty) => bounty.bountyId === bountyId);
+	const { bountyId } = route.params;
+	const username = useSelector((state) => state.username.username);
+	const bountyList = useSelector((state) => state.bountyList.bountyList);
+	const currBounty = bountyList.find((bounty) => bounty.bountyId === bountyId);
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-    console.log(currBounty.bountyEditHistory);
-	
+	console.log(currBounty.bountyEditHistory);
+
 	const [favorDetails, setFavorDetails] = useState(currBounty);
-	const [isMonetaryStatus, setIsMonetaryStatus] = useState(currBounty.paymentType === "Monetary" ? true : false);
+	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
+		currBounty.paymentType === "Monetary",
+	);
 	const [isUploading, setIsUploading] = useState(false);
 
-    // Need to call async function to get username of assignee since favor
-    // details has id of assignee
+	// Need to call async function to get username of assignee since favor
+	// details has id of assignee
 
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -85,31 +87,36 @@ function BountyDetailsScreen({ route }) {
 		navigation.navigate("BountiesList");
 	}
 
-    function deleteFavorButtonHandler() {
-        Alert.alert("Are you sure you want to delete bounty?", 
-            "Bounties cannot be retreived after being deleted?", [
-                {
-                    text: 'Confirm',
-                    onPress: () => {
-                        navigation.navigate("BountiesList");
-                        dispatch(removeBounty(bountyId));
-                    },
-                },
-                {
-                    text: 'Cancel',
-                    onPress: () => {return}
-                }
-            ])
-    }
-    
-    function requestDeleteBountyHandler() {
-        // Change Status to Delete Bounty
-    }
+	function deleteFavorButtonHandler() {
+		Alert.alert(
+			"Are you sure you want to delete bounty?",
+			"Bounties cannot be retreived after being deleted?",
+			[
+				{
+					text: "Confirm",
+					onPress: () => {
+						navigation.navigate("BountiesList");
+						dispatch(removeBounty(bountyId));
+					},
+				},
+				{
+					text: "Cancel",
+					onPress: () => {
+						return;
+					},
+				},
+			],
+		);
+	}
 
-    function requestCompleteBountyHandler() {
-        console.log("Requested Deletion")
-        // Edit History Complete Request
-    }
+	function requestDeleteBountyHandler() {
+		// Change Status to Delete Bounty
+	}
+
+	function requestCompleteBountyHandler() {
+		console.log("Requested Deletion");
+		// Edit History Complete Request
+	}
 
 	if (isUploading) {
 		<LoadingOverlay
@@ -136,15 +143,15 @@ function BountyDetailsScreen({ route }) {
 						maxLength={18}
 						value={favorDetails.favorName}
 						keyboardType="default"
-                        editable={false}
+						editable={false}
 					/>
-                    <InputFields
+					<InputFields
 						typeTitle="Assigned From"
 						type="senderId"
 						maxLength={14}
 						value={favorDetails.senderId}
 						keyboardType="default"
-                        editable={false}
+						editable={false}
 					/>
 					<InputFields
 						typeTitle="Assigned To"
@@ -153,7 +160,7 @@ function BountyDetailsScreen({ route }) {
 						maxLength={14}
 						value={favorDetails.assigneeId}
 						keyboardType="default"
-                        editable={false}
+						editable={false}
 					/>
 					<InputFields
 						typeTitle="Total Owed *"
@@ -162,7 +169,7 @@ function BountyDetailsScreen({ route }) {
 						maxLength={22}
 						value={favorDetails.paymentOwed}
 						keyboardType="default"
-                        editable={username === favorDetails.senderId}
+						editable={username === favorDetails.senderId}
 					>
 						<SwitchTabs
 							tabOne="Monetary"
@@ -181,49 +188,54 @@ function BountyDetailsScreen({ route }) {
 						keyboardType="default"
 						multiLineStyles={{ minHeight: 155, flex: 1 }}
 						multiline={true}
-                        editable={username === favorDetails.senderId}
+						editable={username === favorDetails.senderId}
 					/>
-					{username === favorDetails.senderId ? 
-                    <View style={styles.tagsContainer}>
-						<Text style={styles.tagHeader}>Tags</Text>
-						<View style={styles.addTagContainer}>
-							<IconButton
-								icon="add-sharp"
-								iconSize={18}
-								onPress={() => console.log("Make tag function")}
-								color={GLOBAL_STYLES.colors.orange700}
+					{username === favorDetails.senderId ? (
+						<View style={styles.tagsContainer}>
+							<Text style={styles.tagHeader}>Tags</Text>
+							<View style={styles.addTagContainer}>
+								<IconButton
+									icon="add-sharp"
+									iconSize={18}
+									onPress={() => console.log("Make tag function")}
+									color={GLOBAL_STYLES.colors.orange700}
+								/>
+							</View>
+						</View>
+					) : null}
+					{username === favorDetails.senderId ? (
+						<View style={styles.privacyStatusContainer}>
+							<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
+							<SwitchTabs
+								tabOne="Public"
+								tabTwo="Private"
+								onPress={setPrivacyHandler}
+								isActive={favorDetails.privacyStatus}
 							/>
 						</View>
-					</View> : null}
-					{username === favorDetails.senderId ?
-                    <View style={styles.privacyStatusContainer}>
-						<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
-						<SwitchTabs
-							tabOne="Public"
-							tabTwo="Private"
-							onPress={setPrivacyHandler}
-							isActive={favorDetails.privacyStatus}
-						/>
-					</View>: null}
-                    <View style={styles.bountyLogContainer}>
-                        <Text style={styles.bountyLogHeader}>Bounty Log</Text>
-                        <View>
-                            {favorDetails.bountyEditHistory.map((tab) => {
-                                let type = null;
-                                if (tab.type === "Complete Request") {
-                                    type = requestCompleteBountyHandler;
-                                } else if (tab.type === "Delete Request") {
-                                    type = requestDeleteBountyHandler;
-                                }
-                                return <BountyLogTab 
-                                            type={tab.type}
-                                            description={tab.description}
-                                            onPress={type}
-                                        />
-                            })}
-                        </View>
-                    </View>
-                    <View style={styles.buttonsContainer}>
+					) : null}
+					<View style={styles.bountyLogContainer}>
+						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
+						<View>
+							{favorDetails.bountyEditHistory.map((tab) => {
+								let type = null;
+								if (tab.type === "Complete Request") {
+									type = requestCompleteBountyHandler;
+								} else if (tab.type === "Delete Request") {
+									type = requestDeleteBountyHandler;
+								}
+								return (
+									<BountyLogTab
+										key={tab.description}
+										type={tab.type}
+										description={tab.description}
+										onPress={type}
+									/>
+								);
+							})}
+						</View>
+					</View>
+					<View style={styles.buttonsContainer}>
 						<Button
 							title="Cancel"
 							onPress={() => navigation.navigate("BountiesList")}
@@ -235,32 +247,34 @@ function BountyDetailsScreen({ route }) {
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-						{username === favorDetails.senderId ? 
-                        <Button
-							title="Edit"
-							onPress={editFavorButtonHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
-							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.blue300,
-								paddingHorizontal: 48,
-								borderRadius: 6,
-							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-						/> : 
-                        <Button
-							title="Complete"
-							onPress={requestCompleteBountyHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
-							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.blue300,
-								paddingHorizontal: 48,
-								borderRadius: 6,
-							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-						/>} 
+						{username === favorDetails.senderId ? (
+							<Button
+								title="Edit"
+								onPress={editFavorButtonHandler}
+								buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
+								containerStyle={{
+									backgroundColor: GLOBAL_STYLES.colors.blue300,
+									paddingHorizontal: 48,
+									borderRadius: 6,
+								}}
+								textStyle={{ fontSize: 28, fontWeight: "bold" }}
+							/>
+						) : (
+							<Button
+								title="Complete"
+								onPress={requestCompleteBountyHandler}
+								buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
+								containerStyle={{
+									backgroundColor: GLOBAL_STYLES.colors.blue300,
+									paddingHorizontal: 48,
+									borderRadius: 6,
+								}}
+								textStyle={{ fontSize: 28, fontWeight: "bold" }}
+							/>
+						)}
 					</View>
-                    {username === favorDetails.senderId ? 
-                    <Button
+					{username === favorDetails.senderId ? (
+						<Button
 							title="Delete"
 							onPress={deleteFavorButtonHandler}
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
@@ -268,11 +282,12 @@ function BountyDetailsScreen({ route }) {
 								backgroundColor: GLOBAL_STYLES.colors.error700,
 								paddingHorizontal: 30,
 								borderRadius: 6,
-                                alignSelf: 'center'
+								alignSelf: "center",
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-				    /> : 
-                    <Button
+						/>
+					) : (
+						<Button
 							title="Request Deletion"
 							onPress={requestDeleteBountyHandler}
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
@@ -280,10 +295,11 @@ function BountyDetailsScreen({ route }) {
 								backgroundColor: GLOBAL_STYLES.colors.error700,
 								paddingHorizontal: 30,
 								borderRadius: 6,
-                                alignSelf: 'center'
+								alignSelf: "center",
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-				    />}
+						/>
+					)}
 				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>
@@ -346,23 +362,23 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		gap: 16,
 	},
-    bountyLogContainer: {
-        flex: 1,
+	bountyLogContainer: {
+		flex: 1,
 		alignItems: "flex-start",
 		justifyContent: "center",
 		gap: 4,
-    },
-    bountyLogHeader: {
-        fontSize: 18,
+	},
+	bountyLogHeader: {
+		fontSize: 18,
 		fontWeight: "bold",
 		textAlign: "left",
 		color: GLOBAL_STYLES.colors.orange700,
-    },
-    bountyTabContainer: {
-        flex: 1,
-        justifyContent: "flex-start",
-        gap: 12
-    }
+	},
+	bountyTabContainer: {
+		flex: 1,
+		justifyContent: "flex-start",
+		gap: 12,
+	},
 });
 
 export default BountyDetailsScreen;

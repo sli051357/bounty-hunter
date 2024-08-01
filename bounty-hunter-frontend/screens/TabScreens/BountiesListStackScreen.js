@@ -4,8 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import IconButton from "../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import BountiesListScreen from "../NestedScreens/BountyList/BountiesListScreen";
-import CreateBountyScreen from "../NestedScreens/BountyList/CreateBountyScreen";
 import BountyDetailsScreen from "../NestedScreens/BountyList/BountyDetailsScreen";
+import CreateBountyScreen from "../NestedScreens/BountyList/CreateBountyScreen";
 
 const BountiesListStack = createNativeStackNavigator();
 
