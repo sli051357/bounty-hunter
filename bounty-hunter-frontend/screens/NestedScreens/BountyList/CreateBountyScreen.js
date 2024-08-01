@@ -8,16 +8,16 @@ import {
 	View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { addBounty } from "../../store/bountyList";
+import { addBounty } from "../../../store/bountyList";
 
 import { useState } from "react";
-import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
-import InputFields from "../../components/UI/BountyListHelpers/InputFields";
-import SwitchTabs from "../../components/UI/BountyListHelpers/SwitchTabs";
-import Button from "../../components/UI/Button";
-import IconButton from "../../components/UI/IconButton";
-import { GLOBAL_STYLES } from "../../constants/styles";
-import today from "../../util/date";
+import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
+import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
+import SwitchTabs from "../../../components/UI/BountyListHelpers/SwitchTabs";
+import Button from "../../../components/UI/Button";
+import IconButton from "../../../components/UI/IconButton";
+import { GLOBAL_STYLES } from "../../../constants/styles";
+import today from "../../../util/date";
 
 function CreateBountyScreen() {
 	const navigation = useNavigation();
@@ -25,12 +25,12 @@ function CreateBountyScreen() {
 	const username = useSelector((state) => state.username.username);
 	const [favorDetails, setFavorDetails] = useState({
 		favorName: "",
-		assignee: "",
-		totalOwed: "",
+		assigneeId: "",
+		paymentOwed: "",
 		description: "",
 		tags: [],
 		privacyStatus: false,
-		editHistory: [],
+		bountyEditHistory: [],
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
@@ -60,8 +60,8 @@ function CreateBountyScreen() {
 
 	function createFavorButtonHandler() {
 		const favorNameIsValid = favorDetails.favorName.length > 0;
-		const assigneeIsValid = favorDetails.assignee.length > 0;
-		const totalOwedIsValid = favorDetails.totalOwed.length > 0;
+		const assigneeIsValid = favorDetails.assigneeId.length > 0;
+		const totalOwedIsValid = favorDetails.paymentOwed.length > 0;
 
 		if (!favorNameIsValid || !assigneeIsValid || !totalOwedIsValid) {
 			Alert.alert("Please fill input values.", "Check highlighted inputs!");
@@ -76,18 +76,23 @@ function CreateBountyScreen() {
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.createBounty(favor);
+			setFavorDetailsHandler(
+				[`Bounty Created on ${today}`],
+				"bountyEditHistory",
+			);
 			const favor = {
 				bountyId: Math.floor(Math.random() * 1000), // Dummy Bounty Id, async call in actual implementation, change to response
 				senderId: username, // Will be our unique Id
-				receiverId: favorDetails.assignee, // Same with Id
+				assigneeId: favorDetails.assigneeId, // Same with Id
+				favorName: favorDetails.favorName,
 				dateCreated: today,
-				tags: [],
+				tags: favorDetails.tags,
 				paymentType: isMonetaryStatus ? "Monetary" : "Non-Monetary",
-				paymentOwed: favorDetails.totalOwed,
+				paymentOwed: favorDetails.paymentOwed,
 				description: favorDetails.description,
 				status: "In-Progress",
 				privacyStatus: favorDetails.privacyStatus,
-				bountyEditHistory: favorDetails.editHistory,
+				bountyEditHistory: favorDetails.bountyEditHistory,
 			};
 			dispatch(addBounty(favor));
 		} catch (error) {
@@ -126,18 +131,18 @@ function CreateBountyScreen() {
 					/>
 					<InputFields
 						typeTitle="Assign To (by user ID) *"
-						type="assignee"
+						type="assigneeId"
 						onPress={setFavorDetailsHandler}
 						maxLength={14}
-						value={favorDetails.assignee}
+						value={favorDetails.assigneeId}
 						keyboardType="default"
 					/>
 					<InputFields
 						typeTitle="Total Owed *"
-						type="totalOwed"
+						type="paymentOwed"
 						onPress={setFavorDetailsHandler}
 						maxLength={22}
-						value={favorDetails.totalOwed}
+						value={favorDetails.paymentOwed}
 						keyboardType="default"
 					>
 						<SwitchTabs

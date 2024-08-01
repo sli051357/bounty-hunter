@@ -12,13 +12,13 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import Button from "../../components/UI/Button";
-import ChangeContent from "../../components/UI/SettingsPageHelpers/ChangeContent";
-import ChangePasswordSettings from "../../components/UI/SettingsPageHelpers/ChangePasswordSettings";
-import TitleWithButton from "../../components/UI/TitleWithButton";
-import { GLOBAL_STYLES } from "../../constants/styles";
-import { setAuthToken } from "../../store/authToken";
-import { setUsername } from "../../store/username";
+import Button from "../../../components/UI/Button";
+import ChangeContent from "../../../components/UI/SettingsPageHelpers/ChangeContent";
+import ChangePasswordSettings from "../../../components/UI/SettingsPageHelpers/ChangePasswordSettings";
+import TitleWithButton from "../../../components/UI/TitleWithButton";
+import { GLOBAL_STYLES } from "../../../constants/styles";
+import { setAuthToken } from "../../../store/authToken";
+import { setUsername } from "../../../store/username";
 
 function UserSettingsScreen() {
 	const navigation = useNavigation();

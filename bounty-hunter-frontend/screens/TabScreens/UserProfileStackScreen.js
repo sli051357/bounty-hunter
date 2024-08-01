@@ -3,10 +3,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import IconButton from "../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../constants/styles";
-import DeleteAccountScreen from "../NestedScreens/DeleteAccountScreen";
-import UserLinkedAccountsScreen from "../NestedScreens/UserLinkedAccountsScreen";
-import UserProfileScreen from "../NestedScreens/UserProfileScreen";
-import UserSettingsScreen from "../NestedScreens/UserSettingsScreen";
+import DeleteAccountScreen from "../NestedScreens/UserProfile/DeleteAccountScreen";
+import UserLinkedAccountsScreen from "../NestedScreens/UserProfile/UserLinkedAccountsScreen";
+import UserProfileScreen from "../NestedScreens/UserProfile/UserProfileScreen";
+import UserSettingsScreen from "../NestedScreens/UserProfile/UserSettingsScreen";
 
 const UserProfileStack = createNativeStackNavigator();
 

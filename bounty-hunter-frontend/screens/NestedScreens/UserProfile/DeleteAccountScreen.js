@@ -6,10 +6,10 @@ import {
 	View,
 } from "react-native";
 
-import Button from "../../components/UI/Button";
-import { GLOBAL_STYLES } from "../../constants/styles";
+import Button from "../../../components/UI/Button";
+import { GLOBAL_STYLES } from "../../../constants/styles";
 // import { useSelector } from "react-redux";
-import { resetApp } from "../../store/redux/resetApp";
+import { resetApp } from "../../../store/redux/resetApp";
 
 function DeleteAccountScreen() {
 	// Turn into async await when we get Axios Api call

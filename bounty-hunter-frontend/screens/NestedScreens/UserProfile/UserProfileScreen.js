@@ -11,18 +11,18 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import apiService from "../../api/apiRequest.js";
-import FavorCard from "../../components/FavorCard.js";
-import Button from "../../components/UI/Button.js";
-import IconButton from "../../components/UI/IconButton.js";
-import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
-import EditAboutMe from "../../components/UI/UserProfileHelpers/EditAboutMe.js";
-import EditPaymentMethods from "../../components/UI/UserProfileHelpers/EditPaymentMethods.js";
-import { GLOBAL_STYLES } from "../../constants/styles.js";
+import apiService from "../../../api/apiRequest.js";
+import FavorCard from "../../../components/FavorCard.js";
+import Button from "../../../components/UI/Button.js";
+import IconButton from "../../../components/UI/IconButton.js";
+import ScrollViewHelper from "../../../components/UI/ScrollViewHelper.js";
+import EditAboutMe from "../../../components/UI/UserProfileHelpers/EditAboutMe.js";
+import EditPaymentMethods from "../../../components/UI/UserProfileHelpers/EditPaymentMethods.js";
+import { GLOBAL_STYLES } from "../../../constants/styles.js";
 import {
 	DUMMY_FAVORS_OF_PROFILE,
 	DUMMY_USER_PROFILE,
-} from "../../util/dummy-data.js";
+} from "../../../util/dummy-data.js";
 
 /*
     Implementation Details
@@ -117,7 +117,7 @@ function UserProfileScreen() {
 						<View style={styles.imageAndUsernameView}>
 							<Image
 								style={styles.profilePicture}
-								source={require("../../assets/batman.jpeg")}
+								source={require("../../../assets/batman.jpeg")}
 							/>
 							<View>
 								<Text style={styles.usernameStyles}>{username.username}</Text>
