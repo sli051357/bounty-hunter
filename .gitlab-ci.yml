@@ -61,15 +61,26 @@ frontend-unit-test:   # put frontend tests here
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
-  before_script: 
+  # before_script: 
+    # - mkdir -p ~/.ssh
+    # - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
+    # - chmod 600 favor-key.pem   # keeps key permissions private
+    # - ssh-keyscan -H 132.249.238.228 >> ~/.ssh/known_hosts  # adds host key to known hosts
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client wget gnupg -y )'
+    - wget -qO- https://get.docker.com/gpg | apt-key add -
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
-    - chmod 600 favor-key.pem   # keeps key permissions private
-    - ssh-keyscan -H 132.249.238.228 >> ~/.ssh/known_hosts  # adds host key to known hosts
+    - touch ~/.ssh/config
+    - touch ~/.ssh/known_hosts
+    - chmod -R 400 ~/.ssh
+    - ssh-keyscan 132.249.238.228 >> ~/.ssh/known_hosts
+    - '[[ -f /.dockerinit ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - echo "Deploying application..."
     - ssh -i favor-key.pem ubuntu@132.249.238.228 "
-        echo "Start of EOF"
+        echo 'Start of ssh'
         cd monetary-favor-tackers
         pip install virtualenv
         virtualenv venv
@@ -77,7 +88,7 @@ deploy-job:      # This job runs in the deploy stage.
         pip install -r requirements.txt
         cd bounty_hunter
         git pull origin dev
-        echo 'End of EOF'
+        echo 'End of ssh'
         nohup python manage.py runserver 0.0.0.0:8000 &"
     - echo "Application successfully deployed."
   # only:
