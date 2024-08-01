@@ -62,13 +62,19 @@ deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   before_script: 
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - chmod 400 "$FAVOR_KEY"
+    - ssh-add "$FAVOR_KEY"
     - mkdir -p ~/.ssh
-    - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
-    - chmod 600 favor-key.pem   # keeps key permissions private
-    - ssh-keyscan -H 132.249.238.228 >> ~/.ssh/known_hosts  # adds host key to known hosts
+    - chmod 700 ~/.ssh
+  #  - mkdir -p ~/.ssh
+  #  - echo "$FAVOR_KEY" | tr -d '\r' > favor-key.pem  # create favor-key.pem file from CI/CD variable
+  #  - chmod 600 favor-key.pem   # keeps key permissions private
+  #  - ssh-keyscan -H 132.249.238.228 >> ~/.ssh/known_hosts  # adds host key to known hosts
   script:
     - echo "Deploying application..."
-    - ssh -i favor-key.pem ubuntu@132.249.238.228 "
+    - ssh -i "$FAVOR_KEY" ubuntu@132.249.238.228 "
         echo 'Start of ssh'
         cd monetary-favor-tackers
         pip install virtualenv
