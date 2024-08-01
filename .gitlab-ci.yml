@@ -86,7 +86,7 @@ deploy-job:      # This job runs in the deploy stage.
         #cd bounty_hunter
         #git pull origin dev
         #echo 'End of ssh'
-        nohup python manage.py runserver 0.0.0.0:8000 &"
+        # nohup python manage.py runserver 0.0.0.0:8000 &"
     - echo "Application successfully deployed."
   # only:
   #  - dev   # deploys from dev branch, change to main later
