@@ -81,3 +81,12 @@ class Favor(models.Model):
 
     def __str__(self):
         return "%s - created by %s" % (self.name, self.owner)
+    
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.CharField(max_length=100)
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE)
+    favor = models.ForeignKey(Favor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.message

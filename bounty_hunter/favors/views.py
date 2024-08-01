@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Favor, Tag
+from .models import Favor, Tag, Notification
 from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
@@ -306,6 +306,7 @@ def edit_favor(request, favor_id):
         if form.is_valid():
             # i think this saves the edits?
             form.save() 
+            edits_notif(favor_id, request.user, favor.assignee)     # create a new notification to send to frontend
             return JsonResponse({"success": True, "new_favor_pk": favor.pk})
         else:
             return JsonResponse({"success": False, "errors": form.errors})
@@ -450,3 +451,11 @@ def delete_tag(request, tag_id):
     else:
         return JsonResponse({"error": "must use DELETE method"}, status=405)
 
+# get all notifications for a user
+def notifs_list(request, username):
+    notifs = list(Notification.objects.filter(user__username=username).values())
+
+# create a new 'pending edits' notification to send to frontend 
+def edits_notif(favor_id, user, recipient):
+    new_notif = Notification(user=user, message="Pending edits", recipient=recipient, favor=Favor.objects.get(pk=favor_id))
+    return JsonResponse({"notification": new_notif})
