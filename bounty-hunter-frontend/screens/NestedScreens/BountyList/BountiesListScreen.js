@@ -2,24 +2,15 @@ import { useNavigation } from "@react-navigation/native";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 // import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
-import { useDispatch, useSelector } from "react-redux";
-import FavorCard from "../../components/FavorCard";
-import FloatingButton from "../../components/UI/FloatingButton";
-import IconButton from "../../components/UI/IconButton";
-import { GLOBAL_STYLES } from "../../constants/styles";
-import { removeBounty } from "../../store/bountyList";
+import { useSelector } from "react-redux";
+import FavorCard from "../../../components/FavorCard";
+import FloatingButton from "../../../components/UI/FloatingButton";
+import IconButton from "../../../components/UI/IconButton";
+import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function BountiesListScreen() {
 	const userBountyList = useSelector((state) => state.bountyList.bountyList);
 	const navigation = useNavigation();
-	const dispatch = useDispatch();
-	//console.log(userBountyList);
-
-	// This is a tester function, NOT ACTUAL IMPLEMENTATION!
-	function removeBountyHandler(bountyId) {
-		console.log(bountyId);
-		dispatch(removeBounty(bountyId));
-	}
 
 	return (
 		<View style={styles.container}>
@@ -58,7 +49,7 @@ function BountiesListScreen() {
 					{userBountyList.map((favor) => (
 						<FavorCard
 							key={favor.bountyId}
-							onPress={removeBountyHandler}
+							onPress={() => navigation.navigate("ViewBounty", { bountyId: favor.bountyId })}
 							favor={favor}
 						/>
 					))}

@@ -12,9 +12,10 @@ const bountyListSlice = createSlice({
 	reducers: {
 		addBounty: (state, action) => {
 			const bounty = {
+				favorName: action.payload.favorName,
 				bountyId: action.payload.bountyId,
 				senderId: action.payload.senderId,
-				receiverId: action.payload.receiverId,
+				assigneeId: action.payload.assigneeId,
 				dateCreated: action.payload.dateCreated,
 				tags: action.payload.tags,
 				paymentType: action.payload.paymentType,
@@ -32,7 +33,8 @@ const bountyListSlice = createSlice({
 			});
 		},
 		editBounty: (state, action) => {
-			// Todo (refer to State manage sheet)
+			const bountyIndex = state.bountyList.findIndex((bounty) => bounty.bountyId === action.payload.bountyId);
+			state.bountyList[bountyIndex] = action.payload;
 		},
 		resetBountyList: () => initialState,
 	},

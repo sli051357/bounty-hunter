@@ -12,6 +12,7 @@ function InputFields({
 	children,
 	multiLineStyles,
 	multiline = false,
+	editable = true
 }) {
 	return (
 		<View style={[styles.container, multiLineStyles]}>
@@ -26,6 +27,7 @@ function InputFields({
 				style={[styles.textInput]}
 				multiline={multiline}
 				textAlignVertical="top"
+				editable={editable}
 			/>
 		</View>
 	);

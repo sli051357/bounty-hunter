@@ -2,10 +2,10 @@ import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import IconButton from "../../components/UI/IconButton";
-import ScrollViewHelper from "../../components/UI/ScrollViewHelper";
-import { GLOBAL_STYLES } from "../../constants/styles";
-import { addPaymentMethod, removePaymentMethod } from "../../store/payment";
+import IconButton from "../../../components/UI/IconButton";
+import ScrollViewHelper from "../../../components/UI/ScrollViewHelper";
+import { GLOBAL_STYLES } from "../../../constants/styles";
+import { addPaymentMethod, removePaymentMethod } from "../../../store/payment";
 
 function UserLinkedAccountsScreen() {
 	const dispatch = useDispatch();
