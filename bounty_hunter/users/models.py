@@ -25,5 +25,4 @@ class Wishlist(models.Model):
     title = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
     URL = models.URLField(max_length=200, blank=True)
-    description = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='res/')
