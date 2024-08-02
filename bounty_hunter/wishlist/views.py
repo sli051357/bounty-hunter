@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Wishlist
-from .forms import WishlistForm
+from .forms import WishlistForm 
 
 class WishlistView(View):
     def get(self, request):
