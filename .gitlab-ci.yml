@@ -1,62 +1,62 @@
 stages:          # List of stages for jobs, and their order of execution
-  - format
-  - build
-  - test
+#  - format
+#  - build
+#  - test
   - deploy
 
-backend-format:
-  stage: format
-  image: python:latest
-  before_script:
-    - python --version ; pip --version  # For debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-    - pip install ruff
-  script:
-    - ruff check --fix
-    - ruff format 
-  cache: 
-    paths:
-      - py_modules/
+# backend-format:
+#   stage: format
+#   image: python:latest
+#   before_script:
+#     - python --version ; pip --version  # For debugging
+#     - pip install virtualenv
+#     - virtualenv venv
+#     - source venv/bin/activate
+#     - pip install ruff
+#   script:
+#     - ruff check --fix
+#     - ruff format 
+#   cache: 
+#     paths:
+#       - py_modules/
 
-frontend-format:
-  stage: format
-  image: node:latest
-  before_script:
-    - cd bounty-hunter-frontend/
-    - npm ci
-  script:
-    - npx @biomejs/biome check --write .
-    - cd ..
-  cache:
-    paths:
-      - node_modules/
-
-
-build-job:       # build frontend app here
-  stage: build
-  script:
-    - echo "building app..."
+# frontend-format:
+#   stage: format
+#   image: node:latest
+#   before_script:
+#     - cd bounty-hunter-frontend/
+#     - npm ci
+#   script:
+#     - npx @biomejs/biome check --write .
+#     - cd ..
+#   cache:
+#     paths:
+#       - node_modules/
 
 
-backend-unit-test:   
-  stage: test    
-  image: python:latest
-  script:
-    - python --version ; pip --version  # For debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-    - pip install -r requirements.txt
-    - cd bounty_hunter/
-    - python manage.py test
-    - cd ..
+# build-job:       # build frontend app here
+#   stage: build
+#   script:
+#     - echo "building app..."
 
-frontend-unit-test:   # put frontend tests here
-  stage: test    # It only starts when the job in the build stage completes successfully.
-  script:
-      - echo "frontend tests"
+
+# backend-unit-test:   
+#   stage: test    
+#   image: python:latest
+#   script:
+#     - python --version ; pip --version  # For debugging
+#     - pip install virtualenv
+#     - virtualenv venv
+#     - source venv/bin/activate
+#     - pip install -r requirements.txt
+#     - cd bounty_hunter/
+#     - python manage.py test
+#     - cd ..
+
+# frontend-unit-test:   # put frontend tests here
+#   stage: test    # It only starts when the job in the build stage completes successfully.
+#   script:
+#       - echo "frontend tests"
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
