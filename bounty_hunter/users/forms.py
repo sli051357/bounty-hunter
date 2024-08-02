@@ -1,5 +1,5 @@
 from django import forms
-from .models import Wishlist
+from wishlist.models import Wishlist
 
 
 class AccountCreationForm(forms.Form):
@@ -7,7 +7,7 @@ class AccountCreationForm(forms.Form):
     password = forms.CharField(label="Password", max_length=150)
     email = forms.CharField(label="Password", max_length=150)
 
-class WishlistForm(forms.Form):
+class WishlistForm(forms.ModelForm):
     class Meta:
         model = Wishlist
-        fields = ['title', 'price', 'URL', 'photo']
+        fields = ['title', 'price', 'URL', 'photo', 'owner']
