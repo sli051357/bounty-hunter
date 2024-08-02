@@ -17,8 +17,14 @@ urlpatterns = [
     path('verify/<slug:token>', views.verify, name="verify"),
     path('reset-password/<slug:token>', views.show_create_new_password, name="reset_password"),
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
-    path('forgot/', views.reset_password, name="forgot"),
-    
+    path('get-friend-requests/', views.get_incoming_friend_requests, name="get_incoming_friend_requests"),
+    path('get-friends-list/', views.get_friends_list, name="get_friends_list"),
+    path('send-friend-request/<slug:username>/', views.send_friend_request, name="send_friend_request"),
+    path('accept-friend-request/<int:pk>/', views.accept_friend_request, name="accept_friend_request"),
+    path('reject-friend-request/<int:pk>/', views.reject_friend_request, name="reject_friend_request"),
+
+
+
     #temporary links for testing
     path('forgot/', views.reset_password, name="forgot"),
     path('sign-up/', views.sign_up, name="sign_up"),

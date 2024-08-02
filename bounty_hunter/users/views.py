@@ -6,8 +6,7 @@ from django.template import loader
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from .models import UserProfileInfo, LinkedAccounts, FriendRequest, Wishlist
-
+from .models import UserProfileInfo, LinkedAccounts, FriendRequest
 from django.shortcuts import redirect
 
 from django.core.mail import send_mail
@@ -292,29 +291,7 @@ def temp(request):
     return render(request, "users/forgot.html", context)
 
 
-#For Wishlist
-class WishlistView(View):
-    def get(self, request):
-        items = Wishlist.objects.all()
-        return render(request, 'wishlist/wishlist.html', {'items': items})
-
-class AddWishlistItemView(View):
-    def get(self, request):
-        form = WishlistForm()
-        return render(request, 'wishlist/add_item.html', {'form': form})
-    
-    def post(self, request):
-        form = WishlistForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('wishlist')
-        return render(request, 'wishlist/add_item.html', {'form': form})
-
-class RemoveWishlistItemView(View):
-    def post(self, request, pk):
-        item = Wishlist.objects.get(pk=pk)
-        item.delete()
-        return redirect('wishlist')
 
 
 
+# Create your views here.
