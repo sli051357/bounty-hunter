@@ -3,8 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import IconButton from "../IconButton";
 
-function BountyLogTab({ tabDescription, type, onPress }) {
-	if (type === "Complete Request") {
+function BountyLogTab({ tabDescription, type, onPress, disabled = true }) {
+	
+	if (type === "Complete Request" || type === "Delete Request" || type === "Creation") {
 		return (
 			<View style={styles.bountyTabContainer}>
 				<Text style={styles.description}>{tabDescription}</Text>
@@ -14,39 +15,20 @@ function BountyLogTab({ tabDescription, type, onPress }) {
 						onPress={() => onPress("accept")}
 						color={GLOBAL_STYLES.colors.brown300}
 						iconSize={28}
+						disabled={disabled}
 					/>
 					<IconButton
 						icon="close-circle"
 						onPress={() => onPress("deny")}
 						color={GLOBAL_STYLES.colors.error700}
 						iconSize={28}
+						disabled={disabled}
 					/>
 				</View>
 			</View>
 		);
 	}
-	if (type === "Delete Request") {
-		return (
-			<View style={styles.bountyTabContainer}>
-				<Text style={styles.description}>{tabDescription}</Text>
-				<View style={styles.buttonContainer}>
-					<IconButton
-						icon="checkmark-circle"
-						onPress={() => onPress("accept")}
-						color={GLOBAL_STYLES.colors.brown300}
-						iconSize={28}
-					/>
-					<IconButton
-						icon="close-circle"
-						onPress={() => onPress("deny")}
-						color={GLOBAL_STYLES.colors.error700}
-						iconSize={28}
-					/>
-				</View>
-			</View>
-		);
-	}
-	if (type === "") {
+	if (type === "Edit") {
 		return (
 			<View>
 				<Text>{tabDescription}</Text>
@@ -63,13 +45,15 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		minWidth: "100%",
-		padding: 20,
+		paddingHorizontal: 8,
+		paddingVertical: 4,
 		borderRadius: 20,
 	},
 	description: {
 		fontSize: 14,
 		fontFamily: "BaiJamjuree-Bold",
 		textAlign: "left",
+		color: GLOBAL_STYLES.colors.brown700
 	},
 	buttonContainer: {
 		flexDirection: "row",

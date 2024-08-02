@@ -26,7 +26,7 @@ function BountyDetailsScreen({ route }) {
 	const currBounty = bountyList.find((bounty) => bounty.bountyId === bountyId);
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	console.log(currBounty.bountyEditHistory);
+	
 
 	const [favorDetails, setFavorDetails] = useState(currBounty);
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
@@ -107,6 +107,10 @@ function BountyDetailsScreen({ route }) {
 				},
 			],
 		);
+	}
+
+	function bountyAcceptanceHandler() {
+		// Deny or Accept Bounty for assignee
 	}
 
 	function requestDeleteBountyHandler() {
@@ -218,17 +222,18 @@ function BountyDetailsScreen({ route }) {
 						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
 						<View>
 							{favorDetails.bountyEditHistory.map((tab) => {
+								console.log(tab)
 								let type = null;
 								if (tab.type === "Complete Request") {
 									type = requestCompleteBountyHandler;
 								} else if (tab.type === "Delete Request") {
 									type = requestDeleteBountyHandler;
-								}
+								} else if (tab.type === "Creation") 
 								return (
 									<BountyLogTab
 										key={tab.description}
 										type={tab.type}
-										description={tab.description}
+										tabDescription={tab.description}
 										onPress={type}
 									/>
 								);
@@ -367,6 +372,7 @@ const styles = StyleSheet.create({
 		alignItems: "flex-start",
 		justifyContent: "center",
 		gap: 4,
+		marginBottom: 20
 	},
 	bountyLogHeader: {
 		fontSize: 18,
