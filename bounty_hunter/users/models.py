@@ -18,4 +18,9 @@ class LinkedAccounts(models.Model):
     account_text = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
-        return self.account_text    
+        return self.account_text
+
+#model for Friend Requests
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, related_name='from_user',on_delete=models.CASCADE)    
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)  
