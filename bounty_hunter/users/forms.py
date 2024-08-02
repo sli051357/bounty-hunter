@@ -1,5 +1,5 @@
 from django import forms
-from .models import Wishlist
+from wishlist.models import Wishlist
 
 
 class AccountCreationForm(forms.Form):
