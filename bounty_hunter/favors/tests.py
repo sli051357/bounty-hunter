@@ -7,6 +7,42 @@ from django.core.exceptions import ObjectDoesNotExist
 from .views import INCOMPLETE, CANCEL, DELETE, CREATE, COMPLETE, EDIT
 import datetime
 
+MONETARY = "Monetary"
+NONMONETARY = "Nonmonetary"
+
+
+class TotalAmtOwedTests(TestCase):
+    def setUp(self):
+        # Create users
+        self.user1 = User.objects.create_user(username='user1', password='pass')
+        self.user2 = User.objects.create_user(username='user2', password='pass')
+        
+        # Log in as user1
+        self.client.login(username='user1', password='pass')
+        
+        # Create favors
+        Favor.objects.create(owner=self.user2, assignee=self.user1, total_owed_amt=100, total_owed_type=MONETARY)
+        Favor.objects.create(owner=self.user1, assignee=self.user2, total_owed_amt=50, total_owed_type=MONETARY)
+    
+    def test_get_total_amt_owed(self):
+        response = self.client.get(reverse('get_total_amt_owed', kwargs={'to_user_username': 'user2'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'amount_owed': '50.00'})
+    
+    def test_no_favors(self):
+        response = self.client.get(reverse('get_total_amt_owed', kwargs={'to_user_username': 'user3'}))
+        self.assertEqual(response.status_code, 404)
+    
+    def test_balance_zero(self):
+        # Add favors to make the balance zero
+        Favor.objects.create(owner=self.user2, assignee=self.user1, total_owed_amt=50, total_owed_type=MONETARY)
+        
+        response = self.client.get(reverse('get_total_amt_owed', kwargs={'to_user_username': 'user2'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'amount_owed': '100.00'})
+
+
+
 class ChangeStatusTest(TestCase):
     
     def setUp(self):
@@ -88,8 +124,8 @@ class ChangeStatusTest(TestCase):
         self.assertEqual(self.favorb.deleted, False)
 
     def test_cancel_edit(self):
-        self.client.login(username='owner', password='passwofdsfdsrd321!!!')
-        response = self.client.post(reverse('change_status', args=[self.favorc.id]), {'status': CANCEL})
+        self.client.login(username='owner', password='passwofdsfdsrd321!!!')   
+        self.client.post(reverse('change_status', args=[self.favorc.id]), {'status': CANCEL}) 
         self.assertRaises(Favor.DoesNotExist,self.favorc.refresh_from_db,)
 
     def test_cancel_complete(self):
@@ -389,6 +425,14 @@ class FavorListTest(TestCase):
         #print("EXPECTED: ", expected)
         #print("OUTPUT: ", output)
         self.assertEqual(output, expected)
+    
+    #def test_test(self):
+    #    self.maxDiff = None
+    #    self.client.login(username='user1', password='password123?')
+    #    url = reverse('favor_list') + f'?price_low=&price_high=&sort_by='
+    #    response = self.client.get(url)
+    #    output = response.json()
+    #    print(output)
         
 class CreateFavorTestCase(TestCase): # test create favor 
 
@@ -589,3 +633,51 @@ class EditTagTestCase(TestCase): # test edit_tag in views.py
         self.tag1.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertFalse(output['success'])
+
+class DeleteTagTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user_owner = User.objects.create_user(username='user1', password='password123!')
+        self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
+        self.client.login(username='user1', password='password123!')
+
+        self.tag1 = Tag.objects.create(
+            name = "Food",
+            color = "#1234ab",
+            owner = self.user_owner,
+            tag_type = "Preset"
+        )
+
+        self.tag2 = Tag.objects.create(
+            name = "Travel",
+            color = "#5678BC",
+            owner = self.user_owner,
+            tag_type = "Preset"
+        )
+
+    def test_delete_tag(self):
+        url = reverse('delete_tag', args=[self.tag1.id])
+        response = self.client.delete(url)
+        output = response.json()
+        # print("all tags: ", Tag.objects.all())
+        # print("tags count: ", Tag.objects.all().count())
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(output['success'])
+        self.assertEqual(Tag.objects.all().count(), 1)
+
+    def test_delete_tag_get(self):
+        url = reverse('delete_tag', args=[self.tag1.id])
+        response = self.client.get(url)
+        output = response.json()
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(output['error'], "must use DELETE method")
+        self.assertEqual(Tag.objects.all().count(), 2)
+
+    def test_delete_tag_post(self):
+        url = reverse('delete_tag', args=[self.tag1.id])
+        response = self.client.post(url)
+        output = response.json()
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(output['error'], "must use DELETE method")
+        self.assertEqual(Tag.objects.all().count(), 2)

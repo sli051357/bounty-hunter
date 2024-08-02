@@ -13,19 +13,21 @@ urlpatterns = [
     path('profiles/<slug:request_username>/add-link', views.add_link, name="add_link"),
     path('profiles/<slug:request_username>/remove-link', views.remove_link, name="remove_link"),
     path('get-token/', rest_framework.authtoken.views.obtain_auth_token),
-    path('sign-up/', views.sign_up, name="sign_up"),
     path('register/', views.register_user, name="register"),
     path('verify/<slug:token>', views.verify, name="verify"),
     path('reset-password/<slug:token>', views.show_create_new_password, name="reset_password"),
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
-    path('forgot/', views.reset_password, name="forgot"),
-    
-    #urls for wishlist
-    path('wishlist/', views.WishlistView.as_view(), name='wishlist'),
-    path('wishlist/add/', views.AddWishlistItemView.as_view(), name='add_wishlist_item'),
-    path('wishlist/remove/<int:pk>/', views.RemoveWishlistItemView.as_view(), name='remove_wishlist_item'),
+    path('get-friend-requests/', views.get_incoming_friend_requests, name="get_incoming_friend_requests"),
+    path('get-friends-list/', views.get_friends_list, name="get_friends_list"),
+    path('send-friend-request/<slug:username>/', views.send_friend_request, name="send_friend_request"),
+    path('accept-friend-request/<int:pk>/', views.accept_friend_request, name="accept_friend_request"),
+    path('reject-friend-request/<int:pk>/', views.reject_friend_request, name="reject_friend_request"),
+
+
 
     #temporary links for testing
+    path('forgot/', views.reset_password, name="forgot"),
+    path('sign-up/', views.sign_up, name="sign_up"),
     path('temp/', views.temp, name="temp"),
     path('sign-in/', views.sign_in, name="sign_in"),
     path('sign-in/attempt', views.signin_attempt, name="signin_attempt"),

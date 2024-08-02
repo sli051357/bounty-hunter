@@ -1,130 +1,170 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useState } from 'react';
+import { useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+// import { useFonts } from 'expo-font';
 
-import { GLOBAL_STYLES } from '../../constants/styles.js';
-import { DUMMY_USER_PROFILE } from '../../util/dummy-data.js';
+import { GLOBAL_STYLES } from "../../constants/styles.js";
+import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import SearchBar from '../../components/SearchBar.js'
-import CategoryBar from '../../components/CategoryBar.js';
-import FriendCard from '../../components/FriendCard.js'
-import FriendRequest from '../../components/FriendRequest.js'
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import CategoryBar from "../../components/CategoryBar.js";
+import FriendCard from "../../components/FriendCard.js";
+import FriendRequest from "../../components/FriendRequest.js";
+import SearchBar from "../../components/SearchBar.js";
 
 function FriendListScreen() {
-    const [curScreen, setCurScreen] = useState(1);
-    const [search, setSearch] = useState(false);
+	// const [loaded, error] = useFonts({
+	//     'BaiJamjuree-Regular': require('../../assets/fonts/BaiJamjuree-Regular.tff'),
+	// });
 
-    const DUMMY_REQUESTS = [
-        {
-            username: 'GreenGoblin123',
-            id: 'G10397593',
-        },
-        {
-            username: 'Hulk',
-            id: 'hulk',
-        }
-    ]
+	const [curScreen, setCurScreen] = useState(1);
+	const [search, setSearch] = useState(true);
 
-    function setSearchStatus() {
-        setSearch((curr) => !curr);
-        if (search == true) {
-            setCurScreen(4);
-        } else {
-            setCurScreen(1);
-        }
-    }
+	const DUMMY_REQUESTS = [
+		{
+			username: "GreenGoblin123",
+			id: "G10397593",
+		},
+		{
+			username: "Hulk",
+			id: "hulk",
+		},
+	];
 
-    let content;
-    let navBar = <CategoryBar stateChanger={setCurScreen} list1={DUMMY_USER_PROFILE.friends} list2={DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true))} list3={DUMMY_REQUESTS}/>;
+	function setSearchStatus() {
+		setSearch((curr) => !curr);
+		if (search === true) {
+			setCurScreen(4);
+		} else {
+			setCurScreen(1);
+		}
+	}
 
-    // Friend List
-    if (curScreen == 1) {
-        content = 
-        
-        <View>
-            {navBar}
-               
-            {DUMMY_USER_PROFILE.friends.map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../../assets/batman.jpeg')} />)}
-        </View>
+	let content;
+	const navBar = (
+		<CategoryBar
+			stateChanger={setCurScreen}
+			list1={DUMMY_USER_PROFILE.friends}
+			list2={DUMMY_USER_PROFILE.friends.filter((friend) => friend.fav === true)}
+			list3={DUMMY_REQUESTS}
+		/>
+	);
 
-    // Favorite Friends
-    } else if (curScreen == 2) {
-        // newFriends = DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true));
-        
-        content = 
-        <View>
-            {navBar}
+	// Friend List
+	if (curScreen === 1) {
+		content = (
+			<View>
+				{navBar}
 
-            {DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true)).map((friend) => <FriendCard key={friend.nickname} friend={friend} imagePath = {require('../../assets/batman.jpeg')} />)}
-        </View>
+				{DUMMY_USER_PROFILE.friends.map((friend) => (
+					<FriendCard
+						key={friend.nickname}
+						friend={friend}
+						imagePath={require("../../assets/batman.jpeg")}
+					/>
+				))}
+			</View>
+		);
 
-    // Requests
-    } else if (curScreen == 3) {
-        content = 
-        <View>
-            {navBar}
+		// Favorite Friends
+	} else if (curScreen === 2) {
+		// newFriends = DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true));
 
-            {DUMMY_REQUESTS.map((user) => <FriendRequest key={user.username} user={user} imagePath={require('../../assets/batman.jpeg')} />)}
-        </View>
+		content = (
+			<View>
+				{navBar}
 
-    // Friend Search -  replace with actual search function
-    } else {
-        content = 
-        <View>
-            <SearchBar />
-        </View>
-    }
+				{DUMMY_USER_PROFILE.friends
+					.filter((friend) => friend.fav === true)
+					.map((friend) => (
+						<FriendCard
+							key={friend.nickname}
+							friend={friend}
+							imagePath={require("../../assets/batman.jpeg")}
+						/>
+					))}
+			</View>
+		);
 
-    return (
-        <ScrollView style={styles.page}>
-            <View>
-                <Text style={styles.headerText}>Friends</Text>
-            </View>
+		// Requests
+	} else if (curScreen === 3) {
+		content = (
+			<View>
+				{navBar}
 
-            <View>
-                <Pressable onPress={setSearchStatus} style={styles.button}>
-                    {search ? (
-                        <MaterialIcons name="person-add-alt" size={16} color={GLOBAL_STYLES.colors.brown300}/>
-                    ) : (
-                        <Ionicons name="return-down-back" size={16} color={GLOBAL_STYLES.colors.brown300} />
-                    )}
-                </Pressable>
-            </View>
+				{DUMMY_REQUESTS.map((user) => (
+					<FriendRequest
+						key={user.username}
+						user={user}
+						imagePath={require("../../assets/batman.jpeg")}
+					/>
+				))}
+			</View>
+		);
 
-            <View>
-                {content}
-            </View>
-        </ScrollView>
-    )
+		// Friend Search -  replace with actual search function
+	} else {
+		content = (
+			<View>
+				<SearchBar />
+			</View>
+		);
+	}
+
+	return (
+		<ScrollView style={styles.page}>
+			<View>
+				<Text style={styles.headerText}>Friends</Text>
+			</View>
+
+			<View>
+				<Pressable onPress={setSearchStatus} style={styles.button}>
+					{search ? (
+						<MaterialIcons
+							name="person-add-alt"
+							size={16}
+							color={GLOBAL_STYLES.colors.brown300}
+						/>
+					) : (
+						<Ionicons
+							name="return-down-back"
+							size={16}
+							color={GLOBAL_STYLES.colors.brown300}
+						/>
+					)}
+				</Pressable>
+			</View>
+
+			<View>{content}</View>
+		</ScrollView>
+	);
 }
 
 const styles = StyleSheet.create({
-    page: {
-        backgroundColor: GLOBAL_STYLES.colors.brown300,
-        flex: 1,
-        paddingHorizontal: '5%',
-        paddingTop: 100,
-    },
-    headerText: {
-        fontFamily: 'BaiJamjuree-Bold',
-        fontSize: 36,
-        color: GLOBAL_STYLES.colors.blue300,
-        textAlign: 'center',
-        marginBottom: -15,
-    },
-    button: {
-        backgroundColor: GLOBAL_STYLES.colors.brown700,
-        paddingTop: 5,
-        paddingBottom: 5,
-        paddingLeft: 10,
-        paddingRight: 10,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 'auto',
-        marginBottom: 5,
-        marginRight: 10,
-    }
-})
+	page: {
+		backgroundColor: GLOBAL_STYLES.colors.brown300,
+		flex: 1,
+		paddingHorizontal: "5%",
+		paddingTop: 100,
+	},
+	headerText: {
+		fontFamily: "BaiJamjuree-Bold",
+		fontSize: 36,
+		color: GLOBAL_STYLES.colors.blue300,
+		textAlign: "center",
+	},
+	button: {
+		backgroundColor: GLOBAL_STYLES.colors.brown700,
+		paddingTop: 5,
+		paddingBottom: 5,
+		paddingLeft: 10,
+		paddingRight: 10,
+		borderRadius: 20,
+		justifyContent: "center",
+		alignItems: "center",
+		marginLeft: "auto",
+		marginBottom: 5,
+		marginRight: "2.5%",
+	},
+});
 
 export default FriendListScreen;

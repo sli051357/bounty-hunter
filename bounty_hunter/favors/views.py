@@ -4,6 +4,7 @@ from .models import Favor, Tag
 from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
+from django.contrib.auth.models import User
 import datetime
 import types
 from decimal import Decimal
@@ -58,6 +59,29 @@ TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
             
                 }
 
+MONETARY = "Monetary"
+NONMONETARY = "Nonmonetary"
+
+#gets the total amount current user owes to a user to display on the profile. Whenever this is called, it recalculates the amt, so the serverside balance is up to date.
+#@login_required
+def get_total_amt_owed(request,to_user_username):
+    to_user = get_object_or_404(User,username=to_user_username)
+    curr_user = request.user
+    # gets all monetary favors where curr_user owes money to to_user
+    pos_favors = Favor.objects.filter(Q(owner=to_user, assignee=curr_user, total_owed_type=MONETARY))
+
+    #gets all monetary favors where to_user owes money to curr_user
+    neg_favors = Favor.objects.filter(Q(owner=curr_user, assignee=to_user, total_owed_type=MONETARY))
+
+    balance = 0
+    for favor in pos_favors:
+        balance += favor.total_owed_amt
+
+    for favor in neg_favors:
+        balance -= favor.total_owed_amt
+    
+    return JsonResponse({"amount_owed": balance})
+
 # Ceate your views here.
 # view a list of all favors 
 def favor_list(request): # ex: favors/
@@ -82,22 +106,22 @@ def favor_list(request): # ex: favors/
     # FILTER
     # filter by owner id
     owner_id = request.GET.get('owner')
-    if owner_id:
+    if owner_id and owner_id != '':
         query = query_method(query, or_query, Q(owner__id=owner_id))
 
     # filter by assignee id
     assignee_id = request.GET.get('assignee')
-    if assignee_id:
+    if assignee_id and assignee_id != '':
         query = query_method(query, or_query, Q(assignee__id=assignee_id))
 
     # filter by tag id
     tag_id = request.GET.get('tag')
-    if tag_id:
+    if tag_id and tag_id != '':
         query = query_method(query, or_query, Q(tags__id=tag_id))
 
     # filter by status (use the string constants)
     status = request.GET.get('status') 
-    if status:
+    if status and status != '':
         # favors sent by user
         if status == 'sent':
             query = query_method(query, or_query, Q(owner__id=curr_user.id))
@@ -116,7 +140,7 @@ def favor_list(request): # ex: favors/
     # filter by date range
     start_date = request.GET.get('start_date') # ex: start_date=2002-01-30
     end_date = request.GET.get('end_date')
-    if start_date and end_date:
+    if (start_date and start_date != '') and (end_date and end_date != ''):
         start_date = parse_date(start_date)
         end_date = parse_date(end_date)
         q_in = (Q(created_at__gte = start_date) & Q(created_at__lte = end_date))
@@ -125,7 +149,7 @@ def favor_list(request): # ex: favors/
     # filter by price range
     price_low = request.GET.get('price_low')
     price_high = request.GET.get('price_high')
-    if price_low and price_high:
+    if (price_low and price_low != '') and (price_high and price_high != ''):
         price_low = Decimal(price_low)
         price_high = Decimal(price_high)
         q_in = (Q(total_owed_amt__gte = price_low) & Q(total_owed_amt__lte = price_high))
@@ -222,6 +246,7 @@ def favor_detail(request, favor_id):
                   "owner_status": favor.owner_status,
                   "assignee_status": favor.assignee_status,
                   "is_active": favor.active, #only show active in frontend
+                  "is_deleted": favor.deleted, 
                   "is_completed": favor.completed,
                   "tags": tags,}
     return JsonResponse(favor_data)
@@ -416,4 +441,12 @@ def apply_transitions(favor):
 def show_change_status(request, favor_id):
     return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
+# delete a tag based on tag id
+def delete_tag(request, tag_id):
+    tag = get_object_or_404(Tag, pk=tag_id)
+    if request.method == "DELETE":
+        tag.delete()
+        return JsonResponse({"success": True})
+    else:
+        return JsonResponse({"error": "must use DELETE method"}, status=405)
 
