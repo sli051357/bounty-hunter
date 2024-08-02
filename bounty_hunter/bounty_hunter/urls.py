@@ -21,5 +21,7 @@ urlpatterns = [
   # path("[your application name]/", include("[your application name].urls")),
     path('admin/', admin.site.urls),
     path("favors/", include("favors.urls")),
-    path("users/", include("users.urls"))
+    path("users/", include("users.urls")),
+    path('wishlist/', include('wishlist.urls'))
+
 ]
