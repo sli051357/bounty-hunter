@@ -21,12 +21,13 @@ import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function BountyDetailsScreen({ route }) {
 	const { bountyId } = route.params;
-	const username = useSelector((state) => state.username.username);
 	const bountyList = useSelector((state) => state.bountyList.bountyList);
 	const currBounty = bountyList.find((bounty) => bounty.bountyId === bountyId);
+	const currEditBountyHistory = [...currBounty.bountyEditHistory];
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	console.log(currBounty.bountyEditHistory);
+	const username = useSelector((state) => state.username.username); //currBounty.assigneeId//
+	// console.log(currEditBountyHistory);
 
 	const [favorDetails, setFavorDetails] = useState(currBounty);
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
@@ -37,6 +38,7 @@ function BountyDetailsScreen({ route }) {
 	// Need to call async function to get username of assignee since favor
 	// details has id of assignee
 
+	// Sender Restricted Function
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
 			...prevState,
@@ -44,6 +46,7 @@ function BountyDetailsScreen({ route }) {
 		}));
 	}
 
+	// Sender Restricted Function
 	function setIsMonetaryStatusHandeler(text) {
 		if (text === "Monetary") {
 			setIsMonetaryStatus(true);
@@ -52,6 +55,7 @@ function BountyDetailsScreen({ route }) {
 		}
 	}
 
+	// Sender Restricted Function
 	function setPrivacyHandler(type) {
 		const status = type !== "Private";
 		setFavorDetails((prevState) => ({
@@ -60,6 +64,7 @@ function BountyDetailsScreen({ route }) {
 		}));
 	}
 
+	// Sender Restricted Function
 	function editFavorButtonHandler() {
 		const favorNameIsValid = favorDetails.favorName.length > 0;
 		const assigneeIsValid = favorDetails.assigneeId.length > 0;
@@ -72,13 +77,24 @@ function BountyDetailsScreen({ route }) {
 		editFavorHandler();
 	}
 
-	// Turn this into async function when axios is added
+	// Turn these functions into async function when axios is added
+	// Handles putting edits in the Bounty Log
 	function editFavorHandler() {
 		setIsUploading(true);
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.editBounty(favorDetails);
-			dispatch(editBounty(favorDetails));
+			currEditBountyHistory.push({
+				type: "Edit",
+				description: "Bounty has been edited.",
+				sender: username,
+			});
+			dispatch(
+				editBounty({
+					...favorDetails,
+					bountyEditHistory: currEditBountyHistory,
+				}),
+			);
 		} catch (error) {
 			console.log(error);
 			Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -87,6 +103,7 @@ function BountyDetailsScreen({ route }) {
 		navigation.navigate("BountiesList");
 	}
 
+	// Deletes Favors from both user's lists
 	function deleteFavorButtonHandler() {
 		Alert.alert(
 			"Are you sure you want to delete bounty?",
@@ -109,13 +126,193 @@ function BountyDetailsScreen({ route }) {
 		);
 	}
 
-	function requestDeleteBountyHandler() {
-		// Change Status to Delete Bounty
+	// Handles initial bounty acceptance or deletion for assignee
+	function bountyAcceptanceHandler(response) {
+		if (response === "accept") {
+			setIsUploading(true);
+			try {
+				// Will Set up Axios Sign Up later
+				// const response = await apiService.editBounty(favorDetails);
+				const index = currEditBountyHistory.findIndex(
+					(edit) => edit.type === "Creation",
+				);
+				currEditBountyHistory.splice(index, 1);
+				currEditBountyHistory.push({
+					type: "Edit",
+					description: "Bounty has been accepted.",
+				});
+				dispatch(
+					editBounty({
+						...favorDetails,
+						bountyEditHistory: currEditBountyHistory,
+					}),
+				);
+			} catch (error) {
+				console.log(error);
+				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			}
+			setIsUploading(false);
+			navigation.navigate("BountiesList");
+		} else {
+			setIsUploading(true);
+			try {
+				// Will Set up Axios Sign Up later
+				// const response = await apiService.deleteBounty(favorDetails.bountyId);
+				dispatch(removeBounty(favorDetails.bountyId));
+			} catch (error) {
+				console.log(error);
+				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			}
+			setIsUploading(false);
+			navigation.navigate("BountiesList");
+		}
 	}
 
+	// Requests for Bounty Deletion from assignee
+	function requestDeleteBountyHandler() {
+		setIsUploading(true);
+		try {
+			// Will Set up Axios Sign Up later
+			// const response = await apiService.editBounty(favorDetails);
+			currEditBountyHistory.push({
+				type: "Delete Request",
+				description: "Bounty deletion requested?",
+				sender: favorDetails.assigneeId,
+			});
+			dispatch(
+				editBounty({
+					...favorDetails,
+					bountyEditHistory: currEditBountyHistory,
+				}),
+			);
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could Not Edit Bounty!", "Try again later.");
+		}
+		setIsUploading(false);
+		navigation.navigate("BountiesList");
+	}
+
+	function deleteBountyRequestResponseHandler(response) {
+		if (response === "accept") {
+			setIsUploading(true);
+			try {
+				// Will Set up Axios Sign Up later
+				// const response = await apiService.deleteBounty(favorDetails.bountyId);
+				dispatch(removeBounty(favorDetails.bountyId));
+			} catch (error) {
+				console.log(error);
+				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			}
+			setIsUploading(false);
+			navigation.navigate("BountiesList");
+		} else {
+			setIsUploading(true);
+			try {
+				// Will Set up Axios Sign Up later
+				// const response = await apiService.deleteBounty(favorDetails.bountyId);
+				const index = currEditBountyHistory.findIndex(
+					(edit) => edit.type === "Delete Request",
+				);
+				currEditBountyHistory.splice(index, 1);
+				currEditBountyHistory.push({
+					type: "Edit",
+					description: "Bounty deletion denied.",
+				});
+				dispatch(
+					editBounty({
+						...favorDetails,
+						bountyEditHistory: currEditBountyHistory,
+					}),
+				);
+			} catch (error) {
+				console.log(error);
+				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			}
+			setIsUploading(false);
+			navigation.navigate("BountiesList");
+		}
+	}
+
+	// Requests for Bounty Complete from assignee
 	function requestCompleteBountyHandler() {
-		console.log("Requested Deletion");
-		// Edit History Complete Request
+		setIsUploading(true);
+		try {
+			// Will Set up Axios Sign Up later
+			// const response = await apiService.editBounty(favorDetails);
+			currEditBountyHistory.push({
+				type: "Complete Request",
+				description: "Bounty completed requested?",
+				sender: favorDetails.assigneeId,
+			});
+			dispatch(
+				editBounty({
+					...favorDetails,
+					bountyEditHistory: currEditBountyHistory,
+				}),
+			);
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could Not Edit Bounty!", "Try again later.");
+		}
+		setIsUploading(false);
+		navigation.navigate("BountiesList");
+	}
+
+	function completeBountyRequestResponseHandler(response) {
+		if (response === "accept") {
+			setIsUploading(true);
+			try {
+				// Will Set up Axios Sign Up later
+				// const response = await apiService.editBounty(favorDetails);
+				const index = currEditBountyHistory.findIndex(
+					(edit) => edit.type === "Complete Request",
+				);
+				console;
+				currEditBountyHistory.splice(index, 1);
+				currEditBountyHistory.push({
+					type: "Edit",
+					description: "Bounty has been completed.",
+				});
+				dispatch(
+					editBounty({
+						...favorDetails,
+						bountyEditHistory: currEditBountyHistory,
+						status: "Completed",
+					}),
+				);
+			} catch (error) {
+				console.log(error);
+				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			}
+			setIsUploading(false);
+			navigation.navigate("BountiesList");
+		} else {
+			setIsUploading(true);
+			try {
+				// Will Set up Axios Sign Up later
+				// const response = await apiService.deleteBounty(favorDetails.bountyId);
+				const index = currEditBountyHistory.findIndex(
+					(edit) => edit.type === "Complete Request",
+				);
+				currEditBountyHistory.splice(index, 1);
+				currEditBountyHistory.push({
+					type: "Edit",
+					description: "Bounty has not been completed.",
+				});
+				dispatch(
+					editBounty({
+						...favorDetails,
+						bountyEditHistory: currEditBountyHistory,
+					}),
+				);
+			} catch (error) {
+				console.log(error);
+				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			}
+			setIsUploading(false);
+			navigation.navigate("BountiesList");
+		}
 	}
 
 	if (isUploading) {
@@ -216,20 +413,28 @@ function BountyDetailsScreen({ route }) {
 					) : null}
 					<View style={styles.bountyLogContainer}>
 						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
-						<View>
-							{favorDetails.bountyEditHistory.map((tab) => {
-								let type = null;
+						<View style={styles.bountyTabContainer}>
+							{favorDetails.bountyEditHistory.map((tab, index) => {
+								//console.log(tab);
+								let typeOnPress = null;
+								let disabled = false;
 								if (tab.type === "Complete Request") {
-									type = requestCompleteBountyHandler;
+									disabled = username === favorDetails.assigneeId;
+									typeOnPress = completeBountyRequestResponseHandler;
 								} else if (tab.type === "Delete Request") {
-									type = requestDeleteBountyHandler;
+									disabled = username === favorDetails.assigneeId;
+									typeOnPress = deleteBountyRequestResponseHandler;
+								} else if (tab.type === "Creation") {
+									disabled = username === favorDetails.senderId;
+									typeOnPress = bountyAcceptanceHandler;
 								}
 								return (
 									<BountyLogTab
-										key={tab.description}
+										key={index.toString()}
 										type={tab.type}
-										description={tab.description}
-										onPress={type}
+										tabDescription={tab.description}
+										onPress={typeOnPress}
+										disabled={disabled}
 									/>
 								);
 							})}
@@ -367,6 +572,7 @@ const styles = StyleSheet.create({
 		alignItems: "flex-start",
 		justifyContent: "center",
 		gap: 4,
+		marginBottom: 20,
 	},
 	bountyLogHeader: {
 		fontSize: 18,
@@ -376,7 +582,6 @@ const styles = StyleSheet.create({
 	},
 	bountyTabContainer: {
 		flex: 1,
-		justifyContent: "flex-start",
 		gap: 12,
 	},
 });

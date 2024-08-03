@@ -28,12 +28,18 @@ function CreateBountyScreen() {
 		assigneeId: "",
 		paymentOwed: "",
 		description: "",
-		tags: [],
 		privacyStatus: false,
-		bountyEditHistory: [],
+		bountyEditHistory: [
+			{
+				sender: username,
+				description: "Would you like to accept this bounty?",
+				type: "Creation",
+			},
+		],
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
+	const [tags, setTags] = useState(["Monetary"]);
 
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -45,8 +51,14 @@ function CreateBountyScreen() {
 	function setIsMonetaryStatusHandeler(text) {
 		if (text === "Monetary") {
 			setIsMonetaryStatus(true);
+			setTagsHandler("Monetary", false);
+			setTagsHandler("Monetary", true);
+			setTagsHandler("Non-Monetary", false);
 		} else {
 			setIsMonetaryStatus(false);
+			setTagsHandler("Non-Monetary", false);
+			setTagsHandler("Non-Monetary", true);
+			setTagsHandler("Monetary", false);
 		}
 	}
 
@@ -56,6 +68,10 @@ function CreateBountyScreen() {
 			...prevState,
 			privacyStatus: status,
 		}));
+	}
+
+	function setTagsHandler(tag, isAdd) {
+		setTags((prev) => (isAdd ? [...prev, tag] : prev.filter((t) => t !== tag)));
 	}
 
 	function createFavorButtonHandler() {
@@ -76,17 +92,13 @@ function CreateBountyScreen() {
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.createBounty(favor);
-			setFavorDetailsHandler(
-				[`Bounty Created on ${today}`],
-				"bountyEditHistory",
-			);
 			const favor = {
 				bountyId: Math.floor(Math.random() * 1000), // Dummy Bounty Id, async call in actual implementation, change to response
 				senderId: username, // Will be our unique Id
 				assigneeId: favorDetails.assigneeId, // Same with Id
 				favorName: favorDetails.favorName,
 				dateCreated: today,
-				tags: favorDetails.tags,
+				tags: tags,
 				paymentType: isMonetaryStatus ? "Monetary" : "Non-Monetary",
 				paymentOwed: favorDetails.paymentOwed,
 				description: favorDetails.description,
