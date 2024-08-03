@@ -29,16 +29,17 @@ function CreateBountyScreen() {
 		paymentOwed: "",
 		description: "",
 		privacyStatus: false,
-		bountyEditHistory: [{
-			sender: username, 
-			description: "Would you like to accept this bounty?",
-			type: "Creation"
-		}]
+		bountyEditHistory: [
+			{
+				sender: username,
+				description: "Would you like to accept this bounty?",
+				type: "Creation",
+			},
+		],
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
 	const [tags, setTags] = useState(["Monetary"]);
-	
 
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -50,14 +51,14 @@ function CreateBountyScreen() {
 	function setIsMonetaryStatusHandeler(text) {
 		if (text === "Monetary") {
 			setIsMonetaryStatus(true);
-			setTagsHandler("Monetary", false)
-			setTagsHandler("Monetary", true)
-			setTagsHandler("Non-Monetary", false)
+			setTagsHandler("Monetary", false);
+			setTagsHandler("Monetary", true);
+			setTagsHandler("Non-Monetary", false);
 		} else {
 			setIsMonetaryStatus(false);
-			setTagsHandler("Non-Monetary", false)
-			setTagsHandler("Non-Monetary", true)
-			setTagsHandler("Monetary", false)
+			setTagsHandler("Non-Monetary", false);
+			setTagsHandler("Non-Monetary", true);
+			setTagsHandler("Monetary", false);
 		}
 	}
 
@@ -70,8 +71,8 @@ function CreateBountyScreen() {
 	}
 
 	function setTagsHandler(tag, isAdd) {
-		setTags(prev => isAdd ? [...prev, tag] : prev.filter(t => t !== tag))
-	} 
+		setTags((prev) => (isAdd ? [...prev, tag] : prev.filter((t) => t !== tag)));
+	}
 
 	function createFavorButtonHandler() {
 		const favorNameIsValid = favorDetails.favorName.length > 0;

@@ -6,7 +6,7 @@ function IconButton({ icon, color, onPress, iconSize, disabled }) {
 		<Pressable
 			onPress={onPress}
 			style={({ pressed }) => pressed && styles.pressed}
-			disabled = {disabled}
+			disabled={disabled}
 		>
 			<Ionicons name={icon} size={iconSize} color={color} />
 		</Pressable>
