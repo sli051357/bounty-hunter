@@ -95,6 +95,7 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
                     <View style={{marginTop: 10}}>
                         <Text style={styles.subText}>Price</Text>
 
+                        { /* Change to be actual values */}
                         <FilterSlider 
                             minPrice={0}
                             maxPrice={30}
