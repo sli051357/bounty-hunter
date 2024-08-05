@@ -1,31 +1,15 @@
-import React from 'react';
-import {Slider} from '@miblanchard/react-native-slider';
-import {AppRegistry, StyleSheet, View, Text} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
-import { GLOBAL_STYLES } from '../../constants/styles';
+function FilterSlider() {
+    const [priceFilter, setPriceFilter] = useState([10, 30]);
 
-class SliderExample extends React.Component {
-    state = {
-        sliderValue: [20, 80],
-    };
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <Slider
-                    animateTransitions
-                    maximumTrackTintColor={GLOBAL_STYLES.colors.orange300}
-                    minimumTrackTintColor={GLOBAL_STYLES.colors.orange300}
-                    maximumValue={100}
-                    minimumValue={0}
-                    step={1}
-                    value={this.state.value}
-                    onValueChange={value => this.setState({value})}
-                />
-                <Text>Value: {this.state.value}</Text>
-            </View>
-        );
-    }
+    return (
+        <View style={styles.container}>
+            
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -35,7 +19,8 @@ const styles = StyleSheet.create({
         marginRight: 10,
         alignItems: 'stretch',
         justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
-export default SliderExample;
+export default FilterSlider;

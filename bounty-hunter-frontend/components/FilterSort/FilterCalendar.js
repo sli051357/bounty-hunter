@@ -36,11 +36,17 @@ export default function FilterCalendar({ isVisible, date, setDate, isStart, onCl
                         )}
                     </View>
 
-                    <View style={{marginTop: 30, }}>
+                    <View style={{marginTop: 30,}}>
                         <DateTimePicker
                             mode="single"
                             date={date}
                             onChange={(params) => setDate(params.date)}
+                            calendarTextStyle={styles.calendarText}
+                            selectedTextStyle={styles.selectedText}
+                            selectedItemColor={GLOBAL_STYLES.colors.orange700}
+                            headerTextStyle={styles.calendarHeader}
+                            headerButtonColor={GLOBAL_STYLES.colors.orange700}
+                            headerButtonsPosition='around'
                         />
                     </View>
                 </View>
@@ -69,6 +75,21 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 20,
         fontFamily: 'BaiJamjuree-Medium',
+        color: GLOBAL_STYLES.colors.brown700,
+    },
+    calendarText: {
+        fontFamily: 'BaiJamjuree-Regular',
+        color: GLOBAL_STYLES.colors.brown700,
+        fontSize: 19,
+    },
+    selectedText: {
+        fontFamily: 'BaiJamjuree-Medium',
+        color: GLOBAL_STYLES.colors.brown300,
+        fontSize: 19,
+    },
+    calendarHeader: {
+        fontFamily: 'BaiJamjuree-Medium',
+        fontSize: 19,
         color: GLOBAL_STYLES.colors.brown700,
     }
 })

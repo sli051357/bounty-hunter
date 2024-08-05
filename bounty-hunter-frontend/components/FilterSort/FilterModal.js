@@ -5,7 +5,7 @@ import { GLOBAL_STYLES } from '../../constants/styles';
 import { Ionicons } from '@expo/vector-icons';
 
 import FilterItem from './FilterItem';
-import SliderExample from './FilterSlider';
+import FilterSlider from './FilterSlider';
 import FilterCalendar from './FilterCalendar';
 
 import DateTimePicker, { DateType, ModeType } from 'react-native-ui-datepicker';
@@ -95,7 +95,7 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
                     <View style={{marginTop: 10}}>
                         <Text style={styles.subText}>Price</Text>
 
-                        <SliderExample />
+                        <FilterSlider />
                     </View>
 
                     { /* Date */ }
