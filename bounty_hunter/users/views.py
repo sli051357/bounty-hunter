@@ -102,7 +102,7 @@ def send_friend_request(request, username):
     if created:
         return JsonResponse({"status":"success"})
     else:
-        return JsonResponse({"staus":"fail"})
+        return JsonResponse({"status":"fail"})
 
 # @login_required
 def accept_friend_request(request, pk):
