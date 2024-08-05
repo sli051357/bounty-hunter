@@ -11,12 +11,13 @@ import {
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { GLOBAL_STYLES } from "../../constants/styles";
 
+import FloatingButton from "../../components/UI/FloatingButton.js";
 import WishlistAdd from "../../components/Wishlist/WishlistAdd.js";
 import WishlistCard from "../../components/Wishlist/WishlistCard.js";
 import WishlistDelete from "../../components/Wishlist/WishlistDelete.js";
 
 function WishlistScreen({ user }) {
-	const [isEditing, setIsEditing] = useState(true);
+	const [isEditing, setIsEditing] = useState(false);
 	const [isAddVisible, setIsAddVisible] = useState(false);
 
 	const DUMMY_WISHLIST = [
@@ -63,7 +64,7 @@ function WishlistScreen({ user }) {
 
 			{/* Edit Button */}
 			<View>
-				{isEditing ? (
+				{!isEditing ? (
 					<Pressable onPress={isEditingHandler} style={styles.editButton}>
 						<Text style={styles.editButtonText}>Edit</Text>
 						<Feather
@@ -94,19 +95,13 @@ function WishlistScreen({ user }) {
 			</View>
 
 			{/* Add Button */}
-			<View style={{ position: "absolute", left: "84%", top: "91%" }}>
-				{isEditing ? (
-					<View />
-				) : (
-					<Pressable onPress={considerAdd} style={styles.addButton}>
-						<MaterialIcons
-							name="add"
-							size={24}
-							color={GLOBAL_STYLES.colors.orange700}
-						/>
-					</Pressable>
-				)}
-			</View>
+			{isEditing ? (
+				<FloatingButton
+					onPress={considerAdd}
+					icon="add"
+					color={GLOBAL_STYLES.colors.orange700}
+				/>
+			) : null}
 
 			<WishlistAdd isVisible={isAddVisible} onYes={addItem} onNo={cancelAdd} />
 		</ScrollView>

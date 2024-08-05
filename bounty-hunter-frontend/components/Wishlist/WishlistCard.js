@@ -54,7 +54,7 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
 
 			{/* Delete Button (Conditional rendering)*/}
 			<View style={{ position: "absolute", top: -15, left: 10 }}>
-				{editStatus ? (
+				{!editStatus ? (
 					<View />
 				) : (
 					<Pressable onPress={considerDelete} style={styles.button}>
