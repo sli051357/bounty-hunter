@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState, useEffect } from "react";
 
 // import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
 import { useSelector } from "react-redux";
@@ -7,8 +8,11 @@ import FavorCard from "../../../components/FavorCard";
 import FloatingButton from "../../../components/UI/FloatingButton";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
+import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 
 function BountiesListScreen() {
+	
+
 	const userBountyList = useSelector((state) => state.bountyList.bountyList);
 	const navigation = useNavigation();
 
