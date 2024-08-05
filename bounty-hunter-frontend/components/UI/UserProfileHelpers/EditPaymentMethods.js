@@ -15,7 +15,7 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 			<Text style={styles.title}>Payment Methods:</Text>
 			{userData.map((payment) => (
 				<PaymentMethod
-					paymentName={payment.paymentName}
+					paymentName={`${payment.paymentName}: `}
 					paymentUsername={payment.username}
 					key={payment.paymentName}
 					icon="attach-outline"

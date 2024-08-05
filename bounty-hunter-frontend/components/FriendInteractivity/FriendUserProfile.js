@@ -9,6 +9,7 @@ import {
 	View,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
 import apiService from "../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { DUMMY_FAVORS_OF_PROFILE } from "../../util/dummy-data";
@@ -17,9 +18,10 @@ import Button from "../UI/Button";
 import IconButton from "../UI/IconButton";
 import ScrollViewHelper from "../UI/ScrollViewHelper";
 import EditAboutMe from "../UI/UserProfileHelpers/EditAboutMe";
-import EditPaymentMethods from "../UI/UserProfileHelpers/EditPaymentMethods";
+import ViewPaymentMethods from "./ViewPaymentMethods";
 
 function FriendUserProfile({ route }) {
+	const navigation = useNavigation();
 	const { userId } = route.params;
 	const [isEditing, setIsEditing] = useState(false);
 	const [nickname, setNickname] = useState("");
@@ -42,7 +44,10 @@ function FriendUserProfile({ route }) {
 	const aboutMeSection = <EditAboutMe aboutMe={userInfo.aboutMe} />;
 
 	const paymentMethodSection = (
-		<EditPaymentMethods userData={userInfo.paymentMethods} />
+		<ViewPaymentMethods
+			paymentData={userInfo.paymentMethods}
+			onPress={() => navigation.navigate("FriendWishlist", { userId: userId })}
+		/>
 	);
 
 	// useEffect(() => {
