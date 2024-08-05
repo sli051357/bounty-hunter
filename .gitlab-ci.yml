@@ -72,7 +72,8 @@ deploy-job:      # This job runs in the deploy stage.
   script:
     - echo "Deploying application..."
     # right now git pulls from dev - change later to main 
-    - ssh ubuntu@132.249.238.228 "bash -c 'cd monetary-favor-tackers && pip install virtualenv && virtualenv venv && source venv/bin/activate && pip install -r requirements.txt && cd bounty_hunter && git pull origin dev && nohup python manage.py runserver 0.0.0.0:8000 &'"
+    - ssh ubuntu@132.249.238.228 "bash -c 'cd monetary-favor-tackers && pip install virtualenv && virtualenv venv && source venv/bin/activate && pip install -r requirements.txt && cd bounty_hunter && git pull origin dev && sudo systemctl restart gunicorn && sudo systemctl restart nginx'"
+    # nohup
     - echo "Application successfully deployed."
   #only:
   # - dev   # deploys from dev branch change to main later
