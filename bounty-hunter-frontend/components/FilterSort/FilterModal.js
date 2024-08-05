@@ -95,7 +95,10 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
                     <View style={{marginTop: 10}}>
                         <Text style={styles.subText}>Price</Text>
 
-                        <FilterSlider />
+                        <FilterSlider 
+                            minPrice={0}
+                            maxPrice={20}
+                        />
                     </View>
 
                     { /* Date */ }
