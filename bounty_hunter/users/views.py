@@ -138,13 +138,13 @@ def reject_friend_request(request, pk):
         return JsonResponse({"success":False})
     
 # @login_required
-def remove_friend(request, username):
+def remove_friend(request, request_username):
     curr_user = UserProfileInfo.objects.get(owner=request.user)
-    friend = User.objects.filter(username=username)
+    friend = User.objects.filter(username=request_username)
     # check if user is a friend of curr_user
-    if curr_user.friends.filter(username=username).exists():
+    if curr_user.friends.filter(username=request_username).exists():
         curr_user.friends.remove(friend)
-        if not curr_user.friends.filter(username=username).exists():   # successfully removed
+        if not curr_user.friends.filter(username=request_username).exists():   # successfully removed
             return JsonResponse({"success":True})
         else:
             return JsonResponse({"success":False})
