@@ -1,4 +1,4 @@
 django
 djangorestframework
 Pillow
-python-swiftclient
+gunicorn
