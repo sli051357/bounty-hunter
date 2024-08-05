@@ -4,8 +4,8 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 import { GLOBAL_STYLES } from '../../constants/styles';
 
-function FilterSlider( minPrice, maxPrice ) {
-    const [priceFilter, setPriceFilter] = useState([0, 20]);
+function FilterSlider({ minPrice, maxPrice }) {
+    const [priceFilter, setPriceFilter] = useState([minPrice, maxPrice]);
 
     const handlePriceFilterChange = value => {
         setPriceFilter(value);
@@ -18,8 +18,8 @@ function FilterSlider( minPrice, maxPrice ) {
                 values={priceFilter}
                 onValuesChange={handlePriceFilterChange}
                 sliderLength={350}
-                min={0}
-                max={20}
+                min={minPrice}
+                max={maxPrice}
                 step={1}
                 allowOverlap={false}
                 snapped={true}

@@ -97,7 +97,7 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
 
                         <FilterSlider 
                             minPrice={0}
-                            maxPrice={20}
+                            maxPrice={30}
                         />
                     </View>
 
