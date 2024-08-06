@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
 
-// import { DUMMY_FAVORS_OF_PROFILE_Updated } from "../util/dummy-data";
+import SortModal from "../../../components/FilterSort/SortModal";
 import { useSelector } from "react-redux";
 import FavorCard from "../../../components/FavorCard";
 import FloatingButton from "../../../components/UI/FloatingButton";
@@ -11,6 +12,23 @@ import { GLOBAL_STYLES } from "../../../constants/styles";
 function BountiesListScreen() {
 	const userBountyList = useSelector((state) => state.bountyList.bountyList);
 	const navigation = useNavigation();
+
+	const [isSortVisible, setIsSortVisible] = useState(false);
+
+	// DUMMY VALUES ///////////
+    const DUMMY_SORT_VALUES = [
+        {name: 'Newest First', active: 'true'},
+        {name: 'Oldest First', active: 'false'},
+        {name: 'Friend Name A-Z', active: 'false'},
+        {name: 'Bounty Title A-Z', active: 'false'},
+        {name: 'Price (Highest to Lowest)', active: 'false'},
+        {name: 'Price (Lowest to Highest)', active: 'false'},
+    ];
+
+	// Handles sorting implementation
+    function sortHandler() {
+        setIsSortVisible(false);
+    }
 
 	return (
 		<View style={styles.container}>
@@ -36,7 +54,7 @@ function BountiesListScreen() {
 								icon="filter"
 								color={GLOBAL_STYLES.colors.brown700}
 								iconSize={28}
-								onPress={() => console.log("Filter Button")}
+								onPress={() => setIsSortVisible(true)}
 							/>
 							<IconButton
 								icon="swap-vertical-sharp"
@@ -62,6 +80,7 @@ function BountiesListScreen() {
 				icon="add-sharp"
 				color={GLOBAL_STYLES.colors.blue300}
 			/>
+			<SortModal isVisible={isSortVisible} onClose={sortHandler} sortList={DUMMY_SORT_VALUES}/>
 		</View>
 	);
 }
