@@ -5,7 +5,7 @@ import { GLOBAL_STYLES } from '../../constants/styles';
 
 function SortItem({ name, active }) {
 
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(active);
 
     function editActiveStatus() {
         setIsActive((curr) => ! curr);
