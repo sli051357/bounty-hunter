@@ -22,6 +22,7 @@ urlpatterns = [
     path('send-friend-request/<slug:username>/', views.send_friend_request, name="send_friend_request"),
     path('accept-friend-request/<int:pk>/', views.accept_friend_request, name="accept_friend_request"),
     path('reject-friend-request/<int:pk>/', views.reject_friend_request, name="reject_friend_request"),
+    path('remove-friend/<slug:request_username>', views.remove_friend, name="remove_friend"),
 
 
 

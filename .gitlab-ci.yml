@@ -61,6 +61,18 @@ frontend-unit-test:   # put frontend tests here
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  before_script: 
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - chmod 400 "$PRIVATE_KEY"
+    - ssh-add "$PRIVATE_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan 132.249.238.228 >> ~/.ssh/known_hosts
   script:
     - echo "Deploying application..."
+    # right now git pulls from dev - change later to main 
+    - ssh ubuntu@132.249.238.228 "bash -c 'cd monetary-favor-tackers && pip install virtualenv && virtualenv venv && source venv/bin/activate && pip install -r requirements.txt && cd bounty_hunter && git pull origin dev && sudo systemctl restart gunicorn && sudo systemctl restart nginx'"
     - echo "Application successfully deployed."
+  #only:
+  # - dev   # deploys from dev branch change to main later

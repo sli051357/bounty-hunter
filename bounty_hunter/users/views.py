@@ -127,6 +127,20 @@ def reject_friend_request(request, pk):
         return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"staus":"fail"})
+    
+# @login_required
+def remove_friend(request, request_username):
+    curr_user = UserProfileInfo.objects.get(owner=request.user)
+    friend = User.objects.get(username=request_username)
+    # check if user is a friend of curr_user
+    if User.objects.get(username=request_username) in curr_user.friends.all():
+        curr_user.friends.remove(friend)
+        if User.objects.get(username=request_username) not in curr_user.friends.all():   # successfully removed
+            return JsonResponse({"staus":"success"})
+        else:
+            return JsonResponse({"staus":"fail"})
+    else:
+        return JsonResponse({"staus":"fail"})
 
 # @login_required
 def delete_account(request):
