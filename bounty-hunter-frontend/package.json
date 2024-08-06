@@ -9,10 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-<<<<<<< HEAD
-	"@miblanchard/react-native-slider": "^2.6.0",
-=======
->>>>>>> 68fdde054208b93bc0dabebcd04300a351d20877
+	  "@miblanchard/react-native-slider": "^2.6.0",
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-navigation/bottom-tabs": "^6.6.1",
