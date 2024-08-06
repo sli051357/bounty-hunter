@@ -74,7 +74,7 @@ class RemoveFriendTestCase(TestCase):
         self.profile1.refresh_from_db()
         # print(self.profile1.friends.all())
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()['success'])
+        self.assertEqual("success",response.json()['status'])
         self.assertNotIn(self.user2, self.profile1.friends.all())
 
     def test_remove_fake_friend(self):
@@ -83,5 +83,5 @@ class RemoveFriendTestCase(TestCase):
         response = self.client.post(reverse('remove_friend', args=[self.user3.username]))
         self.profile1.refresh_from_db()
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.json()['success'])
+        self.assertEqual("fail",response.json()['status'])
         
