@@ -8,12 +8,14 @@ import FavorCard from "../../../components/FavorCard";
 import FloatingButton from "../../../components/UI/FloatingButton";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
+import FilterModal from "../../../components/FilterSort/FilterModal";
 
 function BountiesListScreen() {
 	const userBountyList = useSelector((state) => state.bountyList.bountyList);
 	const navigation = useNavigation();
 
 	const [isSortVisible, setIsSortVisible] = useState(false);
+	const [isFilterVisible, setIsFilterVisible] = useState(false);
 
 	// DUMMY VALUES ///////////
     const DUMMY_SORT_VALUES = [
@@ -25,9 +27,27 @@ function BountiesListScreen() {
         {name: 'Price (Lowest to Highest)', active: 'false'},
     ];
 
+	const DUMMY_STATUS_VALUES = [
+        {name: 'Sent', active: true},
+        {name: 'Received', active: false},
+        {name: 'In Progress', active: false},
+        {name: 'Completed', active: false},
+    ]
+
+	const DUMMY_TAG_VALUES = [
+        {name: '✈️ Travel', active: false},
+        {name: '🍜 Food', active: true},
+        {name: '👯 Friends', active: false},
+        {name: '🛍️ Shopping', active: false},
+    ]
+
 	// Handles sorting implementation
     function sortHandler() {
         setIsSortVisible(false);
+    }
+
+	function filterHandler() {
+        setIsFilterVisible(false);
     }
 
 	return (
@@ -54,13 +74,13 @@ function BountiesListScreen() {
 								icon="filter"
 								color={GLOBAL_STYLES.colors.brown700}
 								iconSize={28}
-								onPress={() => setIsSortVisible(true)}
+								onPress={() => setIsFilterVisible(true)}
 							/>
 							<IconButton
 								icon="swap-vertical-sharp"
 								color={GLOBAL_STYLES.colors.brown700}
 								iconSize={28}
-								onPress={() => console.log("Sort Button")}
+								onPress={() => setIsSortVisible(true)}
 							/>
 						</View>
 					</View>
@@ -81,6 +101,7 @@ function BountiesListScreen() {
 				color={GLOBAL_STYLES.colors.blue300}
 			/>
 			<SortModal isVisible={isSortVisible} onClose={sortHandler} sortList={DUMMY_SORT_VALUES}/>
+			<FilterModal isVisible={isFilterVisible} onClose={filterHandler} statusList={DUMMY_STATUS_VALUES} tagList={DUMMY_TAG_VALUES}/>
 		</View>
 	);
 }
