@@ -89,6 +89,8 @@ def get_total_amt_owed(request,to_user_username):
 # Ceate your views here.
 # view a list of all favors 
 def favor_list(request): # ex: favors/
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     # get current user
     curr_user = request.user
 
