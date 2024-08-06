@@ -9,7 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
+<<<<<<< HEAD
 	"@miblanchard/react-native-slider": "^2.6.0",
+=======
+>>>>>>> 68fdde054208b93bc0dabebcd04300a351d20877
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-navigation/bottom-tabs": "^6.6.1",
@@ -18,7 +21,11 @@
     "@reduxjs/toolkit": "^2.2.6",
     "axios": "^1.7.2",
     "expo": "~51.0.18",
+    "expo-clipboard": "~6.0.3",
+    "expo-font": "~12.0.9",
+    "expo-image-picker": "~15.0.7",
     "expo-linear-gradient": "~13.0.2",
+    "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-native": "0.74.3",
@@ -29,11 +36,7 @@
     "react-native-screens": "3.31.1",
     "react-native-ui-datepicker": "^2.0.3",
     "react-redux": "^9.1.2",
-    "redux-persist": "^6.0.0",
-    "expo-font": "~12.0.9",
-    "expo-splash-screen": "~0.27.5",
-    "expo-image-picker": "~15.0.7",
-    "expo-clipboard": "~6.0.3"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
