@@ -221,7 +221,51 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	viewTagList
+	// returns {"tags": tags_list} where tags_list lists all tags owned by the current user
+	viewTagsList: async () => {
+		try {
+			const response = await axiosInstance.get(
+				`/favors/tags/`,
+			)
+			return response.data;
+		} catch (error) {}
+	},
+
+	// returns {"name": "tag name", "id": id#, "color": "#ABCDEF", "favors": list of tagged favors}
+	viewTag: async (tag_id) => {
+		try {
+			const response = await axiosInstance.get(
+				`/favors/tags/${tag_id}`,
+			)
+			return response.data;
+		} catch (error) {}
+	},
+
+	// data = {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
+	// 'privacy': 'Public'/'Private', 'active': True/False, 'completed': True/False, 'tags': tag objects? should be able to pick from existing } 
+	// id: id#
+	// returns {"success": True, "new_favor_pk": id#} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"} 
+	editBounty: async (data, id) => {
+		try {
+			const response = await axiosInstance.post(
+				`/favors/${id}/edit`,
+				data
+			)
+			return response.data;
+		} catch (error) {}
+	},
+
+	// data = {'name': 'tag name', 'color': #ABD123, 'tag_type': 'Preset'/'Custom'}
+	// returns {"success": True, "tag_id": tag.id} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
+	createTag: async (data) =>{
+		try {
+			const response = await axiosInstance.post(
+				`/favors/tags/create`,
+				data
+			)
+			return response.data;
+		} catch (error) {}
+	}
 
 };
 
