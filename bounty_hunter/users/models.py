@@ -9,6 +9,7 @@ class UserProfileInfo(models.Model):
     bio_text = models.CharField(max_length=200)
     profile_image = models.ImageField(upload_to='res/')
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    public_status = models.BooleanField(default=True);
     def __str__(self):
         return self.owner.username
     
