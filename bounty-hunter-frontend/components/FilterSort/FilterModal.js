@@ -5,8 +5,10 @@ import { GLOBAL_STYLES } from '../../constants/styles';
 import { Ionicons } from '@expo/vector-icons';
 
 import FilterItem from './FilterItem';
+import SliderExample from './FilterSlider';
 
-function FilterModal({ isVisible, onClose}) {
+function FilterModal({ isVisible, onClose, statusList, tagList }) {
+
     return (
         <Modal visible={isVisible} transparent={true}>
             <View style={styles.modalContainer}>
@@ -22,10 +24,28 @@ function FilterModal({ isVisible, onClose}) {
                     <ScrollView>
                     
                     { /* By Status */ }
-                    <View style={{marginTop: 10, flexWrap: 'wrap'}}>
+                    <View style={{marginTop: 10}}>
                         <Text style={styles.subText}>Status</Text>
 
-                        <FilterItem name='Sent' active={true} />
+                        <View style={{flexDirection: 'row', flexWrap: 'wrap',}}>
+                        {statusList.map((status) => <FilterItem key={status.name} name={status.name} active={status.active} />)}
+                        </View>
+                    </View>
+
+                    { /* By Tag */ }
+                    <View style={{marginTop: 10}}>
+                        <Text style={styles.subText}>Tags</Text>
+
+                        <View style={{flexDirection: 'row', flexWrap: 'wrap',}}>
+                        {tagList.map((tag) => <FilterItem key={tag.name} name={tag.name} active={tag.active} />)}
+                        </View>
+                    </View>
+
+                    { /* Price */ }
+                    <View style={{marginTop: 10}}>
+                        <Text style={styles.subText}>Price</Text>
+
+                        <SliderExample />
                     </View>
 
                     </ScrollView>
