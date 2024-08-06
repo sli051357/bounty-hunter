@@ -107,7 +107,7 @@ const apiService = {
 	},
 
 	// data = {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
-	// 'privacy': 'Public'/'Private', 'active': True/False, 'completed': True/False, 'tags': tag objects? should be able to pick from existing }
+	// 'privacy': 'Public'/'Private', 'deleted': True/False, 'completed': True/False, 'active': True/False, 'tags': tag objects? should be able to pick from existing }
 	// returns {"success": True, "favor_id": favor.id} if creation is successful
 	// {"success": False, "errors": form.errors} if creation unsuccessful
 	// {"error": "GET method not allowed"} if wrong http method is used
@@ -242,7 +242,7 @@ const apiService = {
 	},
 
 	// data = {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
-	// 'privacy': 'Public'/'Private', 'active': True/False, 'completed': True/False, 'tags': tag objects? should be able to pick from existing } 
+	// 'privacy': 'Public'/'Private', 'deleted': True/False, 'completed': True/False, 'active': True/False, 'tags': tag objects? should be able to pick from existing } 
 	// id: id#
 	// returns {"success": True, "new_favor_pk": id#} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"} 
 	editBounty: async (data, id) => {
@@ -257,7 +257,7 @@ const apiService = {
 
 	// data = {'name': 'tag name', 'color': #ABD123, 'tag_type': 'Preset'/'Custom'}
 	// returns {"success": True, "tag_id": tag.id} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
-	createTag: async (data) =>{
+	createTag: async (data) => {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/tags/create`,
@@ -265,7 +265,39 @@ const apiService = {
 			)
 			return response.data;
 		} catch (error) {}
+	},
+
+	// data = {'name': 'tag name', 'color': #ABD123, 'tag_type': 'Preset'/'Custom'}
+	// returns {"success": True} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
+	editTag: async (data, id) => {
+		try {
+			const response = await axiosInstance.post(
+				`/favors/tags/${id}/edit`,
+				data
+			)
+			return response.data;
+		} catch (error) {}
+	},
+
+	// TODO
+	// {'status': }
+	// returns 
+	changeBountyStatus: async (id) => {
+		try {
+			const response = await axiosInstance.post(
+				`/favors/${id}/change-status`,
+				data
+			)
+			return response.data;
+		} catch (error) {}
 	}
+
+	// TODO
+	// another change status thing
+
+	// TODO 
+	// delete tag
+
 
 };
 
