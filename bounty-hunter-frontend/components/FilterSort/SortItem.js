@@ -8,7 +8,7 @@ function SortItem({ name, active }) {
     const [isActive, setIsActive] = useState(active);
 
     function editActiveStatus() {
-        setIsActive((curr) => ! curr);
+        setIsActive((curr) => !curr);
     }
 
     return (

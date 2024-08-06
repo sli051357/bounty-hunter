@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeBounty } from "../../store/bountyList";
 import FloatingButton from "../../components/UI/FloatingButton";
 import SortModal from '../../components/FilterSort/SortModal';
+import FilterModal from '../../components/FilterSort/FilterModal';
 
 function BountiesListScreen(){
     const userBountyList = useSelector((state) => state.bountyList.bountyList);
@@ -18,6 +19,7 @@ function BountiesListScreen(){
     //console.log(userBountyList);
 
     const [isSortVisible, setIsSortVisible] = useState(false);
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
 
     // DUMMY VALUES ///////////
     const DUMMY_SORT_VALUES = [
@@ -40,6 +42,9 @@ function BountiesListScreen(){
         setIsSortVisible(false);
     }
 
+    function filterHandler() {
+        setIsFilterVisible(false);
+    }
 
     return (
         <View style={styles.container}>
@@ -56,7 +61,7 @@ function BountiesListScreen(){
                         </View>
                         <View style={styles.buttonContainer}>
                             {/* Filter Button */}
-                            <IconButton icon='filter' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => console.log('Filter Button')}/>
+                            <IconButton icon='filter' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => setIsFilterVisible(true)}/>
 
                             {/* Sort Button */}
                             <IconButton icon='swap-vertical-sharp' color={GLOBAL_STYLES.colors.brown700} iconSize={28} onPress={() => setIsSortVisible(true)}/>
@@ -71,6 +76,8 @@ function BountiesListScreen(){
             color={GLOBAL_STYLES.colors.blue300}/>
 
             <SortModal isVisible={isSortVisible} onClose={sortHandler} sortList={DUMMY_SORT_VALUES}/>
+
+            <FilterModal isVisible={isFilterVisible} onClose={filterHandler} />
         </View>
     )
 }   

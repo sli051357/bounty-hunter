@@ -1,12 +1,12 @@
-import { Modal, View, Text, Pressable, StyleSheet, TextInput, ScrollView } from 'react-native';
-import React from 'react';
+import { Modal, View, Text, Pressable, StyleSheet, TextInput, ScrollView} from 'react-native';
+import { useState } from 'react';
 import { GLOBAL_STYLES } from '../../constants/styles';
-
-import SortItem from './SortItem';
 
 import { Ionicons } from '@expo/vector-icons';
 
-function SortModal({ isVisible, onClose, sortList }) {
+import FilterItem from './FilterItem';
+
+function FilterModal({ isVisible, onClose}) {
     return (
         <Modal visible={isVisible} transparent={true}>
             <View style={styles.modalContainer}>
@@ -15,12 +15,19 @@ function SortModal({ isVisible, onClose, sortList }) {
                         <Ionicons name="chevron-back" size={24} color={GLOBAL_STYLES.colors.brown700} style={{marginBottom: 10}} />
                     </Pressable>
 
-                    <View style={{borderBottomWidth: 2, borderColor: GLOBAL_STYLES.colors.brown700, paddingBottom: 5, marginVertical: 10,}}>
-                        <Text style={styles.titleText}>Sort By</Text>
+                    <View style={{borderBottomWidth: 2, borderColor: GLOBAL_STYLES.colors.brown700, paddingBottom: 5, marginTop: 10,}}>
+                        <Text style={styles.titleText}>Filter By</Text>
                     </View>
 
                     <ScrollView>
-                        {sortList.map((sort) => <SortItem key={sort.name} name={sort.name} active={sort.active} /> )}
+                    
+                    { /* By Status */ }
+                    <View style={{marginTop: 10, flexWrap: 'wrap'}}>
+                        <Text style={styles.subText}>Status</Text>
+
+                        <FilterItem name='Sent' active={true} />
+                    </View>
+
                     </ScrollView>
                 </View>
             </View>
@@ -49,7 +56,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'BaiJamjuree-Medium',
         color: GLOBAL_STYLES.colors.brown700,
+    },
+    subText: {
+        fontSize: 17,
+        fontFamily: 'BaiJamjuree-Medium',
+        color: GLOBAL_STYLES.colors.orange700,
     }
 })
 
-export default SortModal;
+export default FilterModal;
