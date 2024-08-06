@@ -54,3 +54,34 @@ class FriendRequestTestCase(TestCase):
         self.assertNotIn(self.user2, self.profile1.friends.all())
         self.assertNotIn(self.user1, self.profile2.friends.all())
         self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
+
+class RemoveFriendTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(username='user1', password='password')
+        self.user2 = User.objects.create_user(username='user2', password='password')
+        self.user3 = User.objects.create_user(username='user3', password='password')
+        self.profile1 = UserProfileInfo.objects.create(owner=self.user1)
+        self.profile2 = UserProfileInfo.objects.create(owner=self.user2)
+        self.profile3 = UserProfileInfo.objects.create(owner=self.user3)
+        self.client.login(username='user1', password='password')
+
+    def test_remove_friend_success(self):
+        self.profile1.friends.add(self.user2)
+        self.profile1.friends.add(self.user3)
+        # print(self.profile1.friends.all())
+        response = self.client.post(reverse('remove_friend', args=[self.user2.username]))
+        self.profile1.refresh_from_db()
+        # print(self.profile1.friends.all())
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['success'])
+        self.assertNotIn(self.user2, self.profile1.friends.all())
+
+    def test_remove_fake_friend(self):
+        self.profile1.friends.add(self.user2)
+        # print(self.profile1.friends.all())
+        response = self.client.post(reverse('remove_friend', args=[self.user3.username]))
+        self.profile1.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()['success'])
+        

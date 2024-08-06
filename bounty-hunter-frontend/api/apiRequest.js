@@ -198,6 +198,17 @@ const apiService = {
 			return response.data;
 		} catch (error) {}
 	},
+
+	// username: "username of friend to remove"
+	// returns {"success": True} if successful, {"success": False} if not
+	removeFriend: async (username) => {
+		try {
+			const response = await axiosInstance.post(
+				`/users/remove-friend/${username}/`,
+			);
+			return response.data;
+		} catch (error) {}
+	},
 };
 
 export default apiService;
