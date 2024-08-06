@@ -258,8 +258,9 @@ def favor_detail(request, favor_id):
     return JsonResponse(favor_data)
 
 # view a list of all tags, with preset tags listed before custom tags
-def tag_list(request):
-    tags_list = list(Tag.objects.order_by("-tag_type").values())
+def tag_list(request, username):
+    curr_user = request.user
+    tags_list = list(Tag.objects.filter(owner__username=curr_user.username).order_by("-tag_type").values())
     return JsonResponse({"tags": tags_list})
 
 # view a specific tag based on id

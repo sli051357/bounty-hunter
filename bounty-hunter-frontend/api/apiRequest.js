@@ -209,6 +209,20 @@ const apiService = {
 			return response.data;
 		} catch (error) {}
 	},
+
+	// to_user_username: "username"
+	// returns {"amount_owed": balance} where balance is a decimal
+	getAmtOwed: async (to_user_username) => {
+		try {
+			const response = await axiosInstance.get(
+				`/favors/amount-owed/${to_user_username}/`,
+			)
+			return response.data;
+		} catch (error) {}
+	},
+
+	viewTagList
+
 };
 
 export default apiService;
