@@ -31,17 +31,17 @@ class FriendRequestTestCase(TestCase):
     def test_send_friend_request(self):
         response = self.client.post(reverse('send_friend_request', args=['user2']))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()['success'])
+        self.assertEqual("success",response.json()['status'])
 
         response = self.client.post(reverse('send_friend_request', args=['user2']))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.json()['success'])
+        self.assertEqual("fail",response.json()['status'])
 
     def test_accept_friend_request(self):
         friend_request = FriendRequest.objects.create(from_user=self.user2, to_user=self.user1)
         response = self.client.post(reverse('accept_friend_request', args=[friend_request.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()['success'])
+        self.assertEqual("success",response.json()['status'])
         self.assertIn(self.user2, self.profile1.friends.all())
         self.assertIn(self.user1, self.profile2.friends.all())
         self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
@@ -50,7 +50,7 @@ class FriendRequestTestCase(TestCase):
         friend_request = FriendRequest.objects.create(from_user=self.user2, to_user=self.user1)
         response = self.client.post(reverse('reject_friend_request', args=[friend_request.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()['success'])
+        self.assertEqual("success",response.json()['status'])
         self.assertNotIn(self.user2, self.profile1.friends.all())
         self.assertNotIn(self.user1, self.profile2.friends.all())
         self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
@@ -74,7 +74,7 @@ class RemoveFriendTestCase(TestCase):
         self.profile1.refresh_from_db()
         # print(self.profile1.friends.all())
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()['success'])
+        self.assertEqual("success",response.json()['status'])
         self.assertNotIn(self.user2, self.profile1.friends.all())
 
     def test_remove_fake_friend(self):
@@ -83,5 +83,5 @@ class RemoveFriendTestCase(TestCase):
         response = self.client.post(reverse('remove_friend', args=[self.user3.username]))
         self.profile1.refresh_from_db()
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.json()['success'])
+        self.assertEqual("fail",response.json()['status'])
         

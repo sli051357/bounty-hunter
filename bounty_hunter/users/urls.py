@@ -26,14 +26,6 @@ urlpatterns = [
 
 
 
-    #temporary links for testing
-    path('forgot/', views.reset_password, name="forgot"),
-    path('sign-up/', views.sign_up, name="sign_up"),
-    path('temp/', views.temp, name="temp"),
-    path('sign-in/', views.sign_in, name="sign_in"),
-    path('sign-in/attempt', views.signin_attempt, name="signin_attempt"),
-
-
 
 
 ]

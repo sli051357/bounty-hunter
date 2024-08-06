@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db import IntegrityError
-from django.template import loader
+from django.template import loader 
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import authenticate, login, logout
 
 from .models import UserProfileInfo, LinkedAccounts, FriendRequest
@@ -64,32 +64,15 @@ def linked_accs(request, request_username):
 
     return JsonResponse(data=data)
 
-#temp sign in pages
-def sign_in(request):
-    #temporary sign in template
-    return render(request, "users/signin.html")
-
-def signin_attempt(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-    user = authenticate(username=username,password=password)
-    if user is not None:
-        login(request,user=user)
-        print("logged in")
-        return redirect('/users/sign-up/')
-    
-    return redirect('/users/sign-up/')
-
 def sign_up(request):
     return render(request, "users/register.html")
-    
-def log_out(request):
-    logout(request)
-    return 
 
 #retrieves the list of friend requests    
 # @login_required
 def get_incoming_friend_requests(request):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
+
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
     data = {}
     for fr in friend_requests:
@@ -100,6 +83,8 @@ def get_incoming_friend_requests(request):
 #retrieves the list of friends
 # @login_required
 def get_friends_list(request):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
     friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
     data = {}
     for friend in friends.all():
@@ -109,33 +94,39 @@ def get_friends_list(request):
 
 # @login_required
 def send_friend_request(request, username):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
     from_user = request.user
     to_user = User.objects.get(username=username)
     friend_req, created = FriendRequest.objects.get_or_create(from_user=from_user,to_user=to_user)
     if created:
-        return JsonResponse({"success":True})
+        return JsonResponse({"status":"success"})
     else:
-        return JsonResponse({"success":False})
+        return JsonResponse({"status":"fail"})
 
 # @login_required
 def accept_friend_request(request, pk):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
     fr = FriendRequest.objects.get(pk=pk)
     if request.user == fr.to_user:
         UserProfileInfo.objects.get(owner=fr.to_user).friends.add(fr.from_user)
         UserProfileInfo.objects.get(owner=fr.from_user).friends.add(fr.to_user)
         fr.delete()
-        return JsonResponse({"success":True})
+        return JsonResponse({"status":"success"})
     else:
-        return JsonResponse({"success":False})
+        return JsonResponse({"status":"fail"})
     
 # @login_required
 def reject_friend_request(request, pk):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
     fr = FriendRequest.objects.get(pk=pk)
     if request.user == fr.to_user:
         fr.delete()
-        return JsonResponse({"success":True})
+        return JsonResponse({"status":"success"})
     else:
-        return JsonResponse({"success":False})
+        return JsonResponse({"status":"fail"})
     
 # @login_required
 def remove_friend(request, request_username):
@@ -145,78 +136,72 @@ def remove_friend(request, request_username):
     if User.objects.get(username=request_username) in curr_user.friends.all():
         curr_user.friends.remove(friend)
         if User.objects.get(username=request_username) not in curr_user.friends.all():   # successfully removed
-            return JsonResponse({"success":True})
+            return JsonResponse({"status":"success"})
         else:
-            return JsonResponse({"success":False})
+            return JsonResponse({"status":"fail"})
     else:
-        return JsonResponse({"success":False})
+        return JsonResponse({"status":"fail"})
 
 # @login_required
-def delete_account(request, request_username):
-    headers = {"success": False}
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            request.user.is_active = False
-            request.user.save()
-            headers["success"] = True
-            return JsonResponse(headers)
-        else:
-            raise JsonResponse(headers)
+def delete_account(request):
+    if request.user != AnonymousUser:
+        request.user.is_active = False
+        request.user.save()
+        return JsonResponse(data={"status":"success"})
+
     else:
-        return JsonResponse(headers)
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
+
 
 def edit_bio(request, request_username):
-    headers = {"success": False}
     new_bio = request.POST["new_bio"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
             profile.bio_text = new_bio
             profile.save()
-            return JsonResponse(headers)
+            return JsonResponse(data={"status":"success"})
         else:
-            raise JsonResponse(headers)
+            return JsonResponse(status=403, data={"status": "Permission Denied"})
     else:
-        return JsonResponse(headers)
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
 
 def edit_profile_pic(request, request_username):
-    headers = {"success": False}
     new_pic = request.POST["new_pic"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
             profile.profile_image = new_pic
             profile.save()
-            return JsonResponse(headers)
+            return JsonResponse({"status":"success"})
         else:
-            raise JsonResponse(headers)
+            return JsonResponse(status=403, data={"status": "Permission Denied"})
     else:
-        return JsonResponse(headers)
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
+
 
 def add_link(request, request_username):
-    headers = {"success": False}
     link = request.POST["link"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             new_link = LinkedAccounts(owner=request.user, account_text=link)
             new_link.save()
-            return JsonResponse(headers)
+            return JsonResponse({"status":"success"})
         else:
-            raise JsonResponse(headers)
+            return JsonResponse(status=403, data={"status": "Permission Denied"})
     else:
-        return JsonResponse(headers)
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
 
 def remove_link(request, request_username):
-    headers = {"success": False}
     id = request.POST["id"]
     if request.user.is_authenticated:
         if request.user.username == request_username:
             LinkedAccounts.objects.filter(id=id).delete()
-            return JsonResponse(headers)
+            return JsonResponse({"status":"success"})
         else:
-            raise JsonResponse(headers)
+            return JsonResponse(status=403, data={"status": "Permission Denied"})
     else:
-        return JsonResponse(headers)
+        return JsonResponse(status=403, data={"status": "Permission Denied"})
     
 def register_user(request):
 
