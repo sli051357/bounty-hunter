@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, AnonymousUser
 from .models import Favor, Tag
 from django.http import JsonResponse
 from .forms import FavorForm, TagForm
@@ -65,6 +66,9 @@ NONMONETARY = "Nonmonetary"
 #gets the total amount current user owes to a user to display on the profile. Whenever this is called, it recalculates the amt, so the serverside balance is up to date.
 #@login_required
 def get_total_amt_owed(request,to_user_username):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
+
     to_user = get_object_or_404(User,username=to_user_username)
     curr_user = request.user
     # gets all monetary favors where curr_user owes money to to_user
@@ -85,6 +89,8 @@ def get_total_amt_owed(request,to_user_username):
 # Ceate your views here.
 # view a list of all favors 
 def favor_list(request): # ex: favors/
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     # get current user
     curr_user = request.user
 
@@ -269,6 +275,8 @@ def tag_detail(request, tag_id):
 # create a new favor
 # @login_required
 def create_favor(request):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     if request.method =="POST":
         form = FavorForm(request.POST)
         if form.is_valid():
@@ -290,6 +298,8 @@ def create_favor(request):
 # when edit favor request is made, a second request to update the statuses must also be made
 # @login_required
 def edit_favor(request, favor_id):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     # this gets the favor and sets it to inactive
     favor = get_object_or_404(Favor, pk=favor_id)
     favor.active = False
@@ -315,6 +325,8 @@ def edit_favor(request, favor_id):
 # create a new tag
 # @login_required
 def create_tag(request):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     if request.method == "POST":
         form = TagForm(request.POST)
         if form.is_valid():
@@ -331,6 +343,8 @@ def create_tag(request):
 # edit a tag 
 # @login_required
 def edit_tag(request, tag_id):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     tag = get_object_or_404(Tag, pk=tag_id)
     if request.method == "POST":
         form = TagForm(request.POST, instance=tag)
@@ -344,6 +358,8 @@ def edit_tag(request, tag_id):
     
 # change status of favor users for all statuses. 
 def change_status(request, favor_id):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     status = request.POST["status"]
     print("changing status to " + status)
     print("logged on as "+ request.user.username)
@@ -443,6 +459,8 @@ def show_change_status(request, favor_id):
 
 # delete a tag based on tag id
 def delete_tag(request, tag_id):
+    if request.user == AnonymousUser:
+        return JsonResponse(status=403,data={"status": "Permission Denied"})
     tag = get_object_or_404(Tag, pk=tag_id)
     if request.method == "DELETE":
         tag.delete()

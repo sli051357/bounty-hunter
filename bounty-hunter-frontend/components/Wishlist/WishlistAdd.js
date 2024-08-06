@@ -84,7 +84,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 						style={{
 							borderBottomWidth: 2,
 							borderColor: GLOBAL_STYLES.colors.brown700,
-							paddingBottom: 10,
+							paddingBottom: 5,
 							marginTop: 10,
 						}}
 					>
