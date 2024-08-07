@@ -154,7 +154,9 @@ const apiService = {
 		try {
 			const response = await axiosInstance.get("/users/get-friend-requests/");
 			return response.data;
-		} catch (error) {}
+		} catch (error) {
+			return error;
+		}
 	},
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.

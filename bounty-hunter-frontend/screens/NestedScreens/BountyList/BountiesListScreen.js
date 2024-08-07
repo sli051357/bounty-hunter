@@ -1,25 +1,58 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+	Button,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	View,
+} from "react-native";
 
 import { useSelector } from "react-redux";
+import apiService from "../../../api/apiRequest";
 import FavorCard from "../../../components/FavorCard";
 import FilterModal from "../../../components/FilterSort/FilterModal";
 import SortModal from "../../../components/FilterSort/SortModal";
+import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import FloatingButton from "../../../components/UI/FloatingButton";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
-import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 
 function BountiesListScreen() {
-	
-
 	const userBountyList = useSelector((state) => state.bountyList.bountyList);
 	const navigation = useNavigation();
-
+	const [bountyList, setBountyList] = useState(userBountyList);
+	const [isloading, setIsLoading] = useState(false); // Set initial to true when Api is back
+	const [error, setError] = useState(null);
 	const [isSortVisible, setIsSortVisible] = useState(false);
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+	async function fetchList() {
+		setError(null);
+		setIsLoading(true);
+		try {
+			const response = await apiService.viewBountyList("", "", "");
+			setBountyList(response.favors);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data: ", error);
+			setError("Failed to fetch bounty list. Please try again.");
+			setIsLoading(false);
+		}
+	}
+
+	// useEffect(() => {
+	// 	fetchList();
+
+	// 	const intervalId = setInterval(fetchList, 60000)
+
+	// 	return () => clearInterval(intervalId)
+	// }, [])
+
+	function handleRetry() {
+		fetchList();
+	}
 
 	// DUMMY VALUES ///////////
 	const DUMMY_SORT_VALUES = [
@@ -52,6 +85,19 @@ function BountiesListScreen() {
 
 	function filterHandler() {
 		setIsFilterVisible(false);
+	}
+
+	if (isloading) {
+		return <LoadingOverlay message="Fetching Bounties..." />;
+	}
+
+	if (error) {
+		return (
+			<View style={styles.errorContainer}>
+				<Text style={styles.errorText}>{error}</Text>
+				<Button title="Retry" onPress={handleRetry} />
+			</View>
+		);
 	}
 
 	return (
@@ -170,6 +216,18 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		fontSize: 16,
 		color: GLOBAL_STYLES.colors.blue300,
+	},
+	errorContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: GLOBAL_STYLES.colors.brown300,
+	},
+	errorText: {
+		color: "red",
+		marginBottom: 20,
+		fontSize: 16,
+		textAlign: "center",
 	},
 });
 
