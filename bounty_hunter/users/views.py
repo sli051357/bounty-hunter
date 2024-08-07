@@ -106,6 +106,14 @@ def get_friends_list(request):
         data[friend.username] = "friend :)"
     return JsonResponse(data)
 
+# returns the number of friends
+# @Login_required
+def get_friend_count(request):
+    friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
+    count = 0
+    for friend in friends.all():
+        count += 1
+    return JsonResponse(count, safe=False)
 
 # @login_required
 def send_friend_request(request, username):

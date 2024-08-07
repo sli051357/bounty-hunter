@@ -10,6 +10,7 @@ class UserProfileInfo(models.Model):
     profile_image = models.ImageField(upload_to='res/')
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     public_status = models.BooleanField(default=True);
+    rating = models.IntegerField(default=0);
     def __str__(self):
         return self.owner.username
     
