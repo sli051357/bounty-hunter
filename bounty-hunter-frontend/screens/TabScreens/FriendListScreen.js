@@ -1,23 +1,54 @@
-import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 // import { useFonts } from 'expo-font';
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import apiService from "../../api/apiRequest.js";
 import CategoryBar from "../../components/CategoryBar.js";
 import FriendCard from "../../components/FriendCard.js";
 import FriendRequest from "../../components/FriendRequest.js";
 import SearchBar from "../../components/SearchBar.js";
+import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
+import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
 
 function FriendListScreen() {
-	// const [loaded, error] = useFonts({
-	//     'BaiJamjuree-Regular': require('../../assets/fonts/BaiJamjuree-Regular.tff'),
-	// });
-
+	const [friendRequestList, setFriendRequestList] = useState([]);
+	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
+	const [error, setError] = useState(null);
 	const [curScreen, setCurScreen] = useState(1);
 	const [search, setSearch] = useState(true);
+
+	async function fetchFriendRequestList() {
+		setError(null);
+		setIsLoading(true);
+		try {
+			const response = await apiService.getFriendRequests();
+			if (!response || !response.requests) {
+				throw new Error("Undefined Information");
+			}
+			setFriendRequestList(response.requests);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data: ", error);
+			setError("Failed to fetch Friend Requests. Please Try Again");
+			setIsLoading(false);
+		}
+	}
+
+	// useEffect(() => {
+	// 	fetchFriendRequestList();
+
+	// 	const intervalId = setInterval(fetchFriendRequestList, 60000)
+
+	// 	return () => clearInterval(intervalId)
+	// }, [])
+
+	function handleRetryFriendRequests() {
+		fetchFriendRequestList();
+	}
 
 	const DUMMY_REQUESTS = [
 		{
@@ -32,11 +63,7 @@ function FriendListScreen() {
 
 	function setSearchStatus() {
 		setSearch((curr) => !curr);
-		if (search === true) {
-			setCurScreen(4);
-		} else {
-			setCurScreen(1);
-		}
+		setCurScreen(search ? 4 : 1);
 	}
 
 	let content;
@@ -91,13 +118,20 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{DUMMY_REQUESTS.map((user) => (
-					<FriendRequest
-						key={user.username}
-						user={user}
-						imagePath={require("../../assets/batman.jpeg")}
-					/>
-				))}
+				{!error ? (
+					DUMMY_REQUESTS.map((user) => (
+						<FriendRequest
+							key={user.username}
+							user={user}
+							imagePath={require("../../assets/batman.jpeg")}
+						/>
+					))
+				) : (
+					<View style={styles.errorContainer}>
+						<Text style={styles.errorText}>{error}</Text>
+						<Button title="Retry" onPress={handleRetryFriendRequests} />
+					</View>
+				)}
 			</View>
 		);
 
@@ -110,32 +144,36 @@ function FriendListScreen() {
 		);
 	}
 
+	// if (isLoading) {
+	// 	return <LoadingOverlay message="Fetching Bounties..."/>
+	// }
+
 	return (
-		<ScrollView style={styles.page}>
-			<View>
-				<Text style={styles.headerText}>Friends</Text>
+		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
+			<View style={styles.page}>
+				<View>
+					<Text style={styles.headerText}>Friends</Text>
+				</View>
+				<View>
+					<Pressable onPress={setSearchStatus} style={styles.button}>
+						{search ? (
+							<MaterialIcons
+								name="person-add-alt"
+								size={16}
+								color={GLOBAL_STYLES.colors.brown300}
+							/>
+						) : (
+							<Ionicons
+								name="return-down-back"
+								size={16}
+								color={GLOBAL_STYLES.colors.brown300}
+							/>
+						)}
+					</Pressable>
+				</View>
+				<View>{content}</View>
 			</View>
-
-			<View>
-				<Pressable onPress={setSearchStatus} style={styles.button}>
-					{search ? (
-						<MaterialIcons
-							name="person-add-alt"
-							size={16}
-							color={GLOBAL_STYLES.colors.brown300}
-						/>
-					) : (
-						<Ionicons
-							name="return-down-back"
-							size={16}
-							color={GLOBAL_STYLES.colors.brown300}
-						/>
-					)}
-				</Pressable>
-			</View>
-
-			<View>{content}</View>
-		</ScrollView>
+		</ScrollViewHelper>
 	);
 }
 
@@ -164,6 +202,18 @@ const styles = StyleSheet.create({
 		marginLeft: "auto",
 		marginBottom: 5,
 		marginRight: "2.5%",
+	},
+	errorContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: GLOBAL_STYLES.colors.brown300,
+	},
+	errorText: {
+		color: "red",
+		marginBottom: 20,
+		fontSize: 16,
+		textAlign: "center",
 	},
 });
 

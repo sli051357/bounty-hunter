@@ -154,7 +154,9 @@ const apiService = {
 		try {
 			const response = await axiosInstance.get("/users/get-friend-requests/");
 			return response.data;
-		} catch (error) {}
+		} catch (error) {
+			return error;
+		}
 	},
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.
@@ -194,6 +196,17 @@ const apiService = {
 		try {
 			const response = await axiosInstance.get(
 				`/users/reject-friend-request/${requestID}/`,
+			);
+			return response.data;
+		} catch (error) {}
+	},
+
+	// username: "username of friend to remove"
+	// returns {"success": True} if successful, {"success": False} if not
+	removeFriend: async (username) => {
+		try {
+			const response = await axiosInstance.post(
+				`/users/remove-friend/${username}/`,
 			);
 			return response.data;
 		} catch (error) {}
