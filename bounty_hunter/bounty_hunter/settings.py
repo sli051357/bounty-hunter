@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1', '132.249.238.228']
 
+# for google sign in
+SITE_ID = 1
 
 # Application definition
 
@@ -41,8 +43,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'favors.apps.FavorsConfig',
-    'wishlist'
+    'wishlist',
+    'django.contrib.sites',     # for external sign in 
+    'allauth',      # for external sign in
+    'allauth.account',      # for external sign in 
+    'allauth.socialaccount',        # for external sign in
+    'allauth.socialaccount.providers.google',       # for google sign in 
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email"
+        ],
+        "AUTH_PARAMS": {"access_type": "online"}
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -139,3 +156,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.accounts.auth_backends.AuthenticationBackends"
+)
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
