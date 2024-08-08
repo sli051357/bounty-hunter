@@ -22,6 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("favors/", include("favors.urls")),
     path("users/", include("users.urls")),
-    path('wishlist/', include('wishlist.urls'))
+    path('wishlist/', include('wishlist.urls')),
+    path('', include("googleauthentication.urls")),
+    path('acounts/', include("allauth.urls"))
 
 ]
