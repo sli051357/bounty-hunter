@@ -28,6 +28,25 @@ class FriendRequestTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('user2', response.json())
 
+    def test_get_friend_count(self):
+        # empty friend list
+        response = self.client.get(reverse('get_friend_count'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), 0)
+
+        # add friend
+        self.profile1.friends.add(self.user2)
+        self.profile1.friends.add(self.user3)
+        response = self.client.get(reverse('get_friend_count'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), 2)
+
+        # remove friend
+        self.profile1.friends.remove(self.user2)
+        response=self.client.get(reverse('get_friend_count'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), 1)
+
     def test_send_friend_request(self):
         response = self.client.post(reverse('send_friend_request', args=['user2']))
         self.assertEqual(response.status_code, 200)

@@ -19,6 +19,7 @@ urlpatterns = [
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
     path('get-friend-requests/', views.get_incoming_friend_requests, name="get_incoming_friend_requests"),
     path('get-friends-list/', views.get_friends_list, name="get_friends_list"),
+    path('get-friend-count', views.get_friend_count, name="get_friend_count"),
     path('send-friend-request/<slug:username>/', views.send_friend_request, name="send_friend_request"),
     path('accept-friend-request/<int:pk>/', views.accept_friend_request, name="accept_friend_request"),
     path('reject-friend-request/<int:pk>/', views.reject_friend_request, name="reject_friend_request"),
