@@ -2,38 +2,27 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.template import loader 
-
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import authenticate, login, logout
-
 from .models import UserProfileInfo, LinkedAccounts, FriendRequest
 from django.shortcuts import redirect
-
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
-
 from django.http import HttpResponseNotFound, HttpResponse, Http404
-
-
 from PIL import Image
 from django.core.files import File
-
 from django.contrib import messages
-
 from django.core.exceptions import PermissionDenied
 import base64
-
-EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
-BASE_URL = "http://127.0.0.1:8000/"
-
-
 from .forms import WishlistForm
-
 from django.views import View
-
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+
+
+EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
+BASE_URL = "http://127.0.0.1:8000/"
 
 class CustomAuthToken(ObtainAuthToken):
 
@@ -43,7 +32,7 @@ class CustomAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        
+
         return JsonResponse({
             'token': token.key
         })
