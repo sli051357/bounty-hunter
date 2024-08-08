@@ -345,7 +345,7 @@ const apiService = {
 	// for return, renders "users/reset-password.html" 
 	resetPassword: async (token) => {
 		try {
-			const response = await axiosInstance.get(
+			const response = await axiosInstance.post(
 				`/users/reset-password/${token}/`
 			)
 			return response.data;
