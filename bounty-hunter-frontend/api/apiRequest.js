@@ -282,10 +282,9 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// ***TODO***
 	// id: favor id
-	// data: 
-	// returns {"success": True} or "success": False options
+	// data: {"status": "Create"/"Delete"/"Edit"/"Cancel"/"Complete"/"Incomplete"}
+	// returns {"success": True} or {"success": False, "errors": "invalid favor state"/"invalid input"} 
 	changeBountyStatus: async (id, data) => {
 		try {
 			const response = await axiosInstance.post(
@@ -296,8 +295,8 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// ***TODO***
-	// returns 
+	// id: favor id
+	// returns render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 	showChangeStatus: async (id) => {
 		try {
 			const response = await axiosInstance.post(
@@ -364,6 +363,39 @@ const apiService = {
 			return response.data;
 		} catch (error) {}
 	},
+
+	// returns
+	viewWishlist: async () => {
+		try {
+			const response = await axiosInstance.get(
+				`/wishlist/`,
+			)
+			return response.data;
+		} catch (error) {}
+	},
+
+	// data: {"title": "item title", "price": "##", "url": "link", "photo": image field (upload_to='res/'), "owner": pick from user objects}
+	// returns
+	addWishlistItem: async (data) => {
+		try {
+			const response = await axiosInstance.post(
+				`/wishlist/add/`,
+				data
+			)
+			return response.data;
+		} catch (error) {}
+	},	
+
+	// id: id of item to remove
+	// returns
+	removeWishlistItem: async (id) => {
+		try {
+			const response = await axiosInstance.post(
+				`/wishlist/remove//${id}`,
+			)
+			return response.data;
+		} catch (error) {}
+	},	
 
 
 };
