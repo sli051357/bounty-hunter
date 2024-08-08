@@ -9,7 +9,7 @@ export default function ProfileImage({ selectedImage }) {
         content = <Image source={imageSource} style={styles.image} />;
     } else {
         content = (
-            <View style={[styles.image, {backgroundColor: GLOBAL_STYLES.colors.orange300}]}></View>
+            <View style={[styles.image, {backgroundColor: GLOBAL_STYLES.colors.orange300}]} />
         );
     }
 
