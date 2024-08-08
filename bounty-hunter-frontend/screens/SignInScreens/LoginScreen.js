@@ -42,13 +42,15 @@ function LoginScreen() {
 			// dispatch(setAuthToken(token))
 			console.log(signInUser);
 			dispatch(setUsername(signInUser["username or email"]));
-			dispatch(setAuthToken("IsVerified"));
 
 			//trying sign in
 			const data = {"username": signInUser["username or email"], "password":signInUser.password};
 			console.log(data);
 			const responseData = await apiService.signIn(data);
 			console.log(responseData)
+
+			dispatch(setAuthToken(responseData["token"]));
+
 			
 		} catch (error) {
 			setError({
