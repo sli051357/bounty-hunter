@@ -84,24 +84,21 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// data = { "username": "username", "password": "password" }
-	// returns { 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' }
-	removeAccountLink: async (id, data) => {
+	removeAccountLink: async (username, id, data) => {
 		try {
-			const response = await axiosInstance.post("/users/get-token/", data);
+			const response = await axiosInstance.post(
+				`/users/profiles/${username}/remove-link/`,
+				data,
+			);
 			return response.data;
 		} catch (error) {}
 	},
 
-	// username = "username"
-	// data = "new bio"
-	// returns {"success": True} if successful, {"success": False} if fails
-	signIn: async (username, data) => {
+	// data = { "username": "username", "password": "password" }
+	// returns { 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' }
+	signIn: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				`/users/profiles/${username}/edit-bio`,
-				data,
-			);
+			const response = await axiosInstance.post("/users/get-token/", data);
 			return response.data;
 		} catch (error) {}
 	},
