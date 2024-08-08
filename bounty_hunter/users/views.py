@@ -264,12 +264,6 @@ def reset_password(request):
     messages.add_message(request, messages.SUCCESS, "Email sent!")
     return redirect('temp')
 
-
-
-def show_create_new_password(request, token):
-    context = {"token":token}
-    return render(request, "users/reset-password.html", context)
-
 def create_new_password(request):
     pass1 = request.POST["pass1"]
     pass2 = request.POST["pass2"]
@@ -278,7 +272,7 @@ def create_new_password(request):
     if pass1 != pass2:
         print("passwords dont match")
         messages.add_message(request, messages.ERROR, "Passwords do not match.")
-        return redirect('temp')
+        return JsonResponse({"status": "fail"})
     
     user = get_object_or_404(Token,key=token).user
     user.password = pass1
@@ -286,7 +280,7 @@ def create_new_password(request):
 
     messages.add_message(request, messages.SUCCESS, "Password changed.")
     print("changed password")
-    return redirect('temp')
+    return JsonResponse({"status": "success"})
 
 
 def temp(request):

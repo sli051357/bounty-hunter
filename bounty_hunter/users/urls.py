@@ -15,7 +15,6 @@ urlpatterns = [
     path('get-token/', views.CustomAuthToken.as_view()),
     path('register/', views.register_user, name="register"),
     path('verify/<slug:token>', views.verify, name="verify"),
-    path('reset-password/<slug:token>', views.show_create_new_password, name="reset_password"),
     path('reset-password/', views.create_new_password, name="reset_password_attempt"),
     path('get-friend-requests/', views.get_incoming_friend_requests, name="get_incoming_friend_requests"),
     path('get-friends-list/', views.get_friends_list, name="get_friends_list"),
