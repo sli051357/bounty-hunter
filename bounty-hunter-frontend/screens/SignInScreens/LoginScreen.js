@@ -11,6 +11,7 @@ import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { setAuthToken } from "../../store/authToken";
 import { setUsername } from "../../store/username";
+import apiService from "../../api/apiRequest";
 
 function LoginScreen() {
 	const insets = useSafeAreaInsets();
@@ -33,7 +34,7 @@ function LoginScreen() {
 	}
 
 	// Turn this into async function when axios is added
-	function confirmChangesHandler() {
+	async function confirmChangesHandler() {
 		setIsAuthenticating(true);
 		try {
 			// Will Set Up Axios Later:
@@ -42,13 +43,20 @@ function LoginScreen() {
 			console.log(signInUser);
 			dispatch(setUsername(signInUser["username or email"]));
 			dispatch(setAuthToken("IsVerified"));
+
+			//trying sign in
+			const data = {"username": signInUser["username or email"], "password":signInUser.password};
+			console.log(data);
+			const responseData = await apiService.signIn(data);
+			console.log(responseData)
+			
 		} catch (error) {
 			setError({
 				emailOrUsername: true,
 				password: true,
 			});
 			Alert.alert("Sign In Failed", "Try again later");
-			// console.log(error);
+			console.log(error);
 			setIsAuthenticating(false);
 		}
 	}

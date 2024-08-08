@@ -100,7 +100,10 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post("/users/get-token/", data);
 			return response.data;
-		} catch (error) {}
+		} catch (error) {
+			console.error("Error during sign-in:", error);
+        	throw new Error("Failed to sign in. Please try again later.");
+		}
 	},
 
 	// data = {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
