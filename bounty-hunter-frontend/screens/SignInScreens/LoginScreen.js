@@ -49,7 +49,7 @@ function LoginScreen() {
 			const responseData = await apiService.signIn(data);
 			console.log(responseData)
 
-			dispatch(setAuthToken(responseData["token"]));
+			dispatch(setAuthToken(responseData.token));
 
 			
 		} catch (error) {
