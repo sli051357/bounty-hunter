@@ -18,11 +18,16 @@ import IconButton from "../../../components/UI/IconButton.js";
 import ScrollViewHelper from "../../../components/UI/ScrollViewHelper.js";
 import EditAboutMe from "../../../components/UI/UserProfileHelpers/EditAboutMe.js";
 import EditPaymentMethods from "../../../components/UI/UserProfileHelpers/EditPaymentMethods.js";
+import ProfileImage from "../../../components/UI/UserProfileHelpers/ProfileImage.js";
+import ProfileModal from "../../../components/UI/UserProfileHelpers/ProfileModal.js";
+
 import { GLOBAL_STYLES } from "../../../constants/styles.js";
 import {
 	DUMMY_FAVORS_OF_PROFILE,
 	DUMMY_USER_PROFILE,
 } from "../../../util/dummy-data.js";
+import * as ImagePicker from "expo-image-picker";
+import { Feather } from "@expo/vector-icons";
 
 /*
     Implementation Details
@@ -56,6 +61,11 @@ function UserProfileScreen() {
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
+
+	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
+	
+	// source of profile picture, change to get from database
+	const [pfpSource, setPfpSource] = useState(null);
 	// console.log(payments)
 	// useEffect(() => {
 	//     async function fetchUserData() {
@@ -109,16 +119,65 @@ function UserProfileScreen() {
 		);
 	}
 
+	function openPfpModal() {
+		setIsPfpModalVisible(true);
+	}
+
+	function closePfpModal() {
+		setIsPfpModalVisible(false);
+	}
+
+	function removePfp() {
+		setPfpSource(null);
+		setIsPfpModalVisible(false);
+	}
+
+	// picks image
+	const pickImageAsync = async () => {
+		const result = await ImagePicker.launchImageLibraryAsync({
+			allowsEditing: true,
+			quality: 1,
+		});
+
+		if (!result.canceled) {
+			setPfpSource(result.assets[0].uri);
+			setIsPfpModalVisible(false);
+		}
+	}
+
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
 			<View style={styles.page}>
 				<View style={[styles.userMainDetails]}>
 					<View style={styles.userMainDetailsTopView}>
 						<View style={styles.imageAndUsernameView}>
-							<Image
-								style={styles.profilePicture}
-								source={require("../../../assets/batman.jpeg")}
-							/>
+							{ isEditing ? (
+								<View>
+									<ProfileImage selectedImage={pfpSource}/>	
+									
+									<Pressable onPress={openPfpModal}>
+										<View style={{
+											width: 64, 
+											height: 64, 
+											marginTop: -64, 
+											zIndex: 100,
+											justifyContent: 'center',
+											alignItems: 'center',
+											borderRadius: 32,
+											backgroundColor: GLOBAL_STYLES.colors.gray500,
+										}}>
+											<Feather
+												name="camera"
+												size={24}
+												color={GLOBAL_STYLES.colors.brown300}
+											/>
+										</View>
+									</Pressable>
+								</View>
+							) : (
+								<ProfileImage selectedImage={pfpSource}/>
+							)}
+
 							<View>
 								<Text style={styles.usernameStyles}>{username.username}</Text>
 								<Text style={styles.smallTextBrown}>
@@ -191,8 +250,19 @@ function UserProfileScreen() {
 						/>
 					))}
 				</View>
+				
+				<View>
+					<ProfileModal 
+						isVisible={isPfpModalVisible}
+						onYes={pickImageAsync}
+						onNo={removePfp}
+						onClose={closePfpModal}
+					/>
+				</View>
 			</View>
 		</ScrollViewHelper>
+
+		
 	);
 }
 
