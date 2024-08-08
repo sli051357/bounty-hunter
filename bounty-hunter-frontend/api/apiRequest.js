@@ -106,6 +106,20 @@ const apiService = {
 		}
 	},
 
+	// data = {pass1, pass2, token}
+	// pass1 = request.POST["pass1"]
+    // pass2 = request.POST["pass2"]
+    // token = request.POST["token"]
+	// returns {status: "fail" or "success"}
+	resetPassword: async (data) => {
+		try {
+			const response = await axiosInstance.post("/users/reset-password/", data);
+			return response.data;
+		} catch (error) {
+			console.log("Error during change password:", error);
+		}
+	},
+
 	// data = {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
 	// 'privacy': 'Public'/'Private', 'active': True/False, 'completed': True/False, 'tags': tag objects? should be able to pick from existing }
 	// returns {"success": True, "favor_id": favor.id} if creation is successful
