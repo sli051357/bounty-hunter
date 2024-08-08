@@ -27,6 +27,7 @@ import {
 	DUMMY_USER_PROFILE,
 } from "../../../util/dummy-data.js";
 import * as ImagePicker from "expo-image-picker";
+import { Feather } from "@expo/vector-icons";
 
 /*
     Implementation Details
@@ -150,14 +151,29 @@ function UserProfileScreen() {
 				<View style={[styles.userMainDetails]}>
 					<View style={styles.userMainDetailsTopView}>
 						<View style={styles.imageAndUsernameView}>
-							{/* <Image
-								style={styles.profilePicture}
-								source={require("../../../assets/batman.jpeg")}
-							/> */}
 							{ isEditing ? (
-								<Pressable onPress={openPfpModal}>
+								<View>
 									<ProfileImage selectedImage={pfpSource}/>	
-								</Pressable>
+									
+									<Pressable onPress={openPfpModal}>
+										<View style={{
+											width: 64, 
+											height: 64, 
+											marginTop: -64, 
+											zIndex: 100,
+											justifyContent: 'center',
+											alignItems: 'center',
+											borderRadius: 32,
+											backgroundColor: GLOBAL_STYLES.colors.gray500,
+										}}>
+											<Feather
+												name="camera"
+												size={24}
+												color={GLOBAL_STYLES.colors.brown300}
+											/>
+										</View>
+									</Pressable>
+								</View>
 							) : (
 								<ProfileImage selectedImage={pfpSource}/>
 							)}
