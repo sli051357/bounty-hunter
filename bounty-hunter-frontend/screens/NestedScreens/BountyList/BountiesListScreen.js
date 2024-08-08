@@ -25,10 +25,14 @@ function BountiesListScreen() {
 	const [bountyList, setBountyList] = useState(userBountyList);
 	const [isloading, setIsLoading] = useState(false); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
+
 	const [isSortVisible, setIsSortVisible] = useState(false);
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
+	const [activeSorting, setActiveSorting] = useState("Newest First");
+	const [activeFiltering, setActiveFiltering] = useState("")
+	const [activeSearch, setActiveSearch] = useState("");
 
-	async function fetchList() {
+	async function fetchList(filterParams, sortParams, searchParams) {
 		setError(null);
 		setIsLoading(true);
 		try {
@@ -51,17 +55,16 @@ function BountiesListScreen() {
 	// }, [])
 
 	function handleRetry() {
-		fetchList();
+		fetchList(activeFiltering, activeSorting, activeSearch);
 	}
 
-	// DUMMY VALUES ///////////
-	const DUMMY_SORT_VALUES = [
-		{ name: "Newest First", active: "true" },
-		{ name: "Oldest First", active: "false" },
-		{ name: "Friend Name A-Z", active: "false" },
-		{ name: "Bounty Title A-Z", active: "false" },
-		{ name: "Price (Highest to Lowest)", active: "false" },
-		{ name: "Price (Lowest to Highest)", active: "false" },
+	const sortValues = [
+		{ name: "Newest First" },
+		{ name: "Oldest First" },
+		{ name: "Friend Name A-Z" },
+		{ name: "Bounty Title A-Z" },
+		{ name: "Price (Highest to Lowest)" },
+		{ name: "Price (Lowest to Highest)" },
 	];
 
 	const DUMMY_STATUS_VALUES = [
@@ -79,7 +82,23 @@ function BountiesListScreen() {
 	];
 
 	// Handles sorting implementation
-	function sortHandler() {
+ 	function sortHandler(newActive) {
+		if (newActive !== "") {
+			setActiveSorting(newActive);
+			// if (newActive === "Newest First"){
+			// 	fetchList(activeFiltering, { sort_by: "date", order: "ascending" }, activeSearch);
+			// } else if (newActive === "Oldest First") {
+			// 	fetchList(activeFiltering, { sort_by: "date", order: "descending" }, activeSearch);
+			// } else if (newActive === "Friend Name A-Z") {
+			// 	fetchList(activeFiltering, { sort_by: "assignee", order: "ascending" }, activeSearch);
+			// } else if (newActive === "Bounty Title A-Z") {
+			// 	fetchList(activeFiltering, { sort_by: "name", order: "descending" }, activeSearch);
+			// } else if (newActive === "Price (Highest to Lowest)") {
+			// 	fetchList(activeFiltering, { sort_by: "amount", order: "ascending" }, activeSearch);
+			// } else {
+			// 	fetchList(activeFiltering, { sort_by: "amount", order: "descending" }, activeSearch);
+			// }
+		}
 		setIsSortVisible(false);
 	}
 
@@ -153,7 +172,8 @@ function BountiesListScreen() {
 			<SortModal
 				isVisible={isSortVisible}
 				onClose={sortHandler}
-				sortList={DUMMY_SORT_VALUES}
+				sortList={sortValues}
+				currActive={activeSorting}
 			/>
 			<FilterModal
 				isVisible={isFilterVisible}

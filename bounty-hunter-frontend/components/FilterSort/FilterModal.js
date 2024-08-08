@@ -17,7 +17,6 @@ import FilterItem from "./FilterItem";
 import FilterSlider from "./FilterSlider";
 
 import dayjs from "dayjs";
-import DateTimePicker, { DateType, ModeType } from "react-native-ui-datepicker";
 
 function FilterModal({ isVisible, onClose, statusList, tagList }) {
 	const [isCalendarVisible, setIsCalendarVisible] = useState(false);
