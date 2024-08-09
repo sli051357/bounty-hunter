@@ -1,4 +1,7 @@
 import axiosInstance from "./axiosInstance";
+import axios from "axios";
+
+
 
 const apiService = {
 	// username = "username"
@@ -50,10 +53,7 @@ const apiService = {
 	// returns {"success": True} if successful, {"success": False} if fails
 	updateUserBio: async (username, data) => {
 		try {
-			const response = await axiosInstance.post(
-				`/users/profiles/${username}/edit-bio/`,
-				data,
-			);
+			const response = await axiosInstance.post(`/users/profiles/${username}/edit-bio/`,data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -225,6 +225,12 @@ const apiService = {
 			return response.data;
 		} catch (error) {}
 	},
+
+	//you need to call this before calling login required methods. It sets the header to the tokens for auth
+	setAuthorizationHeader: (token) => {
+		axios.defaults.headers.common['Authorization'] = `Token ${token}`; 
+	},
+
 };
 
 export default apiService;

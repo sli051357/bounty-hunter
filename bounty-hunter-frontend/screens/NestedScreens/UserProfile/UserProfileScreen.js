@@ -25,6 +25,7 @@ import {
 	DUMMY_USER_PROFILE,
 } from "../../../util/dummy-data.js";
 
+
 /*
     Implementation Details
     (Currently UI outline for personal profile, no real usability just yet)
@@ -52,6 +53,11 @@ import {
 */
 
 function UserProfileScreen() {
+
+	// set authorization token here
+	const authToken = useSelector((state) => state.authToken);
+	apiService.setAuthorizationHeader(authToken.authToken);
+
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
@@ -65,7 +71,7 @@ function UserProfileScreen() {
 		const fetchBio = async () => {
 		  try {
 			const response = await apiService.getUserBio(username.username);
-			editAboutMeHandler(response["bio"])
+			setAboutMe(response["bio"])
 		  } finally {
 			setLoading(false);
 		  }
@@ -78,10 +84,22 @@ function UserProfileScreen() {
 		return <ActivityIndicator size="large" color="#0000ff" />;
 	}
 
-	//end of ethan stuff
-
-	function toggleEdit() {
+	//if hit the save button, try to save the bio.
+	async function toggleEdit() {
 		setIsEditing((curr) => !curr);
+		if (isEditing){
+			console.log("sending the edited bio");
+			console.log(aboutMe);
+			data = {"bio": aboutMe};
+			try {
+				const bioResponse = await apiService.updateUserBio(username.username, data);
+				if (bioResponse.status === "fail") {
+					throw new Error("Edit Bio Failed");
+				}
+			} catch (error) {
+				throw error;
+			}
+		}
 	}
 
 	function editAboutMeHandler(text) {

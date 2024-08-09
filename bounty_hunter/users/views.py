@@ -19,7 +19,8 @@ from django.views import View
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-
+from django.middleware.csrf import get_token
+import json
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
@@ -37,6 +38,11 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key
         })
     
+
+def get_csrf_token(request):
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})
+
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
@@ -157,19 +163,25 @@ def delete_account(request):
     else:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
 
-
+# we need to remake every post request to look like this.
 def edit_bio(request, request_username):
-    new_bio = request.POST["new_bio"]
-    if request.user.is_authenticated:
+    data = json.loads(request.body)
+    new_bio = data.get('bio', None) 
+    print(request.user.username)
+    if isinstance(request.user, User):
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
             profile.bio_text = new_bio
             profile.save()
             return JsonResponse(data={"status":"success"})
         else:
+            print("not right user")
             return JsonResponse(status=403, data={"status": "Permission Denied"})
     else:
+        print("not a user")
         return JsonResponse(status=403, data={"status": "Permission Denied"})
+    
+
 
 def edit_profile_pic(request, request_username):
     new_pic = request.POST["new_pic"]
