@@ -4,22 +4,20 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-function FilterSlider({ minPrice, maxPrice }) {
-	const [priceFilter, setPriceFilter] = useState([minPrice, maxPrice]);
-
+function FilterSlider({ minPrice, maxPrice, onPress }) {
 	const handlePriceFilterChange = (value) => {
-		setPriceFilter(value);
+		onPress(value);
 	};
 
 	return (
 		<View>
 			<View style={styles.container}>
 				<MultiSlider
-					values={priceFilter}
+					values={[minPrice, maxPrice]}
 					onValuesChange={handlePriceFilterChange}
 					sliderLength={350}
-					min={minPrice}
-					max={maxPrice}
+					min={0}
+					max={1000}
 					step={1}
 					allowOverlap={false}
 					snapped={true}
@@ -31,11 +29,11 @@ function FilterSlider({ minPrice, maxPrice }) {
 
 			<View style={{ flexDirection: "row", alignItems: "stretch" }}>
 				<Text style={[styles.labelText, { marginRight: "auto" }]}>
-					Min: ${priceFilter[0]}
+					Min: ${minPrice}
 				</Text>
 
 				<Text style={[styles.labelText, { marginLeft: "auto" }]}>
-					Max: ${priceFilter[1]}
+					Max: ${maxPrice === 1000 ? "MAX" : maxPrice}
 				</Text>
 			</View>
 		</View>

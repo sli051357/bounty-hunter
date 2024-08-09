@@ -28,15 +28,32 @@ function BountiesListScreen() {
 
 	const [isSortVisible, setIsSortVisible] = useState(false);
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
-	const [activeSorting, setActiveSorting] = useState("Newest First");
-	const [activeFiltering, setActiveFiltering] = useState("")
+	const [activeSorting, setActiveSorting] = useState({
+		sort_by: "date",
+		order: "ascending",
+	});
+	const [activeSortingDisplay, setActiveSortingDisplay] =
+		useState("Newest First");
+	const [activeFiltering, setActiveFiltering] = useState({
+		query: "or",
+		tags: [],
+		status: [],
+		start_date: "",
+		end_date: "",
+		price_low: 0,
+		price_high: 1000,
+	});
 	const [activeSearch, setActiveSearch] = useState("");
 
 	async function fetchList(filterParams, sortParams, searchParams) {
 		setError(null);
 		setIsLoading(true);
 		try {
-			const response = await apiService.viewBountyList("", "", "");
+			const response = await apiService.viewBountyList(
+				filterParams,
+				sortParams,
+				searchParams,
+			);
 			setBountyList(response.favors);
 			setIsLoading(false);
 		} catch (error) {
@@ -67,42 +84,37 @@ function BountiesListScreen() {
 		{ name: "Price (Lowest to Highest)" },
 	];
 
-	const DUMMY_STATUS_VALUES = [
-		{ name: "Sent", active: true },
-		{ name: "Received", active: false },
-		{ name: "In Progress", active: false },
-		{ name: "Completed", active: false },
-	];
-
-	const DUMMY_TAG_VALUES = [
-		{ name: "✈️ Travel", active: false },
-		{ name: "🍜 Food", active: true },
-		{ name: "👯 Friends", active: false },
-		{ name: "🛍️ Shopping", active: false },
-	];
-
 	// Handles sorting implementation
- 	function sortHandler(newActive) {
+	function sortHandler(newActive) {
 		if (newActive !== "") {
-			setActiveSorting(newActive);
+			setActiveSortingDisplay(newActive);
 			// if (newActive === "Newest First"){
+			// 	setActiveSorting({ sort_by: "date", order: "ascending" })
 			// 	fetchList(activeFiltering, { sort_by: "date", order: "ascending" }, activeSearch);
 			// } else if (newActive === "Oldest First") {
+			// 	setActiveSorting({ sort_by: "date", order: "descending" })
 			// 	fetchList(activeFiltering, { sort_by: "date", order: "descending" }, activeSearch);
 			// } else if (newActive === "Friend Name A-Z") {
+			// 	setActiveSorting({ sort_by: "assignee", order: "ascending" })
 			// 	fetchList(activeFiltering, { sort_by: "assignee", order: "ascending" }, activeSearch);
 			// } else if (newActive === "Bounty Title A-Z") {
+			// 	setActiveSorting({ sort_by: "name", order: "descending" })
 			// 	fetchList(activeFiltering, { sort_by: "name", order: "descending" }, activeSearch);
 			// } else if (newActive === "Price (Highest to Lowest)") {
+			// 	setActiveSorting({ sort_by: "amount", order: "ascending" })
 			// 	fetchList(activeFiltering, { sort_by: "amount", order: "ascending" }, activeSearch);
 			// } else {
+			// 	setActiveSorting({ sort_by: "amount", order: "descending" })
 			// 	fetchList(activeFiltering, { sort_by: "amount", order: "descending" }, activeSearch);
 			// }
 		}
 		setIsSortVisible(false);
 	}
 
-	function filterHandler() {
+	// Handles Filter implementation
+	function filterHandler(filters) {
+		setActiveFiltering(filters);
+		//fetchList(activeFiltering, activeSorting, activeSearch)
 		setIsFilterVisible(false);
 	}
 
@@ -173,13 +185,12 @@ function BountiesListScreen() {
 				isVisible={isSortVisible}
 				onClose={sortHandler}
 				sortList={sortValues}
-				currActive={activeSorting}
+				currActive={activeSortingDisplay}
 			/>
 			<FilterModal
 				isVisible={isFilterVisible}
 				onClose={filterHandler}
-				statusList={DUMMY_STATUS_VALUES}
-				tagList={DUMMY_TAG_VALUES}
+				currFilters={activeFiltering}
 			/>
 		</View>
 	);

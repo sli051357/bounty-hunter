@@ -13,7 +13,6 @@ import SortItem from "./SortItem";
 import { Ionicons } from "@expo/vector-icons";
 
 function SortModal({ isVisible, onClose, sortList, currActive }) {
-
 	return (
 		<Modal visible={isVisible} transparent={true}>
 			<View style={styles.modalContainer}>
@@ -40,7 +39,12 @@ function SortModal({ isVisible, onClose, sortList, currActive }) {
 
 					<ScrollView>
 						{sortList.map((sort) => (
-							<SortItem key={sort.name} name={sort.name} currActive={currActive} onClose={onClose}/>
+							<SortItem
+								key={sort.name}
+								name={sort.name}
+								currActive={currActive}
+								onClose={onClose}
+							/>
 						))}
 					</ScrollView>
 				</View>
