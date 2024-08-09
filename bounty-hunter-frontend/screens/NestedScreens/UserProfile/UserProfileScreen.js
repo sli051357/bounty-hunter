@@ -8,6 +8,7 @@ import {
 	StyleSheet,
 	Text,
 	View,
+	ActivityIndicator
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -54,20 +55,30 @@ function UserProfileScreen() {
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
-	const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
+	const [aboutMe, setAboutMe] = useState("");
+
+	//ok im gonna try
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
-	// console.log(payments)
-	// useEffect(() => {
-	//     async function fetchUserData() {
-	//         try {
-	//             const response = await apiService.getUserBio('MacUser23');
-	//             console.log(response);
-	//         } catch (error) {
-	//             console.log(error)
-	//         }
-	//     }
-	//     fetchUserData();
-	// }, [])
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchBio = async () => {
+		  try {
+			const response = await apiService.getUserBio(username.username);
+			editAboutMeHandler(response["bio"])
+		  } finally {
+			setLoading(false);
+		  }
+		};
+	
+		fetchBio();
+	  }, []); // Empty dependency array means this effect runs once on component mount
+	
+	if (loading) {
+		return <ActivityIndicator size="large" color="#0000ff" />;
+	}
+
+	//end of ethan stuff
 
 	function toggleEdit() {
 		setIsEditing((curr) => !curr);
