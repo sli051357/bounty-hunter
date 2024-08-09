@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
+import apiService from "../../api/apiRequest";
 
 function VerifyEmailScreen() {
 	const navigation = useNavigation();
@@ -17,10 +18,21 @@ function VerifyEmailScreen() {
 		setCodeVerify(text);
 	}
 
-	function confirmChangesHandler() {
+	//adding the apistuff here
+	async function confirmChangesHandler() {
 		console.log(codeVerify);
+		data = {"code": codeVerify};
+		try {
+			response = await apiService.verifyCode(data);
+			if (response.status === "success") {
+				navigation.navigate("UpdatePasswordScreen");
+			} else {
+				throw new Error("");
+			}
+		} catch (error) {
+			Alert.alert("Invalid Code");
+		}
 		setCodeVerify("");
-		navigation.navigate("UpdatePasswordScreen");
 	}
 
 	return (

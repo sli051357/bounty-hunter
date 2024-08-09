@@ -130,6 +130,24 @@ const apiService = {
 		}
 	},
 
+	verifyCode: async (data) => {
+		try {
+			const response = await axiosInstance.post("/users/verify-code/", data);
+			return response.data;
+		} catch (error) {
+			console.log("Error during change password:", error);
+		}
+	},
+
+	forgotPassword: async (data) => {
+		try {
+			const response = await axiosInstance.post("/users/forgot-password/", data);
+			return response.data;
+		} catch (error) {
+			console.log("Error during forgot password:", error);
+		}
+	},
+
 	// data = {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
 	// 'privacy': 'Public'/'Private', 'active': True/False, 'completed': True/False, 'tags': tag objects? should be able to pick from existing }
 	// returns {"success": True, "favor_id": favor.id} if creation is successful

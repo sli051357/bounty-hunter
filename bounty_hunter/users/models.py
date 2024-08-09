@@ -2,6 +2,10 @@ from django.db import models
 import PIL
 from django.contrib.auth.models import User
 # Create your models here.
+import random
+
+def create_new_ref_number():
+      return str(random.randint(1000000000, 9999999999))
 
 #model for storing bio and profile image. Each user has only one owner.
 class UserProfileInfo(models.Model):
@@ -9,6 +13,14 @@ class UserProfileInfo(models.Model):
     bio_text = models.CharField(max_length=200)
     profile_image = models.ImageField(upload_to='res/')
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.CharField(
+           max_length = 10,
+           blank=True,
+           editable=False,
+           unique=True,
+           default=create_new_ref_number
+      )
+
     def __str__(self):
         return self.owner.username
     

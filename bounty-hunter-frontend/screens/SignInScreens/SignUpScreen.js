@@ -92,6 +92,9 @@ function SignUpScreen() {
 			if (response.status === "fail") {
 				console.log("returned fail");
 				throw new Error("signup failed");
+			} else {
+				setIsAuthenticating(false);
+				Alert.alert("Click on the Link sent to your email to activate your account.");
 			}
 			// Will Set up Axios Sign Up later
 			// const token = await apiService.createUser(formData);
@@ -107,8 +110,6 @@ function SignUpScreen() {
 			// console.log(error);
 			setIsAuthenticating(false);
 		} 
-		setIsAuthenticating(false);
-		Alert.alert("Click on the Link sent to your email to activate your account.");
 	}
 
 	if (isAuthenticateing) {

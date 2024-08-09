@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
+import apiService from "../../api/apiRequest";
 
 function InputEmailVerifyScreen() {
 	const navigation = useNavigation();
@@ -17,13 +18,26 @@ function InputEmailVerifyScreen() {
 		setEmail(text);
 	}
 
-	function confirmChangesHandler() {
+	async function confirmChangesHandler() {
 		// console.log(codeVerify);
 		// Check the validity of code here, return if false, otherwise proceed. Turn this func to async and await
-		setEmail("");
+		try {
+			const data = {"email": email};
+			const response = await apiService.forgotPassword(data);
+			if (response.status === "fail") {
+				throw new Error("invalid or user does not exist");
+			} else {
+				Alert.alert("Click on the link sent to your Email.");
+				setEmail("");
+			}
+		} catch (error) {
+			Alert.alert("Invalid Email or User doesn't exist.");
+		}
 		navigation.navigate("VerifyEmailScreen");
 	}
 
+
+		
 	return (
 		<>
 			<LinearGradient

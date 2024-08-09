@@ -21,7 +21,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from django.middleware.csrf import get_token
 import json
-
+import random
 
 from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import TokenAuthentication
@@ -85,8 +85,6 @@ def linked_accs(request, request_username):
 
     return JsonResponse(data=data)
 
-def sign_up(request):
-    return render(request, "users/register.html")
 
 #retrieves the list of friend requests    
 # @login_required
@@ -234,16 +232,22 @@ def register_user(request):
     username =data.get('username', None) 
     password =data.get('password', None) 
     email = data.get('email', None) 
+    #check if email already exists.
+
+    if User.objects.filter(email=email).count() != 0:
+        return JsonResponse({"status": "fail"})  
     
     new_user = User(username=username,password=password,email=email,is_active=False)
+
     try:
         new_user.save()
-    except IntegrityError:
+    except IntegrityError: #will raise if username already exists.
         return JsonResponse({"status": "fail"})       
     
     new_token = Token.objects.create(user=new_user)
     new_token.save()
 
+    #verification code is automatically generated
     new_bio = UserProfileInfo(bio_text="No information given.", owner=new_user)
     with open("res/default.png", 'rb') as f:
         new_bio.profile_image.save('default_pfp.png', File(f), save=True)
@@ -259,32 +263,57 @@ def register_user(request):
 
     return JsonResponse({"status": "success"})
 
+# for verifying in account creation, uses django rendered pages.
 def verify(request, token):
     request_user = get_object_or_404(Token,key=token).user
     request_user.is_active = True
     request_user.save()
-    return redirect('/users/sign-up/')
+    return JsonResponse("good job u signed up")
 
+# for verifying in forgot password. Post the request here.
+def verify_code(request):
+    data = json.loads(request.body)
+
+    #check if they posted a code
+    try:
+        code = data.get('code', None) 
+    except KeyError:
+        return JsonResponse({"status": "fail"})
+    #check if code is right
+    try:
+        request_user = get_object_or_404(UserProfileInfo, code=code).owner
+    except Http404:
+        return JsonResponse({"status": "fail"})
+
+    request_user.is_active = True
+    request_user.save()
+    return JsonResponse({"status": "success"})
+
+# for resetting password from email. Uses verify to verify
 def reset_password(request):
     email = request.POST["email"]
     try:
         attempt_user = get_object_or_404(User, email=email)
     except Http404:
-        messages.add_message(request, messages.ERROR, "User does not exist.")
-        return redirect('temp')
+        return JsonResponse({"status":"fail"})
 
-    user_token = get_object_or_404(Token, user=attempt_user)
+
+    try:
+        user_code = get_object_or_404(UserProfileInfo, owner=attempt_user).code
+    except Http404:
+        return JsonResponse({"status":"fail"})
     
     send_mail(
     subject="Reset your Password",
-    message=BASE_URL + "users/reset-password/" + str(user_token.key),
+    message="Code: "+ user_code,
     from_email=EMAIL_HOST_USER,
     recipient_list=[email],
     fail_silently=False
     )
-    messages.add_message(request, messages.SUCCESS, "Email sent!")
-    return redirect('temp')
+    
+    return JsonResponse({"status": "success"})
 
+# for resetting password in logged in screen
 def create_new_password(request):
     pass1 = request.POST["pass1"]
     pass2 = request.POST["pass2"]
