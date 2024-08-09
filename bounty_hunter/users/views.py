@@ -22,6 +22,16 @@ from rest_framework.response import Response
 from django.middleware.csrf import get_token
 import json
 
+
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
 
@@ -164,21 +174,22 @@ def delete_account(request):
         return JsonResponse(status=403, data={"status": "Permission Denied"})
 
 # we need to remake every post request to look like this.
+# Authenticates the request, then checks if its the same user.
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def edit_bio(request, request_username):
+    print(request.auth)
     data = json.loads(request.body)
     new_bio = data.get('bio', None) 
-    print(request.user.username)
-    if isinstance(request.user, User):
-        if request.user.username == request_username:
-            profile = get_object_or_404(UserProfileInfo, owner=request.user)
-            profile.bio_text = new_bio
-            profile.save()
-            return JsonResponse(data={"status":"success"})
-        else:
-            print("not right user")
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
+    print("profile username: ",request.user)
+    if request.user.username == request_username:
+        profile = get_object_or_404(UserProfileInfo, owner=request.user)
+        profile.bio_text = new_bio
+        profile.save()
+        return JsonResponse(data={"status":"success"})
     else:
-        print("not a user")
+        print("not right user")
         return JsonResponse(status=403, data={"status": "Permission Denied"})
     
 
