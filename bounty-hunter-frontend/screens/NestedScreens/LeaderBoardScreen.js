@@ -1,11 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import {
-	KeyboardAvoidingView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 import LeaderboardFriendTab from "../../components/LeaderboardFriendTab";
 import ScrollViewHelper from "../../components/UI/ScrollViewHelper";
@@ -24,6 +19,11 @@ import { DETAILED_FRIEND_LIST } from "../../util/dummy-data";
 
 function LeaderBoardScreen() {
 	const navigation = useNavigation();
+	const [friendList, setFriendList] = useState(
+		DETAILED_FRIEND_LIST.sort((a, b) => b.friendRating - a.friendRating),
+	); // Dummy Data
+
+	// async function getFriendList()
 
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
