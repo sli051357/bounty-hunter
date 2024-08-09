@@ -179,17 +179,14 @@ def delete_account(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def edit_bio(request, request_username):
-    print(request.auth)
     data = json.loads(request.body)
     new_bio = data.get('bio', None) 
-    print("profile username: ",request.user)
     if request.user.username == request_username:
         profile = get_object_or_404(UserProfileInfo, owner=request.user)
         profile.bio_text = new_bio
         profile.save()
         return JsonResponse(data={"status":"success"})
     else:
-        print("not right user")
         return JsonResponse(status=403, data={"status": "Permission Denied"})
     
 
@@ -231,17 +228,18 @@ def remove_link(request, request_username):
     else:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
     
+
 def register_user(request):
-
-    username =request.POST["username"]
-    password =request.POST["password"]
-    email = request.POST["email"]
-
+    data = json.loads(request.body)
+    username =data.get('username', None) 
+    password =data.get('password', None) 
+    email = data.get('email', None) 
+    
     new_user = User(username=username,password=password,email=email,is_active=False)
     try:
         new_user.save()
     except IntegrityError:
-        return HttpResponseNotFound("user already exists")         
+        return JsonResponse({"status": "fail"})       
     
     new_token = Token.objects.create(user=new_user)
     new_token.save()
@@ -259,7 +257,7 @@ def register_user(request):
     fail_silently=False
     )
 
-    return redirect('/users/sign-up/')
+    return JsonResponse({"status": "success"})
 
 def verify(request, token):
     request_user = get_object_or_404(Token,key=token).user

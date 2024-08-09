@@ -56,7 +56,7 @@ function UserProfileScreen() {
 
 	// set authorization token here
 	const authToken = useSelector((state) => state.authToken);
-	apiService.setAuthorizationHeader(authToken.authToken);
+	//apiService.setAuthorizationHeader(authToken.authToken);
 
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
@@ -86,13 +86,14 @@ function UserProfileScreen() {
 
 	//if hit the save button, try to save the bio.
 	async function toggleEdit() {
+		console.log("token = " + authToken.authToken);
 		setIsEditing((curr) => !curr);
 		if (isEditing){
 			console.log("sending the edited bio");
 			console.log(aboutMe);
 			data = {"bio": aboutMe};
 			try {
-				const bioResponse = await apiService.updateUserBio(username.username, data);
+				const bioResponse = await apiService.updateUserBio(username.username, data, authToken.authToken);
 				if (bioResponse.status === "fail") {
 					throw new Error("Edit Bio Failed");
 				}

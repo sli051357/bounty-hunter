@@ -4,6 +4,16 @@ import axios from "axios";
 
 
 const apiService = {
+	signUp: async (data) => {
+		try {
+			const response = await axiosInstance.post(
+				`/users/register/`,
+				data
+			);
+			return response.data;
+		} catch (error) { throw error;}
+	},
+
 	// username = "username"
 	// returns {"bio":user_profile.bio_text}
 	getUserBio: async (username) => {
@@ -51,9 +61,9 @@ const apiService = {
 	// username = "username"
 	// data = "new bio, max length 200 characters"
 	// returns {"success": True} if successful, {"success": False} if fails
-	updateUserBio: async (username, data) => {
+	updateUserBio: async (username, data, token) => {
 		try {
-			const response = await axiosInstance.post(`/users/profiles/${username}/edit-bio/`,data);
+			const response = await axiosInstance.post(`/users/profiles/${username}/edit-bio/`,data, {headers: { 'authorization': `Token ${token}`}},);
 			return response.data;
 		} catch (error) {}
 	},
