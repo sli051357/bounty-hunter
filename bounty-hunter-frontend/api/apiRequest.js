@@ -116,14 +116,12 @@ const apiService = {
 		}
 	},
 
-	// data = {pass1, pass2, token}
-	// pass1 = request.POST["pass1"]
-    // pass2 = request.POST["pass2"]
-    // token = request.POST["token"]
+	// requires login. //added auth to reset pasword, need to fix the screen stuff 
+	// data = {pass1, pass2}
 	// returns {status: "fail" or "success"}
-	resetPassword: async (data) => {
+	resetPassword: async (data, token) => {
 		try {
-			const response = await axiosInstance.post("/users/reset-password/", data);
+			const response = await axiosInstance.post("/users/reset-password/",data, {headers: { 'authorization': `Token ${token}`}},);
 			return response.data;
 		} catch (error) {
 			console.log("Error during change password:", error);

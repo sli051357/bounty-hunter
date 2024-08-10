@@ -18,6 +18,7 @@ import ratingReducer from "../rating.js";
 import userNameReducer from "../username.js";
 import bountyListReducer from "./../bountyList.js"; // Remember to complete editBounty
 import friendListReducer from "./../friendList.js";
+import passTokenReducer from "../passToken.js";
 
 const persistConfig = {
 	storage: AsyncStorage,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
 	friendList: friendListReducer,
 	bountyList: bountyListReducer,
 	authToken: authTokenReducer,
+	passToken: passTokenReducer,
 	paymentMethods: paymentMethodsReducer,
 	rating: ratingReducer,
 	username: userNameReducer,

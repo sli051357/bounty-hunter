@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
@@ -25,15 +25,15 @@ function InputEmailVerifyScreen() {
 			const data = {"email": email};
 			const response = await apiService.forgotPassword(data);
 			if (response.status === "fail") {
-				throw new Error("invalid or user does not exist");
+				Alert.alert("Invalid Email or the user doesn't exist.");
 			} else {
-				Alert.alert("Click on the link sent to your Email.");
+				Alert.alert("Enter the code sent to your email.");
 				setEmail("");
-			}
-		} catch (error) {
-			Alert.alert("Invalid Email or User doesn't exist.");
+				navigation.navigate("VerifyEmailScreen");
+			} 
+		}catch (error) {
+			throw error;
 		}
-		navigation.navigate("VerifyEmailScreen");
 	}
 
 
@@ -55,10 +55,11 @@ function InputEmailVerifyScreen() {
 						<CustomTextInput
 							typeTitle="Email"
 							onPress={emailHandler}
-							maxLength={6}
+							maxLength={150}
 							value={email}
 							keyboardType="default"
-							helperText="No email registered with account"
+							helperText="Input the email of your account and we will send you a
+							verification code."
 							secureTextEntry={false}
 						/>
 						<Button
