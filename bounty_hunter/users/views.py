@@ -237,13 +237,17 @@ def register_user(request):
     #check if email already exists.
 
     if User.objects.filter(email=email).count() != 0:
+        print("email exists")
         return JsonResponse({"status": "fail"})  
     
-    new_user = User(username=username,password=password,email=email,is_active=False)
+    new_user = User(username=username,email=email,is_active=False)
+    #sets password
+    new_user.set_password(password)
 
     try:
         new_user.save()
     except IntegrityError: #will raise if username already exists.
+        print("username exists")
         return JsonResponse({"status": "fail"})       
     
     new_token = Token.objects.create(user=new_user)
@@ -267,10 +271,16 @@ def register_user(request):
 
 # for verifying in account creation, uses django rendered pages.
 def verify(request, token):
-    request_user = get_object_or_404(Token,key=token).user
+    try:
+        request_user = get_object_or_404(Token,key=token).user
+    except Http404:
+        return JsonResponse({"status":"fail", "error":"token not found"})
+    if request_user.is_active:
+        return JsonResponse({"status":"fail", "error":"account is already active"})
+    
     request_user.is_active = True
     request_user.save()
-    return JsonResponse("good job u signed up")
+    return JsonResponse({"status":"success"})
 
 # for verifying in forgot password. Post the request here.
 def verify_code(request):
@@ -280,22 +290,25 @@ def verify_code(request):
     try:
         code = data.get('code', None) 
     except KeyError:
+        print("code not in data")
         return JsonResponse({"status": "fail"})
     #check if code is right
     try:
-        profile = get_object_or_404(UserProfileInfo, code=code).owner
+        profile = get_object_or_404(UserProfileInfo, code=int(code))
     except Http404:
+        print("code is wrong")
         return JsonResponse({"status": "fail"})
 
     #reset code and return the authtoken for logging in the user.
     profile.code = create_new_ref_number()
     profile.save() 
     authToken = Token.objects.get(user=profile.owner)
-    return JsonResponse({"status": "success", "authToken": authToken})
+    return JsonResponse({"status": "success", "authToken": authToken.key})
 
 # in the forgot password screen, can send an email to send a code to log in to reset password. Should return authtoken i think.
 def reset_password(request):
-    email = request.POST["email"]
+    data = json.loads(request.body)
+    email = data.get("email",None)
     try:
         attempt_user = get_object_or_404(User, email=email)
     except Http404:

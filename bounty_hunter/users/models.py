@@ -16,10 +16,9 @@ class UserProfileInfo(models.Model):
     code = models.CharField(
            max_length = 10,
            blank=True,
-           editable=False,
            unique=True,
            default=create_new_ref_number
-      )
+      ) #add back in editbale = False after debug.
 
     def __str__(self):
         return self.owner.username
