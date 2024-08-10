@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.template import loader 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import authenticate, login, logout
-from .models import UserProfileInfo, LinkedAccounts, FriendRequest
+from .models import UserProfileInfo, LinkedAccounts, FriendRequest, create_new_ref_number
 from django.shortcuts import redirect
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
@@ -31,6 +31,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
+from django.contrib.auth import update_session_auth_hash
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
@@ -281,15 +283,17 @@ def verify_code(request):
         return JsonResponse({"status": "fail"})
     #check if code is right
     try:
-        request_user = get_object_or_404(UserProfileInfo, code=code).owner
+        profile = get_object_or_404(UserProfileInfo, code=code).owner
     except Http404:
         return JsonResponse({"status": "fail"})
 
-    request_user.is_active = True
-    request_user.save()
-    return JsonResponse({"status": "success"})
+    #reset code and return the authtoken for logging in the user.
+    profile.code = create_new_ref_number()
+    profile.save() 
+    authToken = Token.objects.get(user=profile.owner)
+    return JsonResponse({"status": "success", "authToken": authToken})
 
-# for resetting password from email. Uses verify to verify
+# in the forgot password screen, can send an email to send a code to log in to reset password. Should return authtoken i think.
 def reset_password(request):
     email = request.POST["email"]
     try:
@@ -310,25 +314,29 @@ def reset_password(request):
     recipient_list=[email],
     fail_silently=False
     )
+
+    #once a code is entered, it should be reset. This gets handled in the verify_code method.
     
     return JsonResponse({"status": "success"})
 
-# for resetting password in logged in screen
+# for resetting password, token required. 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_new_password(request):
-    pass1 = request.POST["pass1"]
-    pass2 = request.POST["pass2"]
-    token = request.POST["token"]
+    data = json.loads(request.body)
+    pass1 = data.get('pass1', None) 
+    pass2 = data.get('pass2', None) 
 
+    #check if the passwords match
     if pass1 != pass2:
         print("passwords dont match")
-        messages.add_message(request, messages.ERROR, "Passwords do not match.")
         return JsonResponse({"status": "fail"})
+    # password length should already be checked by front i think.
     
-    user = get_object_or_404(Token,key=token).user
-    user.password = pass1
-    user.save()
+    request.user.set_password(pass1)
+    request.user.save()
 
-    messages.add_message(request, messages.SUCCESS, "Password changed.")
     print("changed password")
     return JsonResponse({"status": "success"})
 
