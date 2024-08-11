@@ -1,9 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
@@ -17,11 +18,22 @@ function InputEmailVerifyScreen() {
 		setEmail(text);
 	}
 
-	function confirmChangesHandler() {
+	async function confirmChangesHandler() {
 		// console.log(codeVerify);
 		// Check the validity of code here, return if false, otherwise proceed. Turn this func to async and await
-		setEmail("");
-		navigation.navigate("VerifyEmailScreen");
+		try {
+			const data = { email: email };
+			const response = await apiService.forgotPassword(data);
+			if (response.status === "fail") {
+				Alert.alert("Invalid Email or the user doesn't exist.");
+			} else {
+				Alert.alert("Enter the code sent to your email.");
+				setEmail("");
+				navigation.navigate("VerifyEmailScreen");
+			}
+		} catch (error) {
+			throw new Error("failure");
+		}
 	}
 
 	return (
@@ -41,10 +53,11 @@ function InputEmailVerifyScreen() {
 						<CustomTextInput
 							typeTitle="Email"
 							onPress={emailHandler}
-							maxLength={6}
+							maxLength={150}
 							value={email}
 							keyboardType="default"
-							helperText="No email registered with account"
+							helperText="Input the email of your account and we will send you a
+							verification code."
 							secureTextEntry={false}
 						/>
 						<Button

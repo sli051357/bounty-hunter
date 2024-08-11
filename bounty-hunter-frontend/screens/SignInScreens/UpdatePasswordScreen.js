@@ -1,9 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useSelector } from "react-redux";
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
@@ -11,6 +13,7 @@ import { GLOBAL_STYLES } from "../../constants/styles";
 function UpdatePasswordScreen() {
 	const navigation = useNavigation();
 	const insets = useSafeAreaInsets();
+	const passToken = useSelector((state) => state.passToken);
 	const [newPassword, setNewPassword] = useState({
 		"new password": "",
 		"confirm new password": "",
@@ -23,13 +26,33 @@ function UpdatePasswordScreen() {
 		}));
 	}
 
-	function confirmChangesHandler() {
-		console.log(newPassword);
+	async function confirmChangesHandler() {
 		setNewPassword({
-			password: "",
-			"confirm password": "",
+			"new password": "",
+			"confirm new password": "",
 		});
-		navigation.navigate("ReturnLoginScreen");
+
+		// routing for resetting password. Authenticated Request
+		try {
+			const data = {
+				pass1: newPassword["new password"],
+				pass2: newPassword["confirm new password"],
+			};
+			const response = await apiService.resetPassword(
+				data,
+				passToken.passToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("request failed.");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		if (response.status === "fail") {
+			Alert.alert("Invalid Password");
+		} else {
+			navigation.navigate("ReturnLoginScreen");
+		}
 	}
 
 	return (

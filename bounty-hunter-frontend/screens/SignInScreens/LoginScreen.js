@@ -5,6 +5,7 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
 import Button from "../../components/UI/Button";
@@ -33,7 +34,7 @@ function LoginScreen() {
 	}
 
 	// Turn this into async function when axios is added
-	function confirmChangesHandler() {
+	async function confirmChangesHandler() {
 		setIsAuthenticating(true);
 		try {
 			// Will Set Up Axios Later:
@@ -41,14 +42,24 @@ function LoginScreen() {
 			// dispatch(setAuthToken(token))
 			console.log(signInUser);
 			dispatch(setUsername(signInUser["username or email"]));
-			dispatch(setAuthToken("IsVerified"));
+
+			//trying sign in
+			const data = {
+				username: signInUser["username or email"],
+				password: signInUser.password,
+			};
+			console.log(data);
+			const responseData = await apiService.signIn(data);
+			console.log(responseData);
+
+			dispatch(setAuthToken(responseData.token));
 		} catch (error) {
 			setError({
 				emailOrUsername: true,
 				password: true,
 			});
 			Alert.alert("Sign In Failed", "Try again later");
-			// console.log(error);
+			console.log(error);
 			setIsAuthenticating(false);
 		}
 	}

@@ -9,19 +9,22 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 	async function copyPayment(payment) {
 		await Clipboard.setStringAsync(payment);
 	}
-	// console.log(userData)
+
+	console.log(userData);
 	let payments = (
 		<View style={styles.container}>
 			<Text style={styles.title}>Payment Methods:</Text>
-			{userData.map((payment) => (
-				<PaymentMethod
-					paymentName={`${payment.paymentName}: `}
-					paymentUsername={payment.username}
-					key={payment.paymentName}
-					icon="attach-outline"
-					onPress={() => copyPayment(payment.username)}
-				/>
-			))}
+			<>
+				{Object.entries(userData).map(([id, [provider, username]]) => (
+					<PaymentMethod
+						key={id} // Use the id from the object as the key for the component
+						paymentName={provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={username} // The username associated with the provider
+						icon="attach-outline" // The icon to display
+						onPress={() => copyPayment(username)} // Function to handle the press event
+					/>
+				))}
+			</>
 		</View>
 	);
 
@@ -29,13 +32,13 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 		payments = (
 			<View style={styles.container}>
 				<Text style={styles.title}>Payment Methods:</Text>
-				{userData.map((payment) => (
+				{Object.entries(userData).map(([id, [provider, username]]) => (
 					<PaymentMethod
-						paymentName={payment.paymentName}
-						paymentUsername={payment.username}
-						key={payment.paymentName}
-						icon="attach-outline"
-						onPress={() => copyPayment(payment.username)}
+						key={id} // Use the id from the object as the key for the component
+						paymentName={provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={username} // The username associated with the provider
+						icon="attach-outline" // The icon to display
+						onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}
 				<Pressable onPress={managePaymentsPage}>

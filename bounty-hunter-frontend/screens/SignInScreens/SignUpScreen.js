@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { setAuthToken } from "../../store/authToken";
 import { setUsername } from "../../store/username";
 
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
 import Button from "../../components/UI/Button";
@@ -42,7 +43,7 @@ function SignUpScreen() {
 		}));
 	}
 
-	function confirmChangesHandler() {
+	async function confirmChangesHandler() {
 		setCreateUser((prevState) => ({
 			...prevState,
 			email: prevState.email.trim(),
@@ -79,18 +80,36 @@ function SignUpScreen() {
 		});
 	}
 
+	// need to redirect to sign in screen due to email verification
 	// Turn this into async function when axios is added
-	function signUpHandler(formData) {
+	async function signUpHandler(formData) {
+		//setIsAuthenticating(true);
+		//need to verify email before signing in
 		setIsAuthenticating(true);
 		try {
+			const data = {
+				username: formData.username,
+				password: formData.password,
+				email: formData.email,
+			};
+			const response = await apiService.signUp(data);
+			if (response.status === "fail") {
+				console.log("returned fail");
+				throw new Error("signup failed");
+			}
+			setIsAuthenticating(false);
+			Alert.alert(
+				"Click on the Link sent to your email to activate your account.",
+			);
 			// Will Set up Axios Sign Up later
 			// const token = await apiService.createUser(formData);
 			// dispatch(setAuthToken(token))
 			// dispatch(setUsername(formData.username))
-			console.log(formData.username);
-			dispatch(setUsername(formData.username));
-			dispatch(setAuthToken("IsVerified"));
+			//console.log(formData.username);
+			//dispatch(setUsername(formData.username));
+			//dispatch(setAuthToken("IsVerified"));
 		} catch (error) {
+			console.log(error);
 			Alert.alert("Sign Up Failed", "Try again later");
 			// console.log(error);
 			setIsAuthenticating(false);
