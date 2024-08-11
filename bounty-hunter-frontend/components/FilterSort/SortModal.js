@@ -1,11 +1,9 @@
-import React from "react";
 import {
 	Modal,
 	Pressable,
 	ScrollView,
 	StyleSheet,
 	Text,
-	TextInput,
 	View,
 } from "react-native";
 import { GLOBAL_STYLES } from "../../constants/styles";
@@ -14,12 +12,12 @@ import SortItem from "./SortItem";
 
 import { Ionicons } from "@expo/vector-icons";
 
-function SortModal({ isVisible, onClose, sortList }) {
+function SortModal({ isVisible, onClose, sortList, currActive }) {
 	return (
 		<Modal visible={isVisible} transparent={true}>
 			<View style={styles.modalContainer}>
 				<View style={styles.modalStyle}>
-					<Pressable onPress={onClose}>
+					<Pressable onPress={() => onClose("")}>
 						<Ionicons
 							name="chevron-back"
 							size={24}
@@ -41,7 +39,12 @@ function SortModal({ isVisible, onClose, sortList }) {
 
 					<ScrollView>
 						{sortList.map((sort) => (
-							<SortItem key={sort.name} name={sort.name} active={sort.active} />
+							<SortItem
+								key={sort.name}
+								name={sort.name}
+								currActive={currActive}
+								onClose={onClose}
+							/>
 						))}
 					</ScrollView>
 				</View>

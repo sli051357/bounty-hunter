@@ -53,11 +53,19 @@ function UserSettingsScreen() {
 		}
 	}
 
-	async function newPasswordChangeHandler(text, type) {
+	
+	function newPasswordChangeHandler(text, type) {
 		setNewPassword((prevState) => ({
 			...prevState,
 			[type]: text,
 		}));
+
+	}
+
+	// Turn into async function with await when API is set up
+	// Check conditions for password
+	async function confirmChangesHandler() {
+		console.log(newPassword);
 
 		// routing for resetting password. Authenticated Request
 		try {
@@ -75,16 +83,11 @@ function UserSettingsScreen() {
 		} else {
 			navigation.navigate("ReturnLoginScreen");
 		}
-	}
-
-	// Turn into async function with await when API is set up
-	// Check conditions for password
-	function confirmChangesHandler() {
-		console.log(newPassword);
 		setNewPassword({
 			password: "",
 			"confirm password": "",
 		});
+
 	}
 
 	return (

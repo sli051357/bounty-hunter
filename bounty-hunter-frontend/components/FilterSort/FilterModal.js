@@ -17,14 +17,23 @@ import FilterItem from "./FilterItem";
 import FilterSlider from "./FilterSlider";
 
 import dayjs from "dayjs";
-import DateTimePicker, { DateType, ModeType } from "react-native-ui-datepicker";
 
-function FilterModal({ isVisible, onClose, statusList, tagList }) {
+function FilterModal({ isVisible, onClose, currFilters }) {
 	const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 	const [isStart, setIsStart] = useState(false);
 
 	const [startDate, setStartDate] = useState(dayjs());
 	const [endDate, setEndDate] = useState(dayjs());
+	const [statusFilters, setStatusFilters] = useState(currFilters.status);
+	const [startPrice, setStartPrice] = useState(currFilters.price_low);
+	const [endPrice, setEndPrice] = useState(
+		currFilters.price_high === "MAX" ? 1000 : currFilters.price_high,
+	);
+	const [tags, setTags] = useState(currFilters.tags);
+	//console.log(statusFilters)
+
+	const statusList = ["Sent", "Received", "Incomplete", "Completed"];
+	const tagList = ["Travel", "Food", "Friends", "Shopping", "Custom"];
 
 	let content;
 
@@ -51,6 +60,18 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
 		);
 	}
 
+	function setAllFilters() {
+		onClose({
+			query: "or",
+			tags: tags,
+			status: statusFilters,
+			start_date: dayjs(startDate).format("YYYY-MM-DD"),
+			end_date: dayjs(endDate).format("YYYY-MM-DD"),
+			price_low: startPrice,
+			price_high: endPrice === 1000 ? "MAX" : endPrice,
+		});
+	}
+
 	function editStartDate() {
 		setIsStart(true);
 		setIsCalendarVisible(true);
@@ -69,11 +90,30 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
 		setIsCalendarVisible(false);
 	}
 
+	function updateActiveStatusFilters(filter) {
+		if (!statusFilters.includes(filter)) {
+			setStatusFilters((prev) => [...prev, filter]);
+		} else {
+			setStatusFilters((prev) => prev.filter((f) => f !== filter));
+		}
+	}
+	function updateActiveTags(tag) {
+		if (!tags.includes(tag)) {
+			setTags((prev) => [...prev, tag]);
+		} else {
+			setTags((prev) => prev.filter((t) => t !== tag));
+		}
+	}
+	function updatePrices(prices) {
+		setStartPrice(prices[0]);
+		setEndPrice(prices[1]);
+	}
+
 	return (
 		<Modal visible={isVisible} transparent={true}>
 			<View style={styles.modalContainer}>
 				<View style={styles.modalStyle}>
-					<Pressable onPress={onClose}>
+					<Pressable onPress={setAllFilters}>
 						<Ionicons
 							name="chevron-back"
 							size={24}
@@ -101,9 +141,10 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
 							<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 								{statusList.map((status) => (
 									<FilterItem
-										key={status.name}
-										name={status.name}
-										active={status.active}
+										key={status}
+										name={status}
+										active={statusFilters.includes(status)}
+										onPress={updateActiveStatusFilters}
 									/>
 								))}
 							</View>
@@ -116,9 +157,10 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
 							<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 								{tagList.map((tag) => (
 									<FilterItem
-										key={tag.name}
-										name={tag.name}
-										active={tag.active}
+										key={tag}
+										name={tag}
+										active={tags.includes(tag)}
+										onPress={updateActiveTags}
 									/>
 								))}
 							</View>
@@ -129,7 +171,11 @@ function FilterModal({ isVisible, onClose, statusList, tagList }) {
 							<Text style={styles.subText}>Price</Text>
 
 							{/* Change to be actual values */}
-							<FilterSlider minPrice={0} maxPrice={30} />
+							<FilterSlider
+								minPrice={startPrice}
+								maxPrice={endPrice}
+								onPress={updatePrices}
+							/>
 						</View>
 
 						{/* Date */}

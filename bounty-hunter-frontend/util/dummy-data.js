@@ -150,4 +150,34 @@ export const DETAILED_FRIEND_LIST = [
 		friendProfilePic: "./../assets/batman.jpeg",
 		friendRating: 44,
 	},
+	{
+		friendId: "A1234342",
+		friendUsername: "Batman2077",
+		friendProfilePic: "./../assets/batman.jpeg",
+		friendRating: 100,
+	},
+	{
+		friendId: "A2223256",
+		friendUsername: "Superman7",
+		friendProfilePic: "./../assets/profile.jpeg",
+		friendRating: 99,
+	},
+	{
+		friendId: "A323452326",
+		friendUsername: "WonderWomen45",
+		friendProfilePic: "./../assets/profile.jpeg",
+		friendRating: 99,
+	},
+	{
+		friendId: "A4234356",
+		friendUsername: "FlashPoint",
+		friendProfilePic: "./../assets/profile.jpeg",
+		friendRating: 82,
+	},
+	{
+		friendId: "A5234356",
+		friendUsername: "Joker",
+		friendProfilePic: "./../assets/batman.jpeg",
+		friendRating: 44,
+	},
 ];

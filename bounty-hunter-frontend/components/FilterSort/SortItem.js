@@ -3,19 +3,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-function SortItem({ name, active }) {
-	const [isActive, setIsActive] = useState(active);
-
-	function editActiveStatus() {
-		setIsActive((curr) => !curr);
-	}
-
+function SortItem({ name, currActive, onClose }) {
 	return (
 		<View style={styles.itemContainer}>
 			<Text style={styles.itemText}>{name}</Text>
 
-			<Pressable onPress={editActiveStatus} style={{ marginLeft: "auto" }}>
-				{isActive ? (
+			<Pressable onPress={() => onClose(name)} style={{ marginLeft: "auto" }}>
+				{name === currActive ? (
 					<View
 						style={[
 							styles.itemCheck,

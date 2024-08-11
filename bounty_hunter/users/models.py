@@ -18,7 +18,8 @@ class UserProfileInfo(models.Model):
            unique=True,
            default=create_new_ref_number
       ) #add back in editbale = False after debug.
-
+    public_status = models.BooleanField(default=True)
+    rating = models.IntegerField(default=0)
     def __str__(self):
         return self.owner.username
     
