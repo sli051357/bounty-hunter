@@ -162,14 +162,13 @@ def remove_friend(request, request_username):
         return JsonResponse({"status":"fail"})
 
 # @login_required
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_account(request):
-    if request.user != AnonymousUser:
-        request.user.is_active = False
-        request.user.save()
-        return JsonResponse(data={"status":"success"})
-
-    else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
+    request.user.is_active = False
+    request.user.save()
+    return JsonResponse(data={"status":"success"})
 
 # we need to remake every post request to look like this.
 # Authenticates the request, then checks if its the same user.
@@ -233,9 +232,20 @@ def register_user(request):
     password =data.get('password', None) 
     email = data.get('email', None) 
     #check if email already exists.
-
-    if User.objects.filter(email=email).count() != 0:
+    try:
+        User = get_object_or_404(User, email=email)
+    except Http404:
         print("email exists")
+        #check if user has been "deleted"
+        if not User.is_active:
+            send_mail(
+                subject="Reactivate your account",
+                message=BASE_URL + "users/verify/" + str(new_token.key),
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False
+            )
+            return JsonResponse({"status": "success"})
         return JsonResponse({"status": "fail"})  
     
     new_user = User(username=username,email=email,is_active=False)

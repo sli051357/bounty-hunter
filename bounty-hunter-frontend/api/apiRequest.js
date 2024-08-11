@@ -48,13 +48,12 @@ const apiService = {
 
 	// username = "username"
 	// return {"success": True} if deletion is successful, {"success": False} if deletion fails
-	deleteUser: async (username) => {
+	deleteUser: async (username, token) => {
 		try {
-			const response = await axiosInstance.get(
-				`/users/profiles/${username}/delete/`,
-			);
+			const response = await axiosInstance.post(
+				`/users/delete/`, data, {headers: { 'authorization': `Token ${token}`}},);
 			return response.data;
-		} catch (error) {}
+		} catch (error) { throw error;}
 	},
 
 	// username = "username"
