@@ -63,6 +63,7 @@ function UserProfileScreen() {
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
+	const [imageUrl, setImageUrl] = useState("");
 
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
 	const [loading, setLoading] = useState(true);
@@ -79,6 +80,10 @@ function UserProfileScreen() {
 			//reload the payment method storage
 			const response2 = await apiService.getUserLinks(username.username);
 			dispatch(setPaymentMethod(response2));
+
+			const response3 = await apiService.getUserPic(username.username);
+			setImageUrl(response3.url);
+			console.log(imageUrl);
 
 		  } catch (error){
 			console.log(error);
@@ -155,10 +160,17 @@ function UserProfileScreen() {
 				<View style={[styles.userMainDetails]}>
 					<View style={styles.userMainDetailsTopView}>
 						<View style={styles.imageAndUsernameView}>
-							<Image
-								style={styles.profilePicture}
-								source={require("../../../assets/batman.jpeg")}
-							/>
+							{imageUrl ? (
+									<Image
+									style={styles.profilePicture}
+									source={{ uri: imageUrl }}
+									/>
+								) : (
+									<Image //change to placeholder later
+									style={styles.profilePicture}
+									source={{ uri: imageUrl }}
+									/>
+								)}
 							<View>
 								<Text style={styles.usernameStyles}>{username.username}</Text>
 								<Text style={styles.smallTextBrown}>

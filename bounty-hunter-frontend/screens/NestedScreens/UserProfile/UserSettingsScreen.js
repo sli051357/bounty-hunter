@@ -16,6 +16,7 @@ import Button from "../../../components/UI/Button";
 import ChangeContent from "../../../components/UI/SettingsPageHelpers/ChangeContent";
 import ChangePasswordSettings from "../../../components/UI/SettingsPageHelpers/ChangePasswordSettings";
 import TitleWithButton from "../../../components/UI/TitleWithButton";
+import apiService from "../../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import { setAuthToken } from "../../../store/authToken";
 import { setUsername } from "../../../store/username";
@@ -26,6 +27,7 @@ function UserSettingsScreen() {
 	const username = useSelector((state) => state.username);
 	const [currUsername, setCurrUsername] = useState(username.username);
 	const [isEditing, setIsEditing] = useState(false);
+	const authToken = useSelector((state) => state.authToken);
 	const [newPassword, setNewPassword] = useState({
 		"new password": "",
 		"confirm new password": "",
@@ -37,10 +39,11 @@ function UserSettingsScreen() {
 
 	// Turn into async function with await when API is set up
 	// Check conditions for username
-	function changeUsernameHandler(text) {
+	async function changeUsernameHandler(text) {
 		//Check conditions for password, if so pass and error
 		try {
 			// Write Axios api call
+
 			dispatch(setUsername(text));
 			setCurrUsername(text);
 			toggleEdit();
@@ -50,11 +53,28 @@ function UserSettingsScreen() {
 		}
 	}
 
-	function newPasswordChangeHandler(text, type) {
+	async function newPasswordChangeHandler(text, type) {
 		setNewPassword((prevState) => ({
 			...prevState,
 			[type]: text,
 		}));
+
+		// routing for resetting password. Authenticated Request
+		try {
+
+			const data = {"pass1": newPassword["new password"], "pass2":newPassword["confirm new password"] };
+			const response = await apiService.resetPassword(data, authToken.authToken);
+			if (response.status === "fail") {
+				throw new Error("request failed.")
+			}
+		} catch (error) {
+			console.log(error); 
+		}
+		if (response.status === "fail") {
+			Alert.alert("Invalid Password");
+		} else {
+			navigation.navigate("ReturnLoginScreen");
+		}
 	}
 
 	// Turn into async function with await when API is set up

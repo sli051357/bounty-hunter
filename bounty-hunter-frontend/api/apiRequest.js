@@ -26,11 +26,11 @@ const apiService = {
 	},
 
 	// username = "username"
-	// returns {"pfp":base64.b64encode(user_profile.profile_image)}
+	// returns url in response.url
 	getUserPic: async (username) => {
 		try {
 			const response = await axiosInstance.get(
-				`/users/profiles/${username}/profile-pic`,
+				`/users/profiles/${username}/profile-pic/`,
 			);
 			return response.data;
 		} catch (error) {}
@@ -40,7 +40,7 @@ const apiService = {
 	getUserLinks: async (username) => {
 		try {
 			const response = await axiosInstance.get(
-				`/users/profiles/${username}/links`,
+				`/users/profiles/${username}/links/`,
 			);
 			return response.data;
 		} catch (error) {console.log(error);}

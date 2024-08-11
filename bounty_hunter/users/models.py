@@ -1,7 +1,6 @@
 from django.db import models
 import PIL
 from django.contrib.auth.models import User
-# Create your models here.
 import random
 
 def create_new_ref_number():
@@ -11,7 +10,7 @@ def create_new_ref_number():
 class UserProfileInfo(models.Model):
     friends = models.ManyToManyField(User, related_name='friends',blank=True)
     bio_text = models.CharField(max_length=200)
-    profile_image = models.ImageField(upload_to='res/')
+    profile_image = models.ImageField(upload_to='users/res/',max_length=100,default="users/res/default_pfp.png")
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     code = models.CharField(
            max_length = 10,

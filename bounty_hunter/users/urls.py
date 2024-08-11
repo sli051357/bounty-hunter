@@ -25,7 +25,7 @@ urlpatterns = [
     path('reject-friend-request/<int:pk>/', views.reject_friend_request, name="reject_friend_request"),
     path('remove-friend/<slug:request_username>/', views.remove_friend, name="remove_friend"),
     path('get-csrf-token/', views.get_csrf_token, name="get_csrf_token"),
-
+    path('res/<path:filename>/', views.pic_access, name='pic_access'),
 
 
 

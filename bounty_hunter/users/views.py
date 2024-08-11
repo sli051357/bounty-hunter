@@ -1,28 +1,17 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db import IntegrityError
-from django.template import loader 
 from django.contrib.auth.models import User, AnonymousUser
-from django.contrib.auth import authenticate, login, logout
 from .models import UserProfileInfo, LinkedAccounts, FriendRequest, create_new_ref_number
-from django.shortcuts import redirect
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
-from django.http import HttpResponseNotFound, HttpResponse, Http404
-from PIL import Image
-from django.core.files import File
-from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, Http404
 import base64
-from .forms import WishlistForm
-from django.views import View
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.response import Response
 from django.middleware.csrf import get_token
 import json
-import random
-
+import os
 from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view
@@ -32,7 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from django.contrib.auth import update_session_auth_hash
+from django.conf import settings
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
@@ -62,16 +51,7 @@ def bio(request, request_username):
         "bio":user_profile.bio_text
     }
     return JsonResponse(data=data)
-    
-def profile_pic(request, request_username):
-    request_owner = get_object_or_404(User, username=request_username)
-    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
 
-    data = {
-        "pfp":base64.b64encode(user_profile.profile_image)
-    }
-
-    return JsonResponse(data=data)
 
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -186,7 +166,27 @@ def edit_bio(request, request_username):
     else:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
     
+#returns httpresponse of image for use in uri of app
+def pic_access(request, filename):
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            return HttpResponse(file.read(), content_type="image/jpeg")
+    else:
+        raise Http404("Image not found")
 
+    
+#returns url of image
+def profile_pic(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+
+    data = {
+        "url":request.build_absolute_uri(user_profile.profile_image.url)
+    }
+
+    return JsonResponse(data=data)
 
 def edit_profile_pic(request, request_username):
     new_pic = request.POST["new_pic"]
@@ -231,13 +231,15 @@ def register_user(request):
     username =data.get('username', None) 
     password =data.get('password', None) 
     email = data.get('email', None) 
-    #check if email already exists.
+    # attempt to reactivate account, if fails move on to normal account creation.
     try:
-        User = get_object_or_404(User, email=email)
-    except Http404:
+        #will fail if user doesnt exist, then move on to next code
+        user = get_object_or_404(User, email=email)
+
         print("email exists")
         #check if user has been "deleted"
-        if not User.is_active:
+        if not user.is_active:
+            new_token = Token.objects.get(user=user)
             send_mail(
                 subject="Reactivate your account",
                 message=BASE_URL + "users/verify/" + str(new_token.key),
@@ -246,36 +248,36 @@ def register_user(request):
                 fail_silently=False
             )
             return JsonResponse({"status": "success"})
-        return JsonResponse({"status": "fail"})  
-    
-    new_user = User(username=username,email=email,is_active=False)
-    #sets password
-    new_user.set_password(password)
+        else:
+            return JsonResponse({"status": "fail"})  
+        
+    except Http404: # if user does not exist, check if username exists.
+        new_user = User(username=username,email=email,is_active=False)
+        #sets password
+        new_user.set_password(password)
 
-    try:
-        new_user.save()
-    except IntegrityError: #will raise if username already exists.
-        print("username exists")
-        return JsonResponse({"status": "fail"})       
-    
-    new_token = Token.objects.create(user=new_user)
-    new_token.save()
+        try:
+            new_user.save()
+        except IntegrityError: #will raise if username already exists.
+            print("username exists")
+            return JsonResponse({"status": "fail"})       
+        
+        new_token = Token.objects.create(user=new_user)
+        new_token.save()
 
-    #verification code is automatically generated
-    new_bio = UserProfileInfo(bio_text="No information given.", owner=new_user)
-    with open("res/default.png", 'rb') as f:
-        new_bio.profile_image.save('default_pfp.png', File(f), save=True)
-    new_bio.save()
+        #verification code is automatically generated
+        new_bio = UserProfileInfo(bio_text="No information given.", owner=new_user)
+        new_bio.save()
 
-    send_mail(
-    subject="Verify Your Email",
-    message=BASE_URL + "users/verify/" + str(new_token.key),
-    from_email=EMAIL_HOST_USER,
-    recipient_list=[email],
-    fail_silently=False
-    )
+        send_mail(
+        subject="Verify Your Email",
+        message=BASE_URL + "users/verify/" + str(new_token.key),
+        from_email=EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False
+        )
 
-    return JsonResponse({"status": "success"})
+        return JsonResponse({"status": "success"})
 
 # for verifying in account creation, uses django rendered pages.
 def verify(request, token):

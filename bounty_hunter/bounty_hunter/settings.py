@@ -17,8 +17,9 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
+MEDIA_URL = '/users/res/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-nmvbyrqgitx53rwq070+07$(4+djolbk6#9t$*u#so6gec+gq7'
