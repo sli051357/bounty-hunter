@@ -1,13 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
-import apiService from "../../api/apiRequest";
 
 function InputEmailVerifyScreen() {
 	const navigation = useNavigation();
@@ -22,7 +22,7 @@ function InputEmailVerifyScreen() {
 		// console.log(codeVerify);
 		// Check the validity of code here, return if false, otherwise proceed. Turn this func to async and await
 		try {
-			const data = {"email": email};
+			const data = { email: email };
 			const response = await apiService.forgotPassword(data);
 			if (response.status === "fail") {
 				Alert.alert("Invalid Email or the user doesn't exist.");
@@ -30,14 +30,12 @@ function InputEmailVerifyScreen() {
 				Alert.alert("Enter the code sent to your email.");
 				setEmail("");
 				navigation.navigate("VerifyEmailScreen");
-			} 
-		}catch (error) {
-			throw error;
+			}
+		} catch (error) {
+			throw new Error("failure");
 		}
 	}
 
-
-		
 	return (
 		<>
 			<LinearGradient

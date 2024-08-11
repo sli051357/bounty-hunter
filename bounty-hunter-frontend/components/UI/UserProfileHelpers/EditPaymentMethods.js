@@ -10,22 +10,21 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 		await Clipboard.setStringAsync(payment);
 	}
 
-
-	console.log(userData)
+	console.log(userData);
 	let payments = (
 		<View style={styles.container}>
 			<Text style={styles.title}>Payment Methods:</Text>
 			<>
-			{Object.entries(userData).map(([id, [provider, username]]) => (
-			<PaymentMethod
-				key={id} // Use the id from the object as the key for the component
-				paymentName={provider} // The provider (e.g., "venmo", "zelle")
-				paymentUsername={username} // The username associated with the provider
-				icon="attach-outline" // The icon to display
-				onPress={() => copyPayment(username)} // Function to handle the press event
-			/>
-			))}
-		</>
+				{Object.entries(userData).map(([id, [provider, username]]) => (
+					<PaymentMethod
+						key={id} // Use the id from the object as the key for the component
+						paymentName={provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={username} // The username associated with the provider
+						icon="attach-outline" // The icon to display
+						onPress={() => copyPayment(username)} // Function to handle the press event
+					/>
+				))}
+			</>
 		</View>
 	);
 
@@ -34,13 +33,13 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 			<View style={styles.container}>
 				<Text style={styles.title}>Payment Methods:</Text>
 				{Object.entries(userData).map(([id, [provider, username]]) => (
-				<PaymentMethod
-					key={id} // Use the id from the object as the key for the component
-					paymentName={provider} // The provider (e.g., "venmo", "zelle")
-					paymentUsername={username} // The username associated with the provider
-					icon="attach-outline" // The icon to display
-					onPress={() => copyPayment(username)} // Function to handle the press event
-				/>
+					<PaymentMethod
+						key={id} // Use the id from the object as the key for the component
+						paymentName={provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={username} // The username associated with the provider
+						icon="attach-outline" // The icon to display
+						onPress={() => copyPayment(username)} // Function to handle the press event
+					/>
 				))}
 				<Pressable onPress={managePaymentsPage}>
 					<Text style={styles.managePayments}>Manage linked accounts</Text>

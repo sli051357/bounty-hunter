@@ -12,11 +12,11 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+import apiService from "../../../api/apiRequest";
 import Button from "../../../components/UI/Button";
 import ChangeContent from "../../../components/UI/SettingsPageHelpers/ChangeContent";
 import ChangePasswordSettings from "../../../components/UI/SettingsPageHelpers/ChangePasswordSettings";
 import TitleWithButton from "../../../components/UI/TitleWithButton";
-import apiService from "../../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import { setAuthToken } from "../../../store/authToken";
 import { setUsername } from "../../../store/username";
@@ -53,13 +53,11 @@ function UserSettingsScreen() {
 		}
 	}
 
-	
 	function newPasswordChangeHandler(text, type) {
 		setNewPassword((prevState) => ({
 			...prevState,
 			[type]: text,
 		}));
-
 	}
 
 	// Turn into async function with await when API is set up
@@ -69,14 +67,19 @@ function UserSettingsScreen() {
 
 		// routing for resetting password. Authenticated Request
 		try {
-
-			const data = {"pass1": newPassword["new password"], "pass2":newPassword["confirm new password"] };
-			const response = await apiService.resetPassword(data, authToken.authToken);
+			const data = {
+				pass1: newPassword["new password"],
+				pass2: newPassword["confirm new password"],
+			};
+			const response = await apiService.resetPassword(
+				data,
+				authToken.authToken,
+			);
 			if (response.status === "fail") {
-				throw new Error("request failed.")
+				throw new Error("request failed.");
 			}
 		} catch (error) {
-			console.log(error); 
+			console.log(error);
 		}
 		if (response.status === "fail") {
 			Alert.alert("Invalid Password");
@@ -87,7 +90,6 @@ function UserSettingsScreen() {
 			password: "",
 			"confirm password": "",
 		});
-
 	}
 
 	return (

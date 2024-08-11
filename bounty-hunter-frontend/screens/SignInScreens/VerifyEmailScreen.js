@@ -1,17 +1,15 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
-
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
-import apiService from "../../api/apiRequest";
 import { setPassToken } from "../../store/passToken";
-
 
 function VerifyEmailScreen() {
 	const navigation = useNavigation();
@@ -26,7 +24,7 @@ function VerifyEmailScreen() {
 	//adding the apistuff here
 	async function confirmChangesHandler() {
 		console.log(codeVerify);
-		data = {"code": codeVerify};
+		data = { code: codeVerify };
 		try {
 			response = await apiService.verifyCode(data);
 			if (response.status === "success") {
@@ -52,8 +50,8 @@ function VerifyEmailScreen() {
 					<View style={styles.container}>
 						<Text style={styles.header}>Verify Email</Text>
 						<Text style={styles.description}>
-							A 10-digit verification code has been sent to the email registered with
-							this account. Enter the verification code below.
+							A 10-digit verification code has been sent to the email registered
+							with this account. Enter the verification code below.
 						</Text>
 						<CustomTextInput
 							typeTitle="Verification Code"

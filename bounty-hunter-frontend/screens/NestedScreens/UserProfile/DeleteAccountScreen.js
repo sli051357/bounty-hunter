@@ -1,18 +1,17 @@
 import {
+	Alert,
 	KeyboardAvoidingView,
 	ScrollView,
 	StyleSheet,
 	Text,
 	View,
-	Alert,
 } from "react-native";
-import {useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import apiService from "../../../api/apiRequest";
 import Button from "../../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 // import { useSelector } from "react-redux";
 import { resetApp } from "../../../store/redux/resetApp";
-import apiService from "../../../api/apiRequest";
-
 
 function DeleteAccountScreen() {
 	const authToken = useSelector((state) => state.authToken);
@@ -21,14 +20,13 @@ function DeleteAccountScreen() {
 	// Right now only deleted storage off device and clears redux store
 	async function deleteAccountHandler() {
 		try {
-			data = {}
-			const response = await apiService.deleteUser(data,authToken.authToken);
+			data = {};
+			const response = await apiService.deleteUser(data, authToken.authToken);
 			if (response.status === "fail") {
 				throw new Error();
-		} else {
+			}
 			resetApp();
-		}
-		} catch (error){
+		} catch (error) {
 			console.log(error);
 			Alert.alert("Delete Failed.");
 		}

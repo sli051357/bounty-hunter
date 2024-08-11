@@ -5,13 +5,13 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { setAuthToken } from "../../store/authToken";
 import { setUsername } from "../../store/username";
-import apiService from "../../api/apiRequest";
 
 function LoginScreen() {
 	const insets = useSafeAreaInsets();
@@ -44,14 +44,15 @@ function LoginScreen() {
 			dispatch(setUsername(signInUser["username or email"]));
 
 			//trying sign in
-			const data = {"username": signInUser["username or email"], "password":signInUser.password};
+			const data = {
+				username: signInUser["username or email"],
+				password: signInUser.password,
+			};
 			console.log(data);
 			const responseData = await apiService.signIn(data);
-			console.log(responseData)
+			console.log(responseData);
 
 			dispatch(setAuthToken(responseData.token));
-
-			
 		} catch (error) {
 			setError({
 				emailOrUsername: true,
