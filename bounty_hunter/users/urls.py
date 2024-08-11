@@ -5,6 +5,8 @@ from . import views
 
 urlpatterns = [
     path('profiles/<slug:request_username>/bio/', views.bio, name="bio"),
+    path('profiles/<slug:request_username>/rating/', views.rating, name="rating"),
+    path('profiles/<slug:request_username>/friend-count/', views.friend_count, name="friend_count"),
     path('profiles/<slug:request_username>/profile-pic/', views.profile_pic, name="profile_pic"),
     path('profiles/<slug:request_username>/links/', views.linked_accs, name="links"),
     path('delete/', views.delete_account, name="delete_account"),

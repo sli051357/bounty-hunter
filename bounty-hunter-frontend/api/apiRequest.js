@@ -19,12 +19,31 @@ const apiService = {
 	getUserBio: async (username) => {
 		try {
 			const response = await axiosInstance.get(
-				`/users/profiles/${username}/bio`,
+				`/users/profiles/${username}/bio/`,
 			);
 			return response.data;
 		} catch (error) {}
 	},
 
+
+	getRating: async (username) => {
+		try {
+			const response = await axiosInstance.get(
+				`/users/profiles/${username}/rating/`,
+			);
+			return response.data;
+		} catch (error) {throw error;}
+	},
+
+	getFriendCount: async (username) => {
+		try {
+			const response = await axiosInstance.get(
+				`/users/profiles/${username}/friend-count/`,
+			);
+			return response.data;
+		} catch (error) {throw error;}
+	},
+	
 	// username = "username"
 	// returns url in response.url
 	getUserPic: async (username) => {

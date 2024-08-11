@@ -52,6 +52,23 @@ def bio(request, request_username):
     }
     return JsonResponse(data=data)
 
+def rating(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+    data = {
+        "rating": str(user_profile.rating)
+    }
+    return JsonResponse(data=data)
+
+def friend_count(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+    count = user_profile.friends.count()
+    data = {
+        "friendCount": str(count)
+    }
+    return JsonResponse(data=data)
+
 
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)

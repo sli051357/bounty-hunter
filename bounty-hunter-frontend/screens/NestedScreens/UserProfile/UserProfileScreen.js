@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useEffect, useState, useCallback } from "react";
 import {
 	Image,
 	KeyboardAvoidingView,
@@ -72,33 +72,43 @@ function UserProfileScreen() {
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [rating, setRating] = useState("");
+	const [friendCount, setFriendCount] = useState("");
 	const dispatch = useDispatch();
 
 
-	useEffect(() => {
-		const fetchProfile= async () => {
-		  try {
-			//set the bio
-			const response = await apiService.getUserBio(username.username);
-			setAboutMe(response["bio"]);
+	useFocusEffect(
 
-			//reload the payment method storage
-			const response2 = await apiService.getUserLinks(username.username);
-			dispatch(setPaymentMethod(response2));
-
-			const response3 = await apiService.getUserPic(username.username);
-			setImageUrl(response3.url);
-			console.log(imageUrl);
-
-		  } catch (error){
-			console.log(error);
-		  }finally {
-			setLoading(false);
-		  }
-		};
-	
-		fetchProfile();
-	  }, []); // Empty dependency array means this effect runs once on component mount
+		useCallback(() => {
+            const fetchProfile= async () => {
+				try {
+				  //set the bio
+				  const response = await apiService.getUserBio(username.username);
+				  setAboutMe(response["bio"]);
+	  
+				  const responseHi = await apiService.getRating(username.username);
+				  setRating(responseHi["rating"]);
+	  
+				  const responseHello = await apiService.getFriendCount(username.username);
+				  setFriendCount(responseHello["friendCount"]);
+	  
+				  //reload the payment method storage
+				  const response2 = await apiService.getUserLinks(username.username);
+				  dispatch(setPaymentMethod(response2));
+	  
+				  const response3 = await apiService.getUserPic(username.username);
+				  setImageUrl(response3.url);
+				  console.log(imageUrl);
+	  
+				} catch (error){
+				  console.log(error);
+				}finally {
+				  setLoading(false);
+				}
+			  };
+		  
+			  fetchProfile();
+        }, [])); 
 	
 	if (loading) {
 		return <ActivityIndicator size="large" color="#0000ff" />;
@@ -276,7 +286,7 @@ function UserProfileScreen() {
 								Rating:
 							</Text>
 							<Text style={styles.scoreTextStyles}>
-								{DUMMY_USER_PROFILE.rating}
+								{rating}
 							</Text>
 						</View>
 						<View style={styles.editView}>
@@ -284,7 +294,7 @@ function UserProfileScreen() {
 								Friend Count:{" "}
 							</Text>
 							<Text style={styles.scoreTextStyles}>
-								{DUMMY_USER_PROFILE.friends.length}
+								{friendCount}
 							</Text>
 						</View>
 					</View>
