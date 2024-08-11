@@ -11,6 +11,8 @@ import {
 	ActivityIndicator
 } from "react-native";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setPaymentMethod } from "../../../store/payment";
 
 import apiService from "../../../api/apiRequest.js";
 import FavorCard from "../../../components/FavorCard.js";
@@ -57,27 +59,35 @@ function UserProfileScreen() {
 	// set authorization token here
 	const authToken = useSelector((state) => state.authToken);
 	//apiService.setAuthorizationHeader(authToken.authToken);
-
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 
-	//ok im gonna try
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
 	const [loading, setLoading] = useState(true);
+	const dispatch = useDispatch();
+
 
 	useEffect(() => {
-		const fetchBio = async () => {
+		const fetchProfile= async () => {
 		  try {
+			//set the bio
 			const response = await apiService.getUserBio(username.username);
-			setAboutMe(response["bio"])
-		  } finally {
+			setAboutMe(response["bio"]);
+
+			//reload the payment method storage
+			const response2 = await apiService.getUserLinks(username.username);
+			dispatch(setPaymentMethod(response2));
+
+		  } catch (error){
+			console.log(error);
+		  }finally {
 			setLoading(false);
 		  }
 		};
 	
-		fetchBio();
+		fetchProfile();
 	  }, []); // Empty dependency array means this effect runs once on component mount
 	
 	if (loading) {

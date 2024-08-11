@@ -11,33 +11,19 @@ function UserLinkedAccountsScreen() {
 	const dispatch = useDispatch();
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
 	// console.log(payments)
-	const [venmo, setVenmo] = useState({
+	const [venmo, setZelle] = useState({
 		paymentName: "venmo",
 		username: payments[0].username,
 	});
-	const [zelle, setZelle] = useState({
-		paymentName: "zelle",
-		username: payments[1].username,
-	});
 
-	function editVenmoPaymentHandler(text) {
-		setVenmo((prevState) => ({
-			...prevState,
-			username: text,
-		}));
-	}
-	function editZellePaymentHandler(text) {
+	function editPaymentHandler(text) {
 		setZelle((prevState) => ({
 			...prevState,
 			username: text,
 		}));
 	}
-	function saveVenmoHandler() {
-		if (venmo.username.length > 0) {
-			dispatch(addPaymentMethod(venmo));
-		}
-	}
-	function saveZelleHandler() {
+
+	function savePaymentHandler() {
 		if (zelle.username.length > 0) {
 			dispatch(addPaymentMethod(zelle));
 		}

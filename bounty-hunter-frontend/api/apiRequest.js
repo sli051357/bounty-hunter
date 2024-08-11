@@ -36,15 +36,14 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// username = "username"
-	// returns = {"accounts":linked_accs}
+	//data is a dict of entries: data[str(entry.id)] = [entry.provider_text, entry.account_text]
 	getUserLinks: async (username) => {
 		try {
 			const response = await axiosInstance.get(
 				`/users/profiles/${username}/links`,
 			);
 			return response.data;
-		} catch (error) {}
+		} catch (error) {console.log(error);}
 	},
 
 	// username = "username"

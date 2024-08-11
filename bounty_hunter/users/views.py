@@ -76,16 +76,14 @@ def profile_pic(request, request_username):
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
-    linked_accs_list_strs = []
+
+    data = {}
+
     for entry in linked_accs_list:
-        linked_accs_list_strs.append(entry.account_text + ":" + str(entry.id))
-    linked_accs = ",".join(linked_accs_list_strs)
+        data[str(entry.id)] = [entry.provider_text, entry.account_text]
 
-    data = {
-        "accounts":linked_accs
-    }
 
-    return JsonResponse(data=data)
+    return JsonResponse(data)
 
 
 #retrieves the list of friend requests    

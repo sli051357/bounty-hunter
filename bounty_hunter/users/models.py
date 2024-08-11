@@ -27,6 +27,7 @@ class UserProfileInfo(models.Model):
 #model for storing linked accounts. Many linked accounts may share a single owner.
 class LinkedAccounts(models.Model):
     id = models.AutoField(primary_key=True)
+    provider_text = models.CharField(max_length=100)
     account_text = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
