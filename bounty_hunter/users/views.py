@@ -110,7 +110,7 @@ def get_friends_list(request):
             "username": f.username,
             "id": f.id,
             "rating": user_profile.rating,
-            "profile pic url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
+            "image url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
         }
         data[f"friend {x}"] = f_data
         x += 1
