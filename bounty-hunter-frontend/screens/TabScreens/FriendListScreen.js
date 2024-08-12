@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
-// import { useFonts } from 'expo-font';
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
