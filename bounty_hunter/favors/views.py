@@ -11,6 +11,15 @@ import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
 
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+import json
 
 CREATE = "Create"
 DELETE = "Delete"
@@ -88,9 +97,10 @@ def get_total_amt_owed(request,to_user_username):
 
 # Ceate your views here.
 # view a list of all favors 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def favor_list(request): # ex: favors/
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
     # get current user
     curr_user = request.user
 
@@ -276,25 +286,27 @@ def tag_detail(request, tag_id):
 
 # create a new favor
 # @login_required
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_favor(request):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    if request.method =="POST":
-        form = FavorForm(request.POST)
-        if form.is_valid():
-            favor = form.save(commit=False)
-            favor.owner = request.user
-            favor.points_value = 100
-            favor.owner_status = CREATE
-            favor.assignee_status = INCOMPLETE
-            favor.completed = False
-            favor.active = False
-            favor.save()
-            return JsonResponse({"success": True, "favor_id": favor.id})
-        else:
-            return JsonResponse({"success": False, "errors": form.errors})
-    else: 
-        return JsonResponse({"error": "GET method not allowed"}, status=405)
+    data = json.loads(request.body)
+    print(data) 
+    
+    form = FavorForm(data=data)
+    if form.is_valid():
+        favor = form.save(commit=False)
+        favor.owner = request.user
+        favor.points_value = 100
+        favor.owner_status = CREATE
+        favor.assignee_status = INCOMPLETE
+        favor.completed = False
+        favor.active = False
+        favor.save()
+        return JsonResponse({"success": True, "favor_id": favor.id})
+    else:
+        return JsonResponse({"success": False, "errors": form.errors})
+
 
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made
