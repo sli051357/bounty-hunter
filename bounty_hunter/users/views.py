@@ -105,11 +105,12 @@ def get_friends_list(request):
     data = {}
     x = 1
     for f in friends.all():
+        user_profile = UserProfileInfo.objects.get(owner = f)
         f_data = {
             "username": f.username,
             "id": f.id,
-            "rating": f.rating,
-            "profile pic": f.profile_image,
+            "rating": user_profile.rating,
+            "profile pic url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
         }
         data[f"friend {x}"] = f_data
         x += 1
