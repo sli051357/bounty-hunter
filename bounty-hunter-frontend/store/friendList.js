@@ -2,11 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	friendList: [
-		// { nickname: "Superman012", id: "A87654321", fav: true },
-		// { nickname: "Joker13", id: "J13503923", fav: false },
-		// { nickname: "SamCat2013", id: "PU028385", fav: false },
-		// { nickname: "RoboCop_64", id: "0DK23JL", fav: false },
-		// { nickname: "WonderWoman45", id: "A1309524", fav: true },
 		{
 			id: "A87654321",
 			friendName: "Superman012",
@@ -41,24 +36,17 @@ const friendListSlice = createSlice({
 			});
 		},
 		favoriteFriend: (state, action) => {
+			console.log("pressed");
+			console.log("current state " + state.favoriteStatus);
 			return {
 				...state,
-				friends: state.friendList.map(friend => {
-					if (friend.id !== action.payload.id) {
-						return friend;
-					}
-
-					return {
-						...friend,
-						favoriteStatus: !friend.favoriteStatus
-					}
-				})
+				favoriteStatus: !state.favoriteStatus
 			}
 		},
 		resetFriendList: () => initialState,
 	},
 });
 
-export const { addFriend, removeFriend, resetFriendList } =
+export const { addFriend, removeFriend, favoriteFriend, resetFriendList } =
 	friendListSlice.actions;
 export default friendListSlice.reducer;

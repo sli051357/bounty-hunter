@@ -16,7 +16,8 @@ import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
 
 function FriendListScreen() {
-	const friendList = useSelector((state) => state.friendList.friendList);
+	// const friendList = useSelector((state) => state.friendList.friendList);
+	const friendList = DUMMY_USER_PROFILE.friends;
 	const [friendRequestList, setFriendRequestList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
@@ -94,6 +95,8 @@ function FriendListScreen() {
 			</View>
 		);
 
+		console.log(friendList);
+
 		// Favorite Friends
 	} else if (curScreen === 2) {
 		// newFriends = DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true));
@@ -113,6 +116,8 @@ function FriendListScreen() {
 					))}
 			</View>
 		);
+
+		console.log(friendList.filter((friend) => friend.favoriteStatus === true));
 
 		// Requests
 	} else if (curScreen === 3) {

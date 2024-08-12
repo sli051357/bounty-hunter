@@ -20,7 +20,8 @@ function FriendCard({ friend, imagePath }) {
 	const [favorite, setFavorite] = useState(friend.favoriteStatus);
 
 	function editFavoriteStatus() {
-		setFavorite((curr) => !curr);
+		// setFavorite((curr) => !curr);
+		dispatch(favoriteFriend(friend));
 	}
 
 	function createFavor() {
