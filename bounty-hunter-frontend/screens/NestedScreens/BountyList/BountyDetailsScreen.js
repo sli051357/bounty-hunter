@@ -26,7 +26,7 @@ function BountyDetailsScreen({ route }) {
 	const currEditBountyHistory = [...currBounty.bountyEditHistory];
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	const username = useSelector((state) => state.username.username); //currBounty.assigneeId//
+	const username = currBounty.assignee//useSelector((state) => state.username.username); //
 	// console.log(currEditBountyHistory);
 
 	const [favorDetails, setFavorDetails] = useState(currBounty);

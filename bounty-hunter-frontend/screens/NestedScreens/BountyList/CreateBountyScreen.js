@@ -18,10 +18,12 @@ import Button from "../../../components/UI/Button";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import today from "../../../util/date";
+import apiService from "../../../api/apiRequest";
 
 function CreateBountyScreen() {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
+	const authToken = useSelector((state) => state.authToken.authToken);
 	const username = useSelector((state) => state.username.username);
 	const [favorDetails, setFavorDetails] = useState({
 		favorName: "",
@@ -87,25 +89,25 @@ function CreateBountyScreen() {
 	}
 
 	// Turn this into async function when axios is added
-	function createFavorHandler() {
+	async function createFavorHandler() {
 		setIsUploading(true);
 		try {
+			// ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
 			// Will Set up Axios Sign Up later
-			// const response = await apiService.createBounty(favor);
 			const favor = {
-				bountyId: Math.floor(Math.random() * 1000), // Dummy Bounty Id, async call in actual implementation, change to response
-				senderId: username, // Will be our unique Id
-				assigneeId: favorDetails.assigneeId, // Same with Id
-				favorName: favorDetails.favorName,
+				assignee: favorDetails.assigneeId, // Same with Id
+				name: favorDetails.favorName,
 				dateCreated: today,
 				tags: tags,
-				paymentType: isMonetaryStatus ? "Monetary" : "Non-Monetary",
-				paymentOwed: favorDetails.paymentOwed,
+				paymentType: isMonetaryStatus ? "Monetary" : "Nonmonetary",
+				total_owed_amount: favorDetails.paymentOwed,
 				description: favorDetails.description,
-				status: "In-Progress",
-				privacyStatus: favorDetails.privacyStatus,
+				privacyStatus: favorDetails.privacyStatus ? "Public" : "Private",
 				bountyEditHistory: favorDetails.bountyEditHistory,
 			};
+			const response = await apiService.createBounty(favor, authToken);
+			console.log(response);
+
 			dispatch(addBounty(favor));
 		} catch (error) {
 			console.log(error);

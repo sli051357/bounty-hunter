@@ -130,8 +130,8 @@ const apiService = {
 	// returns {"success": True, "favor_id": favor.id} if creation is successful
 	// {"success": False, "errors": form.errors} if creation unsuccessful
 	// {"error": "GET method not allowed"} if wrong http method is used
-	createBounty: async (data) => {
-		const response = await axiosInstance.post("favors/create", data);
+	createBounty: async (data, token) => {
+		const response = await axiosInstance.post("favors/create/", data, {headers: { authorization: `Token ${token}` }},);
 		return response.data;
 	},
 
@@ -141,13 +141,21 @@ const apiService = {
 	// searchParam = 'some keyword(s) in these quotation marks - searches by bounty title, description, or assignee name'
 	// returns {"favors": list of all favors, including all info about a favor}
 	// to know what each individual favor looks like, see return object below
-	viewBountyList: async (filterParams, sortParams, searchParam) => {
+	viewBountyList: async (filterParams, sortParams, searchParam,token) => {
 		const params = new URLSearchParams({
 			...filterParams,
 			...sortParams,
 			search: searchParam,
 		}); // combines all params into one object of URL query format
-		const response = await axiosInstance.get(`/favors?${params}`); // puts params into url
+		const response = await axiosInstance.get(`/favors?${params}`, 
+			{headers: { authorization: `Token ${token}` }}); // puts params into url
+		return response.data;
+	},
+
+	changeBountyStatus: async (id, token) => {
+		const response = await axiosInstance.post(`/favors/${id}/change-status/`, 
+			{headers: { authorization: `Token ${token}` }},
+		);
 		return response.data;
 	},
 
@@ -157,7 +165,7 @@ const apiService = {
 	// "total_owed_type": favor.total_owed_type, "total_owed_amt": favor.total_owed_amt, "privacy": favor.privacy, "owner_status": favor.owner_status,
 	// "assignee_status": favor.assignee_status, "is_active": favor.active, "is_deleted": favor.deleted, "is_completed": favor.completed, "tags": tags,}
 	viewBounty: async (id) => {
-		const response = await axiosInstance.get(`/favors/${id}`);
+		const response = await axiosInstance.get(`/favors/${id}/`);
 		return response.data;
 	},
 
