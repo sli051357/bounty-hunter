@@ -272,7 +272,7 @@ class FavorListTest(TestCase):
                   "updated_at": self.favor3.updated_at,
                   "total_owed_type": self.favor3.total_owed_type,
                   "total_owed_amt": self.favor3.total_owed_amt,
-                  "total_owed_wishlist": self.favor3.total_owed_amt,
+                  "total_owed_wishlist": self.favor3.total_owed_wishlist,
                   "privacy": self.favor3.privacy,
                   "owner_status": self.favor3.owner_status,
                   "assignee_status": self.favor3.assignee_status,
