@@ -13,6 +13,7 @@ import {
 //https://github.com/react-native-async-storage/async-storage/tree/main/packages/default-storage
 
 import authTokenReducer from "../authToken.js";
+import passTokenReducer from "../passToken.js";
 import paymentMethodsReducer from "../payment.js";
 import ratingReducer from "../rating.js";
 import userNameReducer from "../username.js";
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
 	friendList: friendListReducer,
 	bountyList: bountyListReducer,
 	authToken: authTokenReducer,
+	passToken: passTokenReducer,
 	paymentMethods: paymentMethodsReducer,
 	rating: ratingReducer,
 	username: userNameReducer,

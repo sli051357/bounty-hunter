@@ -1,36 +1,48 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db import IntegrityError
-from django.template import loader 
-
 from django.contrib.auth.models import User, AnonymousUser
-from django.contrib.auth import authenticate, login, logout
-
-from .models import UserProfileInfo, LinkedAccounts, FriendRequest
-from django.shortcuts import redirect
-
+from .models import UserProfileInfo, LinkedAccounts, FriendRequest, create_new_ref_number
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
-
-from django.http import HttpResponseNotFound, HttpResponse, Http404
-
-
-from PIL import Image
-from django.core.files import File
-
-from django.contrib import messages
-
-from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, Http404
 import base64
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from django.middleware.csrf import get_token
+import json
+import os
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from django.conf import settings
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
 BASE_URL = "http://127.0.0.1:8000/"
 
+class CustomAuthToken(ObtainAuthToken):
 
-from .forms import WishlistForm
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
 
-from django.views import View
+        return JsonResponse({
+            'token': token.key
+        })
+    
 
+def get_csrf_token(request):
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})
 
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -39,33 +51,37 @@ def bio(request, request_username):
         "bio":user_profile.bio_text
     }
     return JsonResponse(data=data)
-    
-def profile_pic(request, request_username):
+
+def rating(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
-
     data = {
-        "pfp":base64.b64encode(user_profile.profile_image)
+        "rating": str(user_profile.rating)
     }
-
     return JsonResponse(data=data)
+
+def friend_count(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+    count = user_profile.friends.count()
+    data = {
+        "friendCount": str(count)
+    }
+    return JsonResponse(data=data)
+
 
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
-    linked_accs_list_strs = []
+
+    data = {}
+
     for entry in linked_accs_list:
-        linked_accs_list_strs.append(entry.account_text + ":" + str(entry.id))
-    linked_accs = ",".join(linked_accs_list_strs)
+        data[str(entry.id)] = [entry.provider_text, entry.account_text]
 
-    data = {
-        "accounts":linked_accs
-    }
 
-    return JsonResponse(data=data)
+    return JsonResponse(data)
 
-def sign_up(request):
-    return render(request, "users/register.html")
 
 #retrieves the list of friend requests    
 # @login_required
@@ -151,28 +167,51 @@ def remove_friend(request, request_username):
         return JsonResponse({"status":"fail"})
 
 # @login_required
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_account(request):
-    if request.user != AnonymousUser:
-        request.user.is_active = False
-        request.user.save()
-        return JsonResponse(data={"status":"success"})
+    request.user.is_active = False
+    request.user.save()
+    return JsonResponse(data={"status":"success"})
 
-    else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
-
-
+# we need to remake every post request to look like this.
+# Authenticates the request, then checks if its the same user.
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def edit_bio(request, request_username):
-    new_bio = request.POST["new_bio"]
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            profile = get_object_or_404(UserProfileInfo, owner=request.user)
-            profile.bio_text = new_bio
-            profile.save()
-            return JsonResponse(data={"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
+    data = json.loads(request.body)
+    new_bio = data.get('bio', None) 
+    if request.user.username == request_username:
+        profile = get_object_or_404(UserProfileInfo, owner=request.user)
+        profile.bio_text = new_bio
+        profile.save()
+        return JsonResponse(data={"status":"success"})
     else:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
+    
+#returns httpresponse of image for use in uri of app
+def pic_access(request, filename):
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            return HttpResponse(file.read(), content_type="image/jpeg")
+    else:
+        raise Http404("Image not found")
+
+    
+#returns url of image
+def profile_pic(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+
+    data = {
+        "url":request.build_absolute_uri(user_profile.profile_image.url)
+    }
+
+    return JsonResponse(data=data)
 
 def edit_profile_pic(request, request_username):
     new_pic = request.POST["new_pic"]
@@ -211,85 +250,143 @@ def remove_link(request, request_username):
     else:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
     
+
 def register_user(request):
-
-    username =request.POST["username"]
-    password =request.POST["password"]
-    email = request.POST["email"]
-
-    new_user = User(username=username,password=password,email=email,is_active=False)
+    data = json.loads(request.body)
+    username =data.get('username', None) 
+    password =data.get('password', None) 
+    email = data.get('email', None) 
+    # attempt to reactivate account, if fails move on to normal account creation.
     try:
-        new_user.save()
-    except IntegrityError:
-        return HttpResponseNotFound("user already exists")         
-    
-    new_token = Token.objects.create(user=new_user)
-    new_token.save()
+        #will fail if user doesnt exist, then move on to next code
+        user = get_object_or_404(User, email=email)
 
-    new_bio = UserProfileInfo(bio_text="No information given.", owner=new_user)
-    with open("res/default.png", 'rb') as f:
-        new_bio.profile_image.save('default_pfp.png', File(f), save=True)
-    new_bio.save()
+        print("email exists")
+        #check if user has been "deleted"
+        if not user.is_active:
+            new_token = Token.objects.get(user=user)
+            send_mail(
+                subject="Reactivate your account",
+                message=BASE_URL + "users/verify/" + str(new_token.key),
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False
+            )
+            return JsonResponse({"status": "success"})
+        else:
+            return JsonResponse({"status": "fail"})  
+        
+    except Http404: # if user does not exist, check if username exists.
+        new_user = User(username=username,email=email,is_active=False)
+        #sets password
+        new_user.set_password(password)
 
-    send_mail(
-    subject="Verify Your Email",
-    message=BASE_URL + "users/verify/" + str(new_token.key),
-    from_email=EMAIL_HOST_USER,
-    recipient_list=[email],
-    fail_silently=False
-    )
+        try:
+            new_user.save()
+        except IntegrityError: #will raise if username already exists.
+            print("username exists")
+            return JsonResponse({"status": "fail"})       
+        
+        new_token = Token.objects.create(user=new_user)
+        new_token.save()
 
-    return redirect('/users/sign-up/')
+        #verification code is automatically generated
+        new_bio = UserProfileInfo(bio_text="No information given.", owner=new_user)
+        new_bio.save()
 
+        send_mail(
+        subject="Verify Your Email",
+        message=BASE_URL + "users/verify/" + str(new_token.key),
+        from_email=EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False
+        )
+
+        return JsonResponse({"status": "success"})
+
+# for verifying in account creation, uses django rendered pages.
 def verify(request, token):
-    request_user = get_object_or_404(Token,key=token).user
+    try:
+        request_user = get_object_or_404(Token,key=token).user
+    except Http404:
+        return JsonResponse({"status":"fail", "error":"token not found"})
+    if request_user.is_active:
+        return JsonResponse({"status":"fail", "error":"account is already active"})
+    
     request_user.is_active = True
     request_user.save()
-    return redirect('/users/sign-up/')
+    return JsonResponse({"status":"success"})
 
+# for verifying in forgot password. Post the request here.
+def verify_code(request):
+    data = json.loads(request.body)
+
+    #check if they posted a code
+    try:
+        code = data.get('code', None) 
+    except KeyError:
+        print("code not in data")
+        return JsonResponse({"status": "fail"})
+    #check if code is right
+    try:
+        profile = get_object_or_404(UserProfileInfo, code=int(code))
+    except Http404:
+        print("code is wrong")
+        return JsonResponse({"status": "fail"})
+
+    #reset code and return the authtoken for logging in the user.
+    profile.code = create_new_ref_number()
+    profile.save() 
+    authToken = Token.objects.get(user=profile.owner)
+    return JsonResponse({"status": "success", "authToken": authToken.key})
+
+# in the forgot password screen, can send an email to send a code to log in to reset password. Should return authtoken i think.
 def reset_password(request):
-    email = request.POST["email"]
+    data = json.loads(request.body)
+    email = data.get("email",None)
     try:
         attempt_user = get_object_or_404(User, email=email)
     except Http404:
-        messages.add_message(request, messages.ERROR, "User does not exist.")
-        return redirect('temp')
+        return JsonResponse({"status":"fail"})
 
-    user_token = get_object_or_404(Token, user=attempt_user)
+
+    try:
+        user_code = get_object_or_404(UserProfileInfo, owner=attempt_user).code
+    except Http404:
+        return JsonResponse({"status":"fail"})
     
     send_mail(
     subject="Reset your Password",
-    message=BASE_URL + "users/reset-password/" + str(user_token.key),
+    message="Code: "+ user_code,
     from_email=EMAIL_HOST_USER,
     recipient_list=[email],
     fail_silently=False
     )
-    messages.add_message(request, messages.SUCCESS, "Email sent!")
-    return redirect('temp')
 
+    #once a code is entered, it should be reset. This gets handled in the verify_code method.
+    
+    return JsonResponse({"status": "success"})
 
-
-def show_create_new_password(request, token):
-    context = {"token":token}
-    return render(request, "users/reset-password.html", context)
-
+# for resetting password, token required. 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_new_password(request):
-    pass1 = request.POST["pass1"]
-    pass2 = request.POST["pass2"]
-    token = request.POST["token"]
+    data = json.loads(request.body)
+    pass1 = data.get('pass1', None) 
+    pass2 = data.get('pass2', None) 
 
+    #check if the passwords match
     if pass1 != pass2:
         print("passwords dont match")
-        messages.add_message(request, messages.ERROR, "Passwords do not match.")
-        return redirect('temp')
+        return JsonResponse({"status": "fail"})
+    # password length should already be checked by front i think.
     
-    user = get_object_or_404(Token,key=token).user
-    user.password = pass1
-    user.save()
+    request.user.set_password(pass1)
+    request.user.save()
 
-    messages.add_message(request, messages.SUCCESS, "Password changed.")
     print("changed password")
-    return redirect('temp')
+    return JsonResponse({"status": "success"})
 
 
 def temp(request):

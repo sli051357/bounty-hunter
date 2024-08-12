@@ -1,21 +1,35 @@
 import {
+	Alert,
 	KeyboardAvoidingView,
 	ScrollView,
 	StyleSheet,
 	Text,
 	View,
 } from "react-native";
-
+import { useSelector } from "react-redux";
+import apiService from "../../../api/apiRequest";
 import Button from "../../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 // import { useSelector } from "react-redux";
 import { resetApp } from "../../../store/redux/resetApp";
 
 function DeleteAccountScreen() {
+	const authToken = useSelector((state) => state.authToken);
+
 	// Turn into async await when we get Axios Api call
 	// Right now only deleted storage off device and clears redux store
-	function deleteAccountHandler() {
-		resetApp();
+	async function deleteAccountHandler() {
+		try {
+			data = {};
+			const response = await apiService.deleteUser(data, authToken.authToken);
+			if (response.status === "fail") {
+				throw new Error();
+			}
+			resetApp();
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Delete Failed.");
+		}
 	}
 
 	return (

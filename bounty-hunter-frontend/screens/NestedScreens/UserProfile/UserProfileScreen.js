@@ -1,6 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
 import {
+	ActivityIndicator,
 	Image,
 	KeyboardAvoidingView,
 	Pressable,
@@ -10,6 +11,8 @@ import {
 	View,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setPaymentMethod } from "../../../store/payment";
 
 import apiService from "../../../api/apiRequest.js";
 import FavorCard from "../../../components/FavorCard.js";
@@ -21,13 +24,13 @@ import EditPaymentMethods from "../../../components/UI/UserProfileHelpers/EditPa
 import ProfileImage from "../../../components/UI/UserProfileHelpers/ProfileImage.js";
 import ProfileModal from "../../../components/UI/UserProfileHelpers/ProfileModal.js";
 
+import { Feather } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { GLOBAL_STYLES } from "../../../constants/styles.js";
 import {
 	DUMMY_FAVORS_OF_PROFILE,
 	DUMMY_USER_PROFILE,
 } from "../../../util/dummy-data.js";
-import * as ImagePicker from "expo-image-picker";
-import { Feather } from "@expo/vector-icons";
 
 /*
     Implementation Details
@@ -56,31 +59,80 @@ import { Feather } from "@expo/vector-icons";
 */
 
 function UserProfileScreen() {
+	// set authorization token here
+	const authToken = useSelector((state) => state.authToken);
+	//apiService.setAuthorizationHeader(authToken.authToken);
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
-	const [aboutMe, setAboutMe] = useState(DUMMY_USER_PROFILE.aboutMe);
+	const [aboutMe, setAboutMe] = useState("");
+	const [imageUrl, setImageUrl] = useState("");
 	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
-
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
-	
-	// source of profile picture, change to get from database
-	const [pfpSource, setPfpSource] = useState(null);
-	// console.log(payments)
-	// useEffect(() => {
-	//     async function fetchUserData() {
-	//         try {
-	//             const response = await apiService.getUserBio('MacUser23');
-	//             console.log(response);
-	//         } catch (error) {
-	//             console.log(error)
-	//         }
-	//     }
-	//     fetchUserData();
-	// }, [])
+	const [loading, setLoading] = useState(true);
+	const [rating, setRating] = useState("");
+	const [friendCount, setFriendCount] = useState("");
+	const dispatch = useDispatch();
 
-	function toggleEdit() {
+	useFocusEffect(
+		useCallback(() => {
+			const fetchProfile = async () => {
+				try {
+					//set the bio
+					const response = await apiService.getUserBio(username.username);
+					setAboutMe(response.bio);
+
+					const responseHi = await apiService.getRating(username.username);
+					setRating(responseHi.rating);
+
+					const responseHello = await apiService.getFriendCount(
+						username.username,
+					);
+					setFriendCount(responseHello.friendCount);
+
+					//reload the payment method storage
+					const response2 = await apiService.getUserLinks(username.username);
+					dispatch(setPaymentMethod(response2));
+
+					const response3 = await apiService.getUserPic(username.username);
+					setImageUrl(response3.url);
+					console.log(imageUrl);
+				} catch (error) {
+					console.log(error);
+				} finally {
+					setLoading(false);
+				}
+			};
+
+			fetchProfile();
+		}, [username.username, dispatch, imageUrl]),
+	);
+
+	if (loading) {
+		return <ActivityIndicator size="large" color="#0000ff" />;
+	}
+
+	//if hit the save button, try to save the bio.
+	async function toggleEdit() {
+		console.log(`token = ${authToken.authToken}`);
 		setIsEditing((curr) => !curr);
+		if (isEditing) {
+			console.log("sending the edited bio");
+			console.log(aboutMe);
+			data = { bio: aboutMe };
+			try {
+				const bioResponse = await apiService.updateUserBio(
+					username.username,
+					data,
+					authToken.authToken,
+				);
+				if (bioResponse.status === "fail") {
+					throw new Error("Edit Bio Failed");
+				}
+			} catch (error) {
+				throw new Error("network errors");
+			}
+		}
 	}
 
 	function editAboutMeHandler(text) {
@@ -143,7 +195,7 @@ function UserProfileScreen() {
 			setPfpSource(result.assets[0].uri);
 			setIsPfpModalVisible(false);
 		}
-	}
+	};
 
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
@@ -151,21 +203,23 @@ function UserProfileScreen() {
 				<View style={[styles.userMainDetails]}>
 					<View style={styles.userMainDetailsTopView}>
 						<View style={styles.imageAndUsernameView}>
-							{ isEditing ? (
+							{isEditing ? (
 								<View>
-									<ProfileImage selectedImage={pfpSource}/>	
-									
+									<ProfileImage selectedImage={pfpSource} />
+
 									<Pressable onPress={openPfpModal}>
-										<View style={{
-											width: 64, 
-											height: 64, 
-											marginTop: -64, 
-											zIndex: 100,
-											justifyContent: 'center',
-											alignItems: 'center',
-											borderRadius: 32,
-											backgroundColor: GLOBAL_STYLES.colors.gray500,
-										}}>
+										<View
+											style={{
+												width: 64,
+												height: 64,
+												marginTop: -64,
+												zIndex: 100,
+												justifyContent: "center",
+												alignItems: "center",
+												borderRadius: 32,
+												backgroundColor: GLOBAL_STYLES.colors.gray500,
+											}}
+										>
 											<Feather
 												name="camera"
 												size={24}
@@ -174,8 +228,16 @@ function UserProfileScreen() {
 										</View>
 									</Pressable>
 								</View>
+							) : imageUrl ? (
+								<Image
+									style={styles.profilePicture}
+									source={{ uri: imageUrl }}
+								/>
 							) : (
-								<ProfileImage selectedImage={pfpSource}/>
+								<Image //change to placeholder later
+									style={styles.profilePicture}
+									source={{ uri: "placeholder link" }}
+								/>
 							)}
 
 							<View>
@@ -224,17 +286,13 @@ function UserProfileScreen() {
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
 								Rating:
 							</Text>
-							<Text style={styles.scoreTextStyles}>
-								{DUMMY_USER_PROFILE.rating}
-							</Text>
+							<Text style={styles.scoreTextStyles}>{rating}</Text>
 						</View>
 						<View style={styles.editView}>
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
 								Friend Count:{" "}
 							</Text>
-							<Text style={styles.scoreTextStyles}>
-								{DUMMY_USER_PROFILE.friends.length}
-							</Text>
+							<Text style={styles.scoreTextStyles}>{friendCount}</Text>
 						</View>
 					</View>
 				</View>
@@ -250,9 +308,9 @@ function UserProfileScreen() {
 						/>
 					))}
 				</View>
-				
+
 				<View>
-					<ProfileModal 
+					<ProfileModal
 						isVisible={isPfpModalVisible}
 						onYes={pickImageAsync}
 						onNo={removePfp}
@@ -261,8 +319,6 @@ function UserProfileScreen() {
 				</View>
 			</View>
 		</ScrollViewHelper>
-
-		
 	);
 }
 

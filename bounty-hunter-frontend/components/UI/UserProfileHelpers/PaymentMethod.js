@@ -13,7 +13,7 @@ function PaymentMethod({ icon, paymentName, paymentUsername, onPress }) {
 				iconSize={18}
 			/>
 			<Text style={styles.title}>
-				{paymentName.toUpperCase()}
+				{`${paymentName.toUpperCase()}: `}
 				{paymentUsername}
 			</Text>
 		</View>

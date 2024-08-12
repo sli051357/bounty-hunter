@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+import apiService from "../../../api/apiRequest";
 import Button from "../../../components/UI/Button";
 import ChangeContent from "../../../components/UI/SettingsPageHelpers/ChangeContent";
 import ChangePasswordSettings from "../../../components/UI/SettingsPageHelpers/ChangePasswordSettings";
@@ -26,6 +27,7 @@ function UserSettingsScreen() {
 	const username = useSelector((state) => state.username);
 	const [currUsername, setCurrUsername] = useState(username.username);
 	const [isEditing, setIsEditing] = useState(false);
+	const authToken = useSelector((state) => state.authToken);
 	const [newPassword, setNewPassword] = useState({
 		"new password": "",
 		"confirm new password": "",
@@ -37,10 +39,11 @@ function UserSettingsScreen() {
 
 	// Turn into async function with await when API is set up
 	// Check conditions for username
-	function changeUsernameHandler(text) {
+	async function changeUsernameHandler(text) {
 		//Check conditions for password, if so pass and error
 		try {
 			// Write Axios api call
+
 			dispatch(setUsername(text));
 			setCurrUsername(text);
 			toggleEdit();
@@ -59,8 +62,30 @@ function UserSettingsScreen() {
 
 	// Turn into async function with await when API is set up
 	// Check conditions for password
-	function confirmChangesHandler() {
+	async function confirmChangesHandler() {
 		console.log(newPassword);
+
+		// routing for resetting password. Authenticated Request
+		try {
+			const data = {
+				pass1: newPassword["new password"],
+				pass2: newPassword["confirm new password"],
+			};
+			const response = await apiService.resetPassword(
+				data,
+				authToken.authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("request failed.");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		if (response.status === "fail") {
+			Alert.alert("Invalid Password");
+		} else {
+			navigation.navigate("ReturnLoginScreen");
+		}
 		setNewPassword({
 			password: "",
 			"confirm password": "",

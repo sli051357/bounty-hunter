@@ -1,26 +1,42 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 
+import apiService from "../../api/apiRequest";
 import CustomTextInput from "../../components/UI/AccountHelpers/CustomTextInput";
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
+import { setPassToken } from "../../store/passToken";
 
 function VerifyEmailScreen() {
 	const navigation = useNavigation();
 	const insets = useSafeAreaInsets();
 	const [codeVerify, setCodeVerify] = useState("");
+	const dispatch = useDispatch();
 
 	function codeVerifyHandler(text) {
 		setCodeVerify(text);
 	}
 
-	function confirmChangesHandler() {
+	//adding the apistuff here
+	async function confirmChangesHandler() {
 		console.log(codeVerify);
-		setCodeVerify("");
-		navigation.navigate("UpdatePasswordScreen");
+		data = { code: codeVerify };
+		try {
+			response = await apiService.verifyCode(data);
+			if (response.status === "success") {
+				dispatch(setPassToken(response.authToken));
+				navigation.navigate("UpdatePasswordScreen");
+			} else {
+				throw new Error("");
+			}
+		} catch (error) {
+			Alert.alert("Invalid Code");
+		}
+		//setCodeVerify("");
 	}
 
 	return (
@@ -34,13 +50,13 @@ function VerifyEmailScreen() {
 					<View style={styles.container}>
 						<Text style={styles.header}>Verify Email</Text>
 						<Text style={styles.description}>
-							A verification code has been sent to the email registered with
-							this account. Enter the verification code below.
+							A 10-digit verification code has been sent to the email registered
+							with this account. Enter the verification code below.
 						</Text>
 						<CustomTextInput
 							typeTitle="Verification Code"
 							onPress={codeVerifyHandler}
-							maxLength={6}
+							maxLength={10}
 							value={codeVerify}
 							keyboardType="default"
 							helperText="Incorrect verfication code."
