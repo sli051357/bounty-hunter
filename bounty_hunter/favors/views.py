@@ -291,22 +291,37 @@ def tag_detail(request, tag_id):
 @permission_classes([IsAuthenticated])
 def create_favor(request):
     data = json.loads(request.body)
-    print(data) 
-    
-    form = FavorForm(data=data)
-    if form.is_valid():
-        favor = form.save(commit=False)
-        favor.owner = request.user
-        favor.points_value = 100
-        favor.owner_status = CREATE
-        favor.assignee_status = INCOMPLETE
-        favor.completed = False
-        favor.active = False
-        favor.save()
-        return JsonResponse({"success": True, "favor_id": favor.id})
-    else:
-        return JsonResponse({"success": False, "errors": form.errors})
+    #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
+    name = data.get('name', None)
+    print(name)
+    owner = get_object_or_404(User,username=(data.get("owner", None)))
+    description = data.get("description", None)
+    assignee = get_object_or_404(User,username=(data.get("assignee", None)))
+    total_owed_type = data.get('total_owed_type', None)
+    total_owed_amt = data.get('total_owed_amt', None)
+    privacy = data.get('privacy', None)
+    active = data.get('active', None)
+    owner_status = CREATE
+    assignee_status = INCOMPLETE
+    completed = False
+    active = False
+    tags = get_tags(data.get('tags', None))
+    total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
 
+    newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
+                    total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
+                    active=active, owner_status=owner_status, 
+                    assignee_status=assignee_status, completed=completed)
+    newfavor.save()
+    
+
+    return JsonResponse({"success": True, "favor_id": newfavor.id})
+
+def get_tags(input):
+    pass
+
+def get_total_owed_wishlist(input):
+    pass
 
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made

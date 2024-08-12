@@ -38,7 +38,7 @@ class Favor(models.Model):
     created_at = models.DateTimeField(default=timezone.now) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
-
+    points_value = models.IntegerField( default=100)
 
     deleted = models.BooleanField(default=False) 
     completed = models.BooleanField(default=False)

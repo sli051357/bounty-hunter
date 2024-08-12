@@ -38,12 +38,12 @@ function FavorCard({ favor, onPress }) {
 							source={require("../assets/profile.jpeg")}
 						/>
 					</View>
-					<Text style={styles.mainTextLeft}>{favor.assigneeId}</Text>
+					<Text style={styles.mainTextLeft}>{favor.assignee}</Text>
 					<Text style={styles.text}>{favor.description}</Text>
 				</View>
 				<View style={[styles.innerContainer, { alignItems: "flex-end" }]}>
 					<Text style={styles.text}>Created: {favor.dateCreated}</Text>
-					<Text style={styles.mainTextRight}>{favor.paymentOwed}</Text>
+					<Text style={styles.mainTextRight}>{favor.total_owed_amt}</Text>
 					<Ionicons
 						name={favor.status === "In-Progress" ? "code-working" : "checkbox"}
 						size={22}

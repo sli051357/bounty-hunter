@@ -131,7 +131,7 @@ const apiService = {
 	// {"success": False, "errors": form.errors} if creation unsuccessful
 	// {"error": "GET method not allowed"} if wrong http method is used
 	createBounty: async (data, token) => {
-		const response = await axiosInstance.post("favors/create/", data, {headers: { authorization: `Token ${token}` }},);
+		const response = await axiosInstance.post("/favors/create/", data, {headers: { authorization: `Token ${token}` }},);
 		return response.data;
 	},
 

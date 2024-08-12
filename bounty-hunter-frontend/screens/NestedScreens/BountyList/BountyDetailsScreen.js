@@ -20,14 +20,11 @@ import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function BountyDetailsScreen({ route }) {
-	const { bountyId } = route.params;
-	const bountyList = useSelector((state) => state.bountyList.bountyList);
-	const currBounty = bountyList.find((bounty) => bounty.bountyId === bountyId);
-	const currEditBountyHistory = [...currBounty.bountyEditHistory];
+	const { id } = route.params;
+	const currEditBountyHistory = [];
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	const username = currBounty.assignee//useSelector((state) => state.username.username); //
-	// console.log(currEditBountyHistory);
+	const username = useSelector((state) => state.username.username); //currBounty.assignee//
 
 	const [favorDetails, setFavorDetails] = useState(currBounty);
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
@@ -79,22 +76,23 @@ function BountyDetailsScreen({ route }) {
 
 	// Turn these functions into async function when axios is added
 	// Handles putting edits in the Bounty Log
+	// Make sure it changes status in the backend
 	function editFavorHandler() {
 		setIsUploading(true);
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.editBounty(favorDetails);
-			currEditBountyHistory.push({
-				type: "Edit",
-				description: "Bounty has been edited.",
-				sender: username,
-			});
-			dispatch(
-				editBounty({
-					...favorDetails,
-					bountyEditHistory: currEditBountyHistory,
-				}),
-			);
+			// currEditBountyHistory.push({
+			// 	type: "Edit",
+			// 	description: "Bounty has been edited.",
+			// 	sender: username,
+			// });
+			// dispatch(
+			// 	editBounty({
+			// 		...favorDetails,
+			// 		bountyEditHistory: currEditBountyHistory,
+			// 	}),
+			// )
 		} catch (error) {
 			console.log(error);
 			Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -104,6 +102,7 @@ function BountyDetailsScreen({ route }) {
 	}
 
 	// Deletes Favors from both user's lists
+	// Delete bounty
 	function deleteFavorButtonHandler() {
 		Alert.alert(
 			"Are you sure you want to delete bounty?",
@@ -113,7 +112,7 @@ function BountyDetailsScreen({ route }) {
 					text: "Confirm",
 					onPress: () => {
 						navigation.navigate("BountiesList");
-						dispatch(removeBounty(bountyId));
+						// dispatch(removeBounty(bountyId));
 					},
 				},
 				{
@@ -133,20 +132,20 @@ function BountyDetailsScreen({ route }) {
 			try {
 				// Will Set up Axios Sign Up later
 				// const response = await apiService.editBounty(favorDetails);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Creation",
-				);
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty has been accepted.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-					}),
-				);
+				// const index = currEditBountyHistory.findIndex(
+				// 	(edit) => edit.type === "Creation",
+				// );
+				// currEditBountyHistory.splice(index, 1);
+				// currEditBountyHistory.push({
+				// 	type: "Edit",
+				// 	description: "Bounty has been accepted.",
+				// });
+				// dispatch(
+				// 	editBounty({
+				// 		...favorDetails,
+				// 		bountyEditHistory: currEditBountyHistory,
+				// 	}),
+				// );
 			} catch (error) {
 				console.log(error);
 				Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -174,17 +173,17 @@ function BountyDetailsScreen({ route }) {
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.editBounty(favorDetails);
-			currEditBountyHistory.push({
-				type: "Delete Request",
-				description: "Bounty deletion requested?",
-				sender: favorDetails.assigneeId,
-			});
-			dispatch(
-				editBounty({
-					...favorDetails,
-					bountyEditHistory: currEditBountyHistory,
-				}),
-			);
+			// currEditBountyHistory.push({
+			// 	type: "Delete Request",
+			// 	description: "Bounty deletion requested?",
+			// 	sender: favorDetails.assigneeId,
+			// });
+			// dispatch(
+			// 	editBounty({
+			// 		...favorDetails,
+			// 		bountyEditHistory: currEditBountyHistory,
+			// 	}),
+			// );
 		} catch (error) {
 			console.log(error);
 			Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -199,7 +198,7 @@ function BountyDetailsScreen({ route }) {
 			try {
 				// Will Set up Axios Sign Up later
 				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				dispatch(removeBounty(favorDetails.bountyId));
+				//dispatch(removeBounty(favorDetails.bountyId));
 			} catch (error) {
 				console.log(error);
 				Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -211,20 +210,20 @@ function BountyDetailsScreen({ route }) {
 			try {
 				// Will Set up Axios Sign Up later
 				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Delete Request",
-				);
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty deletion denied.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-					}),
-				);
+				// const index = currEditBountyHistory.findIndex(
+				// 	(edit) => edit.type === "Delete Request",
+				// );
+				// currEditBountyHistory.splice(index, 1);
+				// currEditBountyHistory.push({
+				// 	type: "Edit",
+				// 	description: "Bounty deletion denied.",
+				// });
+				// dispatch(
+				// 	editBounty({
+				// 		...favorDetails,
+				// 		bountyEditHistory: currEditBountyHistory,
+				// 	}),
+				// );
 			} catch (error) {
 				console.log(error);
 				Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -240,17 +239,17 @@ function BountyDetailsScreen({ route }) {
 		try {
 			// Will Set up Axios Sign Up later
 			// const response = await apiService.editBounty(favorDetails);
-			currEditBountyHistory.push({
-				type: "Complete Request",
-				description: "Bounty completed requested?",
-				sender: favorDetails.assigneeId,
-			});
-			dispatch(
-				editBounty({
-					...favorDetails,
-					bountyEditHistory: currEditBountyHistory,
-				}),
-			);
+			// currEditBountyHistory.push({
+			// 	type: "Complete Request",
+			// 	description: "Bounty completed requested?",
+			// 	sender: favorDetails.assigneeId,
+			// });
+			// dispatch(
+			// 	editBounty({
+			// 		...favorDetails,
+			// 		bountyEditHistory: currEditBountyHistory,
+			// 	}),
+			// );
 		} catch (error) {
 			console.log(error);
 			Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -265,22 +264,22 @@ function BountyDetailsScreen({ route }) {
 			try {
 				// Will Set up Axios Sign Up later
 				// const response = await apiService.editBounty(favorDetails);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Complete Request",
-				);
-				console;
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty has been completed.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-						status: "Completed",
-					}),
-				);
+				// const index = currEditBountyHistory.findIndex(
+				// 	(edit) => edit.type === "Complete Request",
+				// );
+				// console;
+				// currEditBountyHistory.splice(index, 1);
+				// currEditBountyHistory.push({
+				// 	type: "Edit",
+				// 	description: "Bounty has been completed.",
+				// });
+				// dispatch(
+				// 	editBounty({
+				// 		...favorDetails,
+				// 		bountyEditHistory: currEditBountyHistory,
+				// 		status: "Completed",
+				// 	}),
+				// );
 			} catch (error) {
 				console.log(error);
 				Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -292,20 +291,20 @@ function BountyDetailsScreen({ route }) {
 			try {
 				// Will Set up Axios Sign Up later
 				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Complete Request",
-				);
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty has not been completed.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-					}),
-				);
+				// const index = currEditBountyHistory.findIndex(
+				// 	(edit) => edit.type === "Complete Request",
+				// );
+				// currEditBountyHistory.splice(index, 1);
+				// currEditBountyHistory.push({
+				// 	type: "Edit",
+				// 	description: "Bounty has not been completed.",
+				// });
+				// dispatch(
+				// 	editBounty({
+				// 		...favorDetails,
+				// 		bountyEditHistory: currEditBountyHistory,
+				// 	}),
+				// );
 			} catch (error) {
 				console.log(error);
 				Alert.alert("Could Not Edit Bounty!", "Try again later.");
@@ -338,7 +337,7 @@ function BountyDetailsScreen({ route }) {
 						type="favorName"
 						onPress={setFavorDetailsHandler}
 						maxLength={18}
-						value={favorDetails.favorName}
+						value={favorDetails.name}
 						keyboardType="default"
 						editable={false}
 					/>
@@ -346,7 +345,7 @@ function BountyDetailsScreen({ route }) {
 						typeTitle="Assigned From"
 						type="senderId"
 						maxLength={14}
-						value={favorDetails.senderId}
+						value={username}
 						keyboardType="default"
 						editable={false}
 					/>
@@ -355,7 +354,7 @@ function BountyDetailsScreen({ route }) {
 						type="assigneeId"
 						onPress={setFavorDetailsHandler}
 						maxLength={14}
-						value={favorDetails.assigneeId}
+						value={favorDetails.assignee}
 						keyboardType="default"
 						editable={false}
 					/>
@@ -364,7 +363,7 @@ function BountyDetailsScreen({ route }) {
 						type="paymentOwed"
 						onPress={setFavorDetailsHandler}
 						maxLength={22}
-						value={favorDetails.paymentOwed}
+						value={favorDetails.total_owed_amt}
 						keyboardType="default"
 						editable={username === favorDetails.senderId}
 					>
@@ -414,7 +413,7 @@ function BountyDetailsScreen({ route }) {
 					<View style={styles.bountyLogContainer}>
 						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
 						<View style={styles.bountyTabContainer}>
-							{favorDetails.bountyEditHistory.map((tab, index) => {
+							{currEditBountyHistory.map((tab, index) => {
 								//console.log(tab);
 								let typeOnPress = null;
 								let disabled = false;

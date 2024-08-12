@@ -95,20 +95,18 @@ function CreateBountyScreen() {
 			// ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
 			// Will Set up Axios Sign Up later
 			const favor = {
-				assignee: favorDetails.assigneeId, // Same with Id
-				name: favorDetails.favorName,
-				dateCreated: today,
-				tags: tags,
-				paymentType: isMonetaryStatus ? "Monetary" : "Nonmonetary",
-				total_owed_amount: favorDetails.paymentOwed,
-				description: favorDetails.description,
-				privacyStatus: favorDetails.privacyStatus ? "Public" : "Private",
-				bountyEditHistory: favorDetails.bountyEditHistory,
+				"assignee": favorDetails.assigneeId, // Same with Id
+				"owner": username,
+				"name": favorDetails.favorName,
+				"tags": {"tags": tags},
+				"total_owed_type": isMonetaryStatus ? "Monetary" : "Nonmonetary",
+				"total_owed_amt": favorDetails.paymentOwed,
+				"description": favorDetails.description,
+				"privacy": favorDetails.privacyStatus ? "Public" : "Private",
 			};
-			const response = await apiService.createBounty(favor, authToken);
+			const response = await apiService.createBounty(JSON.stringify(favor), authToken);
 			console.log(response);
-
-			dispatch(addBounty(favor));
+			//dispatch(addBounty(favor));
 		} catch (error) {
 			console.log(error);
 			Alert.alert("Could Not Add Bounty!", "Try again later.");

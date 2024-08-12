@@ -21,11 +21,12 @@ import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function BountiesListScreen() {
 	const authToken = useSelector((state) => state.authToken.authToken);
-	const userBountyList = useSelector((state) => state.bountyList.bountyList);
 	const navigation = useNavigation();
-	const [bountyList, setBountyList] = useState(userBountyList);
+	const [userBountyList, setUserBountyList] = useState([]);
+
 	const [isloading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
+
 	const [isSortVisible, setIsSortVisible] = useState(false);
 	const [isFilterVisible, setIsFilterVisible] = useState(false);
 	const [activeSorting, setActiveSorting] = useState({
@@ -43,14 +44,15 @@ function BountiesListScreen() {
 		price_low: 0,
 		price_high: 1000,
 	});
-	const [activeSearch, setActiveSearch] = useState({});
+	const [activeSearch, setActiveSearch] = useState("");
+
 
 	async function fetchList(filterParams, sortParams, searchParams) {
 		setError(null);
 		setIsLoading(true);
-		console.log(filterParams)
-		console.log(sortParams)
-		console.log(searchParams)
+		// console.log(filterParams)
+		// console.log(sortParams)
+		// console.log(searchParams)
 
 		try {
 			const response = await apiService.viewBountyList(
@@ -60,7 +62,7 @@ function BountiesListScreen() {
 				authToken,
 			);
 			console.log(response.favors);
-			setBountyList(response.favors);
+			setUserBountyList(response.favors);
 			setIsLoading(false);
 		} catch (error) {
 			console.error("Error fetching data: ", error);
@@ -72,10 +74,10 @@ function BountiesListScreen() {
 	useEffect(() => {
 		fetchList(activeFiltering, activeSorting, activeSearch);
 
-		const intervalId = setInterval(fetchList, 60000)
+		const intervalId = setInterval(() => fetchList(activeFiltering, activeSorting, activeSearch), 120000)
 
 		return () => clearInterval(intervalId)
-	}, [])
+	}, [activeFiltering, activeSorting, activeSearch])
 
 	function handleRetry() {
 		fetchList(activeFiltering, activeSorting, activeSearch);
@@ -120,7 +122,6 @@ function BountiesListScreen() {
 	// Handles Filter implementation
 	function filterHandler(filters) {
 		setActiveFiltering(filters);
-		//fetchList(activeFiltering, activeSorting, activeSearch)
 		setIsFilterVisible(false);
 	}
 
@@ -173,9 +174,9 @@ function BountiesListScreen() {
 					</View>
 					{userBountyList.map((favor) => (
 						<FavorCard
-							key={favor.bountyId}
+							key={favor.id}
 							onPress={() =>
-								navigation.navigate("ViewBounty", { bountyId: favor.bountyId })
+								navigation.navigate("ViewBounty", { id: favor.id })
 							}
 							favor={favor}
 						/>
