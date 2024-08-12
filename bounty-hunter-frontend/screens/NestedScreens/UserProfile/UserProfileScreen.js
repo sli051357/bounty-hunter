@@ -90,9 +90,11 @@ function UserProfileScreen() {
 					);
 					setFriendCount(responseHello.friendCount);
 
-					//reload the payment method storage
+					// reload the payment method storage
 					const response2 = await apiService.getUserLinks(username.username);
-					dispatch(setPaymentMethod(response2));
+					console.log(response2)
+					// dispatch(setPaymentMethod(response2));
+					console.log()
 
 					const response3 = await apiService.getUserPic(username.username);
 					setImageUrl(response3.url);
@@ -157,19 +159,24 @@ function UserProfileScreen() {
 		);
 	}
 
-	let paymentMethodSection = (
-		<EditPaymentMethods isEditing={isEditing} userData={payments} />
-	);
+	let paymentMethodSection = 
+	<Text>
+		Hello Payments
+	</Text>
 
-	if (isEditing) {
-		paymentMethodSection = (
-			<EditPaymentMethods
-				managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
-				isEditing={isEditing}
-				userData={payments}
-			/>
-		);
-	}
+	// let paymentMethodSection = (
+	// 	<EditPaymentMethods isEditing={isEditing} userData={payments} />
+	// );
+
+	// if (isEditing) {
+	// 	paymentMethodSection = (
+	// 		<EditPaymentMethods
+	// 			managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
+	// 			isEditing={isEditing}
+	// 			userData={payments}
+	// 		/>
+	// 	);
+	// }
 
 	function openPfpModal() {
 		setIsPfpModalVisible(true);
