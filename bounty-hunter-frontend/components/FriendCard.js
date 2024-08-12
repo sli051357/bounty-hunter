@@ -4,6 +4,9 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { GLOBAL_STYLES } from "../constants/styles";
 import { DUMMY_USER_PROFILE } from "../util/dummy-data.js";
 
+import { useDispatch, useSelector } from "react-redux";
+import { favoriteFriend } from "../store/friendList.js";
+
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 
 /* 
@@ -13,7 +16,8 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 */
 
 function FriendCard({ friend, imagePath }) {
-	const [favorite, setFavorite] = useState(friend.fav);
+	const dispatch = useDispatch();
+	const [favorite, setFavorite] = useState(friend.favoriteStatus);
 
 	function editFavoriteStatus() {
 		setFavorite((curr) => !curr);
@@ -30,7 +34,7 @@ function FriendCard({ friend, imagePath }) {
 				<Image style={styles.picture} source={imagePath} />
 				{/* Friend Text */}
 				<View style={styles.friendText}>
-					<Text style={styles.usernameText}>{friend.nickname}</Text>
+					<Text style={styles.usernameText}>{friend.friendNickname}</Text>
 					<Text style={styles.userID}>{friend.id}</Text>
 				</View>
 				<View style={{ marginLeft: 15 }}>

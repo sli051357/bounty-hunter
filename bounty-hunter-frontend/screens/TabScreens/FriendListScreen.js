@@ -4,8 +4,10 @@ import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import apiService from "../../api/apiRequest.js";
+import { useSelector } from "react-redux";
+
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import CategoryBar from "../../components/CategoryBar.js";
 import FriendCard from "../../components/FriendCard.js";
 import FriendRequest from "../../components/FriendRequest.js";
@@ -14,6 +16,7 @@ import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
 
 function FriendListScreen() {
+	const friendList = useSelector((state) => state.friendList.friendList);
 	const [friendRequestList, setFriendRequestList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
@@ -69,8 +72,8 @@ function FriendListScreen() {
 	const navBar = (
 		<CategoryBar
 			stateChanger={setCurScreen}
-			list1={DUMMY_USER_PROFILE.friends}
-			list2={DUMMY_USER_PROFILE.friends.filter((friend) => friend.fav === true)}
+			list1={friendList}
+			list2={friendList.filter((friend) => friend.favoriteStatus === true)}
 			list3={DUMMY_REQUESTS}
 		/>
 	);
@@ -81,9 +84,9 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{DUMMY_USER_PROFILE.friends.map((friend) => (
+				{friendList.map((friend) => (
 					<FriendCard
-						key={friend.nickname}
+						key={friend.id}
 						friend={friend}
 						imagePath={require("../../assets/batman.jpeg")}
 					/>
@@ -99,11 +102,11 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{DUMMY_USER_PROFILE.friends
-					.filter((friend) => friend.fav === true)
+				{friendList
+					.filter((friend) => friend.favoriteStatus === true)
 					.map((friend) => (
 						<FriendCard
-							key={friend.nickname}
+							key={friend.id}
 							friend={friend}
 							imagePath={require("../../assets/batman.jpeg")}
 						/>
