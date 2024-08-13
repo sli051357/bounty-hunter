@@ -1,11 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 
 import { Ionicons } from "@expo/vector-icons";
-import FriendRequest from "./FriendRequest";
+import FriendSearch from "./FriendSearch";
 
 /*
 No real usability, only visual effects right now
@@ -89,17 +89,9 @@ function SearchBar() {
 					placeholder="Search..."
 				/>
 			</View>
-			
-			 {/* {DUMMY_USERBASE.map((user) => (
-				<FriendRequest
-					key={user.username}
-					user={user}
-					imagePath={user.imageUrl}
-				/>
-			))}   */}
 
 			{filteredData.map((user) => (
-				<FriendRequest
+				<FriendSearch
 					key={user.username}
 					user={user}
 					imagePath={user.imageUrl}

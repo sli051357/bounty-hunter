@@ -3,21 +3,12 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
-/* 
-* Implementation Notes:
-- "user" is an object for a requesting user that includes their nickname, ID, and profile picture
-- imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
-*/
 
-function FriendRequest({ user, imagePath }) {
-	function addRequest() {
-		console.log("friend added");
-	}
-
-	function deleteRequest() {
-		console.log("request deleted");
+function FriendSearch({ user, imagePath }) {
+	function sendRequest() {
+		console.log("request sent");
 	}
 
 	return (
@@ -35,32 +26,18 @@ function FriendRequest({ user, imagePath }) {
 				<View
 					style={[
 						styles.button,
-						{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
-					]}
-				>
-					<Pressable onPress={addRequest}>
-						<FontAwesome
-							name="check"
-							size={20}
-							color={GLOBAL_STYLES.colors.brown300}
-						/>
-					</Pressable>
-				</View>
-
-				<View
-					style={[
-						styles.button,
 						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
 					]}
 				>
-					<Pressable onPress={deleteRequest}>
-						<MaterialIcons
-							name="delete"
-							size={20}
-							color={GLOBAL_STYLES.colors.brown300}
-						/>
+					<Pressable onPress={sendRequest}>
+                    <MaterialIcons
+                            name="person-add-alt"
+                            size={20}
+                            color={GLOBAL_STYLES.colors.brown700}
+                        />
 					</Pressable>
 				</View>
+
 			</View>
 		</View>
 	);
@@ -100,4 +77,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default FriendRequest;
+export default FriendSearch;
