@@ -10,6 +10,7 @@ import datetime
 import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
+from wishlist.models import Wishlist
 
 from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import TokenAuthentication
@@ -234,7 +235,7 @@ def favor_list(request): # ex: favors/
                   "updated_at": f.updated_at,
                   "total_owed_type": f.total_owed_type,
                   "total_owed_amt": f.total_owed_amt,
-                  "total_owed_wishlist": f.total_owed_wishlist,
+                  "total_owed_wishlist": f.total_owed_wishlist.title,
                   "privacy": f.privacy,
                   "owner_status": f.owner_status,
                   "assignee_status": f.assignee_status,
@@ -242,7 +243,9 @@ def favor_list(request): # ex: favors/
                   "is_deleted": f.deleted, 
                   "is_completed": f.completed,
                   "tags": tags,}
+        print(type(f.total_owed_wishlist))
         favors_list.append(f_data)
+
 
     return JsonResponse({"favors": favors_list})
 
@@ -259,7 +262,7 @@ def favor_detail(request, favor_id):
                   "updated_at": favor.updated_at,
                   "total_owed_type": favor.total_owed_type,
                   "total_owed_amt": favor.total_owed_amt,
-                  "total_owed_wishlist": favor.total_owed_wishlist,
+                  "total_owed_wishlist": favor.total_owed_wishlist.title,
                   "privacy": favor.privacy,
                   "owner_status": favor.owner_status,
                   "assignee_status": favor.assignee_status,
@@ -309,8 +312,19 @@ def create_favor(request):
     #tags = get_tags(data.get('tags', None))
     #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
 
+    wishlist_item_name = data.get('total_owed_wishlist', None)
+    total_owed_wishlist = ""
+    if wishlist_item_name != "":
+        if Wishlist.objects.filter(title=wishlist_item_name).exists(): 
+            total_owed_wishlist = Wishlist.objects.get(title=wishlist_item_name)
+    else:
+         total_owed_wishlist = ""
+    print(type(wishlist_item_name))
+    print(type(total_owed_wishlist))
+
     newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
-                    total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
+                    total_owed_type=total_owed_type, total_owed_amt=total_owed_amt, 
+                    total_owed_wishlist=total_owed_wishlist, privacy=privacy, 
                     active=active, owner_status=owner_status, 
                     assignee_status=assignee_status, completed=completed)
     newfavor.save()

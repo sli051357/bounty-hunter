@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, act} from "react";
 import {
 	Button,
 	ScrollView,
@@ -23,6 +23,7 @@ function BountiesListScreen() {
 	const authToken = useSelector((state) => state.authToken.authToken);
 	const navigation = useNavigation();
 	const [userBountyList, setUserBountyList] = useState([]);
+	// console.log(userBountyList[userBountyList.length - 1])
 
 	const [isloading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
@@ -47,7 +48,7 @@ function BountiesListScreen() {
 	const [activeSearch, setActiveSearch] = useState("");
 
 	const fetchList = useCallback(
-		async (filterParams, sortParams, searchParams) => {
+		async () => {
 			setError(null);
 			setIsLoading(true);
 			// console.log(filterParams)
@@ -56,12 +57,12 @@ function BountiesListScreen() {
 
 			try {
 				const response = await apiService.viewBountyList(
-					filterParams,
-					sortParams,
-					searchParams,
+					activeFiltering,
+					activeSorting,
+					activeSearch,
 					authToken,
 				);
-				//console.log(response.favors);
+				console.log(response.favors);
 				setUserBountyList(response.favors);
 				setIsLoading(false);
 			} catch (error) {
@@ -70,11 +71,11 @@ function BountiesListScreen() {
 				setIsLoading(false);
 			}
 		},
-		[filterParams, sortParams, searchParams],
+		[activeFiltering,activeSearch,activeSorting],
 	);
 
 	useEffect(() => {
-		fetchList(activeFiltering, activeSorting, activeSearch);
+		fetchList();
 
 		const intervalId = setInterval(
 			() => fetchList(activeFiltering, activeSorting, activeSearch),
@@ -82,10 +83,10 @@ function BountiesListScreen() {
 		);
 
 		return () => clearInterval(intervalId);
-	}, [fetchList, activeFiltering, activeSorting, activeSearch]);
+	}, [fetchList]);
 
 	function handleRetry() {
-		fetchList(activeFiltering, activeSorting, activeSearch);
+		fetchList();
 	}
 
 	const sortValues = [
@@ -151,6 +152,7 @@ function BountiesListScreen() {
 	// Handles Filter implementation
 	function filterHandler(filters) {
 		setActiveFiltering(filters);
+		fetchList(filters, activeSorting, activeSearch)
 		setIsFilterVisible(false);
 	}
 

@@ -58,7 +58,7 @@ class Favor(models.Model):
     NONMONETARY = "Nonmonetary"
     total_owed_choices = [(MONETARY, "Monetary"), (NONMONETARY, "Nonmonetary"),]
     total_owed_type = models.CharField(max_length=11, choices=total_owed_choices)
-    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     total_owed_wishlist = models.ForeignKey(Wishlist, on_delete=models.SET_NULL, blank=True, null=True)     # should enable dropdown of wishlist items 
     
     # privacy settings
