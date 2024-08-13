@@ -344,17 +344,6 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// token "string token"
-	// for return, renders "users/reset-password.html" 
-	resetPassword: async (token) => {
-		try {
-			const response = await axiosInstance.post(
-				`/users/reset-password/${token}/`
-			)
-			return response.data;
-		} catch (error) {}
-	},
-
 	// data: {"pass1": "password", "pass2": "password again", "token": "token"}
 	// for return, redirects to 'temp' method
 	resetPasswordAttempt: async (data) => {
