@@ -135,6 +135,11 @@ const apiService = {
 		return response.data;
 	},
 
+	editBounty: async (id, data, token) => {
+		const response = await axiosInstance.post(`/favors/${id}/edit/`, data, {headers: { authorization: `Token ${token}` }},);
+		return response.data;
+	},
+
 	// filterParams = { query: 'and'/'or', owner: user.id, assignee: friend.id, tag: tag.id, status: 'sent'/'received'/'incomplete'/'complete',
 	// start_date: 2024-01-30, end_date: 2024-02-30, price_low: 5.00, price_high: 10.50 } if none, leave blank ''
 	// sortParams = { sort_by: 'name'/'date'/'amount'/'assignee', order: 'ascending'/'descending' } if none, leave blank ''

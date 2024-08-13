@@ -28,14 +28,24 @@ function BountyDetailsScreen({ route }) {
 	const username = useSelector((state) => state.username.username); //currBounty.assignee//
 
 	const { favor } = route.params
-	const [favorDetails, setFavorDetails] = useState(favor);
+	const [favorDetails, setFavorDetails] = useState({
+		favorName: favor.name,
+		assigneeId: favor.assignee,
+		paymentOwed: favor.total_owed_amt,
+		description: favor.description,
+		privacyStatus: favor.privacy,
+		bountyEditHistory: [
+			{
+				sender: username,
+				description: "Would you like to accept this bounty?",
+				type: "Creation",
+			},
+		],
+	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
 		favor.paymentType === "Monetary",
 	);
 	const [isUploading, setIsUploading] = useState(false);
-
-	// Need to call async function to get username of assignee since favor
-	// details has id of assignee
 
 	// Sender Restricted Function
 	function setFavorDetailsHandler(text, type) {
@@ -63,19 +73,6 @@ function BountyDetailsScreen({ route }) {
 		}));
 	}
 
-	// Sender Restricted Function
-	async function editButtonHandler() {
-		const favorNameIsValid = favorDetails.favorName.length > 0;
-		const assigneeIsValid = favorDetails.assigneeId.length > 0;
-		const totalOwedIsValid = favorDetails.paymentOwed.length > 0;
-		
-		if (!favorNameIsValid || !assigneeIsValid || !totalOwedIsValid) {
-			Alert.alert("Please fill input values.", "Check highlighted inputs!");
-			return;
-		}
-		requestEditBountyHandler()
-	}
-
 
 
 	async function requestEditBountyHandler() {
@@ -84,12 +81,26 @@ function BountyDetailsScreen({ route }) {
 				const data = {"status": "Edit"}
 				const response = await apiService.changeBountyStatus(favor.id, data, authToken);
 				if ( response.status === "fail" ){
-					throw new Error("invalid input"
-					)
+					throw new Error("invalid input")
+				} else {
+					//create the new edited favor
+
+					const new_favor = {
+						"assignee": favorDetails.assigneeId, // Same with Id
+						"owner": username,
+						"name": favorDetails.favorName,
+						"total_owed_type": isMonetaryStatus ? "Monetary" : "Nonmonetary",
+						"total_owed_amt": favorDetails.paymentOwed,
+						"description": favorDetails.description,
+						"privacy": favorDetails.privacyStatus ? "Public" : "Private",
+					};
+					const response = await apiService.editBounty(favor.id, JSON.stringify(new_favor), authToken);
+					console.log(response);
+					//dispatch(addBounty(favor));
 				}
 			} catch (error) {
 				console.log(error);
-				Alert.alert("Could not edit favor!", "Cancel your current request.");
+				Alert.alert("it favor!", "Cancel your current request.");
 			}
 			setIsUploading(false);
 		setIsUploading(false);
@@ -170,41 +181,30 @@ function BountyDetailsScreen({ route }) {
 				style={{ flex: 1, backgroundColor: GLOBAL_STYLES.colors.brown300 }}
 			>
 				<View style={styles.page}>
-					<Text style={styles.mainHeader}>Bounty Details</Text>
+				<Text style={styles.mainHeader}>Create Bounty</Text>
 					<InputFields
-						typeTitle="Favor Name"
+						typeTitle="Favor Name *"
 						type="favorName"
 						onPress={setFavorDetailsHandler}
 						maxLength={18}
-						value={favorDetails.name}
+						value={favorDetails.favorName}
 						keyboardType="default"
-						editable={false}
 					/>
 					<InputFields
-						typeTitle="Assigned From"
-						type="senderId"
-						maxLength={14}
-						value={username}
-						keyboardType="default"
-						editable={false}
-					/>
-					<InputFields
-						typeTitle="Assigned To"
+						typeTitle="Assign To (by user ID) *"
 						type="assigneeId"
 						onPress={setFavorDetailsHandler}
 						maxLength={14}
-						value={favorDetails.assignee}
+						value={favorDetails.assigneeId}
 						keyboardType="default"
-						editable={false}
 					/>
 					<InputFields
 						typeTitle="Total Owed *"
 						type="paymentOwed"
 						onPress={setFavorDetailsHandler}
 						maxLength={22}
-						value={favorDetails.total_owed_amt}
+						value={favorDetails.paymentOwed}
 						keyboardType="default"
-						editable={username === favorDetails.senderId}
 					>
 						<SwitchTabs
 							tabOne="Monetary"
@@ -223,32 +223,28 @@ function BountyDetailsScreen({ route }) {
 						keyboardType="default"
 						multiLineStyles={{ minHeight: 155, flex: 1 }}
 						multiline={true}
-						editable={username === favorDetails.senderId}
 					/>
-					{username === favorDetails.senderId ? (
-						<View style={styles.tagsContainer}>
-							<Text style={styles.tagHeader}>Tags</Text>
-							<View style={styles.addTagContainer}>
-								<IconButton
-									icon="add-sharp"
-									iconSize={18}
-									onPress={() => console.log("Make tag function")}
-									color={GLOBAL_STYLES.colors.orange700}
-								/>
-							</View>
-						</View>
-					) : null}
-					{username === favorDetails.senderId ? (
-						<View style={styles.privacyStatusContainer}>
-							<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
-							<SwitchTabs
-								tabOne="Public"
-								tabTwo="Private"
-								onPress={setPrivacyHandler}
-								isActive={favorDetails.privacyStatus}
+					<View style={styles.tagsContainer}>
+						<Text style={styles.tagHeader}>Tags</Text>
+						<View style={styles.addTagContainer}>
+							<IconButton
+								icon="add-sharp"
+								iconSize={18}
+								onPress={() => console.log("Make tag function")}
+								color={GLOBAL_STYLES.colors.orange700}
 							/>
 						</View>
-					) : null}
+					</View>
+					<View style={styles.privacyStatusContainer}>
+						<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
+						<SwitchTabs
+							tabOne="Public"
+							tabTwo="Private"
+							onPress={setPrivacyHandler}
+							isActive={favorDetails.privacyStatus}
+						
+						/>
+					</View>
 					<View style={styles.bountyLogContainer}>
 						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
 						<View style={styles.bountyTabContainer}>
@@ -319,7 +315,7 @@ function BountyDetailsScreen({ route }) {
 						/>
 						<Button
 							title="Edit"
-							onPress={editButtonHandler}
+							onPress={requestEditBountyHandler}
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.error700,
