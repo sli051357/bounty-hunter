@@ -82,16 +82,6 @@ class Favor(models.Model):
 
     # action history
     bounty_edit_history = models.JSONField(default=list, blank=True)
-    def add_edit_history(self, user, action, details=None):
-        history_entry = {
-            "timestamp": timezone.now().isoformat(),
-            "user": user.username,
-            "action": action,
-            "details": details,
-        }
-        self.bounty_edit_history.append(history_entry)
-        self.save()
-
 
     def __str__(self):
         return "%s - created by %s" % (self.name, self.owner)

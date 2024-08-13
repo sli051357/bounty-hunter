@@ -296,6 +296,17 @@ def create_favor(request):
     else: 
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
+# action history
+def log_edit_history(favor, user, action, details=None):
+    history_entry = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "user": user.username,
+        "action": action,
+        "details": details,
+    }
+    favor.bounty_edit_history.append(history_entry)
+    favor.save()
+
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made
 # @login_required
@@ -317,7 +328,8 @@ def edit_favor(request, favor_id):
         form = FavorForm(request.POST, instance=favor)
         if form.is_valid():
             # i think this saves the edits?
-            form.save() 
+            form.save()
+            log_edit_history(favor, request.user, "Edit", "Favor details were edited.")
             return JsonResponse({"success": True, "new_favor_pk": favor.pk})
         else:
             return JsonResponse({"success": False, "errors": form.errors})
@@ -469,4 +481,7 @@ def delete_tag(request, tag_id):
         return JsonResponse({"success": True})
     else:
         return JsonResponse({"error": "must use DELETE method"}, status=405)
+
+
+
 
