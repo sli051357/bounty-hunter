@@ -26,7 +26,7 @@ function FriendCard({ friend, imagePath }) {
 		<View style={styles.card}>
 			<View style={styles.userDetails}>
 				{/* Profile Picture */}
-				<Image style={styles.picture} source={imagePath} />
+				<Image style={styles.picture} source={{ uri: imagePath }} />
 				{/* Friend Text */}
 				<View style={styles.friendText}>
 					<Text style={styles.usernameText}>{friend.nickname}</Text>

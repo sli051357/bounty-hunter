@@ -23,7 +23,7 @@ function FriendCard({ user, imagePath }) {
 	return (
 		<View style={styles.card}>
 			{/* Profile Picture */}
-			<Image style={styles.picture} source={imagePath} />
+			<Image style={styles.picture} source={{ uri: imagePath }} />
 
 			{/* Friend Text */}
 			<View>

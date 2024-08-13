@@ -54,10 +54,12 @@ function FriendListScreen() {
 		{
 			username: "GreenGoblin123",
 			id: "G10397593",
+			imageUrl: "https://entertainment.time.com/wp-content/uploads/sites/3/2013/05/spiderman-1.jpg?w=720&h=480&crop=1",
 		},
 		{
 			username: "Hulk",
 			id: "hulk",
+			imageUrl: "https://m.media-amazon.com/images/I/71A+RlBsJRL._AC_UF894,1000_QL80_.jpg",
 		},
 	];
 
@@ -86,7 +88,7 @@ function FriendListScreen() {
 					<FriendCard
 						key={friend.nickname}
 						friend={friend}
-						imagePath={require("../../assets/batman.jpeg")}
+						imagePath={friend.imageUrl}
 					/>
 				))}
 			</View>
@@ -106,7 +108,7 @@ function FriendListScreen() {
 						<FriendCard
 							key={friend.nickname}
 							friend={friend}
-							imagePath={require("../../assets/batman.jpeg")}
+							imagePath={friend.imageUrl}
 						/>
 					))}
 			</View>
@@ -123,7 +125,7 @@ function FriendListScreen() {
 						<FriendRequest
 							key={user.username}
 							user={user}
-							imagePath={require("../../assets/batman.jpeg")}
+							imagePath={user.imageUrl}
 						/>
 					))
 				) : (
