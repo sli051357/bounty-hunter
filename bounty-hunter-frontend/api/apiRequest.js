@@ -101,7 +101,7 @@ const apiService = {
 	// data = { "username": "username", "password": "password" }
 	// returns { 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' }
 	signIn: async (data) => {
-		const response = await axiosInstance.post(`/users/get-token/`, data);
+		const response = await axiosInstance.post("/users/get-token/", data);
 		return response.data;
 	},
 
@@ -109,19 +109,19 @@ const apiService = {
 	// data = {pass1, pass2}
 	// returns {status: "fail" or "success"}
 	resetPassword: async (data, token) => {
-		const response = await axiosInstance.post(`/users/reset-password/`, data, {
+		const response = await axiosInstance.post("/users/reset-password/", data, {
 			headers: { authorization: `Token ${token}` },
 		});
 		return response.data;
 	},
 
 	verifyCode: async (data) => {
-		const response = await axiosInstance.post(`/users/verify-code/`, data);
+		const response = await axiosInstance.post("/users/verify-code/", data);
 		return response.data;
 	},
 
 	forgotPassword: async (data) => {
-		const response = await axiosInstance.post(`/users/forgot-password/`, data);
+		const response = await axiosInstance.post("/users/forgot-password/", data);
 		return response.data;
 	},
 
@@ -131,7 +131,7 @@ const apiService = {
 	// {"success": False, "errors": form.errors} if creation unsuccessful
 	// {"error": "GET method not allowed"} if wrong http method is used
 	createBounty: async (data) => {
-		const response = await axiosInstance.post(`favors/create`, data);
+		const response = await axiosInstance.post("favors/create", data);
 		return response.data;
 	},
 
@@ -164,14 +164,14 @@ const apiService = {
 	// Once logged in, you don't need to pass in the id. This should send back data in the following format:
 	// {"<id of the friend request>": {"from_user": username1, "to_user": username2}, ...}
 	getFriendRequests: async () => {
-		const response = await axiosInstance.get(`/users/get-friend-requests/`);
+		const response = await axiosInstance.get("/users/get-friend-requests/");
 		return response.data;
 	},
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.
 	//returns {"username1": "is friend :)", "username2": "is friend :)"}
 	getFriendsList: async () => {
-		const response = await axiosInstance.get(`/users/get-friends-list/`);
+		const response = await axiosInstance.get("/users/get-friends-list/");
 		return response.data;
 	},
 
@@ -231,7 +231,7 @@ const apiService = {
 	viewTagsList: async () => {
 		try {
 			const response = await axiosInstance.get(
-				`/favors/tags/`,
+				"/favors/tags/",
 			)
 			return response.data;
 		} catch (error) {}
@@ -266,7 +266,7 @@ const apiService = {
 	createTag: async (data) => {
 		try {
 			const response = await axiosInstance.post(
-				`/favors/tags/create`,
+				"/favors/tags/create",
 				data
 			)
 			return response.data;
@@ -326,7 +326,7 @@ const apiService = {
 	registerUser: async (data) => {
 		try {
 			const response = await axiosInstance.post(
-				`/users/register`,
+				"/users/register",
 				data
 			)
 			return response.data;
@@ -349,7 +349,7 @@ const apiService = {
 	resetPasswordAttempt: async (data) => {
 		try {
 			const response = await axiosInstance.post(
-				`/users/reset-password/`,
+				"/users/reset-password/",
 				data
 			)
 			return response.data;
@@ -360,7 +360,7 @@ const apiService = {
 	viewWishlist: async () => {
 		try {
 			const response = await axiosInstance.get(
-				`/wishlist/`,
+				"/wishlist/",
 			)
 			return response.data;
 		} catch (error) {}
@@ -371,7 +371,7 @@ const apiService = {
 	addWishlistItem: async (data) => {
 		try {
 			const response = await axiosInstance.post(
-				`/wishlist/add/`,
+				"/wishlist/add/",
 				data
 			)
 			return response.data;
@@ -383,7 +383,7 @@ const apiService = {
 	removeWishlistItem: async (id) => {
 		try {
 			const response = await axiosInstance.post(
-				`/wishlist/remove//${id}`,
+				`/wishlist/remove/${id}`,
 			)
 			return response.data;
 		} catch (error) {}
