@@ -16,8 +16,8 @@ import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
 
 function FriendListScreen() {
-	// const friendList = useSelector((state) => state.friendList.friendList);
-	const friendList = DUMMY_USER_PROFILE.friends;
+	const friendList = useSelector((state) => state.friendList.friendList);
+	// const friendList = DUMMY_USER_PROFILE.friends;
 	const [friendRequestList, setFriendRequestList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
