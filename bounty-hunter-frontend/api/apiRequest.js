@@ -367,7 +367,7 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// returns
+	// returns list of all wishlist objects
 	viewWishlist: async () => {
 		try {
 			const response = await axiosInstance.get(
@@ -378,7 +378,7 @@ const apiService = {
 	},
 
 	// data: {"title": "item title", "price": "##", "url": "link", "photo": image field (upload_to='res/'), "owner": pick from user objects}
-	// returns
+	// returns {'form': data dictionary ^}, {'status': 'success', 'item_id': item.id}
 	addWishlistItem: async (data) => {
 		try {
 			const response = await axiosInstance.post(
@@ -390,7 +390,7 @@ const apiService = {
 	},	
 
 	// id: id of item to remove
-	// returns
+	// returns {'status': 'success', 'item_id': pk}
 	removeWishlistItem: async (id) => {
 		try {
 			const response = await axiosInstance.post(
