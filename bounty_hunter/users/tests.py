@@ -24,9 +24,25 @@ class FriendRequestTestCase(TestCase):
 
     def test_get_friends_list(self):
         self.profile1.friends.add(self.user2)
+        self.profile1.friends.add(self.user3)
         response = self.client.get(reverse('get_friends_list'))
+        expected = {
+            "friend 1": {
+                "username": "user2", 
+                "id": 2, 
+                "rating": 0, 
+                "image url": 'http://testserver/users/res/users/res/default_pfp.png'
+                },
+            "friend 2": {
+                "username": "user3", 
+                "id": 3, 
+                "rating": 0, 
+                "image url": 'http://testserver/users/res/users/res/default_pfp.png'
+            }
+        }
+        #print(response.json())
         self.assertEqual(response.status_code, 200)
-        self.assertIn('user2', response.json())
+        self.assertEqual(response.json(), expected)
 
     def test_get_friend_count(self):
         # empty friend list

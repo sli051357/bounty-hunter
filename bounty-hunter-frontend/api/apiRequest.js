@@ -69,12 +69,13 @@ const apiService = {
 	},
 
 	// username = "username"
-	// data = an image (models.ImageField(upload_to='res/'))
+	// data = an image encoded in b64 (models.ImageField(upload_to='res/'))
 	// returns {"success": True} if successful, {"success": False} if fails
-	updateUserProfilePic: async (username, data) => {
+	updateUserProfilePic: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`users/profiles/${username}/edit-profile-pic/`,
 			data,
+			{headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},
@@ -189,7 +190,7 @@ const apiService = {
 	},
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.
-	//returns {"username1": "is friend :)", "username2": "is friend :)"}
+	//returns {'friend 1': {'username': 'user1', 'id': 0, 'rating': 0, 'image url': 'url'}, 'friend 2': {'username': 'user2', 'id': 1, 'rating': 0, 'image url': 'url'}}
 	getFriendsList: async () => {
 		const response = await axiosInstance.get("/users/get-friends-list/");
 		return response.data;
