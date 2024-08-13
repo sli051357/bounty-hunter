@@ -69,12 +69,13 @@ const apiService = {
 	},
 
 	// username = "username"
-	// data = an image (models.ImageField(upload_to='res/'))
+	// data = an image encoded in b64 (models.ImageField(upload_to='res/'))
 	// returns {"success": True} if successful, {"success": False} if fails
-	updateUserProfilePic: async (username, data) => {
+	updateUserProfilePic: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`users/profiles/${username}/edit-profile-pic/`,
 			data,
+			{headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},
