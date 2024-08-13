@@ -2,8 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
-import { GLOBAL_STYLES } from "../constants/styles.js";
-import { DUMMY_USER_PROFILE } from "../util/dummy-data.js";
+import { GLOBAL_STYLES } from "../../constants/styles.js";
 
 import { Ionicons } from "@expo/vector-icons";
 

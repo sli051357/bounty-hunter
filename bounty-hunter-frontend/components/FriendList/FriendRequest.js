@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import { DUMMY_USER_PROFILE } from "../util/dummy-data.js";
+import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
@@ -87,12 +86,12 @@ const styles = StyleSheet.create({
 		fontFamily: "BaiJamjuree-SemiBold",
 		fontSize: 20,
 		color: GLOBAL_STYLES.colors.blue300,
+		marginBottom: -5,
 	},
 	userID: {
 		fontFamily: "BaiJamjuree-Regular",
 		fontSize: 12,
 		color: GLOBAL_STYLES.colors.brown700,
-		marginTop: -10,
 	},
 	button: {
 		padding: 10,

@@ -7,10 +7,10 @@ import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import apiService from "../../api/apiRequest.js";
-import CategoryBar from "../../components/CategoryBar.js";
-import FriendCard from "../../components/FriendCard.js";
-import FriendRequest from "../../components/FriendRequest.js";
-import SearchBar from "../../components/SearchBar.js";
+import CategoryBar from "../../components/FriendList/CategoryBar.js";
+import FriendCard from "../../components/FriendList/FriendCard.js";
+import FriendRequest from "../../components/FriendList/FriendRequest.js";
+import SearchBar from "../../components/FriendList/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
 
