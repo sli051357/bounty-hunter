@@ -305,8 +305,8 @@ def create_favor(request):
     assignee_status = INCOMPLETE
     completed = False
     active = False
-    tags = get_tags(data.get('tags', None))
-    total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
+    #tags = get_tags(data.get('tags', None))
+    #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
 
     newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
                     total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
