@@ -103,8 +103,21 @@ def get_friends_list(request):
         return JsonResponse(status=403, data={"status": "Permission Denied"})
     friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
     data = {}
-    for friend in friends.all():
-        data[friend.username] = "friend :)"
+    x = 1
+    for f in friends.all():
+        user_profile = UserProfileInfo.objects.get(owner = f)
+        f_data = {
+            "username": f.username,
+            "id": f.id,
+            "rating": user_profile.rating,
+            "image url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
+        }
+        data[f"friend {x}"] = f_data
+        x += 1
+
+    #for friend in friends.all():
+    #    data[friend.username] = "friend :)"
+    
     return JsonResponse(data)
 
 # returns the number of friends
