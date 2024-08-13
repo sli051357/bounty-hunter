@@ -308,6 +308,13 @@ def create_favor(request):
     active = False
     #tags = get_tags(data.get('tags', None))
     #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
+    
+    # ** make sure this matches with create_favor:
+    # wishlist_item_name = data.get('total_owed_wishlist', None)
+    # total_owed_wishlist = ""
+    # if wishlist_item_name != "":
+    #     if Wishlist.objects.filter(title=wishlist_item_name):
+    #         total_owed_wishlist = wishlist_item_name
 
     newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
                     total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
