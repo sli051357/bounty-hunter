@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { editBounty, removeBounty } from "../../../store/bountyList";
 
 import { useState } from "react";
+import apiService from "../../../api/apiRequest";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import BountyLogTab from "../../../components/UI/BountyListHelpers/BountyLogTab";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
@@ -18,7 +19,6 @@ import SwitchTabs from "../../../components/UI/BountyListHelpers/SwitchTabs";
 import Button from "../../../components/UI/Button";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
-import apiService from "../../../api/apiRequest";
 
 function BountyDetailsScreen({ route }) {
 	const authToken = useSelector((state) => state.authToken.authToken);
@@ -27,7 +27,7 @@ function BountyDetailsScreen({ route }) {
 	const dispatch = useDispatch();
 	const username = useSelector((state) => state.username.username); //currBounty.assignee//
 
-	const { favor } = route.params
+	const { favor } = route.params;
 	const [favorDetails, setFavorDetails] = useState({
 		favorName: favor.name,
 		assigneeId: favor.assignee,
@@ -73,96 +73,107 @@ function BountyDetailsScreen({ route }) {
 		}));
 	}
 
-
-
 	async function requestEditBountyHandler() {
 		setIsUploading(true);
-			try {
-				const data = {"status": "Edit"}
-				const response = await apiService.changeBountyStatus(favor.id, data, authToken);
-				if ( response.status === "fail" ){
-					throw new Error("invalid input")
-				}
-					//create the new edited favor
-
-					const new_favor = {
-						"assignee": favorDetails.assigneeId, // Same with Id
-						"owner": username,
-						"name": favorDetails.favorName,
-						"total_owed_type": isMonetaryStatus ? "Monetary" : "Nonmonetary",
-						"total_owed_amt": favorDetails.paymentOwed,
-						"description": favorDetails.description,
-						"privacy": favorDetails.privacyStatus ? "Public" : "Private",
-					};
-					const response2 = await apiService.editBounty(favor.id, JSON.stringify(new_favor), authToken);
-					console.log(response2	);
-					//dispatch(addBounty(favor));
-				
-			} catch (error) {
-				console.log(error);
-				Alert.alert("it favor!", "Cancel your current request.");
+		try {
+			const data = { status: "Edit" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
 			}
-			setIsUploading(false);
+			//create the new edited favor
+
+			const new_favor = {
+				assignee: favorDetails.assigneeId, // Same with Id
+				owner: username,
+				name: favorDetails.favorName,
+				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
+				total_owed_amt: favorDetails.paymentOwed,
+				description: favorDetails.description,
+				privacy: favorDetails.privacyStatus ? "Public" : "Private",
+			};
+			const response2 = await apiService.editBounty(
+				favor.id,
+				JSON.stringify(new_favor),
+				authToken,
+			);
+			console.log(response2);
+			//dispatch(addBounty(favor));
+		} catch (error) {
+			console.log(error);
+			Alert.alert("it favor!", "Cancel your current request.");
+		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
-	
+
 	async function requestDeleteBountyHandler() {
 		setIsUploading(true);
-			try {
-				const data = {"status": "Delete"}
-				const response = await apiService.changeBountyStatus(favor.id, data, authToken);
-				if ( response.status === "fail" ){
-					throw new Error("invalid input"
-					)
-				}
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could not delete favor!", "Cancel your current request.");
+		try {
+			const data = { status: "Delete" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
 			}
-			setIsUploading(false);
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could not delete favor!", "Cancel your current request.");
+		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
-
 
 	async function requestCompleteBountyHandler() {
 		setIsUploading(true);
-			try {
-				const data = {"status": "Complete"}
-				const response = await apiService.changeBountyStatus(favor.id, data, authToken);
-				if ( response.status === "fail" ){
-					throw new Error("invalid input"
-					)
-				}
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could not complete favor!", "Cancel your current request.");
+		try {
+			const data = { status: "Complete" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
 			}
-			setIsUploading(false);
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could not complete favor!", "Cancel your current request.");
+		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
 
 	async function requestCancelBountyHandler() {
 		setIsUploading(true);
-			try {
-				const data = {"status": "Cancel"}
-				const response = await apiService.changeBountyStatus(favor.id, data, authToken);
-				if ( response.status === "fail" ){
-					throw new Error("invalid input"
-					)
-				}
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could not cancel your request!");
+		try {
+			const data = { status: "Cancel" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
 			}
-			setIsUploading(false);
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could not cancel your request!");
+		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
-
-
 
 	if (isUploading) {
 		<LoadingOverlay
@@ -181,7 +192,7 @@ function BountyDetailsScreen({ route }) {
 				style={{ flex: 1, backgroundColor: GLOBAL_STYLES.colors.brown300 }}
 			>
 				<View style={styles.page}>
-				<Text style={styles.mainHeader}>Create Bounty</Text>
+					<Text style={styles.mainHeader}>Create Bounty</Text>
 					<InputFields
 						typeTitle="Favor Name *"
 						type="favorName"
@@ -242,7 +253,6 @@ function BountyDetailsScreen({ route }) {
 							tabTwo="Private"
 							onPress={setPrivacyHandler}
 							isActive={favorDetails.privacyStatus}
-						
 						/>
 					</View>
 					<View style={styles.bountyLogContainer}>
@@ -286,7 +296,7 @@ function BountyDetailsScreen({ route }) {
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-						
+
 						<Button
 							title="Complete"
 							onPress={requestCompleteBountyHandler}
@@ -298,7 +308,6 @@ function BountyDetailsScreen({ route }) {
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-						
 					</View>
 
 					<View style={styles.buttonsContainer}>
@@ -324,7 +333,7 @@ function BountyDetailsScreen({ route }) {
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-						</View>
+					</View>
 				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>

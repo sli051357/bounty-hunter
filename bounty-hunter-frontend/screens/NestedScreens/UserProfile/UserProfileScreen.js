@@ -157,7 +157,7 @@ function UserProfileScreen() {
 		);
 	}
 
-	let paymentMethodSection = <Text>Payments</Text>
+	const paymentMethodSection = <Text>Payments</Text>;
 
 	// let paymentMethodSection = (
 	// 	<EditPaymentMethods isEditing={isEditing} userData={payments} />

@@ -46,38 +46,43 @@ function BountiesListScreen() {
 	});
 	const [activeSearch, setActiveSearch] = useState("");
 
+	const fetchList = useCallback(
+		async (filterParams, sortParams, searchParams) => {
+			setError(null);
+			setIsLoading(true);
+			// console.log(filterParams)
+			// console.log(sortParams)
+			// console.log(searchParams)
 
-	async function fetchList(filterParams, sortParams, searchParams) {
-		setError(null);
-		setIsLoading(true);
-		// console.log(filterParams)
-		// console.log(sortParams)
-		// console.log(searchParams)
-
-		try {
-			const response = await apiService.viewBountyList(
-				filterParams,
-				sortParams,
-				searchParams,
-				authToken,
-			);
-			//console.log(response.favors);
-			setUserBountyList(response.favors);
-			setIsLoading(false);
-		} catch (error) {
-			console.error("Error fetching data: ", error);
-			setError("Failed to fetch bounty list. Please try again.");
-			setIsLoading(false);
-		}
-	}
+			try {
+				const response = await apiService.viewBountyList(
+					filterParams,
+					sortParams,
+					searchParams,
+					authToken,
+				);
+				//console.log(response.favors);
+				setUserBountyList(response.favors);
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching data: ", error);
+				setError("Failed to fetch bounty list. Please try again.");
+				setIsLoading(false);
+			}
+		},
+		[filterParams, sortParams, searchParams],
+	);
 
 	useEffect(() => {
-		fetchList(activeFiltering, activeSorting, activeSearch, fetchList);
+		fetchList(activeFiltering, activeSorting, activeSearch);
 
-		const intervalId = setInterval(() => fetchList(activeFiltering, activeSorting, activeSearch), 120000)
+		const intervalId = setInterval(
+			() => fetchList(activeFiltering, activeSorting, activeSearch),
+			120000,
+		);
 
-		return () => clearInterval(intervalId)
-	}, [activeFiltering, activeSorting, activeSearch])
+		return () => clearInterval(intervalId);
+	}, [fetchList, activeFiltering, activeSorting, activeSearch]);
 
 	function handleRetry() {
 		fetchList(activeFiltering, activeSorting, activeSearch);
@@ -96,24 +101,48 @@ function BountiesListScreen() {
 	function sortHandler(newActive) {
 		if (newActive !== "") {
 			setActiveSortingDisplay(newActive);
-			if (newActive === "Newest First"){
-				setActiveSorting({ sort_by: "date", order: "ascending" })
-				fetchList(activeFiltering, { sort_by: "date", order: "ascending" }, activeSearch);
+			if (newActive === "Newest First") {
+				setActiveSorting({ sort_by: "date", order: "ascending" });
+				fetchList(
+					activeFiltering,
+					{ sort_by: "date", order: "ascending" },
+					activeSearch,
+				);
 			} else if (newActive === "Oldest First") {
-				setActiveSorting({ sort_by: "date", order: "descending" })
-				fetchList(activeFiltering, { sort_by: "date", order: "descending" }, activeSearch);
+				setActiveSorting({ sort_by: "date", order: "descending" });
+				fetchList(
+					activeFiltering,
+					{ sort_by: "date", order: "descending" },
+					activeSearch,
+				);
 			} else if (newActive === "Friend Name A-Z") {
-				setActiveSorting({ sort_by: "assignee", order: "ascending" })
-				fetchList(activeFiltering, { sort_by: "assignee", order: "ascending" }, activeSearch);
+				setActiveSorting({ sort_by: "assignee", order: "ascending" });
+				fetchList(
+					activeFiltering,
+					{ sort_by: "assignee", order: "ascending" },
+					activeSearch,
+				);
 			} else if (newActive === "Bounty Title A-Z") {
-				setActiveSorting({ sort_by: "name", order: "descending" })
-				fetchList(activeFiltering, { sort_by: "name", order: "descending" }, activeSearch);
+				setActiveSorting({ sort_by: "name", order: "descending" });
+				fetchList(
+					activeFiltering,
+					{ sort_by: "name", order: "descending" },
+					activeSearch,
+				);
 			} else if (newActive === "Price (Highest to Lowest)") {
-				setActiveSorting({ sort_by: "amount", order: "ascending" })
-				fetchList(activeFiltering, { sort_by: "amount", order: "ascending" }, activeSearch);
+				setActiveSorting({ sort_by: "amount", order: "ascending" });
+				fetchList(
+					activeFiltering,
+					{ sort_by: "amount", order: "ascending" },
+					activeSearch,
+				);
 			} else {
-				setActiveSorting({ sort_by: "amount", order: "descending" })
-				fetchList(activeFiltering, { sort_by: "amount", order: "descending" }, activeSearch);
+				setActiveSorting({ sort_by: "amount", order: "descending" });
+				fetchList(
+					activeFiltering,
+					{ sort_by: "amount", order: "descending" },
+					activeSearch,
+				);
 			}
 		}
 		setIsSortVisible(false);
@@ -172,15 +201,15 @@ function BountiesListScreen() {
 							/>
 						</View>
 					</View>
-					{userBountyList.map((favor) => 
+					{userBountyList.map((favor) => (
 						<FavorCard
-						key={favor.id}
-						onPress={() =>
-							navigation.navigate("ViewBounty", { favor: favor })
-						}
-						favor={favor}
-					/>
-					)}
+							key={favor.id}
+							onPress={() =>
+								navigation.navigate("ViewBounty", { favor: favor })
+							}
+							favor={favor}
+						/>
+					))}
 				</View>
 			</ScrollView>
 			<FloatingButton

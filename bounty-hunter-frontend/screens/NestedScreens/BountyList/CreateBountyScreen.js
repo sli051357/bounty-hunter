@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addBounty } from "../../../store/bountyList";
 
 import { useState } from "react";
+import apiService from "../../../api/apiRequest";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
 import SwitchTabs from "../../../components/UI/BountyListHelpers/SwitchTabs";
@@ -18,7 +19,6 @@ import Button from "../../../components/UI/Button";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import today from "../../../util/date";
-import apiService from "../../../api/apiRequest";
 
 function CreateBountyScreen() {
 	const navigation = useNavigation();
@@ -95,16 +95,19 @@ function CreateBountyScreen() {
 			// ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
 			// Will Set up Axios Sign Up later
 			const favor = {
-				"assignee": favorDetails.assigneeId, // Same with Id
-				"owner": username,
-				"name": favorDetails.favorName,
-				"tags": {"tags": tags},
-				"total_owed_type": isMonetaryStatus ? "Monetary" : "Nonmonetary",
-				"total_owed_amt": favorDetails.paymentOwed,
-				"description": favorDetails.description,
-				"privacy": favorDetails.privacyStatus ? "Public" : "Private",
+				assignee: favorDetails.assigneeId, // Same with Id
+				owner: username,
+				name: favorDetails.favorName,
+				tags: { tags: tags },
+				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
+				total_owed_amt: favorDetails.paymentOwed,
+				description: favorDetails.description,
+				privacy: favorDetails.privacyStatus ? "Public" : "Private",
 			};
-			const response = await apiService.createBounty(JSON.stringify(favor), authToken);
+			const response = await apiService.createBounty(
+				JSON.stringify(favor),
+				authToken,
+			);
 			console.log(response);
 			//dispatch(addBounty(favor));
 		} catch (error) {

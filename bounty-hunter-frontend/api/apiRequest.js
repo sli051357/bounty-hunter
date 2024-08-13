@@ -131,12 +131,16 @@ const apiService = {
 	// {"success": False, "errors": form.errors} if creation unsuccessful
 	// {"error": "GET method not allowed"} if wrong http method is used
 	createBounty: async (data, token) => {
-		const response = await axiosInstance.post("/favors/create/", data, {headers: { authorization: `Token ${token}` }},);
+		const response = await axiosInstance.post("/favors/create/", data, {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
 	editBounty: async (id, data, token) => {
-		const response = await axiosInstance.post(`/favors/${id}/edit/`, data, {headers: { authorization: `Token ${token}` }},);
+		const response = await axiosInstance.post(`/favors/${id}/edit/`, data, {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
@@ -146,20 +150,23 @@ const apiService = {
 	// searchParam = 'some keyword(s) in these quotation marks - searches by bounty title, description, or assignee name'
 	// returns {"favors": list of all favors, including all info about a favor}
 	// to know what each individual favor looks like, see return object below
-	viewBountyList: async (filterParams, sortParams, searchParam,token) => {
+	viewBountyList: async (filterParams, sortParams, searchParam, token) => {
 		const params = new URLSearchParams({
 			...filterParams,
 			...sortParams,
 			search: searchParam,
 		}); // combines all params into one object of URL query format
-		const response = await axiosInstance.get(`/favors?${params}`, 
-			{headers: { authorization: `Token ${token}` }}); // puts params into url
+		const response = await axiosInstance.get(`/favors?${params}`, {
+			headers: { authorization: `Token ${token}` },
+		}); // puts params into url
 		return response.data;
 	},
 
 	changeBountyStatus: async (id, data, token) => {
-		const response = await axiosInstance.post(`/favors/${id}/change-status/`, data,
-			{headers: { authorization: `Token ${token}` }},
+		const response = await axiosInstance.post(
+			`/favors/${id}/change-status/`,
+			data,
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
