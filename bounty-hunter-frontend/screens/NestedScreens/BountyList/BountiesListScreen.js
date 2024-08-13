@@ -61,7 +61,7 @@ function BountiesListScreen() {
 				searchParams,
 				authToken,
 			);
-			console.log(response.favors);
+			//console.log(response.favors);
 			setUserBountyList(response.favors);
 			setIsLoading(false);
 		} catch (error) {
@@ -172,15 +172,15 @@ function BountiesListScreen() {
 							/>
 						</View>
 					</View>
-					{userBountyList.map((favor) => (
+					{userBountyList.map((favor) => 
 						<FavorCard
-							key={favor.id}
-							onPress={() =>
-								navigation.navigate("ViewBounty", { id: favor.id })
-							}
-							favor={favor}
-						/>
-					))}
+						key={favor.id}
+						onPress={() =>
+							navigation.navigate("ViewBounty", { favor: favor })
+						}
+						favor={favor}
+					/>
+					)}
 				</View>
 			</ScrollView>
 			<FloatingButton
