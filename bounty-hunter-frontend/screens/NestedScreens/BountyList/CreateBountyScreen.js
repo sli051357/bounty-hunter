@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addBounty } from "../../../store/bountyList";
 
 import { useState } from "react";
+import apiService from "../../../api/apiRequest";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
 import SwitchTabs from "../../../components/UI/BountyListHelpers/SwitchTabs";
@@ -22,6 +23,7 @@ import today from "../../../util/date";
 function CreateBountyScreen() {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
+	const authToken = useSelector((state) => state.authToken.authToken);
 	const username = useSelector((state) => state.username.username);
 	const [favorDetails, setFavorDetails] = useState({
 		favorName: "",
@@ -87,26 +89,27 @@ function CreateBountyScreen() {
 	}
 
 	// Turn this into async function when axios is added
-	function createFavorHandler() {
+	async function createFavorHandler() {
 		setIsUploading(true);
 		try {
+			// ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
 			// Will Set up Axios Sign Up later
-			// const response = await apiService.createBounty(favor);
 			const favor = {
-				bountyId: Math.floor(Math.random() * 1000), // Dummy Bounty Id, async call in actual implementation, change to response
-				senderId: username, // Will be our unique Id
-				assigneeId: favorDetails.assigneeId, // Same with Id
-				favorName: favorDetails.favorName,
-				dateCreated: today,
-				tags: tags,
-				paymentType: isMonetaryStatus ? "Monetary" : "Non-Monetary",
-				paymentOwed: favorDetails.paymentOwed,
+				assignee: favorDetails.assigneeId, // Same with Id
+				owner: username,
+				name: favorDetails.favorName,
+				tags: { tags: tags },
+				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
+				total_owed_amt: favorDetails.paymentOwed,
 				description: favorDetails.description,
-				status: "In-Progress",
-				privacyStatus: favorDetails.privacyStatus,
-				bountyEditHistory: favorDetails.bountyEditHistory,
+				privacy: favorDetails.privacyStatus ? "Public" : "Private",
 			};
-			dispatch(addBounty(favor));
+			const response = await apiService.createBounty(
+				JSON.stringify(favor),
+				authToken,
+			);
+			console.log(response);
+			//dispatch(addBounty(favor));
 		} catch (error) {
 			console.log(error);
 			Alert.alert("Could Not Add Bounty!", "Try again later.");
