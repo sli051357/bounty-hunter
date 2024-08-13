@@ -1,18 +1,11 @@
-import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-function FilterItem({ name, active }) {
-	const [isActive, setIsActive] = useState(active);
-
-	function editActiveStatus() {
-		setIsActive((curr) => !curr);
-	}
-
+function FilterItem({ name, active, onPress }) {
 	return (
-		<Pressable onPress={editActiveStatus}>
-			{isActive ? (
+		<Pressable onPress={() => onPress(name)}>
+			{active ? (
 				<View
 					style={[
 						styles.itemContainer,

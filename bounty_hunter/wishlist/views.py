@@ -1,27 +1,29 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from django.views import View
 from .models import Wishlist
-from .forms import WishlistForm 
+from .forms import WishlistForm
 
 class WishlistView(View):
     def get(self, request):
-        items = Wishlist.objects.all()
-        return render(request, 'wishlist/wishlist.html', {'items': items})
+        items = Wishlist.objects.all().values()
+        return JsonResponse(list(items), safe=False)
 
 class AddWishlistItemView(View):
     def get(self, request):
         form = WishlistForm()
-        return render(request, 'wishlist/add_item.html', {'form': form})
+        form_data = {field.name: field.value() for field in form}
+        return JsonResponse({'form': form_data})
     
     def post(self, request):
         form = WishlistForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('wishlist')
-        return render(request, 'wishlist/add_item.html', {'form': form})
+            item = form.save()
+            return JsonResponse({'status': 'success', 'item_id': item.id})
+        return JsonResponse({'status': 'error', 'errors': form.errors})
 
 class RemoveWishlistItemView(View):
     def post(self, request, pk):
-        item = Wishlist.objects.get(pk=pk)
+        item = get_object_or_404(Wishlist, pk=pk)
         item.delete()
-        return redirect('wishlist')
+        return JsonResponse({'status': 'success', 'item_id': pk})
