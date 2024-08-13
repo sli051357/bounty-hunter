@@ -6,7 +6,6 @@ from .models import UserProfileInfo, LinkedAccounts, FriendRequest, create_new_r
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse, Http404
-import base64
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from django.middleware.csrf import get_token
@@ -20,6 +19,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+import base64
+from django.core.files.base import ContentFile
 
 from django.conf import settings
 
@@ -213,8 +214,18 @@ def profile_pic(request, request_username):
 
     return JsonResponse(data=data)
 
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def edit_profile_pic(request, request_username):
-    new_pic = request.POST["new_pic"]
+    data = json.loads(request.body)
+    filename = data.get("filename")
+    new_pic_string  = data.get("new_pic")
+
+    image_data = base64.b64decode(new_pic_string)
+    new_pic =  ContentFile(image_data, name=filename)
+
     if request.user.is_authenticated:
         if request.user.username == request_username:
             profile = get_object_or_404(UserProfileInfo, owner=request.user)
@@ -222,9 +233,9 @@ def edit_profile_pic(request, request_username):
             profile.save()
             return JsonResponse({"status":"success"})
         else:
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
+            return JsonResponse(status=403, data={"status": "fail"})
     else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
+        return JsonResponse(status=403, data={"status": "fail"})
 
 
 def add_link(request, request_username):

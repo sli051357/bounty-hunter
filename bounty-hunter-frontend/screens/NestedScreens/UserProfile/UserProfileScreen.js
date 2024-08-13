@@ -188,13 +188,21 @@ function UserProfileScreen() {
 	const pickImageAsync = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true,
+			aspect: [1, 1],
 			quality: 1,
+			base64:true,
 		});
 
 		if (!result.canceled) {
-			setImageUrl(result.assets[0].uri);
-			setIsPfpModalVisible(false);
-		}
+			data = {"new_pic":result.assets[0].base64, "filename": result.assets[0].fileName};
+			response = await apiService.updateUserProfilePic(username.username, data, authToken.authToken);
+			if (response.status === "success"){
+				setImageUrl(result.assets[0].uri);
+				setIsPfpModalVisible(false);
+			} else {
+				console.log("failed.");
+			}
+		} 
 	};
 
 	return (
