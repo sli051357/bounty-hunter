@@ -180,7 +180,7 @@ function UserProfileScreen() {
 	}
 
 	function removePfp() {
-		setPfpSource(null);
+		setImageUrl(null);
 		setIsPfpModalVisible(false);
 	}
 
@@ -192,7 +192,7 @@ function UserProfileScreen() {
 		});
 
 		if (!result.canceled) {
-			setPfpSource(result.assets[0].uri);
+			setImageUrl(result.assets[0].uri);
 			setIsPfpModalVisible(false);
 		}
 	};
@@ -204,8 +204,9 @@ function UserProfileScreen() {
 					<View style={styles.userMainDetailsTopView}>
 						<View style={styles.imageAndUsernameView}>
 							{isEditing ? (
+								// when editing (adds overlay)
 								<View>
-									<ProfileImage selectedImage={pfpSource} />
+									<ProfileImage selectedImage={imageUrl} />
 
 									<Pressable onPress={openPfpModal}>
 										<View
@@ -229,15 +230,11 @@ function UserProfileScreen() {
 									</Pressable>
 								</View>
 							) : imageUrl ? (
-								<Image
-									style={styles.profilePicture}
-									source={{ uri: imageUrl }}
-								/>
+								// image from url
+								<ProfileImage selectedImage={imageUrl} />
 							) : (
-								<Image //change to placeholder later
-									style={styles.profilePicture}
-									source={{ uri: "placeholder link" }}
-								/>
+								// placeholder
+								<ProfileImage selectedImage={null} />
 							)}
 
 							<View>
