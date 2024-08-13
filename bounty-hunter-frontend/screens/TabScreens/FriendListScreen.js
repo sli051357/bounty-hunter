@@ -5,7 +5,7 @@ import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
 import apiService from "../../api/apiRequest.js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import CategoryBar from "../../components/CategoryBar.js";
@@ -14,6 +14,8 @@ import FriendRequest from "../../components/FriendRequest.js";
 import SearchBar from "../../components/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
+
+import { resetFriendList } from "../../store/friendList.js";
 
 function FriendListScreen() {
 	const friendList = useSelector((state) => state.friendList.friendList);
@@ -95,6 +97,7 @@ function FriendListScreen() {
 			</View>
 		);
 
+		dispatchEvent(resetFriendList);
 		console.log(friendList);
 
 		// Favorite Friends

@@ -18,10 +18,11 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 function FriendCard({ friend, imagePath }) {
 	const dispatch = useDispatch();
 	const friendList = useSelector((state) => state.friendList.friendList);
-	const [favorite, setFavorite] = useState(friend.favoriteStatus);
+	const friendStatus = useSelector((state) => friend.favoriteStatus);
+	const [favorite, setFavorite] = useState(friendStatus);
 
 	function editFavoriteStatus() {
-		dispatch(favoriteFriend(friendList));
+		dispatch(favoriteFriend(friend));
 		console.log("current status 2 ");
 	}
 

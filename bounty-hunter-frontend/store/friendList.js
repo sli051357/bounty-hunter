@@ -39,13 +39,13 @@ const friendListSlice = createSlice({
 			console.log("pressed");
 			console.log("current state " + state.favoriteStatus);
 
-			const selectFriend = state.friendList.filter((friend) => {
-				return friend.id === action.payload.id;
-			});
+			// const selectFriend = state.friendList.filter((friend) => {
+			// 	return friend.id === action.payload.id;
+			// });
 
 			return {
-				...selectFriend,
-				favoriteStatus: !selectFriend.favoriteStatus
+				...state,
+				favoriteStatus: !state.favoriteStatus
 			}
 		},
 		resetFriendList: () => initialState,
