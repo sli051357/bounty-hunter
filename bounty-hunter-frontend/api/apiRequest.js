@@ -152,8 +152,8 @@ const apiService = {
 		return response.data;
 	},
 
-	changeBountyStatus: async (id, token) => {
-		const response = await axiosInstance.post(`/favors/${id}/change-status/`, 
+	changeBountyStatus: async (id, data, token) => {
+		const response = await axiosInstance.post(`/favors/${id}/change-status/`, data,
 			{headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;

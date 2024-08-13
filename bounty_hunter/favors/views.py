@@ -386,21 +386,24 @@ def edit_tag(request, tag_id):
         return JsonResponse({"error": "GET method not allowed"}, status=405)
     
 # change status of favor users for all statuses. 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def change_status(request, favor_id):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    status = request.POST["status"]
+    data = json.loads(request.body)
+    status = data.get("status", None)
     print("changing status to " + status)
     print("logged on as "+ request.user.username)
     favor = get_object_or_404(Favor, pk=favor_id)
     favor = get_object_or_404(Favor, pk=favor_id)
     curr_state = (favor.owner_status,favor.assignee_status)
+    
 
     #checks if input is valid
     if (curr_state not in STATES):
         curr_state = STATES[0]
         print("invalid state of favor, resetting.")
-        return JsonResponse({"success": False, "errors": "invalid favor state"})
+        return JsonResponse({"status": "fail", "errors": "invalid favor state"})
 
     if favor.owner == request.user:
         print("sender is owner")
@@ -410,7 +413,7 @@ def change_status(request, favor_id):
         transition = (curr_state,(1,status))
     if transition not in TRANSITIONS:
         print("invalid transition")
-        return JsonResponse({"success": False, "errors": "invalid input"})
+        return JsonResponse({"status": "fail", "errors": "invalid input"})
     (favor.owner_status,favor.assignee_status) = TRANSITIONS[transition]
 
     #check if favor has been edited, and cancelled. assumes that the old/new favor has already been created.
@@ -433,7 +436,7 @@ def change_status(request, favor_id):
 
     apply_transitions(favor)
     
-    return JsonResponse({"success": True})
+    return JsonResponse({"status": "success"})
 
 
 # updates favor based on current state of owner status and assignee status
