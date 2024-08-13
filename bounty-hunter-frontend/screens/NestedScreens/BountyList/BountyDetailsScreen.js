@@ -82,7 +82,7 @@ function BountyDetailsScreen({ route }) {
 				const response = await apiService.changeBountyStatus(favor.id, data, authToken);
 				if ( response.status === "fail" ){
 					throw new Error("invalid input")
-				} else {
+				}
 					//create the new edited favor
 
 					const new_favor = {
@@ -94,10 +94,10 @@ function BountyDetailsScreen({ route }) {
 						"description": favorDetails.description,
 						"privacy": favorDetails.privacyStatus ? "Public" : "Private",
 					};
-					const response = await apiService.editBounty(favor.id, JSON.stringify(new_favor), authToken);
-					console.log(response);
+					const response2 = await apiService.editBounty(favor.id, JSON.stringify(new_favor), authToken);
+					console.log(response2	);
 					//dispatch(addBounty(favor));
-				}
+				
 			} catch (error) {
 				console.log(error);
 				Alert.alert("it favor!", "Cancel your current request.");

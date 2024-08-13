@@ -72,7 +72,7 @@ function BountiesListScreen() {
 	}
 
 	useEffect(() => {
-		fetchList(activeFiltering, activeSorting, activeSearch);
+		fetchList(activeFiltering, activeSorting, activeSearch, fetchList);
 
 		const intervalId = setInterval(() => fetchList(activeFiltering, activeSorting, activeSearch), 120000)
 
