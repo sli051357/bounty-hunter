@@ -11,6 +11,15 @@ import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
 
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+import json
 
 CREATE = "Create"
 DELETE = "Delete"
@@ -88,9 +97,10 @@ def get_total_amt_owed(request,to_user_username):
 
 # Ceate your views here.
 # view a list of all favors 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def favor_list(request): # ex: favors/
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
     # get current user
     curr_user = request.user
 
@@ -277,53 +287,75 @@ def tag_detail(request, tag_id):
 
 # create a new favor
 # @login_required
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_favor(request):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    if request.method =="POST":
-        form = FavorForm(request.POST)
-        if form.is_valid():
-            favor = form.save(commit=False)
-            favor.owner = request.user
-            favor.points_value = 100
-            favor.owner_status = CREATE
-            favor.assignee_status = INCOMPLETE
-            favor.completed = False
-            favor.active = False
-            favor.save()
-            return JsonResponse({"success": True, "favor_id": favor.id})
-        else:
-            return JsonResponse({"success": False, "errors": form.errors})
-    else: 
-        return JsonResponse({"error": "GET method not allowed"}, status=405)
+    data = json.loads(request.body)
+    #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
+    name = data.get('name', None)
+    print(name)
+    owner = get_object_or_404(User,username=(data.get("owner", None)))
+    description = data.get("description", None)
+    assignee = get_object_or_404(User,username=(data.get("assignee", None)))
+    total_owed_type = data.get('total_owed_type', None)
+    total_owed_amt = data.get('total_owed_amt', None)
+    privacy = data.get('privacy', None)
+    active = data.get('active', None)
+    owner_status = CREATE
+    assignee_status = INCOMPLETE
+    completed = False
+    active = False
+    #tags = get_tags(data.get('tags', None))
+    #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
+
+    newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
+                    total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
+                    active=active, owner_status=owner_status, 
+                    assignee_status=assignee_status, completed=completed)
+    newfavor.save()
+    
+
+    return JsonResponse({"success": True, "favor_id": newfavor.id})
+
+def get_tags(input):
+    pass
+
+def get_total_owed_wishlist(input):
+    pass
 
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made
 # @login_required
 def edit_favor(request, favor_id):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
     # this gets the favor and sets it to inactive
-    favor = get_object_or_404(Favor, pk=favor_id)
-    favor.active = False
-    favor.save()
+    data = json.loads(request.body)
+    #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
+    name = data.get('name', None)
+    print(name)
+    owner = get_object_or_404(User,username=(data.get("owner", None)))
+    description = data.get("description", None)
+    assignee = get_object_or_404(User,username=(data.get("assignee", None)))
+    total_owed_type = data.get('total_owed_type', None)
+    total_owed_amt = data.get('total_owed_amt', None)
+    privacy = data.get('privacy', None)
+    active = data.get('active', None)
+    owner_status = CREATE
+    assignee_status = INCOMPLETE
+    completed = False
+    active = False
 
-    # this creates a copy of the favor thath is active and has old favor as prev
-    favor.pk = None
-    favor.save()
-    favor.active = True
-    favor.previous_favor = get_object_or_404(Favor, pk=favor_id)
+    newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
+                    total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
+                    active=active, owner_status=owner_status, 
+                    assignee_status=assignee_status, completed=completed)
+    newfavor.previous_favor = get_object_or_404(Favor, pk=favor_id)
+    newfavor.save()
+    newfavor.previous_favor.active = False
+    newfavor.previous_favor.save()
 
-    if request.method == "POST":
-        form = FavorForm(request.POST, instance=favor)
-        if form.is_valid():
-            # i think this saves the edits?
-            form.save() 
-            return JsonResponse({"success": True, "new_favor_pk": favor.pk})
-        else:
-            return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        return JsonResponse({"error": "GET method not allowed"}, status=405)
+    
+    return JsonResponse({"status":"success"})
 
 # create a new tag
 # @login_required
@@ -360,21 +392,24 @@ def edit_tag(request, tag_id):
         return JsonResponse({"error": "GET method not allowed"}, status=405)
     
 # change status of favor users for all statuses. 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def change_status(request, favor_id):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    status = request.POST["status"]
+    data = json.loads(request.body)
+    status = data.get("status", None)
     print("changing status to " + status)
     print("logged on as "+ request.user.username)
     favor = get_object_or_404(Favor, pk=favor_id)
     favor = get_object_or_404(Favor, pk=favor_id)
     curr_state = (favor.owner_status,favor.assignee_status)
+    
 
     #checks if input is valid
     if (curr_state not in STATES):
         curr_state = STATES[0]
         print("invalid state of favor, resetting.")
-        return JsonResponse({"success": False, "errors": "invalid favor state"})
+        return JsonResponse({"status": "fail"})
 
     if favor.owner == request.user:
         print("sender is owner")
@@ -384,7 +419,7 @@ def change_status(request, favor_id):
         transition = (curr_state,(1,status))
     if transition not in TRANSITIONS:
         print("invalid transition")
-        return JsonResponse({"success": False, "errors": "invalid input"})
+        return JsonResponse({"status": "fail"})
     (favor.owner_status,favor.assignee_status) = TRANSITIONS[transition]
 
     #check if favor has been edited, and cancelled. assumes that the old/new favor has already been created.
@@ -407,7 +442,7 @@ def change_status(request, favor_id):
 
     apply_transitions(favor)
     
-    return JsonResponse({"success": True})
+    return JsonResponse({"status": "success"})
 
 
 # updates favor based on current state of owner status and assignee status

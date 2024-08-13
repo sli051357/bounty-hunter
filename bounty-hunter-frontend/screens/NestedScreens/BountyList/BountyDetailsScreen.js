@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { editBounty, removeBounty } from "../../../store/bountyList";
 
 import { useState } from "react";
+import apiService from "../../../api/apiRequest";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import BountyLogTab from "../../../components/UI/BountyListHelpers/BountyLogTab";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
@@ -20,23 +21,31 @@ import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function BountyDetailsScreen({ route }) {
-	const { bountyId } = route.params;
-	const bountyList = useSelector((state) => state.bountyList.bountyList);
-	const currBounty = bountyList.find((bounty) => bounty.bountyId === bountyId);
-	const currEditBountyHistory = [...currBounty.bountyEditHistory];
+	const authToken = useSelector((state) => state.authToken.authToken);
+	const currEditBountyHistory = [];
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	const username = useSelector((state) => state.username.username); //currBounty.assigneeId//
-	// console.log(currEditBountyHistory);
+	const username = useSelector((state) => state.username.username); //currBounty.assignee//
 
-	const [favorDetails, setFavorDetails] = useState(currBounty);
+	const { favor } = route.params;
+	const [favorDetails, setFavorDetails] = useState({
+		favorName: favor.name,
+		assigneeId: favor.assignee,
+		paymentOwed: favor.total_owed_amt,
+		description: favor.description,
+		privacyStatus: favor.privacy,
+		bountyEditHistory: [
+			{
+				sender: username,
+				description: "Would you like to accept this bounty?",
+				type: "Creation",
+			},
+		],
+	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
-		currBounty.paymentType === "Monetary",
+		favor.paymentType === "Monetary",
 	);
 	const [isUploading, setIsUploading] = useState(false);
-
-	// Need to call async function to get username of assignee since favor
-	// details has id of assignee
 
 	// Sender Restricted Function
 	function setFavorDetailsHandler(text, type) {
@@ -64,255 +73,106 @@ function BountyDetailsScreen({ route }) {
 		}));
 	}
 
-	// Sender Restricted Function
-	function editFavorButtonHandler() {
-		const favorNameIsValid = favorDetails.favorName.length > 0;
-		const assigneeIsValid = favorDetails.assigneeId.length > 0;
-		const totalOwedIsValid = favorDetails.paymentOwed.length > 0;
-
-		if (!favorNameIsValid || !assigneeIsValid || !totalOwedIsValid) {
-			Alert.alert("Please fill input values.", "Check highlighted inputs!");
-			return;
-		}
-		editFavorHandler();
-	}
-
-	// Turn these functions into async function when axios is added
-	// Handles putting edits in the Bounty Log
-	function editFavorHandler() {
+	async function requestEditBountyHandler() {
 		setIsUploading(true);
 		try {
-			// Will Set up Axios Sign Up later
-			// const response = await apiService.editBounty(favorDetails);
-			currEditBountyHistory.push({
-				type: "Edit",
-				description: "Bounty has been edited.",
-				sender: username,
-			});
-			dispatch(
-				editBounty({
-					...favorDetails,
-					bountyEditHistory: currEditBountyHistory,
-				}),
+			const data = { status: "Edit" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
 			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
+			}
+			//create the new edited favor
+
+			const new_favor = {
+				assignee: favorDetails.assigneeId, // Same with Id
+				owner: username,
+				name: favorDetails.favorName,
+				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
+				total_owed_amt: favorDetails.paymentOwed,
+				description: favorDetails.description,
+				privacy: favorDetails.privacyStatus ? "Public" : "Private",
+			};
+			const response2 = await apiService.editBounty(
+				favor.id,
+				JSON.stringify(new_favor),
+				authToken,
+			);
+			console.log(response2);
+			//dispatch(addBounty(favor));
 		} catch (error) {
 			console.log(error);
-			Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			Alert.alert("it favor!", "Cancel your current request.");
 		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
 
-	// Deletes Favors from both user's lists
-	function deleteFavorButtonHandler() {
-		Alert.alert(
-			"Are you sure you want to delete bounty?",
-			"Bounties cannot be retreived after being deleted?",
-			[
-				{
-					text: "Confirm",
-					onPress: () => {
-						navigation.navigate("BountiesList");
-						dispatch(removeBounty(bountyId));
-					},
-				},
-				{
-					text: "Cancel",
-					onPress: () => {
-						return;
-					},
-				},
-			],
-		);
-	}
-
-	// Handles initial bounty acceptance or deletion for assignee
-	function bountyAcceptanceHandler(response) {
-		if (response === "accept") {
-			setIsUploading(true);
-			try {
-				// Will Set up Axios Sign Up later
-				// const response = await apiService.editBounty(favorDetails);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Creation",
-				);
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty has been accepted.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-					}),
-				);
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could Not Edit Bounty!", "Try again later.");
-			}
-			setIsUploading(false);
-			navigation.navigate("BountiesList");
-		} else {
-			setIsUploading(true);
-			try {
-				// Will Set up Axios Sign Up later
-				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				dispatch(removeBounty(favorDetails.bountyId));
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could Not Edit Bounty!", "Try again later.");
-			}
-			setIsUploading(false);
-			navigation.navigate("BountiesList");
-		}
-	}
-
-	// Requests for Bounty Deletion from assignee
-	function requestDeleteBountyHandler() {
+	async function requestDeleteBountyHandler() {
 		setIsUploading(true);
 		try {
-			// Will Set up Axios Sign Up later
-			// const response = await apiService.editBounty(favorDetails);
-			currEditBountyHistory.push({
-				type: "Delete Request",
-				description: "Bounty deletion requested?",
-				sender: favorDetails.assigneeId,
-			});
-			dispatch(
-				editBounty({
-					...favorDetails,
-					bountyEditHistory: currEditBountyHistory,
-				}),
+			const data = { status: "Delete" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
 			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
+			}
 		} catch (error) {
 			console.log(error);
-			Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			Alert.alert("Could not delete favor!", "Cancel your current request.");
 		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
 
-	function deleteBountyRequestResponseHandler(response) {
-		if (response === "accept") {
-			setIsUploading(true);
-			try {
-				// Will Set up Axios Sign Up later
-				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				dispatch(removeBounty(favorDetails.bountyId));
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could Not Edit Bounty!", "Try again later.");
-			}
-			setIsUploading(false);
-			navigation.navigate("BountiesList");
-		} else {
-			setIsUploading(true);
-			try {
-				// Will Set up Axios Sign Up later
-				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Delete Request",
-				);
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty deletion denied.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-					}),
-				);
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could Not Edit Bounty!", "Try again later.");
-			}
-			setIsUploading(false);
-			navigation.navigate("BountiesList");
-		}
-	}
-
-	// Requests for Bounty Complete from assignee
-	function requestCompleteBountyHandler() {
+	async function requestCompleteBountyHandler() {
 		setIsUploading(true);
 		try {
-			// Will Set up Axios Sign Up later
-			// const response = await apiService.editBounty(favorDetails);
-			currEditBountyHistory.push({
-				type: "Complete Request",
-				description: "Bounty completed requested?",
-				sender: favorDetails.assigneeId,
-			});
-			dispatch(
-				editBounty({
-					...favorDetails,
-					bountyEditHistory: currEditBountyHistory,
-				}),
+			const data = { status: "Complete" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
 			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
+			}
 		} catch (error) {
 			console.log(error);
-			Alert.alert("Could Not Edit Bounty!", "Try again later.");
+			Alert.alert("Could not complete favor!", "Cancel your current request.");
 		}
+		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
 
-	function completeBountyRequestResponseHandler(response) {
-		if (response === "accept") {
-			setIsUploading(true);
-			try {
-				// Will Set up Axios Sign Up later
-				// const response = await apiService.editBounty(favorDetails);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Complete Request",
-				);
-				console;
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty has been completed.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-						status: "Completed",
-					}),
-				);
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could Not Edit Bounty!", "Try again later.");
+	async function requestCancelBountyHandler() {
+		setIsUploading(true);
+		try {
+			const data = { status: "Cancel" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
 			}
-			setIsUploading(false);
-			navigation.navigate("BountiesList");
-		} else {
-			setIsUploading(true);
-			try {
-				// Will Set up Axios Sign Up later
-				// const response = await apiService.deleteBounty(favorDetails.bountyId);
-				const index = currEditBountyHistory.findIndex(
-					(edit) => edit.type === "Complete Request",
-				);
-				currEditBountyHistory.splice(index, 1);
-				currEditBountyHistory.push({
-					type: "Edit",
-					description: "Bounty has not been completed.",
-				});
-				dispatch(
-					editBounty({
-						...favorDetails,
-						bountyEditHistory: currEditBountyHistory,
-					}),
-				);
-			} catch (error) {
-				console.log(error);
-				Alert.alert("Could Not Edit Bounty!", "Try again later.");
-			}
-			setIsUploading(false);
-			navigation.navigate("BountiesList");
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could not cancel your request!");
 		}
+		setIsUploading(false);
+		setIsUploading(false);
+		navigation.navigate("BountiesList");
 	}
 
 	if (isUploading) {
@@ -332,32 +192,22 @@ function BountyDetailsScreen({ route }) {
 				style={{ flex: 1, backgroundColor: GLOBAL_STYLES.colors.brown300 }}
 			>
 				<View style={styles.page}>
-					<Text style={styles.mainHeader}>Bounty Details</Text>
+					<Text style={styles.mainHeader}>Create Bounty</Text>
 					<InputFields
-						typeTitle="Favor Name"
+						typeTitle="Favor Name *"
 						type="favorName"
 						onPress={setFavorDetailsHandler}
 						maxLength={18}
 						value={favorDetails.favorName}
 						keyboardType="default"
-						editable={false}
 					/>
 					<InputFields
-						typeTitle="Assigned From"
-						type="senderId"
-						maxLength={14}
-						value={favorDetails.senderId}
-						keyboardType="default"
-						editable={false}
-					/>
-					<InputFields
-						typeTitle="Assigned To"
+						typeTitle="Assign To (by user ID) *"
 						type="assigneeId"
 						onPress={setFavorDetailsHandler}
 						maxLength={14}
 						value={favorDetails.assigneeId}
 						keyboardType="default"
-						editable={false}
 					/>
 					<InputFields
 						typeTitle="Total Owed *"
@@ -366,7 +216,6 @@ function BountyDetailsScreen({ route }) {
 						maxLength={22}
 						value={favorDetails.paymentOwed}
 						keyboardType="default"
-						editable={username === favorDetails.senderId}
 					>
 						<SwitchTabs
 							tabOne="Monetary"
@@ -385,36 +234,31 @@ function BountyDetailsScreen({ route }) {
 						keyboardType="default"
 						multiLineStyles={{ minHeight: 155, flex: 1 }}
 						multiline={true}
-						editable={username === favorDetails.senderId}
 					/>
-					{username === favorDetails.senderId ? (
-						<View style={styles.tagsContainer}>
-							<Text style={styles.tagHeader}>Tags</Text>
-							<View style={styles.addTagContainer}>
-								<IconButton
-									icon="add-sharp"
-									iconSize={18}
-									onPress={() => console.log("Make tag function")}
-									color={GLOBAL_STYLES.colors.orange700}
-								/>
-							</View>
-						</View>
-					) : null}
-					{username === favorDetails.senderId ? (
-						<View style={styles.privacyStatusContainer}>
-							<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
-							<SwitchTabs
-								tabOne="Public"
-								tabTwo="Private"
-								onPress={setPrivacyHandler}
-								isActive={favorDetails.privacyStatus}
+					<View style={styles.tagsContainer}>
+						<Text style={styles.tagHeader}>Tags</Text>
+						<View style={styles.addTagContainer}>
+							<IconButton
+								icon="add-sharp"
+								iconSize={18}
+								onPress={() => console.log("Make tag function")}
+								color={GLOBAL_STYLES.colors.orange700}
 							/>
 						</View>
-					) : null}
+					</View>
+					<View style={styles.privacyStatusContainer}>
+						<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
+						<SwitchTabs
+							tabOne="Public"
+							tabTwo="Private"
+							onPress={setPrivacyHandler}
+							isActive={favorDetails.privacyStatus}
+						/>
+					</View>
 					<View style={styles.bountyLogContainer}>
 						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
 						<View style={styles.bountyTabContainer}>
-							{favorDetails.bountyEditHistory.map((tab, index) => {
+							{currEditBountyHistory.map((tab, index) => {
 								//console.log(tab);
 								let typeOnPress = null;
 								let disabled = false;
@@ -443,7 +287,7 @@ function BountyDetailsScreen({ route }) {
 					<View style={styles.buttonsContainer}>
 						<Button
 							title="Cancel"
-							onPress={() => navigation.navigate("BountiesList")}
+							onPress={requestCancelBountyHandler}
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -452,59 +296,44 @@ function BountyDetailsScreen({ route }) {
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-						{username === favorDetails.senderId ? (
-							<Button
-								title="Edit"
-								onPress={editFavorButtonHandler}
-								buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
-								containerStyle={{
-									backgroundColor: GLOBAL_STYLES.colors.blue300,
-									paddingHorizontal: 48,
-									borderRadius: 6,
-								}}
-								textStyle={{ fontSize: 28, fontWeight: "bold" }}
-							/>
-						) : (
-							<Button
-								title="Complete"
-								onPress={requestCompleteBountyHandler}
-								buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
-								containerStyle={{
-									backgroundColor: GLOBAL_STYLES.colors.blue300,
-									paddingHorizontal: 48,
-									borderRadius: 6,
-								}}
-								textStyle={{ fontSize: 28, fontWeight: "bold" }}
-							/>
-						)}
-					</View>
-					{username === favorDetails.senderId ? (
+
 						<Button
-							title="Delete"
-							onPress={deleteFavorButtonHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
+							title="Complete"
+							onPress={requestCompleteBountyHandler}
+							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
 							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.error700,
-								paddingHorizontal: 30,
+								backgroundColor: GLOBAL_STYLES.colors.blue300,
+								paddingHorizontal: 48,
 								borderRadius: 6,
-								alignSelf: "center",
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-					) : (
+					</View>
+
+					<View style={styles.buttonsContainer}>
 						<Button
-							title="Request Deletion"
+							title="Delete"
 							onPress={requestDeleteBountyHandler}
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.error700,
 								paddingHorizontal: 30,
 								borderRadius: 6,
-								alignSelf: "center",
 							}}
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
-					)}
+						<Button
+							title="Edit"
+							onPress={requestEditBountyHandler}
+							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
+							containerStyle={{
+								backgroundColor: GLOBAL_STYLES.colors.error700,
+								paddingHorizontal: 30,
+								borderRadius: 6,
+							}}
+							textStyle={{ fontSize: 28, fontWeight: "bold" }}
+						/>
+					</View>
 				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>
