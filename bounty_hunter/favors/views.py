@@ -297,12 +297,13 @@ def create_favor(request):
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
 # action history
-def log_edit_history(favor, user, action, details=None):
+def log_edit_history(favor, user, action):
     history_entry = {
         "timestamp": datetime.datetime.now().isoformat(),
         "user": user.username,
         "action": action,
-        "details": details,
+        "owner_status": favor.owner_status,
+        "assignee_status": favor.assignee_status,
     }
     favor.bounty_edit_history.append(history_entry)
     favor.save()
@@ -335,6 +336,13 @@ def edit_favor(request, favor_id):
             return JsonResponse({"success": False, "errors": form.errors})
     else:
         return JsonResponse({"error": "GET method not allowed"}, status=405)
+
+
+# @login_required
+def get_favor_history(request, favor_id):
+    favor = get_object_or_404(Favor, pk=favor_id)
+    history = favor.bounty_edit_history
+    return JsonResponse({"history": history})
 
 # create a new tag
 # @login_required
@@ -424,6 +432,7 @@ def change_status(request, favor_id):
 # updates favor based on current state of owner status and assignee status
 def apply_transitions(favor):
     curr_state = (favor.owner_status,favor.assignee_status)
+    log_edit_history(favor, favor.owner, f"Transitioned to {curr_state}")
     #if state has been created but not accepted:
     if curr_state == STATES[1]:
         favor.completed = False
