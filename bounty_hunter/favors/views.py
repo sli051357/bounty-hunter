@@ -324,6 +324,19 @@ def get_tags(input):
 def get_total_owed_wishlist(input):
     pass
 
+# action history
+def log_edit_history(favor, user, action, details=None):
+    history_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "user": user.username,
+        "action": action,
+        "owner_status": favor.owner_status,
+        "assignee_status": favor.assignee_status,
+        "details": details
+    }
+    favor.bounty_edit_history.append(history_entry)
+    favor.save()
+
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made
 # @login_required
@@ -354,23 +367,15 @@ def edit_favor(request, favor_id):
     newfavor.previous_favor.active = False
     newfavor.previous_favor.save()
 
-    if request.method == "POST":
-        form = FavorForm(request.POST, instance=favor)
-        if form.is_valid():
-            form.save()
-            log_edit_history(favor, request.user, "Edit", "Favor details were edited.")
-            return JsonResponse({"success": True, "new_favor_pk": favor.pk})
-        else:
-            return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        return JsonResponse({"status":"success"})
-
+    
+    return JsonResponse({"status":"success"})
 
 # @login_required
 def get_favor_history(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id)
     history = favor.bounty_edit_history
     return JsonResponse({"history": history})
+
 
 # create a new tag
 # @login_required
