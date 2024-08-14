@@ -9,7 +9,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import apiService from "../../api/apiRequest.js";
 import CategoryBar from "../../components/FriendList/CategoryBar.js";
 import FriendCard from "../../components/FriendList/FriendCard.js";
-import FriendRequest from "../../components/FriendList/FriendRequest.js";
+// 	import FriendRequest from "../../components/FriendList/FriendRequest.js";
 import SearchBar from "../../components/FriendList/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
@@ -151,7 +151,7 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{!error ? (
+				{/* {!error ? (
 					DUMMY_REQUESTS.map((user) => (
 						<FriendRequest
 							key={user.username}
@@ -164,7 +164,7 @@ function FriendListScreen() {
 						<Text style={styles.errorText}>{error}</Text>
 						<Button title="Retry" onPress={handleRetryFriendRequests} />
 					</View>
-				)}
+				)} */}
 			</View>
 		);
 
