@@ -30,6 +30,7 @@ const TaggingComponent = () => {
         {/* preset tags */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preset</Text>
+          <View style = {styles.line}/>
           <View style={styles.presetTagsContainer}>
             <TouchableOpacity style={[styles.presetTag, { backgroundColor: '#F2B093' }]}>
               <Text style={styles.presetTagText}>🛍️ Shopping</Text>
@@ -49,6 +50,7 @@ const TaggingComponent = () => {
               <Text style={styles.editText}>Edit</Text>
             </TouchableOpacity>
           </View>
+          <View style = {styles.line}/>
           <FlatList
             data={tags}
             keyExtractor={(item, index) => index.toString()}
@@ -69,6 +71,7 @@ const TaggingComponent = () => {
         {/* custom tags creation */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Create Custom Tag</Text>
+          <View style = {styles.line}/>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -189,6 +192,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#592102',
+    marginBottom: 10,
+  },
+  line:{
+    borderWidth: 0.5,
+    borderColor:'#592102',
     marginBottom: 10,
   },
   presetTagsContainer: {
