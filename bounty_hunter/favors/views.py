@@ -386,7 +386,6 @@ def change_status(request, favor_id):
     print("changing status to " + status)
     print("logged on as "+ request.user.username)
     favor = get_object_or_404(Favor, pk=favor_id)
-    favor = get_object_or_404(Favor, pk=favor_id)
     curr_state = (favor.owner_status,favor.assignee_status)
 
     #checks if input is valid
