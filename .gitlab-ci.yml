@@ -27,7 +27,7 @@ frontend-format:
     - cd bounty-hunter-frontend/
     - npm ci
   script:
-    - npx @biomejs/biome check --write .
+    - npx @biomejs/biome check --write --unsafe .
     - cd ..
   cache:
     paths:

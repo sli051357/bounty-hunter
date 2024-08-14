@@ -12,7 +12,7 @@ const bountyListSlice = createSlice({
 	reducers: {
 		addBounty: (state, action) => {
 			const bounty = {
-				favorName: action.payload.favorName,
+				name: action.payload.name,
 				bountyId: action.payload.bountyId,
 				senderId: action.payload.senderId,
 				assigneeId: action.payload.assigneeId,
