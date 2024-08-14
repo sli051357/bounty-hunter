@@ -68,7 +68,7 @@ function FilterModal({ isVisible, onClose, currFilters }) {
 			start_date: dayjs(startDate).format("YYYY-MM-DD"),
 			end_date: dayjs(endDate).format("YYYY-MM-DD"),
 			price_low: startPrice,
-			price_high: endPrice === 1000 ? "MAX" : endPrice,
+			price_high: endPrice === 1000 ? 999999.99 : endPrice,
 		});
 	}
 

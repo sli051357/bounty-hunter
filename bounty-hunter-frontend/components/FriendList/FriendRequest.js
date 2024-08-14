@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import { DUMMY_USER_PROFILE } from "../util/dummy-data.js";
+import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
@@ -12,7 +11,7 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ user, imagePath }) {
+function FriendRequest({ user, imagePath }) {
 	function addRequest() {
 		console.log("friend added");
 	}
@@ -24,7 +23,7 @@ function FriendCard({ user, imagePath }) {
 	return (
 		<View style={styles.card}>
 			{/* Profile Picture */}
-			<Image style={styles.picture} source={imagePath} />
+			<Image style={styles.picture} source={{ uri: imagePath }} />
 
 			{/* Friend Text */}
 			<View>
@@ -87,12 +86,12 @@ const styles = StyleSheet.create({
 		fontFamily: "BaiJamjuree-SemiBold",
 		fontSize: 20,
 		color: GLOBAL_STYLES.colors.blue300,
+		marginBottom: -5,
 	},
 	userID: {
 		fontFamily: "BaiJamjuree-Regular",
 		fontSize: 12,
 		color: GLOBAL_STYLES.colors.brown700,
-		marginTop: -10,
 	},
 	button: {
 		padding: 10,
@@ -101,4 +100,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default FriendCard;
+export default FriendRequest;

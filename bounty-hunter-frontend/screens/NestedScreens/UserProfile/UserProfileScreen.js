@@ -157,19 +157,21 @@ function UserProfileScreen() {
 		);
 	}
 
-	let paymentMethodSection = (
-		<EditPaymentMethods isEditing={isEditing} userData={payments} />
-	);
+	const paymentMethodSection = <Text>Payments</Text>;
 
-	if (isEditing) {
-		paymentMethodSection = (
-			<EditPaymentMethods
-				managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
-				isEditing={isEditing}
-				userData={payments}
-			/>
-		);
-	}
+	// let paymentMethodSection = (
+	// 	<EditPaymentMethods isEditing={isEditing} userData={payments} />
+	// );
+
+	// if (isEditing) {
+	// 	paymentMethodSection = (
+	// 		<EditPaymentMethods
+	// 			managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
+	// 			isEditing={isEditing}
+	// 			userData={payments}
+	// 		/>
+	// 	);
+	// }
 
 	function openPfpModal() {
 		setIsPfpModalVisible(true);

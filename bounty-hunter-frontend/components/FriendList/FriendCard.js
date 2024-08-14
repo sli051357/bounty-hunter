@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import { DUMMY_USER_PROFILE } from "../util/dummy-data.js";
+import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 
