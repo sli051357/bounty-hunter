@@ -20,8 +20,8 @@ class DisplayNameTestCase(TestCase):
     def test_display_name_default(self):
         # Test default display name when it is not set
         user2 = User.objects.create_user(username='user2', password='password')
-        profile2 = UserProfileInfo.objects.create(owner=user2)
-        
+        UserProfileInfo.objects.create(owner=user2)  # No need to assign the result to a variable
+    
         response = self.client.get(reverse('display_name', args=[user2.username]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"display_name": "user2"})  # The display name should default to the username if not set
