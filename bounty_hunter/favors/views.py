@@ -329,7 +329,6 @@ def edit_favor(request, favor_id):
     if request.method == "POST":
         form = FavorForm(request.POST, instance=favor)
         if form.is_valid():
-            # i think this saves the edits?
             form.save()
             log_edit_history(favor, request.user, "Edit", "Favor details were edited.")
             return JsonResponse({"success": True, "new_favor_pk": favor.pk})
