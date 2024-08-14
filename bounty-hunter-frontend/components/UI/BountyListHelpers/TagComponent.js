@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import { GLOBAL_STYLES } from "../../../constants/styles";
 
 const TaggingComponent = () => {
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [emojiInput, setEmojiInput] = useState('🍀'); // default emoji
-  const [selectedColor, setSelectedColor] = useState('#F2B093'); // default color
+  const [selectedColor, setSelectedColor] = useState(GLOBAL_STYLES.colors.brown500); // default color
 
   const addTag = () => {
     if (tagInput.trim() && emojiInput.trim()) {
@@ -46,7 +47,7 @@ const TaggingComponent = () => {
           <View style={styles.customTagsHeader}>
             <Text style={styles.sectionTitle}>Custom</Text>
             <TouchableOpacity style={styles.editButton}>
-              <MaterialIcons name="edit" size={20} color="#365778" />
+              <MaterialIcons name="edit" size={20} color={GLOBAL_STYLES.colors.blue300} />
               <Text style={styles.editText}>Edit</Text>
             </TouchableOpacity>
           </View>
@@ -171,7 +172,7 @@ const TaggingComponent = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFBF4',
+    backgroundColor: GLOBAL_STYLES.colors.brown300,
   },
   container: {
     padding: 20,
@@ -180,8 +181,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#227BAA',
+    fontFamily: "BaiJamjuree-Bold",
+    color: GLOBAL_STYLES.colors.blue300,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -190,25 +191,26 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#592102',
+    fontFamily: "BaiJamjuree-Medium",
+    color: GLOBAL_STYLES.colors.brown700,
     marginBottom: 10,
   },
   line:{
     borderWidth: 0.5,
-    borderColor:'#592102',
+    borderColor:GLOBAL_STYLES.colors.brown700,
     marginBottom: 10,
   },
   presetTagsContainer: {
     flexDirection: 'row',
   },
   presetTag: {
-    borderRadius: 15,
-    padding: 10,
+    borderRadius: 10,
+    padding: 7,
     marginRight: 10,
   },
   presetTagText: {
-    color: '#592102',
+    fontFamily: "BaiJamjuree-Regular",
+    color: GLOBAL_STYLES.colors.brown700,
     fontSize: 13,
   },
   customTagsHeader: {
@@ -221,17 +223,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   editText: {
-    color: '#227BAA',
+    fontFamily: "BaiJamjuree-Medium",
+    color: GLOBAL_STYLES.colors.blue300,
     marginLeft: 5,
   },
   inputContainer: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   input: {
+    fontFamily: "BaiJamjuree-Regular",
     flex: 1,
-    borderColor: '#F2B093',
+    borderColor: GLOBAL_STYLES.colors.brown500,
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
@@ -240,11 +244,12 @@ const styles = StyleSheet.create({
     minWidth: 100,
   },
   emojiInput: {
+    fontFamily: "BaiJamjuree-Regular",
     width: 40, 
     height: 36, 
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#F2B093',
+    borderColor: GLOBAL_STYLES.colors.brown500,
     borderWidth: 1,
     borderRadius: 5,
     padding: 5,
@@ -256,21 +261,23 @@ const styles = StyleSheet.create({
   tag: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderRadius: 20,
+    padding: 7,
+    borderRadius: 10,
     marginRight: 10,
-    height: 36,
+    // height: 36,
   },
   emoji: {
-    marginRight: 5,
-    fontSize: 15,
+    marginRight: 2,
+    fontSize: 13,
   },
   tagText: {
-    color: '#592102',
+    fontFamily: "BaiJamjuree-Regular",
+    color: GLOBAL_STYLES.colors.brown700,
     fontSize: 13,
   },
   removeButtonText: {
-    color: '#592102',
+    fontFamily: "BaiJamjuree-Regular",
+    color: GLOBAL_STYLES.colors.brown700,
     paddingLeft: 5,
   },
   colorPickerContainer: {
@@ -285,7 +292,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   selectedColorOption: {
-    borderColor: '#365778',
+    borderColor: GLOBAL_STYLES.colors.brown500,
     borderWidth: 2,
   },
   addColorOption: {
@@ -295,23 +302,25 @@ const styles = StyleSheet.create({
     margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#F2B093',
+    borderColor: GLOBAL_STYLES.colors.brown500,
     borderWidth: 1,
-    backgroundColor: '#FFFBF4',
+    backgroundColor: GLOBAL_STYLES.colors.brown300,
   },
   addColorText: {
-    color: '#F2B093',
+    color: GLOBAL_STYLES.colors.brown500,
     fontSize: 18,
     fontWeight: 'bold',
   },
   createButton: {
-    backgroundColor: '#227BAA',
+    backgroundColor: GLOBAL_STYLES.colors.blue300,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
   },
   createButtonText: {
-    color: '#fff',
+    fontSize: 16,
+    fontFamily: "BaiJamjuree-Bold",
+    color: GLOBAL_STYLES.colors.brown300,
     fontWeight: 'bold',
   },
 });
