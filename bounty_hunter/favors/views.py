@@ -297,13 +297,14 @@ def create_favor(request):
         return JsonResponse({"error": "GET method not allowed"}, status=405)
 
 # action history
-def log_edit_history(favor, user, action):
+def log_edit_history(favor, user, action, details=None):
     history_entry = {
-        "timestamp": datetime.datetime.now().isoformat(),
+        "timestamp": datetime.now().isoformat(),
         "user": user.username,
         "action": action,
         "owner_status": favor.owner_status,
         "assignee_status": favor.assignee_status,
+        "details": details
     }
     favor.bounty_edit_history.append(history_entry)
     favor.save()
