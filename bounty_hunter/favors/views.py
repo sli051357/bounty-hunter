@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
 from django.contrib.auth.models import User
-import datetime
+from datetime import datetime
 import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
