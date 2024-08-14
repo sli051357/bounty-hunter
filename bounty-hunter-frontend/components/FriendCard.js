@@ -12,8 +12,8 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ friend, imagePath }) {
-	const [favorite, setFavorite] = useState(friend.fav);
+function FriendCard({ id, username, imageUrl }) {
+	const [favorite, setFavorite] = useState(false);
 
 	function editFavoriteStatus() {
 		setFavorite((curr) => !curr);
@@ -27,11 +27,11 @@ function FriendCard({ friend, imagePath }) {
 		<View style={styles.card}>
 			<View style={styles.userDetails}>
 				{/* Profile Picture */}
-				<Image style={styles.picture} source={imagePath} />
+				<Image style={styles.picture} source={{ uri: imageUrl }} />
 				{/* Friend Text */}
-				<View style={styles.friendText}>
-					<Text style={styles.usernameText}>{friend.nickname}</Text>
-					<Text style={styles.userID}>{friend.id}</Text>
+				<View style={styles.friendText}> 
+					<Text style={styles.usernameText}>{username}</Text>
+					<Text style={styles.userID}>{id}</Text>
 				</View>
 				<View style={{ marginLeft: 15 }}>
 					<Pressable onPress={editFavoriteStatus}>

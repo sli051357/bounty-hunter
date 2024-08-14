@@ -13,23 +13,48 @@ import FriendRequest from "../../components/FriendRequest.js";
 import SearchBar from "../../components/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
+import { useSelector } from "react-redux";
+
 
 function FriendListScreen() {
 	const [friendRequestList, setFriendRequestList] = useState([]);
+	const [friendList, setFriendList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
 	const [curScreen, setCurScreen] = useState(1);
 	const [search, setSearch] = useState(true);
+	const authToken = useSelector((state) => state.authToken.authToken);
 
 	async function fetchFriendRequestList() {
+		// console.log("hi")
+		// setError(null);
+		// setIsLoading(true);
+		// try {
+		// 	const response = await apiService.getFriendRequests(authToken);
+		// 	if (!response ) {
+		// 		throw new Error("Undefined Information");
+		// 	}
+		// 	setFriendRequestList(response.requests);
+		// 	setIsLoading(false);
+		// } catch (error) {
+		// 	console.error("Error fetching data: ", error);
+		// 	setError("Failed to fetch Friend Requests. Please Try Again");
+		// 	setIsLoading(false);
+		// }
+
+
+	}
+
+	async function fetchFriendsList() {
 		setError(null);
 		setIsLoading(true);
 		try {
-			const response = await apiService.getFriendRequests();
-			if (!response || !response.requests) {
+			const response = await apiService.getFriendsList(authToken);
+			if (!response ) {
 				throw new Error("Undefined Information");
 			}
-			setFriendRequestList(response.requests);
+			console.log(response);
+			setFriendList(response);
 			setIsLoading(false);
 		} catch (error) {
 			console.error("Error fetching data: ", error);
@@ -38,13 +63,13 @@ function FriendListScreen() {
 		}
 	}
 
-	// useEffect(() => {
-	// 	fetchFriendRequestList();
+	useEffect(() => {
+		fetchFriendsList();
+		console.log(authToken);
+		const intervalId = setInterval(fetchFriendsList, 60000);
 
-	// 	const intervalId = setInterval(fetchFriendRequestList, 60000)
-
-	// 	return () => clearInterval(intervalId)
-	// }, [])
+		return () => clearInterval(intervalId);
+	}, [])
 
 	function handleRetryFriendRequests() {
 		fetchFriendRequestList();
@@ -70,11 +95,15 @@ function FriendListScreen() {
 	const navBar = (
 		<CategoryBar
 			stateChanger={setCurScreen}
-			list1={DUMMY_USER_PROFILE.friends}
+			list1={friendList}
 			list2={DUMMY_USER_PROFILE.friends.filter((friend) => friend.fav === true)}
 			list3={DUMMY_REQUESTS}
 		/>
 	);
+
+	// "id":f.username,
+	// "rating": user_profile.rating,
+	// "image url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
 
 	// Friend List
 	if (curScreen === 1) {
@@ -82,11 +111,13 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{DUMMY_USER_PROFILE.friends.map((friend) => (
+				{Object.entries(friendList).map(([username, [id, rating, imageUrl]]) => (
 					<FriendCard
-						key={friend.nickname}
-						friend={friend}
-						imagePath={require("../../assets/batman.jpeg")}
+						key={id} // Use the id from the object as the key for the component
+						id={id}
+						username={username}
+						imageUrl={imageUrl}
+						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}
 			</View>

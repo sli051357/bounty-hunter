@@ -99,22 +99,21 @@ def get_incoming_friend_requests(request):
 
 #retrieves the list of friends
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_friends_list(request):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
+    print(request.user)
     friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
     data = {}
-    x = 1
     for f in friends.all():
         user_profile = UserProfileInfo.objects.get(owner = f)
-        f_data = {
-            "username": f.username,
-            "id": f.id,
-            "rating": user_profile.rating,
-            "image url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
-        }
-        data[f"friend {x}"] = f_data
-        x += 1
+        f_data = [
+            f.username,
+            user_profile.rating,
+            request.build_absolute_uri(user_profile.profile_image.url)
+        ]
+        data[f.username] = f_data
 
     #for friend in friends.all():
     #    data[friend.username] = "friend :)"

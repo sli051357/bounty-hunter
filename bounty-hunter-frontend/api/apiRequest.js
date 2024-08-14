@@ -171,8 +171,9 @@ const apiService = {
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.
 	//returns {'friend 1': {'username': 'user1', 'id': 0, 'rating': 0, 'image url': 'url'}, 'friend 2': {'username': 'user2', 'id': 1, 'rating': 0, 'image url': 'url'}}
-	getFriendsList: async () => {
-		const response = await axiosInstance.get("/users/get-friends-list/");
+	
+	getFriendsList: async (token) => {
+		const response = await axiosInstance.get("/users/get-friends-list/",{headers: { authorization: `Token ${token}` }},);
 		return response.data;
 	},
 
