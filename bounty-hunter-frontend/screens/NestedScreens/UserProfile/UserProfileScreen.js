@@ -61,13 +61,12 @@ import {
 function UserProfileScreen() {
 	// set authorization token here
 	const authToken = useSelector((state) => state.authToken);
-	//apiService.setAuthorizationHeader(authToken.authToken);
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
-	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
+	const [paymentMethod, setPaymentMethod] = useState({});
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [rating, setRating] = useState("");
@@ -92,7 +91,8 @@ function UserProfileScreen() {
 
 					//reload the payment method storage
 					const response2 = await apiService.getUserLinks(username.username);
-					dispatch(setPaymentMethod(response2));
+					console.log(response2)
+					setPaymentMethod(response2);
 
 					const response3 = await apiService.getUserPic(username.username);
 					setImageUrl(response3.url);
@@ -157,21 +157,19 @@ function UserProfileScreen() {
 		);
 	}
 
-	const paymentMethodSection = <Text>Payments</Text>;
+	let paymentMethodSection = (
+		<EditPaymentMethods isEditing={isEditing} userData={paymentMethod} />
+	);
 
-	// let paymentMethodSection = (
-	// 	<EditPaymentMethods isEditing={isEditing} userData={payments} />
-	// );
-
-	// if (isEditing) {
-	// 	paymentMethodSection = (
-	// 		<EditPaymentMethods
-	// 			managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
-	// 			isEditing={isEditing}
-	// 			userData={payments}
-	// 		/>
-	// 	);
-	// }
+	if (isEditing) {
+		paymentMethodSection = (
+			<EditPaymentMethods
+				managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
+				isEditing={isEditing}
+				userData={paymentMethod}
+			/>
+		);
+	}
 
 	function openPfpModal() {
 		setIsPfpModalVisible(true);

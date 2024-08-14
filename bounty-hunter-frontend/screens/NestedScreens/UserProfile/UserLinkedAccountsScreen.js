@@ -1,43 +1,34 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import IconButton from "../../../components/UI/IconButton";
 import ScrollViewHelper from "../../../components/UI/ScrollViewHelper";
 import { GLOBAL_STYLES } from "../../../constants/styles";
-import { addPaymentMethod, removePaymentMethod } from "../../../store/payment";
+import apiService from "../../../api/apiRequest";
 
 function UserLinkedAccountsScreen() {
-	const dispatch = useDispatch();
-	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
-	// console.log(payments)
-	const [venmo, setZelle] = useState({
-		paymentName: "venmo",
-		username: payments[0].username,
-	});
+	const username = useSelector((state) => state.username.username);
+	const [currPayments, setCurrPayments] = userState({})
 
-	function editPaymentHandler(text) {
-		setZelle((prevState) => ({
-			...prevState,
-			username: text,
-		}));
-	}
+	useFocusEffect(
+		useCallback(() => {
+			const fetchLinks = async () => {
+				try {
+					const response = apiService.getUserLinks(username);
+					setCurrPayments(response)
+				} catch (error) {
+					console.log(error)
+				}
+			}
+			fetchLinks()
+		}, [username, currPayments])
+	)
 
-	function savePaymentHandler() {
-		if (zelle.username.length > 0) {
-			dispatch(addPaymentMethod(zelle));
-		}
-	}
-	function deletePaymentHandler(type) {
-		if (type === "venmo") {
-			// console.log(type)
-			editVenmoPaymentHandler("");
-		} else {
-			editZellePaymentHandler("");
-		}
-		dispatch(removePaymentMethod(type));
-	}
-	// Come back later to update payment methods to databases via axios api
+	
+
+	
 
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
