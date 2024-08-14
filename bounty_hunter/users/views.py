@@ -40,6 +40,65 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key
         })
     
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def add_favorite_friend(request):
+    #get post data
+    data = json.loads(request.body)
+    friend = data.get('friend', None) 
+    #get profile
+    from_user = request.user
+    profile = get_object_or_404(UserProfileInfo, owner=from_user)
+
+    #if not favorited but is a friend, add them.
+    if friend in profile.friends.all() and friend not in profile.favoritedFriends.all():
+        profile.favoritedFriends.add(friend)
+        profile.save()
+        return JsonResponse({"status":"success"})
+    else:
+        return JsonResponse({"status":"fail"})
+    
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def remove_favorite_friend(request):
+    #get post data
+    data = json.loads(request.body)
+    friend = data.get('friend', None) 
+    #get profile
+    from_user = request.user
+    profile = get_object_or_404(UserProfileInfo, owner=from_user)
+
+    #if favorited and is a friend, add them.
+    if friend in profile.friends.all() and friend in profile.favoritedFriends.all():
+        profile.favoritedFriends.remove(friend)
+        profile.save()
+        return JsonResponse({"status":"success"})
+    else:
+        return JsonResponse({"status":"fail"})
+    
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_favorite_friends(request):
+    print(request.user)
+    friends = get_object_or_404(UserProfileInfo, owner=request.user).favoritedFriends
+    data = {}
+    for f in friends.all():
+        user_profile = UserProfileInfo.objects.get(owner = f)
+        f_data = [
+            f.username,
+            user_profile.rating,
+            request.build_absolute_uri(user_profile.profile_image.url)
+        ]
+        data[f.username] = f_data
+
+    #for friend in friends.all():
+    #    data[friend.username] = "friend :)"
+    
+    return JsonResponse(data)
+
 
 def get_csrf_token(request):
     token = get_token(request)

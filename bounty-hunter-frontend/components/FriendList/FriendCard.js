@@ -3,7 +3,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import { AntDesign, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 
 /* 
 * Implementation Notes:
@@ -11,8 +11,8 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ id, username, imageUrl }) {
-	const [favorite, setFavorite] = useState(false);
+function FriendCard({ id, username, imageUrl, favoriteState }) {
+	const [favorite, setFavorite] = useState(favoriteState);
 
 	function editFavoriteStatus() {
 		setFavorite((curr) => !curr);
@@ -20,6 +20,10 @@ function FriendCard({ id, username, imageUrl }) {
 
 	function createFavor() {
 		console.log("Favor created");
+	}
+
+	function deleteFriend() {
+		console.log("Friend deleted");
 	}
 
 	return (
@@ -51,14 +55,36 @@ function FriendCard({ id, username, imageUrl }) {
 				</View>
 			</View>
 
-			<View style={styles.favorButton}>
-				<Pressable onPress={createFavor}>
-					<FontAwesome6
-						name="money-bill-transfer"
-						size={24}
-						color={GLOBAL_STYLES.colors.brown700}
-					/>
-				</Pressable>
+			<View style={{ flexDirection: "row", marginLeft: "auto" }}>
+				<View
+					style={[
+						styles.button,
+						{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
+					]}
+				>
+					<Pressable onPress={createFavor}>
+						<FontAwesome6
+							name="money-bill-transfer"
+							size={24}
+							color={GLOBAL_STYLES.colors.brown300}
+						/>
+					</Pressable>
+				</View>
+
+				<View
+					style={[
+						styles.button,
+						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
+					]}
+				>
+					<Pressable onPress={deleteFriend}>
+						<MaterialIcons
+							name="delete"
+							size={20}
+							color={GLOBAL_STYLES.colors.brown700}
+						/>
+					</Pressable>
+				</View>
 			</View>
 		</View>
 	);
@@ -92,11 +118,10 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		color: GLOBAL_STYLES.colors.brown700,
 	},
-	favorButton: {
-		justifySelf: "flex-end",
-		backgroundColor: GLOBAL_STYLES.colors.orange300,
+	button: {
 		padding: 10,
 		borderRadius: 5,
+		marginLeft: 10,
 	},
 	userDetails: {
 		flexDirection: "row",

@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 function FriendListScreen() {
 	const [friendRequestList, setFriendRequestList] = useState([]);
 	const [friendList, setFriendList] = useState([]);
+	const [favoriteList, setFavoriteList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
 	const [curScreen, setCurScreen] = useState(1);
@@ -63,12 +64,33 @@ function FriendListScreen() {
 		}
 	}
 
+	async function fetchFavoriteList() {
+		setError(null);
+		setIsLoading(true);
+		try {
+			const response = await apiService.getFavoritedFriends(authToken);
+			if (!response ) {
+				throw new Error("Undefined Information");
+			}
+			console.log(response);
+			setFavoriteList(response);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data: ", error);
+			setError("Failed to fetch Friend Requests. Please Try Again");
+			setIsLoading(false);
+		}
+	}
+
+
 	useEffect(() => {
 		fetchFriendsList();
+		fetchFavoriteList();
 		console.log(authToken);
 		const intervalId = setInterval(fetchFriendsList, 60000);
+		const intervalId2 = setInterval(fetchFavoriteList, 60000);
 
-		return () => clearInterval(intervalId);
+		return () => {clearInterval(intervalId), clearInterval(intervalId2)};
 	}, [])
 
 	function handleRetryFriendRequests() {
@@ -119,6 +141,7 @@ function FriendListScreen() {
 						id={id}
 						username={username}
 						imageUrl={imageUrl}
+						favoriteState={false}
 						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}
@@ -133,15 +156,16 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{DUMMY_USER_PROFILE.friends
-					.filter((friend) => friend.fav === true)
-					.map((friend) => (
-						<FriendCard
-							key={friend.nickname}
-							friend={friend}
-							imagePath={friend.imageUrl}
-						/>
-					))}
+				{Object.entries(favoriteList).map(([username, [id, rating, imageUrl]]) => (
+					<FriendCard
+						key={id} // Use the id from the object as the key for the component
+						id={id}
+						username={username}
+						imageUrl={imageUrl}
+						favoriteState={true}
+						// onPress={() => copyPayment(username)} // Function to handle the press event
+					/>
+				))}
 			</View>
 		);
 

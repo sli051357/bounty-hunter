@@ -2,6 +2,25 @@ import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 const apiService = {
+	addFavoritedFriend: async (data, token) => {
+		const response = await axiosInstance.post("/users/add-favorited-friend/", data, {
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
+	},
+
+	removeFavoritedFriend: async (data, token) => {
+		const response = await axiosInstance.post("/users/remove-favorited-friend/", data, {
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
+	},
+
+	getFavoritedFriends: async (token) => {
+		const response = await axiosInstance.get("/users/get-favorited-friends/",{headers: { authorization: `Token ${token}` }},);
+		return response.data;
+	},
+
 	signUp: async (data) => {
 		const response = await axiosInstance.post("/users/register/", data);
 		return response.data;
