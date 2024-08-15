@@ -43,10 +43,17 @@ function FavorCard({ favor, onPress }) {
 				</View>
 				<View style={[styles.innerContainer, { alignItems: "flex-end" }]}>
 					<Text style={styles.text}>Created: {favor.dateCreated}</Text>
-					<Text style={styles.mainTextRight}>{favor.total_owed_type === "Monetary" ? 
-					favor.total_owed_amt : favor.total_owed_wishlist}</Text>
+					<Text style={styles.mainTextRight}>
+						{favor.total_owed_type === "Monetary"
+							? favor.total_owed_amt
+							: favor.total_owed_wishlist}
+					</Text>
 					<Ionicons
-						name={favor.status === "In-Progress" ? "code-working" : "checkbox"}
+						name={
+							!favor.completed && !favor.deleted && !favor.active
+								? "code-working"
+								: "checkbox"
+						}
 						size={22}
 						color={GLOBAL_STYLES.colors.blue300}
 						style={styles.icon}
