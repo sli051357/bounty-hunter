@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { AntDesign, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import apiService from "../../api/apiRequest";
 
 /* 
 * Implementation Notes:
@@ -11,10 +13,11 @@ import { AntDesign, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ id, username, imageUrl, favoriteState }) {
+function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav }) {
 	const [favorite, setFavorite] = useState(favoriteState);
+	const authToken = useSelector((state) => state.authToken.authToken);
 
-	function editFavoriteStatus() {
+	async function editFavoriteStatus() {
 		setFavorite((curr) => !curr);
 	}
 
@@ -37,21 +40,23 @@ function FriendCard({ id, username, imageUrl, favoriteState }) {
 					<Text style={styles.userID}>{id}</Text>
 				</View>
 				<View style={{ marginLeft: 15 }}>
-					<Pressable onPress={editFavoriteStatus}>
 						{favorite ? (
-							<AntDesign
-								name="star"
-								size={24}
-								color={GLOBAL_STYLES.colors.orange700}
-							/>
+							<Pressable onPress={() => {removeFav(username), editFavoriteStatus}}>
+								<AntDesign
+									name="star"
+									size={24}
+									color={GLOBAL_STYLES.colors.orange700}
+								/>
+							</Pressable>
 						) : (
-							<AntDesign
-								name="staro"
-								size={24}
-								color={GLOBAL_STYLES.colors.orange300}
-							/>
+							<Pressable onPress={() => {addFav(username), editFavoriteStatus}}>
+								<AntDesign
+									name="staro"
+									size={24}
+									color={GLOBAL_STYLES.colors.orange300}
+								/>
+							</Pressable>
 						)}
-					</Pressable>
 				</View>
 			</View>
 

@@ -18,6 +18,8 @@ import { useSelector } from "react-redux";
 
 function FriendListScreen() {
 	const [friendRequestList, setFriendRequestList] = useState([]);
+	const [rerender, setRerender] = useState(false);
+
 	const [friendList, setFriendList] = useState([]);
 	const [favoriteList, setFavoriteList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
@@ -82,6 +84,27 @@ function FriendListScreen() {
 		}
 	}
 
+	async function addFavoriteStatus(username) {
+		data = {"friend": username};
+		response = await apiService.addFavoritedFriend(data,authToken);
+		if (response.status === "success") {
+			setRerender((curr) => !curr);
+		} else {
+			console.log("failed");
+		}
+		
+	}
+
+	async function removeFavoriteStatus(username) {
+		data = {"friend": username};
+		response = await apiService.removeFavoritedFriend(data,authToken);
+		if (response.status === "success") {
+			setRerender((curr) => !curr);
+		} else {
+			console.log("failed");
+		}
+	}
+
 
 	useEffect(() => {
 		fetchFriendsList();
@@ -91,7 +114,7 @@ function FriendListScreen() {
 		const intervalId2 = setInterval(fetchFavoriteList, 60000);
 
 		return () => {clearInterval(intervalId), clearInterval(intervalId2)};
-	}, [])
+	}, [rerender])
 
 	function handleRetryFriendRequests() {
 		fetchFriendRequestList();
@@ -115,6 +138,7 @@ function FriendListScreen() {
 		setCurScreen(search ? 4 : 1);
 	}
 
+
 	let content;
 	const navBar = (
 		<CategoryBar
@@ -135,6 +159,18 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
+				{Object.entries(favoriteList).map(([username, [id, rating, imageUrl]]) => (
+					<FriendCard
+						key={id} // Use the id from the object as the key for the component
+						id={id}
+						username={username}
+						imageUrl={imageUrl}
+						favoriteState={true}
+						removeFav={removeFavoriteStatus}
+						// onPress={() => copyPayment(username)} // Function to handle the press event
+					/>
+				))}
+
 				{Object.entries(friendList).map(([username, [id, rating, imageUrl]]) => (
 					<FriendCard
 						key={id} // Use the id from the object as the key for the component
@@ -142,6 +178,7 @@ function FriendListScreen() {
 						username={username}
 						imageUrl={imageUrl}
 						favoriteState={false}
+						addFav={addFavoriteStatus}
 						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}
@@ -163,6 +200,7 @@ function FriendListScreen() {
 						username={username}
 						imageUrl={imageUrl}
 						favoriteState={true}
+						removeFav={removeFavoriteStatus}
 						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}

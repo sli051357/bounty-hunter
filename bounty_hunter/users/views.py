@@ -46,7 +46,7 @@ class CustomAuthToken(ObtainAuthToken):
 def add_favorite_friend(request):
     #get post data
     data = json.loads(request.body)
-    friend = data.get('friend', None) 
+    friend = get_object_or_404(User, username = data.get('friend', None))
     #get profile
     from_user = request.user
     profile = get_object_or_404(UserProfileInfo, owner=from_user)
@@ -54,6 +54,7 @@ def add_favorite_friend(request):
     #if not favorited but is a friend, add them.
     if friend in profile.friends.all() and friend not in profile.favoritedFriends.all():
         profile.favoritedFriends.add(friend)
+        profile.friends.remove(friend)
         profile.save()
         return JsonResponse({"status":"success"})
     else:
@@ -65,14 +66,16 @@ def add_favorite_friend(request):
 def remove_favorite_friend(request):
     #get post data
     data = json.loads(request.body)
-    friend = data.get('friend', None) 
+    friend = get_object_or_404(User, username = data.get('friend', None))
+
     #get profile
     from_user = request.user
     profile = get_object_or_404(UserProfileInfo, owner=from_user)
 
     #if favorited and is a friend, add them.
-    if friend in profile.friends.all() and friend in profile.favoritedFriends.all():
+    if friend not in profile.friends.all() and friend in profile.favoritedFriends.all():
         profile.favoritedFriends.remove(friend)
+        profile.friends.add(friend)
         profile.save()
         return JsonResponse({"status":"success"})
     else:
@@ -190,10 +193,15 @@ def get_friend_count(request):
 
 # @login_required
 def send_friend_request(request, username):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
     from_user = request.user
     to_user = User.objects.get(username=username)
+
+    #can only send if friend or favorited friend
+    if UserProfileInfo.objects.get(from_user).friends.contains(to_user) or UserProfileInfo.objects.get(to_user).friends.contains(from_user):
+        return JsonResponse({"status":"fail"})
+    if UserProfileInfo.objects.get(from_user).favoritedFriends.contains(to_user) or UserProfileInfo.objects.get(to_user).favoritedFriends.contains(from_user):
+        return JsonResponse({"status":"fail"})
+    
     friend_req, created = FriendRequest.objects.get_or_create(from_user=from_user,to_user=to_user)
     if created:
         return JsonResponse({"status":"success"})
