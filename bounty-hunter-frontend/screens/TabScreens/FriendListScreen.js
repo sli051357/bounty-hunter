@@ -144,7 +144,7 @@ function FriendListScreen() {
 			stateChanger={setCurScreen}
 			list1={friendList}
 			list2={favoriteList}
-			list3={DUMMY_REQUESTS}
+			list3={friendRequestList}
 		/>
 	);
 

@@ -158,8 +158,17 @@ def get_incoming_friend_requests(request):
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
     data = {}
     for fr in friend_requests:
-        data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+        # data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+        fr_profile = UserProfileInfo.objects.get(owner = fr.from_user)
+        fr_data = [
+            fr.from_user.username,
+            fr_profile.rating,
+            request.build_absolute_uri(fr_profile.profile_image.url)
+        ]
+        print(fr_data)
+        data[fr.from_user.username] = fr_data
     return JsonResponse(data)
+    
     
 
 #retrieves the list of friends
