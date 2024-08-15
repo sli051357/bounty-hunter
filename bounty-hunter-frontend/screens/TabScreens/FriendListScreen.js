@@ -103,6 +103,20 @@ function FriendListScreen() {
 		}
 	}
 
+	async function acceptRequest(pk) {
+		data = pk.toString();
+		response = await apiService.acceptFriendRequest(data, authToken);
+		if (response.status === "success") {
+			setRerender((curr) => !curr);
+		} else {
+			console.log("accept request failed");
+		}
+	}
+
+	async function rejectRequest(pk) {
+
+	}
+
 
 	useEffect(() => {
 		fetchFriendsList();
@@ -211,12 +225,15 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{Object.entries(friendRequestList).map(([username, [id, rating, imageUrl]]) => (
+				{Object.entries(friendRequestList).map(([username, [id, rating, imageUrl, pk]]) => (
 					<FriendRequest 
-						key={id}
+						key={pk}
 						id={id}
 						username={username}
 						imageUrl={imageUrl}
+						onYes={acceptRequest}
+						onNo={rejectRequest}
+						requestId={pk}
 					/>
 				))}
 

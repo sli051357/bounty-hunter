@@ -86,7 +86,7 @@ function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav }
 						<MaterialIcons
 							name="delete"
 							size={20}
-							color={GLOBAL_STYLES.colors.brown700}
+							color={GLOBAL_STYLES.colors.brown300}
 						/>
 					</Pressable>
 				</View>

@@ -163,10 +163,11 @@ def get_incoming_friend_requests(request):
         fr_data = [
             fr.from_user.username,
             fr_profile.rating,
-            request.build_absolute_uri(fr_profile.profile_image.url)
+            request.build_absolute_uri(fr_profile.profile_image.url),
+            fr.pk
         ]
         print(fr_data)
-        data[fr.from_user.username] = fr_data
+        data[fr.pk] = fr_data
     return JsonResponse(data)
     
     
@@ -221,6 +222,9 @@ def send_friend_request(request, username):
         return JsonResponse({"status":"fail"})
 
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def accept_friend_request(request, pk):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
