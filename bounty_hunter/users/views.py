@@ -148,6 +148,9 @@ def linked_accs(request, request_username):
 
 #retrieves the list of friend requests    
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_incoming_friend_requests(request):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})

@@ -203,8 +203,8 @@ const apiService = {
 
 	// Once logged in, you don't need to pass in the id. This should send back data in the following format:
 	// {"<id of the friend request>": {"from_user": username1, "to_user": username2}, ...}
-	getFriendRequests: async () => {
-		const response = await axiosInstance.get("/users/get-friend-requests/");
+	getFriendRequests: async (token) => {
+		const response = await axiosInstance.get("/users/get-friend-requests/", {headers: { authorization: `Token ${token}`}},);
 		return response.data;
 	},
 

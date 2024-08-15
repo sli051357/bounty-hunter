@@ -11,7 +11,7 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendRequest({ user, imagePath }) {
+function FriendRequest({ id, username, imageUrl }) {
 	function addRequest() {
 		console.log("friend added");
 	}
@@ -23,12 +23,12 @@ function FriendRequest({ user, imagePath }) {
 	return (
 		<View style={styles.card}>
 			{/* Profile Picture */}
-			<Image style={styles.picture} source={{ uri: imagePath }} />
+			<Image style={styles.picture} source={{ uri: imageUrl }} />
 
 			{/* Friend Text */}
 			<View>
-				<Text style={styles.usernameText}>{user.username}</Text>
-				<Text style={styles.userID}>{user.id}</Text>
+				<Text style={styles.usernameText}>{username}</Text>
+				<Text style={styles.userID}>{id}</Text>
 			</View>
 
 			<View style={{ flexDirection: "row", marginLeft: "auto" }}>

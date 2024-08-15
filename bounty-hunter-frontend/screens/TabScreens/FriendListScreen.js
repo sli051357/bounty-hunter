@@ -9,7 +9,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import apiService from "../../api/apiRequest.js";
 import CategoryBar from "../../components/FriendList/CategoryBar.js";
 import FriendCard from "../../components/FriendList/FriendCard.js";
-// 	import FriendRequest from "../../components/FriendList/FriendRequest.js";
+import FriendRequest from "../../components/FriendList/FriendRequest.js";
 import SearchBar from "../../components/FriendList/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
@@ -17,36 +17,16 @@ import { useSelector } from "react-redux";
 
 
 function FriendListScreen() {
-	const [friendRequestList, setFriendRequestList] = useState([]);
 	const [rerender, setRerender] = useState(false);
 
 	const [friendList, setFriendList] = useState([]);
 	const [favoriteList, setFavoriteList] = useState([]);
+	const [friendRequestList, setFriendRequestList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
 	const [curScreen, setCurScreen] = useState(1);
 	const [search, setSearch] = useState(true);
 	const authToken = useSelector((state) => state.authToken.authToken);
-
-	async function fetchFriendRequestList() {
-		// console.log("hi")
-		// setError(null);
-		// setIsLoading(true);
-		// try {
-		// 	const response = await apiService.getFriendRequests(authToken);
-		// 	if (!response ) {
-		// 		throw new Error("Undefined Information");
-		// 	}
-		// 	setFriendRequestList(response.requests);
-		// 	setIsLoading(false);
-		// } catch (error) {
-		// 	console.error("Error fetching data: ", error);
-		// 	setError("Failed to fetch Friend Requests. Please Try Again");
-		// 	setIsLoading(false);
-		// }
-
-
-	}
 
 	async function fetchFriendsList() {
 		setError(null);
@@ -61,7 +41,7 @@ function FriendListScreen() {
 			setIsLoading(false);
 		} catch (error) {
 			console.error("Error fetching data: ", error);
-			setError("Failed to fetch Friend Requests. Please Try Again");
+			setError("Failed to fetch Friend List. Please Try Again");
 			setIsLoading(false);
 		}
 	}
@@ -79,6 +59,24 @@ function FriendListScreen() {
 			setIsLoading(false);
 		} catch (error) {
 			console.error("Error fetching data: ", error);
+			setError("Failed to fetch Favorite Friends. Please Try Again");
+			setIsLoading(false);
+		}
+	}
+
+	async function fetchFriendRequestList() {
+		setError(null);
+		setIsLoading(true);
+		try {
+			const response = await apiService.getFriendRequests(authToken);
+			if (!response) {
+				throw new Error("Undefined Information");
+			}
+			console.log(response);
+			setFriendRequestList(response);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching friend request: ", error);
 			setError("Failed to fetch Friend Requests. Please Try Again");
 			setIsLoading(false);
 		}
@@ -109,16 +107,18 @@ function FriendListScreen() {
 	useEffect(() => {
 		fetchFriendsList();
 		fetchFavoriteList();
+		fetchFriendRequestList();
 		console.log(authToken);
 		const intervalId = setInterval(fetchFriendsList, 60000);
 		const intervalId2 = setInterval(fetchFavoriteList, 60000);
+		const intervalId3 = setInterval(fetchFriendRequestList, 60000);
 
-		return () => {clearInterval(intervalId), clearInterval(intervalId2)};
+		return () => {clearInterval(intervalId), clearInterval(intervalId2), clearInterval(intervalId3)};
 	}, [rerender])
 
-	function handleRetryFriendRequests() {
-		fetchFriendRequestList();
-	}
+	// function handleRetryFriendRequests() {
+	// 	fetchFriendRequestList();
+	// }
 
 	const DUMMY_REQUESTS = [
 		{
@@ -138,13 +138,12 @@ function FriendListScreen() {
 		setCurScreen(search ? 4 : 1);
 	}
 
-
 	let content;
 	const navBar = (
 		<CategoryBar
 			stateChanger={setCurScreen}
 			list1={friendList}
-			list2={DUMMY_USER_PROFILE.friends.filter((friend) => friend.fav === true)}
+			list2={favoriteList}
 			list3={DUMMY_REQUESTS}
 		/>
 	);
@@ -187,7 +186,6 @@ function FriendListScreen() {
 
 		// Favorite Friends
 	} else if (curScreen === 2) {
-		// newFriends = DUMMY_USER_PROFILE.friends.filter((friend) => (friend.fav == true));
 
 		content = (
 			<View>
@@ -212,6 +210,15 @@ function FriendListScreen() {
 		content = (
 			<View>
 				{navBar}
+
+				{Object.entries(friendRequestList).map(([username, [id, rating, imageUrl]]) => (
+					<FriendRequest 
+						key={id}
+						id={id}
+						username={username}
+						imageUrl={imageUrl}
+					/>
+				))}
 
 				{/* {!error ? (
 					DUMMY_REQUESTS.map((user) => (
