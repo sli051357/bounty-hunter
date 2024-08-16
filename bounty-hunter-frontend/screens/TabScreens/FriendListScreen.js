@@ -114,7 +114,13 @@ function FriendListScreen() {
 	}
 
 	async function rejectRequest(pk) {
-
+		data = pk.toString();
+		response = await apiService.rejectFriendRequest(data, authToken);
+		if (response.status === "success") {
+			setRerender((curr) => !curr);
+		} else {
+			console.log("reject request failed");
+		}
 	}
 
 
@@ -229,7 +235,7 @@ function FriendListScreen() {
 					<FriendRequest 
 						key={pk}
 						id={id}
-						username={username}
+						username={id}
 						imageUrl={imageUrl}
 						onYes={acceptRequest}
 						onNo={rejectRequest}

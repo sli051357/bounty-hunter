@@ -53,7 +53,7 @@ function FriendRequest({ id, username, imageUrl, onYes, onNo, requestId }) {
 						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
 					]}
 				>
-					<Pressable onPress={deleteRequest}>
+					<Pressable onPress={() => {onNo(requestId)}}>
 						<MaterialIcons
 							name="delete"
 							size={20}

@@ -238,6 +238,9 @@ def accept_friend_request(request, pk):
         return JsonResponse({"status":"fail"})
     
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def reject_friend_request(request, pk):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})

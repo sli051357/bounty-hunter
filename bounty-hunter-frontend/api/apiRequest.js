@@ -232,17 +232,19 @@ const apiService = {
 		// 	`/users/accept-friend-request/${requestID}/`,
 		// );
 
-		const response = await axiosInstance.get(`/users/accept-friend-request/${requestID}/`, {
-			headers: { authorization: `Token ${token}` },
-		});
+		const response = await axiosInstance.get(
+			`/users/accept-friend-request/${requestID}/`, 
+			{ headers: { authorization: `Token ${token}` }},
+		);
 		return response.data;
 	},
 
 	//requestID: the integer id of the request (make sure to cast to string)
 	//returns {"success": True}
-	rejectFriendRequest: async (requestID) => {
+	rejectFriendRequest: async (requestID, token) => {
 		const response = await axiosInstance.get(
 			`/users/reject-friend-request/${requestID}/`,
+			{ headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},
