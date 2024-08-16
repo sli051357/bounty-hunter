@@ -28,9 +28,9 @@ import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { GLOBAL_STYLES } from "../../../constants/styles.js";
 import {
-	DUMMY_FAVORS_OF_PROFILE,
 	DUMMY_USER_PROFILE,
 } from "../../../util/dummy-data.js";
+import dayjs from "dayjs";
 
 /*
     Implementation Details
@@ -71,7 +71,7 @@ function UserProfileScreen() {
 	const [loading, setLoading] = useState(true);
 	const [rating, setRating] = useState("");
 	const [friendCount, setFriendCount] = useState("");
-	const dispatch = useDispatch();
+	const [recentBounties, setRecentBounties] = useState([])
 
 	useFocusEffect(
 		useCallback(() => {
@@ -97,6 +97,23 @@ function UserProfileScreen() {
 					const response3 = await apiService.getUserPic(username.username);
 					setImageUrl(response3.url);
 					console.log(imageUrl);
+					
+					const responseBounties = await apiService.viewBountyList({
+							query: "and",
+							tags: [],
+							status: ["Sent"],
+							start_date: dayjs().format("YYYY-MM-DD"),
+							end_date: dayjs().subtract(31, 'day').format("YYYY-MM-DD"),
+							price_low: 0,
+							price_high: 999999.99,
+						}, {
+							sort_by: "date", 
+							order: "descending" 
+						}, 
+						"", 
+						authToken.authToken
+					)
+					setRecentBounties(responseBounties.favors)
 				} catch (error) {
 					console.log(error);
 				} finally {
@@ -105,7 +122,7 @@ function UserProfileScreen() {
 			};
 
 			fetchProfile();
-		}, [username.username, dispatch, imageUrl]),
+		}, [username.username, imageUrl]),
 	);
 
 	if (loading) {
@@ -305,7 +322,7 @@ function UserProfileScreen() {
 				{paymentMethodSection}
 				<View style={styles.recentBountiesStyles}>
 					<Text style={styles.subtitle}>Recent Bounties: </Text>
-					{DUMMY_FAVORS_OF_PROFILE.map((favor) => (
+					{recentBounties.map((favor) => (
 						<FavorCard
 							key={favor.description}
 							favor={favor}
