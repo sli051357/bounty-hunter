@@ -46,7 +46,7 @@ function CategoryBar({ stateChanger, list1, list2, list3 }) {
 							{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
 						]}
 					>
-						<Text style={styles.buttonText}>All ({list1.length})</Text>
+						<Text style={styles.buttonText}>All ({Object.keys(list1).length + Object.keys(list2).length})</Text>
 					</View>
 				) : (
 					<View style={[styles.button]}>
@@ -63,7 +63,7 @@ function CategoryBar({ stateChanger, list1, list2, list3 }) {
 							{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
 						]}
 					>
-						<Text style={styles.buttonText}>Favorites ({list2.length})</Text>
+						<Text style={styles.buttonText}>Favorites ({Object.keys(list2).length})</Text>
 					</View>
 				) : (
 					<View style={[styles.button]}>
@@ -80,7 +80,7 @@ function CategoryBar({ stateChanger, list1, list2, list3 }) {
 							{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
 						]}
 					>
-						<Text style={styles.buttonText}>Requests ({list3.length})</Text>
+						<Text style={styles.buttonText}>Requests ({Object.keys(list3).length})</Text>
 					</View>
 				) : (
 					<View style={[styles.button]}>

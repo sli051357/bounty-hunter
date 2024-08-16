@@ -203,8 +203,8 @@ const apiService = {
 
 	// Once logged in, you don't need to pass in the id. This should send back data in the following format:
 	// {"<id of the friend request>": {"from_user": username1, "to_user": username2}, ...}
-	getFriendRequests: async () => {
-		const response = await axiosInstance.get("/users/get-friend-requests/");
+	getFriendRequests: async (token) => {
+		const response = await axiosInstance.get("/users/get-friend-requests/", {headers: { authorization: `Token ${token}`}},);
 		return response.data;
 	},
 
@@ -227,27 +227,34 @@ const apiService = {
 
 	//requestID: the integer id of the request (make sure to cast to string)
 	//returns {"success": True}
-	acceptFriendRequest: async (requestID) => {
+	acceptFriendRequest: async (requestID, token) => {
+		// const response = await axiosInstance.get(
+		// 	`/users/accept-friend-request/${requestID}/`,
+		// );
+
 		const response = await axiosInstance.get(
-			`/users/accept-friend-request/${requestID}/`,
+			`/users/accept-friend-request/${requestID}/`, 
+			{ headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},
 
 	//requestID: the integer id of the request (make sure to cast to string)
 	//returns {"success": True}
-	rejectFriendRequest: async (requestID) => {
+	rejectFriendRequest: async (requestID, token) => {
 		const response = await axiosInstance.get(
 			`/users/reject-friend-request/${requestID}/`,
+			{ headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},
 
 	// username: "username of friend to remove"
 	// returns {"success": True} if successful, {"success": False} if not
-	removeFriend: async (username) => {
+	removeFriend: async (username, token) => {
 		const response = await axiosInstance.post(
-			`/users/remove-friend/${username}/`,
+			`/users/remove-friend/${username}/`, data,
+			{ headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},

@@ -148,6 +148,9 @@ def linked_accs(request, request_username):
 
 #retrieves the list of friend requests    
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_incoming_friend_requests(request):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
@@ -155,8 +158,18 @@ def get_incoming_friend_requests(request):
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
     data = {}
     for fr in friend_requests:
-        data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+        # data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+        fr_profile = UserProfileInfo.objects.get(owner = fr.from_user)
+        fr_data = [
+            fr.from_user.username,
+            fr_profile.rating,
+            request.build_absolute_uri(fr_profile.profile_image.url),
+            fr.pk
+        ]
+        print(fr_data)
+        data[fr.pk] = fr_data
     return JsonResponse(data)
+    
     
 
 #retrieves the list of friends
@@ -209,6 +222,9 @@ def send_friend_request(request, username):
         return JsonResponse({"status":"fail"})
 
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def accept_friend_request(request, pk):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
@@ -222,6 +238,9 @@ def accept_friend_request(request, pk):
         return JsonResponse({"status":"fail"})
     
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def reject_friend_request(request, pk):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
@@ -233,13 +252,17 @@ def reject_friend_request(request, pk):
         return JsonResponse({"status":"fail"})
     
 # @login_required
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def remove_friend(request, request_username):
     curr_user = UserProfileInfo.objects.get(owner=request.user)
     friend = User.objects.get(username=request_username)
     # check if user is a friend of curr_user
-    if User.objects.get(username=request_username) in curr_user.friends.all():
+    if User.objects.get(username=request_username) in curr_user.friends.all() or User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
         curr_user.friends.remove(friend)
-        if User.objects.get(username=request_username) not in curr_user.friends.all():   # successfully removed
+        curr_user.favoritedFriends.remove(friend)
+        if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
             return JsonResponse({"status":"success"})
         else:
             return JsonResponse({"status":"fail"})
