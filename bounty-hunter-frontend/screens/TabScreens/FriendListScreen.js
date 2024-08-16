@@ -103,6 +103,16 @@ function FriendListScreen() {
 		}
 	}
 
+	async function removeFriend(username) {
+		// data = {"friend": username};
+		response = await apiService.removeFriend(username, authToken);
+		if (response.status === "success") {
+			setRerender((curr) => !curr);
+		} else {
+			console.log("failed");
+		}
+	}
+
 	async function acceptRequest(pk) {
 		data = pk.toString();
 		response = await apiService.acceptFriendRequest(data, authToken);
@@ -186,6 +196,7 @@ function FriendListScreen() {
 						imageUrl={imageUrl}
 						favoriteState={true}
 						removeFav={removeFavoriteStatus}
+						onDelete={removeFriend}
 						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}
@@ -198,6 +209,7 @@ function FriendListScreen() {
 						imageUrl={imageUrl}
 						favoriteState={false}
 						addFav={addFavoriteStatus}
+						onDelete={removeFriend}
 						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}
@@ -219,6 +231,7 @@ function FriendListScreen() {
 						imageUrl={imageUrl}
 						favoriteState={true}
 						removeFav={removeFavoriteStatus}
+						onDelete={removeFriend}
 						// onPress={() => copyPayment(username)} // Function to handle the press event
 					/>
 				))}

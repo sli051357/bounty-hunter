@@ -13,7 +13,7 @@ import apiService from "../../api/apiRequest";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav }) {
+function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav, onDelete }) {
 	const [favorite, setFavorite] = useState(favoriteState);
 	const authToken = useSelector((state) => state.authToken.authToken);
 
@@ -82,7 +82,7 @@ function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav }
 						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
 					]}
 				>
-					<Pressable onPress={deleteFriend}>
+					<Pressable onPress={() => {onDelete(username)}}>
 						<MaterialIcons
 							name="delete"
 							size={20}

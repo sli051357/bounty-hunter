@@ -251,9 +251,10 @@ const apiService = {
 
 	// username: "username of friend to remove"
 	// returns {"success": True} if successful, {"success": False} if not
-	removeFriend: async (username) => {
+	removeFriend: async (username, token) => {
 		const response = await axiosInstance.post(
-			`/users/remove-friend/${username}/`,
+			`/users/remove-friend/${username}/`, data,
+			{ headers: { authorization: `Token ${token}` }},
 		);
 		return response.data;
 	},
