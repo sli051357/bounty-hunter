@@ -148,13 +148,14 @@ function FriendListScreen() {
 		const intervalId = setInterval(fetchFriendsList, 60000);
 		const intervalId2 = setInterval(fetchFavoriteList, 60000);
 		const intervalId3 = setInterval(fetchFriendRequestList, 60000);
+		console.log(rerender);
 
 		return () => {
 			clearInterval(intervalId);
 			clearInterval(intervalId2);
 			clearInterval(intervalId3);
 		};
-	}, [fetchFriendsList, fetchFavoriteList, fetchFriendRequestList]);
+	}, [rerender, fetchFriendsList, fetchFavoriteList, fetchFriendRequestList]);
 
 	// function handleRetryFriendRequests() {
 	// 	fetchFriendRequestList();
