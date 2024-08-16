@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 // import { useFonts } from 'expo-font';
 
@@ -138,12 +138,13 @@ function FriendListScreen() {
 		fetchFriendsList();
 		fetchFavoriteList();
 		fetchFriendRequestList();
-		console.log(authToken);
+		// console.log(authToken);
 		const intervalId = setInterval(fetchFriendsList, 60000);
 		const intervalId2 = setInterval(fetchFavoriteList, 60000);
 		const intervalId3 = setInterval(fetchFriendRequestList, 60000);
 
-		return () => {clearInterval(intervalId), clearInterval(intervalId2), clearInterval(intervalId3)};
+		return () => { clearInterval(intervalId); 
+			clearInterval(intervalId2); clearInterval(intervalId3)};
 	}, [rerender])
 
 	// function handleRetryFriendRequests() {

@@ -41,7 +41,7 @@ function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav, 
 				</View>
 				<View style={{ marginLeft: 15 }}>
 						{favorite ? (
-							<Pressable onPress={() => {removeFav(username), editFavoriteStatus}}>
+							<Pressable onPress={() => {removeFav(username); editFavoriteStatus}}>
 								<AntDesign
 									name="star"
 									size={24}
@@ -49,7 +49,7 @@ function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav, 
 								/>
 							</Pressable>
 						) : (
-							<Pressable onPress={() => {addFav(username), editFavoriteStatus}}>
+							<Pressable onPress={() => {addFav(username); editFavoriteStatus}}>
 								<AntDesign
 									name="staro"
 									size={24}
