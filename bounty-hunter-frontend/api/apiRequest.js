@@ -3,21 +3,31 @@ import axiosInstance from "./axiosInstance";
 
 const apiService = {
 	addFavoritedFriend: async (data, token) => {
-		const response = await axiosInstance.post("/users/add-favorited-friend/", data, {
-			headers: { authorization: `Token ${token}` },
-		});
+		const response = await axiosInstance.post(
+			"/users/add-favorited-friend/",
+			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
+		);
 		return response.data;
 	},
 
 	removeFavoritedFriend: async (data, token) => {
-		const response = await axiosInstance.post("/users/remove-favorited-friend/", data, {
-			headers: { authorization: `Token ${token}` },
-		});
+		const response = await axiosInstance.post(
+			"/users/remove-favorited-friend/",
+			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
+		);
 		return response.data;
 	},
 
 	getFavoritedFriends: async (token) => {
-		const response = await axiosInstance.get("/users/get-favorited-friends/",{headers: { authorization: `Token ${token}` }},);
+		const response = await axiosInstance.get("/users/get-favorited-friends/", {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
@@ -94,7 +104,7 @@ const apiService = {
 		const response = await axiosInstance.post(
 			`users/profiles/${username}/edit-profile-pic/`,
 			data,
-			{headers: { authorization: `Token ${token}` }},
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
@@ -157,13 +167,6 @@ const apiService = {
 		return response.data;
 	},
 
-	editBounty: async (id, data, token) => {
-		const response = await axiosInstance.post(`/favors/${id}/edit/`, data, {
-			headers: { authorization: `Token ${token}` },
-		});
-		return response.data;
-	},
-
 	// filterParams: { query: 'and'/'or', owner: user.id, assignee: friend.id, tag: tag.id, status: 'sent'/'received'/'incomplete'/'complete',
 	// start_date: 2024-01-30, end_date: 2024-02-30, price_low: 5.00, price_high: 10.50 } if none, leave blank ''
 	// sortParams: { sort_by: 'name'/'date'/'amount'/'assignee', order: 'ascending'/'descending' } if none, leave blank ''
@@ -182,15 +185,6 @@ const apiService = {
 		return response.data;
 	},
 
-	changeBountyStatus: async (id, data, token) => {
-		const response = await axiosInstance.post(
-			`/favors/${id}/change-status/`,
-			data,
-			{ headers: { authorization: `Token ${token}` } },
-		);
-		return response.data;
-	},
-
 	// id:id # of bounty you want to see
 	// returns {"name": favor.name, "id": favor.id, "description": favor.description, "owner": {"id": favor.owner.id, "email": favor.owner.email, "username": favor.owner.username},
 	// "assignee": {"id": favor.assignee.id, "email": favor.assignee.email, "username": favor.assignee.username}, "created_at": favor.created_at, "updated_at": favor.updated_at,
@@ -204,15 +198,19 @@ const apiService = {
 	// Once logged in, you don't need to pass in the id. This should send back data in the following format:
 	// {"<id of the friend request>": {"from_user": username1, "to_user": username2}, ...}
 	getFriendRequests: async (token) => {
-		const response = await axiosInstance.get("/users/get-friend-requests/", {headers: { authorization: `Token ${token}`}},);
+		const response = await axiosInstance.get("/users/get-friend-requests/", {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.
 	//returns {'friend 1': {'username': 'user1', 'id': 0, 'rating': 0, 'image url': 'url'}, 'friend 2': {'username': 'user2', 'id': 1, 'rating': 0, 'image url': 'url'}}
-	
+
 	getFriendsList: async (token) => {
-		const response = await axiosInstance.get("/users/get-friends-list/",{headers: { authorization: `Token ${token}` }},);
+		const response = await axiosInstance.get("/users/get-friends-list/", {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
@@ -233,8 +231,8 @@ const apiService = {
 		// );
 
 		const response = await axiosInstance.get(
-			`/users/accept-friend-request/${requestID}/`, 
-			{ headers: { authorization: `Token ${token}` }},
+			`/users/accept-friend-request/${requestID}/`,
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
@@ -244,7 +242,7 @@ const apiService = {
 	rejectFriendRequest: async (requestID, token) => {
 		const response = await axiosInstance.get(
 			`/users/reject-friend-request/${requestID}/`,
-			{ headers: { authorization: `Token ${token}` }},
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
@@ -253,8 +251,9 @@ const apiService = {
 	// returns {"success": True} if successful, {"success": False} if not
 	removeFriend: async (username, token) => {
 		const response = await axiosInstance.post(
-			`/users/remove-friend/${username}/`, data,
-			{ headers: { authorization: `Token ${token}` }},
+			`/users/remove-friend/${username}/`,
+			data,
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
@@ -270,7 +269,7 @@ const apiService = {
 		try {
 			const response = await axiosInstance.get(
 				`/favors/amount-owed/${to_user_username}/`,
-			)
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -278,9 +277,7 @@ const apiService = {
 	// returns {"tags": tags_list} where tags_list lists all tags owned by the current user
 	viewTagsList: async () => {
 		try {
-			const response = await axiosInstance.get(
-				"/favors/tags/",
-			)
+			const response = await axiosInstance.get("/favors/tags/");
 			return response.data;
 		} catch (error) {}
 	},
@@ -288,23 +285,18 @@ const apiService = {
 	// returns {"name": "tag name", "id": id#, "color": "#ABCDEF", "favors": list of tagged favors}
 	viewTag: async (tag_id) => {
 		try {
-			const response = await axiosInstance.get(
-				`/favors/tags/${tag_id}`,
-			)
+			const response = await axiosInstance.get(`/favors/tags/${tag_id}`);
 			return response.data;
 		} catch (error) {}
 	},
 
 	// data: {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
-	// 'privacy': 'Public'/'Private', 'deleted': True/False, 'completed': True/False, 'active': True/False, 'tags': tag objects? should be able to pick from existing } 
+	// 'privacy': 'Public'/'Private', 'deleted': True/False, 'completed': True/False, 'active': True/False, 'tags': tag objects? should be able to pick from existing }
 	// id: id#
-	// returns {"success": True, "new_favor_pk": id#} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"} 
+	// returns {"success": True, "new_favor_pk": id#} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
 	editBounty: async (data, id) => {
 		try {
-			const response = await axiosInstance.post(
-				`/favors/${id}/edit`,
-				data
-			)
+			const response = await axiosInstance.post(`/favors/${id}/edit`, data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -313,10 +305,7 @@ const apiService = {
 	// returns {"success": True, "tag_id": tag.id} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
 	createTag: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/favors/tags/create",
-				data
-			)
+			const response = await axiosInstance.post("/favors/tags/create", data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -327,21 +316,21 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/tags/${id}/edit`,
-				data
-			)
+				data,
+			);
 			return response.data;
 		} catch (error) {}
 	},
 
 	// id: favor id
 	// data: {"status": "Create"/"Delete"/"Edit"/"Cancel"/"Complete"/"Incomplete"}
-	// returns {"success": True} or {"success": False, "errors": "invalid favor state"/"invalid input"} 
+	// returns {"success": True} or {"success": False, "errors": "invalid favor state"/"invalid input"}
 	changeBountyStatus: async (id, data) => {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/${id}/change-status`,
-				data
-			)
+				data,
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -352,7 +341,7 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/${id}/test-change-status`,
-			)
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -363,8 +352,8 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/tags/${id}/delete`,
-				data
-			)
+				data,
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -373,10 +362,7 @@ const apiService = {
 	// redirects to '/users/sign-up/'
 	registerUser: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/users/register",
-				data
-			)
+			const response = await axiosInstance.post("/users/register", data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -385,9 +371,7 @@ const apiService = {
 	// redirect to 'users/sign-up/'
 	verifyUser: async (token) => {
 		try {
-			const response = await axiosInstance.get(
-				`/users/verify/${token}`
-			)
+			const response = await axiosInstance.get(`/users/verify/${token}`);
 			return response.data;
 		} catch (error) {}
 	},
@@ -396,10 +380,7 @@ const apiService = {
 	// for return, redirects to 'temp' method
 	resetPasswordAttempt: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/users/reset-password/",
-				data
-			)
+			const response = await axiosInstance.post("/users/reset-password/", data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -407,9 +388,7 @@ const apiService = {
 	// returns list of all wishlist objects
 	viewWishlist: async () => {
 		try {
-			const response = await axiosInstance.get(
-				"/wishlist/",
-			)
+			const response = await axiosInstance.get("/wishlist/");
 			return response.data;
 		} catch (error) {}
 	},
@@ -418,26 +397,19 @@ const apiService = {
 	// returns {'form': data dictionary ^}, {'status': 'success', 'item_id': item.id}
 	addWishlistItem: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/wishlist/add/",
-				data
-			)
+			const response = await axiosInstance.post("/wishlist/add/", data);
 			return response.data;
 		} catch (error) {}
-	},	
+	},
 
 	// id: id of item to remove
 	// returns {'status': 'success', 'item_id': pk}
 	removeWishlistItem: async (id) => {
 		try {
-			const response = await axiosInstance.post(
-				`/wishlist/remove/${id}`,
-			)
+			const response = await axiosInstance.post(`/wishlist/remove/${id}`);
 			return response.data;
 		} catch (error) {}
-	},	
-
-
+	},
 };
 
 export default apiService;

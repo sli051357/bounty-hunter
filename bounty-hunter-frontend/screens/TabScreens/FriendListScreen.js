@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 // import { useFonts } from 'expo-font';
 
@@ -6,6 +6,7 @@ import { GLOBAL_STYLES } from "../../constants/styles.js";
 import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 import apiService from "../../api/apiRequest.js";
 import CategoryBar from "../../components/FriendList/CategoryBar.js";
 import FriendCard from "../../components/FriendList/FriendCard.js";
@@ -13,8 +14,6 @@ import FriendRequest from "../../components/FriendList/FriendRequest.js";
 import SearchBar from "../../components/FriendList/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
-import { useSelector } from "react-redux";
-
 
 function FriendListScreen() {
 	const [rerender, setRerender] = useState(false);
@@ -28,74 +27,82 @@ function FriendListScreen() {
 	const [search, setSearch] = useState(true);
 	const authToken = useSelector((state) => state.authToken.authToken);
 
-	async function fetchFriendsList() {
-		setError(null);
-		setIsLoading(true);
-		try {
-			const response = await apiService.getFriendsList(authToken);
-			if (!response ) {
-				throw new Error("Undefined Information");
+	const fetchFavoriteList = useCallback(() => {
+		async function fetchFavoriteList() {
+			setError(null);
+			setIsLoading(true);
+			try {
+				const response = await apiService.getFavoritedFriends(authToken);
+				if (!response) {
+					throw new Error("Undefined Information");
+				}
+				console.log(response);
+				setFavoriteList(response);
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching data: ", error);
+				setError("Failed to fetch Favorite Friends. Please Try Again");
+				setIsLoading(false);
 			}
-			console.log(response);
-			setFriendList(response);
-			setIsLoading(false);
-		} catch (error) {
-			console.error("Error fetching data: ", error);
-			setError("Failed to fetch Friend List. Please Try Again");
-			setIsLoading(false);
 		}
-	}
+		fetchFavoriteList();
+	}, [authToken]);
 
-	async function fetchFavoriteList() {
-		setError(null);
-		setIsLoading(true);
-		try {
-			const response = await apiService.getFavoritedFriends(authToken);
-			if (!response ) {
-				throw new Error("Undefined Information");
+	const fetchFriendsList = useCallback(() => {
+		async function fetchFriendsList() {
+			setError(null);
+			setIsLoading(true);
+			try {
+				const response = await apiService.getFriendsList(authToken);
+				if (!response) {
+					throw new Error("Undefined Information");
+				}
+				console.log(response);
+				setFriendList(response);
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching data: ", error);
+				setError("Failed to fetch Friend List. Please Try Again");
+				setIsLoading(false);
 			}
-			console.log(response);
-			setFavoriteList(response);
-			setIsLoading(false);
-		} catch (error) {
-			console.error("Error fetching data: ", error);
-			setError("Failed to fetch Favorite Friends. Please Try Again");
-			setIsLoading(false);
 		}
-	}
+		fetchFriendsList();
+	}, [authToken]);
 
-	async function fetchFriendRequestList() {
-		setError(null);
-		setIsLoading(true);
-		try {
-			const response = await apiService.getFriendRequests(authToken);
-			if (!response) {
-				throw new Error("Undefined Information");
+	const fetchFriendRequestList = useCallback(() => {
+		async function fetchFriendRequestList() {
+			setError(null);
+			setIsLoading(true);
+			try {
+				const response = await apiService.getFriendRequests(authToken);
+				if (!response) {
+					throw new Error("Undefined Information");
+				}
+				console.log(response);
+				setFriendRequestList(response);
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching friend request: ", error);
+				setError("Failed to fetch Friend Requests. Please Try Again");
+				setIsLoading(false);
 			}
-			console.log(response);
-			setFriendRequestList(response);
-			setIsLoading(false);
-		} catch (error) {
-			console.error("Error fetching friend request: ", error);
-			setError("Failed to fetch Friend Requests. Please Try Again");
-			setIsLoading(false);
 		}
-	}
+		fetchFriendRequestList();
+	}, [authToken]);
 
 	async function addFavoriteStatus(username) {
-		data = {"friend": username};
-		response = await apiService.addFavoritedFriend(data,authToken);
+		data = { friend: username };
+		response = await apiService.addFavoritedFriend(data, authToken);
 		if (response.status === "success") {
 			setRerender((curr) => !curr);
 		} else {
 			console.log("failed");
 		}
-		
 	}
 
 	async function removeFavoriteStatus(username) {
-		data = {"friend": username};
-		response = await apiService.removeFavoritedFriend(data,authToken);
+		data = { friend: username };
+		response = await apiService.removeFavoritedFriend(data, authToken);
 		if (response.status === "success") {
 			setRerender((curr) => !curr);
 		} else {
@@ -133,7 +140,6 @@ function FriendListScreen() {
 		}
 	}
 
-
 	useEffect(() => {
 		fetchFriendsList();
 		fetchFavoriteList();
@@ -143,9 +149,12 @@ function FriendListScreen() {
 		const intervalId2 = setInterval(fetchFavoriteList, 60000);
 		const intervalId3 = setInterval(fetchFriendRequestList, 60000);
 
-		return () => { clearInterval(intervalId); 
-			clearInterval(intervalId2); clearInterval(intervalId3)};
-	}, [rerender])
+		return () => {
+			clearInterval(intervalId);
+			clearInterval(intervalId2);
+			clearInterval(intervalId3);
+		};
+	}, [fetchFriendsList, fetchFavoriteList, fetchFriendRequestList]);
 
 	// function handleRetryFriendRequests() {
 	// 	fetchFriendRequestList();
@@ -155,12 +164,14 @@ function FriendListScreen() {
 		{
 			username: "GreenGoblin123",
 			id: "G10397593",
-			imageUrl: "https://entertainment.time.com/wp-content/uploads/sites/3/2013/05/spiderman-1.jpg?w=720&h=480&crop=1",
+			imageUrl:
+				"https://entertainment.time.com/wp-content/uploads/sites/3/2013/05/spiderman-1.jpg?w=720&h=480&crop=1",
 		},
 		{
 			username: "Hulk",
 			id: "hulk",
-			imageUrl: "https://m.media-amazon.com/images/I/71A+RlBsJRL._AC_UF894,1000_QL80_.jpg",
+			imageUrl:
+				"https://m.media-amazon.com/images/I/71A+RlBsJRL._AC_UF894,1000_QL80_.jpg",
 		},
 	];
 
@@ -189,53 +200,58 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{Object.entries(favoriteList).map(([username, [id, rating, imageUrl]]) => (
-					<FriendCard
-						key={id} // Use the id from the object as the key for the component
-						id={id}
-						username={username}
-						imageUrl={imageUrl}
-						favoriteState={true}
-						removeFav={removeFavoriteStatus}
-						onDelete={removeFriend}
-						// onPress={() => copyPayment(username)} // Function to handle the press event
-					/>
-				))}
+				{Object.entries(favoriteList).map(
+					([username, [id, rating, imageUrl]]) => (
+						<FriendCard
+							key={id} // Use the id from the object as the key for the component
+							id={id}
+							username={username}
+							imageUrl={imageUrl}
+							favoriteState={true}
+							removeFav={removeFavoriteStatus}
+							onDelete={removeFriend}
+							// onPress={() => copyPayment(username)} // Function to handle the press event
+						/>
+					),
+				)}
 
-				{Object.entries(friendList).map(([username, [id, rating, imageUrl]]) => (
-					<FriendCard
-						key={id} // Use the id from the object as the key for the component
-						id={id}
-						username={username}
-						imageUrl={imageUrl}
-						favoriteState={false}
-						addFav={addFavoriteStatus}
-						onDelete={removeFriend}
-						// onPress={() => copyPayment(username)} // Function to handle the press event
-					/>
-				))}
+				{Object.entries(friendList).map(
+					([username, [id, rating, imageUrl]]) => (
+						<FriendCard
+							key={id} // Use the id from the object as the key for the component
+							id={id}
+							username={username}
+							imageUrl={imageUrl}
+							favoriteState={false}
+							addFav={addFavoriteStatus}
+							onDelete={removeFriend}
+							// onPress={() => copyPayment(username)} // Function to handle the press event
+						/>
+					),
+				)}
 			</View>
 		);
 
 		// Favorite Friends
 	} else if (curScreen === 2) {
-
 		content = (
 			<View>
 				{navBar}
 
-				{Object.entries(favoriteList).map(([username, [id, rating, imageUrl]]) => (
-					<FriendCard
-						key={id} // Use the id from the object as the key for the component
-						id={id}
-						username={username}
-						imageUrl={imageUrl}
-						favoriteState={true}
-						removeFav={removeFavoriteStatus}
-						onDelete={removeFriend}
-						// onPress={() => copyPayment(username)} // Function to handle the press event
-					/>
-				))}
+				{Object.entries(favoriteList).map(
+					([username, [id, rating, imageUrl]]) => (
+						<FriendCard
+							key={id} // Use the id from the object as the key for the component
+							id={id}
+							username={username}
+							imageUrl={imageUrl}
+							favoriteState={true}
+							removeFav={removeFavoriteStatus}
+							onDelete={removeFriend}
+							// onPress={() => copyPayment(username)} // Function to handle the press event
+						/>
+					),
+				)}
 			</View>
 		);
 
@@ -245,17 +261,19 @@ function FriendListScreen() {
 			<View>
 				{navBar}
 
-				{Object.entries(friendRequestList).map(([username, [id, rating, imageUrl, pk]]) => (
-					<FriendRequest 
-						key={pk}
-						id={id}
-						username={id}
-						imageUrl={imageUrl}
-						onYes={acceptRequest}
-						onNo={rejectRequest}
-						requestId={pk}
-					/>
-				))}
+				{Object.entries(friendRequestList).map(
+					([username, [id, rating, imageUrl, pk]]) => (
+						<FriendRequest
+							key={pk}
+							id={id}
+							username={id}
+							imageUrl={imageUrl}
+							onYes={acceptRequest}
+							onNo={rejectRequest}
+							requestId={pk}
+						/>
+					),
+				)}
 
 				{/* {!error ? (
 					DUMMY_REQUESTS.map((user) => (

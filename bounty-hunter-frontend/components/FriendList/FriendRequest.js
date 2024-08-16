@@ -38,7 +38,11 @@ function FriendRequest({ id, username, imageUrl, onYes, onNo, requestId }) {
 						{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
 					]}
 				>
-					<Pressable onPress={() => {onYes(requestId)}}>
+					<Pressable
+						onPress={() => {
+							onYes(requestId);
+						}}
+					>
 						<FontAwesome
 							name="check"
 							size={20}
@@ -53,7 +57,11 @@ function FriendRequest({ id, username, imageUrl, onYes, onNo, requestId }) {
 						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
 					]}
 				>
-					<Pressable onPress={() => {onNo(requestId)}}>
+					<Pressable
+						onPress={() => {
+							onNo(requestId);
+						}}
+					>
 						<MaterialIcons
 							name="delete"
 							size={20}

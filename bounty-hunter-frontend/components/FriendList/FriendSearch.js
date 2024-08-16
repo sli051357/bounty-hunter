@@ -5,7 +5,6 @@ import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-
 function FriendSearch({ user, imagePath }) {
 	function sendRequest() {
 		console.log("request sent");
@@ -30,14 +29,13 @@ function FriendSearch({ user, imagePath }) {
 					]}
 				>
 					<Pressable onPress={sendRequest}>
-                    <MaterialIcons
-                            name="person-add-alt"
-                            size={20}
-                            color={GLOBAL_STYLES.colors.brown700}
-                        />
+						<MaterialIcons
+							name="person-add-alt"
+							size={20}
+							color={GLOBAL_STYLES.colors.brown700}
+						/>
 					</Pressable>
 				</View>
-
 			</View>
 		</View>
 	);

@@ -13,7 +13,15 @@ import apiService from "../../api/apiRequest";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav, onDelete }) {
+function FriendCard({
+	id,
+	username,
+	imageUrl,
+	favoriteState,
+	addFav,
+	removeFav,
+	onDelete,
+}) {
 	const [favorite, setFavorite] = useState(favoriteState);
 	const authToken = useSelector((state) => state.authToken.authToken);
 
@@ -35,28 +43,38 @@ function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav, 
 				{/* Profile Picture */}
 				<Image style={styles.picture} source={{ uri: imageUrl }} />
 				{/* Friend Text */}
-				<View style={styles.friendText}> 
+				<View style={styles.friendText}>
 					<Text style={styles.usernameText}>{username}</Text>
 					<Text style={styles.userID}>{id}</Text>
 				</View>
 				<View style={{ marginLeft: 15 }}>
-						{favorite ? (
-							<Pressable onPress={() => {removeFav(username); editFavoriteStatus}}>
-								<AntDesign
-									name="star"
-									size={24}
-									color={GLOBAL_STYLES.colors.orange700}
-								/>
-							</Pressable>
-						) : (
-							<Pressable onPress={() => {addFav(username); editFavoriteStatus}}>
-								<AntDesign
-									name="staro"
-									size={24}
-									color={GLOBAL_STYLES.colors.orange300}
-								/>
-							</Pressable>
-						)}
+					{favorite ? (
+						<Pressable
+							onPress={() => {
+								removeFav(username);
+								editFavoriteStatus;
+							}}
+						>
+							<AntDesign
+								name="star"
+								size={24}
+								color={GLOBAL_STYLES.colors.orange700}
+							/>
+						</Pressable>
+					) : (
+						<Pressable
+							onPress={() => {
+								addFav(username);
+								editFavoriteStatus;
+							}}
+						>
+							<AntDesign
+								name="staro"
+								size={24}
+								color={GLOBAL_STYLES.colors.orange300}
+							/>
+						</Pressable>
+					)}
 				</View>
 			</View>
 
@@ -82,7 +100,11 @@ function FriendCard({ id, username, imageUrl, favoriteState, addFav, removeFav, 
 						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
 					]}
 				>
-					<Pressable onPress={() => {onDelete(username)}}>
+					<Pressable
+						onPress={() => {
+							onDelete(username);
+						}}
+					>
 						<MaterialIcons
 							name="delete"
 							size={20}

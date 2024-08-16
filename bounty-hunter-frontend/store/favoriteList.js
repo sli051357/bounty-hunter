@@ -12,17 +12,18 @@ const favoriteListSlice = createSlice({
 		addFavorite: (state, action) => {
 			state.favoriteList.push(action.payload);
 		},
-        //pass in username
+		//pass in username
 		removeFavorite: (state, action) => {
 			const idx = state.favoriteList.indexOf(action.payload);
-			if( idx > -1) {
-				state.favoriteList.splice(idx,0);
+			if (idx > -1) {
+				state.favoriteList.splice(idx, 0);
 			}
 		},
-		
-        resetFavoriteList: () => initialState,
+
+		resetFavoriteList: () => initialState,
 	},
 });
 
-export const { addFavorite, removeFavorite, resetBountyList } = favoriteListSlice.actions;
+export const { addFavorite, removeFavorite, resetBountyList } =
+	favoriteListSlice.actions;
 export default favoriteListSlice.reducer;
