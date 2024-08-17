@@ -75,7 +75,7 @@ const apiService = {
 		const response = await axiosInstance.post(
 			`users/profiles/${username}/edit-profile-pic/`,
 			data,
-			{headers: { authorization: `Token ${token}` }},
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
@@ -243,7 +243,7 @@ const apiService = {
 		try {
 			const response = await axiosInstance.get(
 				`/favors/amount-owed/${to_user_username}/`,
-			)
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -251,9 +251,7 @@ const apiService = {
 	// returns {"tags": tags_list} where tags_list lists all tags owned by the current user
 	viewTagsList: async () => {
 		try {
-			const response = await axiosInstance.get(
-				"/favors/tags/",
-			)
+			const response = await axiosInstance.get("/favors/tags/");
 			return response.data;
 		} catch (error) {}
 	},
@@ -261,35 +259,27 @@ const apiService = {
 	// returns {"name": "tag name", "id": id#, "color": "#ABCDEF", "favors": list of tagged favors}
 	viewTag: async (tag_id) => {
 		try {
-			const response = await axiosInstance.get(
-				`/favors/tags/${tag_id}`,
-			)
+			const response = await axiosInstance.get(`/favors/tags/${tag_id}`);
 			return response.data;
 		} catch (error) {}
 	},
 
 	// data: {'name': 'favor name', 'description': 'description here', 'assignee': pick from other users, 'total_owed_type': 'Monetary'/'Nonmonetary', 'total_owed_amt': 20.50,
-	// 'privacy': 'Public'/'Private', 'deleted': True/False, 'completed': True/False, 'active': True/False, 'tags': tag objects? should be able to pick from existing } 
+	// 'privacy': 'Public'/'Private', 'deleted': True/False, 'completed': True/False, 'active': True/False, 'tags': tag objects? should be able to pick from existing }
 	// id: id#
-	// returns {"success": True, "new_favor_pk": id#} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"} 
-	editBounty: async (data, id) => {
-		try {
-			const response = await axiosInstance.post(
-				`/favors/${id}/edit`,
-				data
-			)
-			return response.data;
-		} catch (error) {}
-	},
+	// returns {"success": True, "new_favor_pk": id#} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
+	// editBounty: async (data, id) => {
+	// 	try {
+	// 		const response = await axiosInstance.post(`/favors/${id}/edit`, data);
+	// 		return response.data;
+	// 	} catch (error) {}
+	// },
 
 	// data: {'name': 'tag name', 'color': #ABD123, 'tag_type': 'Preset'/'Custom'}
 	// returns {"success": True, "tag_id": tag.id} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
 	createTag: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/favors/tags/create",
-				data
-			)
+			const response = await axiosInstance.post("/favors/tags/create", data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -300,24 +290,24 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/tags/${id}/edit`,
-				data
-			)
+				data,
+			);
 			return response.data;
 		} catch (error) {}
 	},
 
 	// id: favor id
 	// data: {"status": "Create"/"Delete"/"Edit"/"Cancel"/"Complete"/"Incomplete"}
-	// returns {"success": True} or {"success": False, "errors": "invalid favor state"/"invalid input"} 
-	changeBountyStatus: async (id, data) => {
-		try {
-			const response = await axiosInstance.post(
-				`/favors/${id}/change-status`,
-				data
-			)
-			return response.data;
-		} catch (error) {}
-	},
+	// returns {"success": True} or {"success": False, "errors": "invalid favor state"/"invalid input"}
+	// changeBountyStatus: async (id, data) => {
+	// 	try {
+	// 		const response = await axiosInstance.post(
+	// 			`/favors/${id}/change-status`,
+	// 			data,
+	// 		);
+	// 		return response.data;
+	// 	} catch (error) {}
+	// },
 
 	// id: favor id
 	// returns render(request,"favors/test_change_status.html", {"favor_id": favor_id})
@@ -325,7 +315,7 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/${id}/test-change-status`,
-			)
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -336,8 +326,8 @@ const apiService = {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/tags/${id}/delete`,
-				data
-			)
+				data,
+			);
 			return response.data;
 		} catch (error) {}
 	},
@@ -346,10 +336,7 @@ const apiService = {
 	// redirects to '/users/sign-up/'
 	registerUser: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/users/register",
-				data
-			)
+			const response = await axiosInstance.post("/users/register", data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -358,9 +345,7 @@ const apiService = {
 	// redirect to 'users/sign-up/'
 	verifyUser: async (token) => {
 		try {
-			const response = await axiosInstance.get(
-				`/users/verify/${token}`
-			)
+			const response = await axiosInstance.get(`/users/verify/${token}`);
 			return response.data;
 		} catch (error) {}
 	},
@@ -369,10 +354,7 @@ const apiService = {
 	// for return, redirects to 'temp' method
 	resetPasswordAttempt: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/users/reset-password/",
-				data
-			)
+			const response = await axiosInstance.post("/users/reset-password/", data);
 			return response.data;
 		} catch (error) {}
 	},
@@ -380,9 +362,7 @@ const apiService = {
 	// returns list of all wishlist objects
 	viewWishlist: async () => {
 		try {
-			const response = await axiosInstance.get(
-				"/wishlist/",
-			)
+			const response = await axiosInstance.get("/wishlist/");
 			return response.data;
 		} catch (error) {}
 	},
@@ -391,26 +371,19 @@ const apiService = {
 	// returns {'form': data dictionary ^}, {'status': 'success', 'item_id': item.id}
 	addWishlistItem: async (data) => {
 		try {
-			const response = await axiosInstance.post(
-				"/wishlist/add/",
-				data
-			)
+			const response = await axiosInstance.post("/wishlist/add/", data);
 			return response.data;
 		} catch (error) {}
-	},	
+	},
 
 	// id: id of item to remove
 	// returns {'status': 'success', 'item_id': pk}
 	removeWishlistItem: async (id) => {
 		try {
-			const response = await axiosInstance.post(
-				`/wishlist/remove/${id}`,
-			)
+			const response = await axiosInstance.post(`/wishlist/remove/${id}`);
 			return response.data;
 		} catch (error) {}
-	},	
-
-
+	},
 };
 
 export default apiService;
