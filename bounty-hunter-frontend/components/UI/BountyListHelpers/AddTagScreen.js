@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import EditTagPopup from './EditTagPopup';
+import Tag from './Tag';
 
 const TaggingComponent = () => {
   const [tags, setTags] = useState([]);

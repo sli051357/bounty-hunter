@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
-import { GLOBAL_STYLES } from "../../../constants/styles";
+import Tag from './Tag';
 
 const EditTagPopup = ({ tag, visible, onClose, onSave }) => {
   const [emojiInput, setEmojiInput] = useState(tag.emoji);
@@ -16,6 +16,9 @@ const EditTagPopup = ({ tag, visible, onClose, onSave }) => {
       <View style={styles.modalContainer}>
         <View style={styles.popup}>
           <Text style={styles.popupTitle}>Edit Custom Tag</Text>
+
+          <Tag emoji={emojiInput} text={tagInput} color={selectedColor} />
+
           <TextInput
             style={styles.input}
             placeholder="Tag name"
@@ -29,7 +32,81 @@ const EditTagPopup = ({ tag, visible, onClose, onSave }) => {
             onChangeText={setEmojiInput}
           />
           <View style={styles.colorPickerContainer}>
-            {/* color picker logic similar to TaggingComponent */}
+            {/* color options */}
+            <View style={styles.colorPickerContainer}> 
+            {/* color presets */}
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#F3674D' },
+                selectedColor === '#F3674D' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#F3674D')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#F78C44' },
+                selectedColor === '#F78C44' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#F78C44')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#FFDE80' },
+                selectedColor === '#FFDE80' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#FFDE80')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#FDF389' },
+                selectedColor === '#FDF389' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#FDF389')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#95CF93' },
+                selectedColor === '#95CF93' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#95CF93')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#52C8ED' },
+                selectedColor === '#52C8ED' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#52C8ED')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#5381C1' },
+                selectedColor === '#5381C1' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#5381C1')}
+            />
+            <TouchableOpacity
+              style={[
+                styles.colorOption,
+                { backgroundColor: '#8E71B2' },
+                selectedColor === '#8E71B2' && styles.selectedColorOption
+              ]}
+              onPress={() => setSelectedColor('#8E71B2')}
+            />
+            <TouchableOpacity style={styles.addColorOption}>
+              {/* placeholder for adding new colors */}
+              <Text style={styles.addColorText}>+</Text>
+            </TouchableOpacity>
+            </View>
+          <TouchableOpacity style={styles.createButton} onPress={addTag}>
+            <Text style={styles.createButtonText}>Create</Text>
+          </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.saveButton} onPress={saveTag}>
