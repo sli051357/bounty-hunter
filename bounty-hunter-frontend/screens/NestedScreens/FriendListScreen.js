@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 // import { useFonts } from 'expo-font';
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
@@ -13,10 +15,11 @@ import FriendCard from "../../components/FriendList/FriendCard.js";
 import FriendRequest from "../../components/FriendList/FriendRequest.js";
 import SearchBar from "../../components/FriendList/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
-import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
 
 function FriendListScreen() {
 	const [rerender, setRerender] = useState(false);
+	const navigation = useNavigation();
 
 	const [friendList, setFriendList] = useState([]);
 	const [favoriteList, setFavoriteList] = useState([]);
@@ -211,6 +214,7 @@ function FriendListScreen() {
 							favoriteState={true}
 							removeFav={removeFavoriteStatus}
 							onDelete={removeFriend}
+							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -226,6 +230,7 @@ function FriendListScreen() {
 							favoriteState={false}
 							addFav={addFavoriteStatus}
 							onDelete={removeFriend}
+							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -249,6 +254,7 @@ function FriendListScreen() {
 							favoriteState={true}
 							removeFav={removeFavoriteStatus}
 							onDelete={removeFriend}
+							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),

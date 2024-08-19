@@ -33,6 +33,7 @@ function SearchBar() {
 					iconSize={24}
 					color={styles.searchIcon.color}
 					onPress={handleSearchPress}
+					style={styles.searchIcon}
 				/>
 
 				<TextInput
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
 	searchIcon: {
 		color: GLOBAL_STYLES.colors.brown700,
 		marginLeft: 5,
-		marginRight: 5,
+		marginRight: 20,
 	},
 	textInput: {
 		fontFamily: "BaiJamjuree-Medium",

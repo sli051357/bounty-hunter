@@ -21,6 +21,7 @@ function FriendCard({
 	addFav,
 	removeFav,
 	onDelete,
+	onProfilePress
 }) {
 	const [favorite, setFavorite] = useState(favoriteState);
 	const authToken = useSelector((state) => state.authToken.authToken);
@@ -41,7 +42,9 @@ function FriendCard({
 		<View style={styles.card}>
 			<View style={styles.userDetails}>
 				{/* Profile Picture */}
-				<Image style={styles.picture} source={{ uri: imageUrl }} />
+				<Pressable onPress={onProfilePress}>
+					<Image style={styles.picture} source={{ uri: imageUrl }} />
+				</Pressable>
 				{/* Friend Text */}
 				<View style={styles.friendText}>
 					<Text style={styles.usernameText}>{username}</Text>

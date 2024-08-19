@@ -21,10 +21,10 @@ import UpdatePasswordScreen from "./screens/SignInScreens/UpdatePasswordScreen";
 import VerifyEmailScreen from "./screens/SignInScreens/VerifyEmailScreen";
 import WelcomeScreen from "./screens/SignInScreens/WelcomeScreen";
 import BountiesListStackScreen from "./screens/TabScreens/BountiesListStackScreen";
-import FriendListScreen from "./screens/TabScreens/FriendListScreen";
 import LeaderBoardStackScreen from "./screens/TabScreens/LeaderBoardStackScreen";
 import UserProfileStackScreen from "./screens/TabScreens/UserProfileStackScreen";
 import WishListScreen from "./screens/TabScreens/WishListScreen";
+import FriendListStackScreen from "./screens/TabScreens/FriendListStackScreen"
 import { persistor, store } from "./store/redux/store";
 
 const Stack = createNativeStackNavigator();
@@ -171,7 +171,7 @@ function AuthenticatedStack() {
 
 			<Tab.Screen
 				name="Friends"
-				component={FriendListScreen}
+				component={FriendListStackScreen}
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
