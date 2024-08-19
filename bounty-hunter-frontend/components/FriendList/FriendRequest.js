@@ -11,7 +11,15 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendRequest({ id, username, imageUrl, onYes, onNo, requestId, onProfilePress }) {
+function FriendRequest({
+	id,
+	username,
+	imageUrl,
+	onYes,
+	onNo,
+	requestId,
+	onProfilePress,
+}) {
 	function addRequest() {
 		console.log("friend added");
 	}

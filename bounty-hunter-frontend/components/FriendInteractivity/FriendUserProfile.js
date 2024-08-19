@@ -1,4 +1,4 @@
-import { useState, useCallback} from "react";
+import { useCallback, useState } from "react";
 import {
 	Image,
 	Modal,
@@ -9,7 +9,7 @@ import {
 	View,
 } from "react-native";
 
-import { useNavigation, useFocusEffect} from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import apiService from "../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { DUMMY_FAVORS_OF_PROFILE } from "../../util/dummy-data";
@@ -60,14 +60,8 @@ function FriendUserProfile({ route }) {
 			};
 
 			fetchProfile();
-		}, [ imageUrl,username]),
+		}, [imageUrl, username]),
 	);
-
-
-
-
-
-
 
 	function toggleEdit() {
 		setIsEditing((curr) => !curr);
@@ -176,18 +170,18 @@ function FriendUserProfile({ route }) {
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
 								Friend Count:{" "}
 							</Text>
-							<Text style={styles.scoreTextStyles}>
-								{friendCount}
-							</Text>
+							<Text style={styles.scoreTextStyles}>{friendCount}</Text>
 						</View>
 					</View>
 				</View>
 
-					<EditAboutMe aboutMe={aboutMe} />
-					<ViewPaymentMethods
-						paymentData={paymentMethods}
-						onPress={() => navigation.navigate("FriendWishlist", { userId: username })}
-					/>
+				<EditAboutMe aboutMe={aboutMe} />
+				<ViewPaymentMethods
+					paymentData={paymentMethods}
+					onPress={() =>
+						navigation.navigate("FriendWishlist", { userId: username })
+					}
+				/>
 				<View style={styles.recentBountiesStyles}>
 					<Text style={styles.subtitle}>Recent Bounties: </Text>
 					{bounties.map((favor) => (

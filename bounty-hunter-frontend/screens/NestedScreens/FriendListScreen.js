@@ -1,6 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 // import { useFonts } from 'expo-font';
 
@@ -214,7 +214,9 @@ function FriendListScreen() {
 							favoriteState={true}
 							removeFav={removeFavoriteStatus}
 							onDelete={removeFriend}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() =>
+								navigation.navigate("FriendProfile", { userId: id })
+							}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -230,7 +232,9 @@ function FriendListScreen() {
 							favoriteState={false}
 							addFav={addFavoriteStatus}
 							onDelete={removeFriend}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() =>
+								navigation.navigate("FriendProfile", { userId: id })
+							}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -254,7 +258,9 @@ function FriendListScreen() {
 							favoriteState={true}
 							removeFav={removeFavoriteStatus}
 							onDelete={removeFriend}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() =>
+								navigation.navigate("FriendProfile", { userId: id })
+							}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -278,7 +284,9 @@ function FriendListScreen() {
 							onYes={acceptRequest}
 							onNo={rejectRequest}
 							requestId={pk}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() =>
+								navigation.navigate("FriendProfile", { userId: id })
+							}
 						/>
 					),
 				)}
@@ -304,9 +312,7 @@ function FriendListScreen() {
 	} else {
 		content = (
 			<View>
-				<SearchBar 
-					
-				/>
+				<SearchBar />
 			</View>
 		);
 	}

@@ -1,21 +1,20 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import IconButton from "../UI/IconButton.js";
-import { useNavigation } from "@react-navigation/native";
-
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 
 import { Ionicons } from "@expo/vector-icons";
-import FriendSearch from "./FriendSearch";
 import apiService from "../../api/apiRequest.js";
+import FriendSearch from "./FriendSearch";
 
 /*
 No real usability, only visual effects right now
 */
 
-function SearchBar({onProfilePress}) {
+function SearchBar({ onProfilePress }) {
 	const navigation = useNavigation();
 
 	const [text, setText] = React.useState("");
@@ -25,7 +24,6 @@ function SearchBar({onProfilePress}) {
 		const response = await apiService.searchUsers(text);
 		setFilteredData(response.users);
 	}
-
 
 	return (
 		<View>

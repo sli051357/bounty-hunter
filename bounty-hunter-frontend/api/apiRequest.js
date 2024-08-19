@@ -32,7 +32,9 @@ const apiService = {
 	},
 
 	searchUsers: async (query) => {
-		const response = await axiosInstance.get(`/users/profiles/search/?q=${query}`);
+		const response = await axiosInstance.get(
+			`/users/profiles/search/?q=${query}`,
+		);
 		return response.data;
 	},
 
@@ -214,7 +216,7 @@ const apiService = {
 
 	getFriendsList: async (token) => {
 		const response = await axiosInstance.get("/users/get-friends-list/", {
-			headers: { authorization: `Token ${token}` }
+			headers: { authorization: `Token ${token}` },
 		});
 		return response.data;
 	},
@@ -223,9 +225,11 @@ const apiService = {
 	//returns {"success": True}
 	sendFriendRequest: async (username, token) => {
 		const response = await axiosInstance.get(
-			`/users/send-friend-request/${username}/`,{
-				headers: { authorization: `Token ${token}` }
-			});
+			`/users/send-friend-request/${username}/`,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
+		);
 		return response.data;
 	},
 
