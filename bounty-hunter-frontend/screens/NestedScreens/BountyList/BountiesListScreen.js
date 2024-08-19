@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { act, useCallback, useEffect, useState } from "react";
 import {
 	Button,
 	ScrollView,
@@ -9,6 +9,7 @@ import {
 	View,
 } from "react-native";
 
+import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import apiService from "../../../api/apiRequest";
 import FavorCard from "../../../components/FavorCard";
@@ -23,6 +24,7 @@ function BountiesListScreen() {
 	const authToken = useSelector((state) => state.authToken.authToken);
 	const navigation = useNavigation();
 	const [userBountyList, setUserBountyList] = useState([]);
+	// console.log(userBountyList[userBountyList.length - 1])
 
 	const [isloading, setIsLoading] = useState(true); // Set initial to true when Api is back
 	const [error, setError] = useState(null);
@@ -36,56 +38,51 @@ function BountiesListScreen() {
 	const [activeSortingDisplay, setActiveSortingDisplay] =
 		useState("Newest First");
 	const [activeFiltering, setActiveFiltering] = useState({
-		query: "or",
+		query: "and",
 		tags: [],
 		status: [],
-		start_date: "",
-		end_date: "",
+		start_date: dayjs().format("YYYY-MM-DD"),
+		end_date: dayjs().format("YYYY-MM-DD"),
 		price_low: 0,
 		price_high: 1000,
 	});
 	const [activeSearch, setActiveSearch] = useState("");
+	const [tempSearch, setTempSearch] = useState("");
 
-	const fetchList = useCallback(
-		async (filterParams, sortParams, searchParams) => {
-			setError(null);
-			setIsLoading(true);
-			// console.log(filterParams)
-			// console.log(sortParams)
-			// console.log(searchParams)
+	const fetchList = useCallback(async () => {
+		setError(null);
+		setIsLoading(true);
+		// console.log(filterParams)
+		// console.log(sortParams)
+		// console.log(searchParams)
 
-			try {
-				const response = await apiService.viewBountyList(
-					filterParams,
-					sortParams,
-					searchParams,
-					authToken,
-				);
-				//console.log(response.favors);
-				setUserBountyList(response.favors);
-				setIsLoading(false);
-			} catch (error) {
-				console.error("Error fetching data: ", error);
-				setError("Failed to fetch bounty list. Please try again.");
-				setIsLoading(false);
-			}
-		},
-		[filterParams, sortParams, searchParams],
-	);
+		try {
+			const response = await apiService.viewBountyList(
+				activeFiltering,
+				activeSorting,
+				activeSearch,
+				authToken,
+			);
+			//console.log(response.favors);
+			setUserBountyList(response.favors);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data: ", error);
+			setError("Failed to fetch bounty list. Please try again.");
+			setIsLoading(false);
+		}
+	}, [activeFiltering, activeSearch, activeSorting, authToken]);
 
 	useEffect(() => {
-		fetchList(activeFiltering, activeSorting, activeSearch);
+		fetchList();
 
-		const intervalId = setInterval(
-			() => fetchList(activeFiltering, activeSorting, activeSearch),
-			120000,
-		);
+		const intervalId = setInterval(() => fetchList(), 120000);
 
 		return () => clearInterval(intervalId);
-	}, [fetchList, activeFiltering, activeSorting, activeSearch]);
+	}, [fetchList]);
 
 	function handleRetry() {
-		fetchList(activeFiltering, activeSorting, activeSearch);
+		fetchList();
 	}
 
 	const sortValues = [
@@ -102,47 +99,47 @@ function BountiesListScreen() {
 		if (newActive !== "") {
 			setActiveSortingDisplay(newActive);
 			if (newActive === "Newest First") {
-				setActiveSorting({ sort_by: "date", order: "ascending" });
-				fetchList(
-					activeFiltering,
-					{ sort_by: "date", order: "ascending" },
-					activeSearch,
-				);
-			} else if (newActive === "Oldest First") {
 				setActiveSorting({ sort_by: "date", order: "descending" });
-				fetchList(
-					activeFiltering,
-					{ sort_by: "date", order: "descending" },
-					activeSearch,
-				);
+				// fetchList(
+				// 	activeFiltering,
+				// 	{ sort_by: "date", order: "ascending" },
+				// 	activeSearch,
+				// );
+			} else if (newActive === "Oldest First") {
+				setActiveSorting({ sort_by: "date", order: "ascending" });
+				// fetchList(
+				// 	activeFiltering,
+				// 	{ sort_by: "date", order: "descending" },
+				// 	activeSearch,
+				// );
 			} else if (newActive === "Friend Name A-Z") {
 				setActiveSorting({ sort_by: "assignee", order: "ascending" });
-				fetchList(
-					activeFiltering,
-					{ sort_by: "assignee", order: "ascending" },
-					activeSearch,
-				);
+				// fetchList(
+				// 	activeFiltering,
+				// 	{ sort_by: "assignee", order: "ascending" },
+				// 	activeSearch,
+				// );
 			} else if (newActive === "Bounty Title A-Z") {
-				setActiveSorting({ sort_by: "name", order: "descending" });
-				fetchList(
-					activeFiltering,
-					{ sort_by: "name", order: "descending" },
-					activeSearch,
-				);
+				setActiveSorting({ sort_by: "name", order: "ascending" });
+				// fetchList(
+				// 	activeFiltering,
+				// 	{ sort_by: "name", order: "descending" },
+				// 	activeSearch,
+				// );
 			} else if (newActive === "Price (Highest to Lowest)") {
-				setActiveSorting({ sort_by: "amount", order: "ascending" });
-				fetchList(
-					activeFiltering,
-					{ sort_by: "amount", order: "ascending" },
-					activeSearch,
-				);
-			} else {
 				setActiveSorting({ sort_by: "amount", order: "descending" });
-				fetchList(
-					activeFiltering,
-					{ sort_by: "amount", order: "descending" },
-					activeSearch,
-				);
+				// fetchList(
+				// 	activeFiltering,
+				// 	{ sort_by: "amount", order: "ascending" },
+				// 	activeSearch,
+				// );
+			} else {
+				setActiveSorting({ sort_by: "amount", order: "ascending" });
+				// fetchList(
+				// 	activeFiltering,
+				// 	{ sort_by: "amount", order: "descending" },
+				// 	activeSearch,
+				// );
 			}
 		}
 		setIsSortVisible(false);
@@ -151,7 +148,16 @@ function BountiesListScreen() {
 	// Handles Filter implementation
 	function filterHandler(filters) {
 		setActiveFiltering(filters);
+		// fetchList(filters, activeSorting, activeSearch)
 		setIsFilterVisible(false);
+	}
+
+	function searchInputHandler(text) {
+		setTempSearch(text);
+	}
+
+	function searchHandler() {
+		setActiveSearch(tempSearch);
 	}
 
 	if (isloading) {
@@ -184,6 +190,9 @@ function BountiesListScreen() {
 								style={styles.textInput}
 								placeholder="Search..."
 								placeholderTextColor={GLOBAL_STYLES.colors.brown700}
+								onChangeText={(text) => searchInputHandler(text)}
+								onSubmitEditing={searchHandler}
+								value={tempSearch}
 							/>
 						</View>
 						<View style={styles.buttonContainer}>

@@ -35,7 +35,7 @@ class Favor(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
-    created_at = models.DateTimeField(default=timezone.now) # only gives date, not time
+    created_at = models.DateTimeField(default=datetime.now().date()) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
     points_value = models.IntegerField( default=100)
@@ -58,7 +58,7 @@ class Favor(models.Model):
     NONMONETARY = "Nonmonetary"
     total_owed_choices = [(MONETARY, "Monetary"), (NONMONETARY, "Nonmonetary"),]
     total_owed_type = models.CharField(max_length=11, choices=total_owed_choices)
-    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     total_owed_wishlist = models.ForeignKey(Wishlist, on_delete=models.SET_NULL, blank=True, null=True)     # should enable dropdown of wishlist items 
     
     # privacy settings
