@@ -11,6 +11,7 @@ from wishlist.models import Wishlist
 # Tag class
 class Tag(models.Model):
     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
+    emoji = models.CharField(max_length=1)
     name = models.CharField(max_length=20)
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],

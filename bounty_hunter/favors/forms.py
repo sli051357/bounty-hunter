@@ -12,10 +12,10 @@ class FavorForm(forms.ModelForm):
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
-        fields = ['emoji', 'custom_text', 'custom_color']
+        fields = ['emoji', 'name', 'color']
 
     def clean_custom_color(self):
-        color = self.cleaned_data['custom_color']
+        color = self.cleaned_data['color']
         if not color.startswith('#') or len(color) != 7:
             raise forms.ValidationError("Enter a valid hex color code.")
         return color
