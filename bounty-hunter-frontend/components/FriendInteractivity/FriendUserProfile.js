@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback} from "react";
 import {
 	Image,
 	Modal,
@@ -9,7 +9,7 @@ import {
 	View,
 } from "react-native";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect} from "@react-navigation/native";
 import apiService from "../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { DUMMY_FAVORS_OF_PROFILE } from "../../util/dummy-data";
@@ -23,30 +23,51 @@ import ViewPaymentMethods from "./ViewPaymentMethods";
 function FriendUserProfile({ route }) {
 	const navigation = useNavigation();
 	const { userId } = route.params;
-	const [isEditing, setIsEditing] = useState(false);
+	const username = userId;
 	const [nickname, setNickname] = useState("");
+	const [isEditing, setIsEditing] = useState(false);
+	const [aboutMe, setAboutMe] = useState("");
+	const [imageUrl, setImageUrl] = useState("");
+	const [bounties, setBounties] = useState([]);
+	const paymentMethods = [];
+	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [rating, setRating] = useState("");
+	const [friendCount, setFriendCount] = useState("");
 
-	const aboutMeSection = <EditAboutMe aboutMe={userInfo.aboutMe} />;
+	useFocusEffect(
+		useCallback(() => {
+			const fetchProfile = async () => {
+				try {
+					//set the bio
+					const response = await apiService.getUserBio(username);
+					setAboutMe(response.bio);
 
-	const paymentMethodSection = (
-		<ViewPaymentMethods
-			paymentData={userInfo.paymentMethods}
-			onPress={() => navigation.navigate("FriendWishlist", { userId: userId })}
-		/>
+					const responseHi = await apiService.getRating(username);
+					setRating(responseHi.rating);
+
+					const responseHello = await apiService.getFriendCount(username);
+					setFriendCount(responseHello.friendCount);
+
+					const response3 = await apiService.getUserPic(username);
+					setImageUrl(response3.url);
+					console.log(imageUrl);
+				} catch (error) {
+					console.log(error);
+				} finally {
+					setLoading(false);
+				}
+			};
+
+			fetchProfile();
+		}, [ imageUrl]),
 	);
 
-	// useEffect(() => {
-	//     async function fetchUserData() {
-	//         try {
-	//              const description = await apiService.getUserBio('MacUser23');
-	//              userInfo.aboutMe = description
-	//              //Repeat for all values needed in userInfo
-	//         } catch (error) {
-	//             Alert.alert("Could Not Reach Friend Profile", "Try again later")
-	//         }
-	//     }
-	//     fetchUserData();
-	// }, [])
+
+
+
+
+
 
 	function toggleEdit() {
 		setIsEditing((curr) => !curr);
@@ -121,7 +142,7 @@ function FriendUserProfile({ route }) {
 								source={require("../../assets/profile.jpeg")}
 							/>
 							<View>
-								<Text style={styles.usernameStyles}>{userInfo.username}</Text>
+								<Text style={styles.usernameStyles}>{username}</Text>
 								<Text style={styles.smallTextBrown}>#{userId}</Text>
 							</View>
 						</View>
@@ -149,23 +170,27 @@ function FriendUserProfile({ route }) {
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
 								Rating:
 							</Text>
-							<Text style={styles.scoreTextStyles}>{userInfo.rating}</Text>
+							<Text style={styles.scoreTextStyles}>{rating}</Text>
 						</View>
 						<View style={styles.editView}>
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
 								Friend Count:{" "}
 							</Text>
 							<Text style={styles.scoreTextStyles}>
-								{userInfo.friendList.length}
+								{friendCount}
 							</Text>
 						</View>
 					</View>
 				</View>
-				{aboutMeSection}
-				{paymentMethodSection}
+
+					<EditAboutMe aboutMe={aboutMe} />
+					<ViewPaymentMethods
+						paymentData={paymentMethods}
+						onPress={() => navigation.navigate("FriendWishlist", { userId: username })}
+					/>
 				<View style={styles.recentBountiesStyles}>
 					<Text style={styles.subtitle}>Recent Bounties: </Text>
-					{userInfo.bounties.map((favor) => (
+					{bounties.map((favor) => (
 						<FavorCard
 							key={favor.description}
 							favor={favor}
