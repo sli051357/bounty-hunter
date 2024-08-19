@@ -80,6 +80,16 @@ class Favor(models.Model):
     owner_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
     assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
 
+    def save(self, *args, **kwargs):
+        # Check if the favor is being marked as complete
+        if self.completed and self.total_owed_wishlist:
+            # Delete the associated wishlist item
+            self.total_owed_wishlist.delete()
+            # Clear the reference to the wishlist item
+            self.total_owed_wishlist = None
+        
+        # Call the original save method
+        super(Favor, self).save(*args, **kwargs)
 
     def __str__(self):
         return "%s - created by %s" % (self.name, self.owner)
