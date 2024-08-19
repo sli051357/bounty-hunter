@@ -60,7 +60,7 @@ function FriendUserProfile({ route }) {
 			};
 
 			fetchProfile();
-		}, [ imageUrl]),
+		}, [ imageUrl,username]),
 	);
 
 
