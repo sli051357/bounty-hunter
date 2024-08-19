@@ -28,7 +28,7 @@ import WishListScreen from "./screens/TabScreens/WishListScreen";
 import { persistor, store } from "./store/redux/store";
 
 import { StyleSheet, View } from 'react-native';
-import TaggingComponent from './components/UI/BountyListHelpers/TagComponent';
+import TaggingComponent from './components/UI/BountyListHelpers/AddTagScreen';
 
 export default function App() {
   return (
