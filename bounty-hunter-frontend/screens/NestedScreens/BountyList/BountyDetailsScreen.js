@@ -192,7 +192,7 @@ function BountyDetailsScreen({ route }) {
 				style={{ flex: 1, backgroundColor: GLOBAL_STYLES.colors.brown300 }}
 			>
 				<View style={styles.page}>
-					<Text style={styles.mainHeader}>Create Bounty</Text>
+					<Text style={styles.mainHeader}>View Bounty</Text>
 					<InputFields
 						typeTitle="Favor Name *"
 						type="favorName"
@@ -200,6 +200,7 @@ function BountyDetailsScreen({ route }) {
 						maxLength={18}
 						value={favorDetails.favorName}
 						keyboardType="default"
+						editable={false}
 					/>
 					<InputFields
 						typeTitle="Assign To (by user ID) *"
@@ -208,6 +209,7 @@ function BountyDetailsScreen({ route }) {
 						maxLength={14}
 						value={favorDetails.assigneeId}
 						keyboardType="default"
+						editable={false}
 					/>
 					<InputFields
 						typeTitle="Total Owed *"
@@ -216,6 +218,7 @@ function BountyDetailsScreen({ route }) {
 						maxLength={22}
 						value={favorDetails.paymentOwed}
 						keyboardType="default"
+						editable={false}
 					>
 						<SwitchTabs
 							tabOne="Monetary"
@@ -223,6 +226,7 @@ function BountyDetailsScreen({ route }) {
 							onPress={setIsMonetaryStatusHandeler}
 							isActive={isMonetaryStatus}
 							containerStyles={{ marginBottom: 8 }}
+							editable={false}
 						/>
 					</InputFields>
 					<InputFields

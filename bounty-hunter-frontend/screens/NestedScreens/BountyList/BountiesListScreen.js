@@ -48,8 +48,6 @@ function BountiesListScreen() {
 	});
 	const [activeSearch, setActiveSearch] = useState("");
 	const [tempSearch, setTempSearch] = useState("");
-	// console.log(activeFiltering.start_date)
-	// console.log(activeFiltering.end_date)
 
 	const fetchList = useCallback(async () => {
 		setError(null);

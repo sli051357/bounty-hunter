@@ -3,6 +3,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 //import IconButton from "./UI/IconButton";
 import { GLOBAL_STYLES } from "../constants/styles";
+import dayjs from "dayjs";
 
 /* 
 Implementation Notes: 
@@ -19,7 +20,7 @@ Implementation Notes:
 function FavorCard({ favor, onPress }) {
 	// console.log(favor.description);
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable onPress={!favor.completed && !favor.active ? onPress : null}>
 			<View style={styles.container}>
 				<View style={[styles.innerContainer, { alignItems: "flex-start" }]}>
 					<View style={styles.iconsContainer}>
@@ -42,15 +43,15 @@ function FavorCard({ favor, onPress }) {
 					<Text style={styles.text}>{favor.description}</Text>
 				</View>
 				<View style={[styles.innerContainer, { alignItems: "flex-end" }]}>
-					<Text style={styles.text}>Created: {favor.dateCreated}</Text>
+					<Text style={styles.text}>Created: {dayjs(favor.created_at).format("YYYY-MM-DD")}</Text>
 					<Text style={styles.mainTextRight}>
 						{favor.total_owed_type === "Monetary"
-							? favor.total_owed_amt
+							? `$${favor.total_owed_amt}`
 							: favor.total_owed_wishlist}
 					</Text>
 					<Ionicons
 						name={
-							!favor.completed && !favor.deleted && !favor.active
+							!favor.completed && !favor.active
 								? "code-working"
 								: "checkbox"
 						}

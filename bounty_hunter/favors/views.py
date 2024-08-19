@@ -117,7 +117,7 @@ def favor_list(request): # ex: favors/
     def query_method(q, query_bool, q_input):
         if query_bool:
             q |= q_input
-        if query_bool == False:
+        if not query_bool:
             q &= q_input
         return q
 
@@ -146,8 +146,6 @@ def favor_list(request): # ex: favors/
         combined_query = Q()
         #print(statuses)
         for status in statuses:
-            q_incomplete = Q()
-            q_complete = Q()
             #print("Status: ", status)
             # favors sent by user
             if status == 'Sent':
@@ -367,7 +365,7 @@ def create_favor(request):
 
     wishlist_item_name = data.get('total_owed_wishlist', None)
     total_owed_wishlist = None
-    if wishlist_item_name != None:
+    if wishlist_item_name is not None:
         if Wishlist.objects.filter(title=wishlist_item_name).exists(): 
             total_owed_wishlist = Wishlist.objects.get(title=wishlist_item_name)
     #print(type(wishlist_item_name))
