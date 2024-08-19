@@ -30,26 +30,6 @@ import { persistor, store } from "./store/redux/store";
 import { StyleSheet, View } from 'react-native';
 import TaggingComponent from './components/UI/BountyListHelpers/AddTagScreen';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Tagging Component Demo</Text>
-      <TaggingComponent />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-});
-
-/*
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -264,4 +244,3 @@ export default function App() {
 		</>
 	);
 }
-*/
