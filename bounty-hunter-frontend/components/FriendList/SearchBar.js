@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import IconButton from "../UI/IconButton.js";
+import { useNavigation } from "@react-navigation/native";
+
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 
@@ -13,7 +15,8 @@ import apiService from "../../api/apiRequest.js";
 No real usability, only visual effects right now
 */
 
-function SearchBar() {
+function SearchBar({onProfilePress}) {
+	const navigation = useNavigation();
 
 	const [text, setText] = React.useState("");
 	const [filteredData, setFilteredData] = useState([]);

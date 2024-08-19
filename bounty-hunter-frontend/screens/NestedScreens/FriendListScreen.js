@@ -278,6 +278,7 @@ function FriendListScreen() {
 							onYes={acceptRequest}
 							onNo={rejectRequest}
 							requestId={pk}
+							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
 						/>
 					),
 				)}
@@ -303,7 +304,9 @@ function FriendListScreen() {
 	} else {
 		content = (
 			<View>
-				<SearchBar />
+				<SearchBar 
+					
+				/>
 			</View>
 		);
 	}
