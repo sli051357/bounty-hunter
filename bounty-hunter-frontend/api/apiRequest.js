@@ -31,6 +31,11 @@ const apiService = {
 		return response.data;
 	},
 
+	searchUsers: async (query) => {
+		const response = await axiosInstance.get(`/users/profiles/search/?q=${query}`);
+		return response.data;
+	},
+
 	signUp: async (data) => {
 		const response = await axiosInstance.post("/users/register/", data);
 		return response.data;

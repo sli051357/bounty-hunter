@@ -32,6 +32,8 @@ urlpatterns = [
     path('remove-favorited-friend/', views.remove_favorite_friend, name="remove_favorited_friend"),
     path('add-favorited-friend/', views.add_favorite_friend, name="remove_favorited_friend"),
     path('get-favorited-friends/', views.get_favorite_friends, name="get_favorited_friends"),
+    path('profiles/search/', views.search_users, name="search_users"),
+
 
 
 

@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from django.db.models import Q
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import base64
@@ -101,6 +102,31 @@ def get_favorite_friends(request):
     #    data[friend.username] = "friend :)"
     
     return JsonResponse(data)
+
+# searches for users whose usernames contain that string
+def search_users(request):
+    search_query = request.GET.get('q', '')  # Get the search parameter from the URL
+    if search_query:
+        users = User.objects.filter(
+            Q(username__icontains=search_query) | 
+            Q(email__icontains=search_query)
+        )
+    else:
+        users = User.objects.none() 
+        
+    if users == User.objects.none():
+        return JsonResponse({"users":[]})
+
+    user_data = [
+            {
+                'username': user.username,
+                'id': user.username,
+                'imageUrl': UserProfileInfo.objects.get(owner=user).profile_image.url
+            } for user in users
+        ]
+    print(user_data)
+
+    return JsonResponse({"users":user_data})
 
 
 def get_csrf_token(request):
