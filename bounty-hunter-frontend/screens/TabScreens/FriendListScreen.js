@@ -7,10 +7,10 @@ import { DUMMY_USER_PROFILE } from "../../util/dummy-data.js";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import apiService from "../../api/apiRequest.js";
-import CategoryBar from "../../components/CategoryBar.js";
-import FriendCard from "../../components/FriendCard.js";
-import FriendRequest from "../../components/FriendRequest.js";
-import SearchBar from "../../components/SearchBar.js";
+import CategoryBar from "../../components/FriendList/CategoryBar.js";
+import FriendCard from "../../components/FriendList/FriendCard.js";
+import FriendRequest from "../../components/FriendList/FriendRequest.js";
+import SearchBar from "../../components/FriendList/SearchBar.js";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay.js";
 import ScrollViewHelper from "./../../components/UI/ScrollViewHelper.js";
 
@@ -54,10 +54,12 @@ function FriendListScreen() {
 		{
 			username: "GreenGoblin123",
 			id: "G10397593",
+			imageUrl: "https://entertainment.time.com/wp-content/uploads/sites/3/2013/05/spiderman-1.jpg?w=720&h=480&crop=1",
 		},
 		{
 			username: "Hulk",
 			id: "hulk",
+			imageUrl: "https://m.media-amazon.com/images/I/71A+RlBsJRL._AC_UF894,1000_QL80_.jpg",
 		},
 	];
 
@@ -86,7 +88,7 @@ function FriendListScreen() {
 					<FriendCard
 						key={friend.nickname}
 						friend={friend}
-						imagePath={require("../../assets/batman.jpeg")}
+						imagePath={friend.imageUrl}
 					/>
 				))}
 			</View>
@@ -106,7 +108,7 @@ function FriendListScreen() {
 						<FriendCard
 							key={friend.nickname}
 							friend={friend}
-							imagePath={require("../../assets/batman.jpeg")}
+							imagePath={friend.imageUrl}
 						/>
 					))}
 			</View>
@@ -123,7 +125,7 @@ function FriendListScreen() {
 						<FriendRequest
 							key={user.username}
 							user={user}
-							imagePath={require("../../assets/batman.jpeg")}
+							imagePath={user.imageUrl}
 						/>
 					))
 				) : (

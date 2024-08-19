@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { GLOBAL_STYLES } from "../constants/styles";
-import { DUMMY_USER_PROFILE } from "../util/dummy-data.js";
+import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 
@@ -27,7 +26,7 @@ function FriendCard({ friend, imagePath }) {
 		<View style={styles.card}>
 			<View style={styles.userDetails}>
 				{/* Profile Picture */}
-				<Image style={styles.picture} source={imagePath} />
+				<Image style={styles.picture} source={{ uri: imagePath }} />
 				{/* Friend Text */}
 				<View style={styles.friendText}>
 					<Text style={styles.usernameText}>{friend.nickname}</Text>
