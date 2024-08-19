@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
+import dayjs from "dayjs";
 //import IconButton from "./UI/IconButton";
 import { GLOBAL_STYLES } from "../constants/styles";
-import dayjs from "dayjs";
 
 /* 
 Implementation Notes: 
@@ -43,7 +43,9 @@ function FavorCard({ favor, onPress }) {
 					<Text style={styles.text}>{favor.description}</Text>
 				</View>
 				<View style={[styles.innerContainer, { alignItems: "flex-end" }]}>
-					<Text style={styles.text}>Created: {dayjs(favor.created_at).format("YYYY-MM-DD")}</Text>
+					<Text style={styles.text}>
+						Created: {dayjs(favor.created_at).format("YYYY-MM-DD")}
+					</Text>
 					<Text style={styles.mainTextRight}>
 						{favor.total_owed_type === "Monetary"
 							? `$${favor.total_owed_amt}`
@@ -51,9 +53,7 @@ function FavorCard({ favor, onPress }) {
 					</Text>
 					<Ionicons
 						name={
-							!favor.completed && !favor.active
-								? "code-working"
-								: "checkbox"
+							!favor.completed && !favor.active ? "code-working" : "checkbox"
 						}
 						size={22}
 						color={GLOBAL_STYLES.colors.blue300}

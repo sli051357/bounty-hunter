@@ -71,7 +71,7 @@ function BountiesListScreen() {
 			setError("Failed to fetch bounty list. Please try again.");
 			setIsLoading(false);
 		}
-	}, [activeFiltering, activeSearch, activeSorting]);
+	}, [activeFiltering, activeSearch, activeSorting, authToken]);
 
 	useEffect(() => {
 		fetchList();

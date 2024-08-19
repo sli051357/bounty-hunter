@@ -2,7 +2,14 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { GLOBAL_STYLES } from "../../../constants/styles";
 
-function SwitchTabs({ tabOne, tabTwo, onPress, isActive, containerStyles, editable = true }) {
+function SwitchTabs({
+	tabOne,
+	tabTwo,
+	onPress,
+	isActive,
+	containerStyles,
+	editable = true,
+}) {
 	return (
 		<View style={[styles.container, containerStyles]}>
 			<Pressable
