@@ -10,7 +10,6 @@ import apiService from "../../api/apiRequest";
 function FriendSearch({ user, imagePath }) {
 
 	async function sendRequest() {
-		console.log("sending request");
 		const response = await apiService.sendFriendRequest(user.username);
 		if( response.status === "fail") {
 			Alert.alert("Friend Request Failed!");

@@ -25,21 +25,6 @@ function FriendUserProfile({ route }) {
 	const { userId } = route.params;
 	const [isEditing, setIsEditing] = useState(false);
 	const [nickname, setNickname] = useState("");
-	const userInfo = {
-		// Filled with Dummy data for now, get data in useEffect
-		username: "DummyUser",
-		nickname: "DummyNickname",
-		id: userId,
-		userProfilePic: "../../assets/profile.jpeg",
-		aboutMe: "Some random description. Dummy data.",
-		paymentMethods: [
-			{ paymentName: "venmo", username: "VenmoUsername" },
-			{ paymentName: "zelle", username: "ZelleUsername" },
-		],
-		bounties: DUMMY_FAVORS_OF_PROFILE,
-		rating: "99",
-		friendList: [],
-	};
 
 	const aboutMeSection = <EditAboutMe aboutMe={userInfo.aboutMe} />;
 

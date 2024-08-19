@@ -121,7 +121,7 @@ def search_users(request):
             {
                 'username': user.username,
                 'id': user.username,
-                'imageUrl': UserProfileInfo.objects.get(owner=user).profile_image.url
+                'imageUrl':  request.build_absolute_uri(UserProfileInfo.objects.get(owner=user).profile_image.url)
             } for user in users
         ]
     print(user_data)
