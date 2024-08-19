@@ -214,7 +214,7 @@ function FriendListScreen() {
 							favoriteState={true}
 							removeFav={removeFavoriteStatus}
 							onDelete={removeFriend}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() => navigation.navigate('FriendProfile', { userId: id })}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -230,7 +230,7 @@ function FriendListScreen() {
 							favoriteState={false}
 							addFav={addFavoriteStatus}
 							onDelete={removeFriend}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() => navigation.navigate('FriendProfile', { userId: id })}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -254,7 +254,7 @@ function FriendListScreen() {
 							favoriteState={true}
 							removeFav={removeFavoriteStatus}
 							onDelete={removeFriend}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() => navigation.navigate('FriendProfile', { userId: id })}
 							// onPress={() => copyPayment(username)} // Function to handle the press event
 						/>
 					),
@@ -278,7 +278,7 @@ function FriendListScreen() {
 							onYes={acceptRequest}
 							onNo={rejectRequest}
 							requestId={pk}
-							onProfilePress={() => navigation.navigate("FriendProfile", { userId: id })}
+							onProfilePress={() => navigation.navigate('FriendProfile', { userId: id })}
 						/>
 					),
 				)}
@@ -349,7 +349,6 @@ const styles = StyleSheet.create({
 		backgroundColor: GLOBAL_STYLES.colors.brown300,
 		flex: 1,
 		paddingHorizontal: "5%",
-		paddingTop: 100,
 	},
 	headerText: {
 		fontFamily: "BaiJamjuree-Bold",

@@ -50,4 +50,4 @@ function FriendListStackScreen() {
 	);
 }
 
-export default FriendListScreen;
+export default FriendListStackScreen;

@@ -173,9 +173,7 @@ function AuthenticatedStack() {
 				name="Friends"
 				component={FriendListStackScreen}
 				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerShadowVisible: false,
+					headerShown: false
 				}}
 			/>
 
