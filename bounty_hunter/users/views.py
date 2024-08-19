@@ -231,6 +231,9 @@ def get_friend_count(request):
     return JsonResponse(count, safe=False)
 
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def send_friend_request(request, username):
     from_user = request.user
     to_user = User.objects.get(username=username)

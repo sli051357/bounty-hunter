@@ -1,12 +1,20 @@
 import { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View, Alert } from "react-native";
+
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import apiService from "../../api/apiRequest";
 
 function FriendSearch({ user, imagePath }) {
-	function sendRequest() {
+
+	async function sendRequest() {
+		console.log("sending request");
+		const response = await apiService.sendFriendRequest(user.username);
+		if( response.status === "fail") {
+			Alert.alert("Friend Request Failed!");
+		}
 		console.log("request sent");
 	}
 

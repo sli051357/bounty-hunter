@@ -214,7 +214,7 @@ const apiService = {
 
 	getFriendsList: async (token) => {
 		const response = await axiosInstance.get("/users/get-friends-list/", {
-			headers: { authorization: `Token ${token}` },
+			headers: { authorization: `Token ${token}` }
 		});
 		return response.data;
 	},
@@ -223,8 +223,9 @@ const apiService = {
 	//returns {"success": True}
 	sendFriendRequest: async (username) => {
 		const response = await axiosInstance.get(
-			`/users/send-friend-request/${username}/`,
-		);
+			`/users/send-friend-request/${username}/`,{
+				headers: { authorization: `Token ${token}` }
+			});
 		return response.data;
 	},
 
