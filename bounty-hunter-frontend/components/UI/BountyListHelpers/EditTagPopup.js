@@ -29,7 +29,7 @@ const EditTagPopup = ({ tag, visible, onClose, onSave }) => {
             onChangeText={setEmojiInput}
           />
           <View style={styles.colorPickerContainer}>
-            {/* Color Picker logic similar to TaggingComponent */}
+            {/* color picker logic similar to TaggingComponent */}
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.saveButton} onPress={saveTag}>
