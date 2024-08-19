@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View, Alert } from "react-native";
 
+import { useSelector } from "react-redux";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
@@ -8,9 +9,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import apiService from "../../api/apiRequest";
 
 function FriendSearch({ user, imagePath }) {
-
+	const authToken = useSelector((state) => state.authToken.authToken);
 	async function sendRequest() {
-		const response = await apiService.sendFriendRequest(user.username);
+		try {
+			const response = await apiService.sendFriendRequest(user.username, authToken);
+		} catch (error) {
+			console.log(error);
+		}
 		if( response.status === "fail") {
 			Alert.alert("Friend Request Failed!");
 		}

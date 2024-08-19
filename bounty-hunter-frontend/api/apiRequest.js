@@ -221,7 +221,7 @@ const apiService = {
 
 	//username: the username of the friend to request.
 	//returns {"success": True}
-	sendFriendRequest: async (username) => {
+	sendFriendRequest: async (username, token) => {
 		const response = await axiosInstance.get(
 			`/users/send-friend-request/${username}/`,{
 				headers: { authorization: `Token ${token}` }

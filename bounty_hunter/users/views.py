@@ -239,9 +239,9 @@ def send_friend_request(request, username):
     to_user = User.objects.get(username=username)
 
     #can only send if friend or favorited friend
-    if UserProfileInfo.objects.get(from_user).friends.contains(to_user) or UserProfileInfo.objects.get(to_user).friends.contains(from_user):
+    if UserProfileInfo.objects.get(owner=from_user).friends.contains(to_user) or UserProfileInfo.objects.get(owner=to_user).friends.contains(from_user):
         return JsonResponse({"status":"fail"})
-    if UserProfileInfo.objects.get(from_user).favoritedFriends.contains(to_user) or UserProfileInfo.objects.get(to_user).favoritedFriends.contains(from_user):
+    if UserProfileInfo.objects.get(owner=from_user).favoritedFriends.contains(to_user) or UserProfileInfo.objects.get(owner=to_user).favoritedFriends.contains(from_user):
         return JsonResponse({"status":"fail"})
     
     friend_req, created = FriendRequest.objects.get_or_create(from_user=from_user,to_user=to_user)
