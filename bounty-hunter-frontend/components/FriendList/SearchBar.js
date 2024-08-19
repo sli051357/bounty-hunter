@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import IconButton from "../UI/IconButton.js";
 
 import { GLOBAL_STYLES } from "../../constants/styles.js";
 
@@ -57,12 +58,16 @@ function SearchBar() {
 	];
 
 	const [text, onChangeText] = React.useState("");
-	// const [data, setData] = DUMMY_USERBASE; // CHANGE TO ACTUAL VALUE
+	const [data, setData] = useState([]); // CHANGE TO ACTUAL VALUE
 	const [filteredData, setFilteredData] = useState([]);
+
+	function handleSearchPress() {
+
+	}
 
 	const searchFunction = (text) => {
 		if (text) {
-			const newData = DUMMY_USERBASE.filter((item) => {
+			const newData = data.filter((item) => {
 				const itemData = item.username
 					? item.username.toUpperCase()
 					: "".toUpperCase();
@@ -80,10 +85,11 @@ function SearchBar() {
 		<View>
 			{/* Search Bar */}
 			<View style={styles.barContainer}>
-				<Ionicons
-					name="search-circle-outline"
-					size={24}
-					style={styles.searchIcon}
+				<IconButton
+					icon="search-circle-outline"
+					iconSize={24}
+					color={styles.searchIcon.color}
+					onPress={handleSearchPress}
 				/>
 
 				<TextInput
