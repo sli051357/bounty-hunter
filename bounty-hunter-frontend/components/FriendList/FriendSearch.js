@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View, Alert } from "react-native";
+import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useSelector } from "react-redux";
 
@@ -12,11 +12,14 @@ function FriendSearch({ user, imagePath }) {
 	const authToken = useSelector((state) => state.authToken.authToken);
 	async function sendRequest() {
 		try {
-			const response = await apiService.sendFriendRequest(user.username, authToken);
+			const response = await apiService.sendFriendRequest(
+				user.username,
+				authToken,
+			);
 		} catch (error) {
 			console.log(error);
 		}
-		if( response.status === "fail") {
+		if (response.status === "fail") {
 			Alert.alert("Friend Request Failed!");
 		}
 		console.log("request sent");

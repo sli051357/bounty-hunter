@@ -21,7 +21,7 @@ function FriendCard({
 	addFav,
 	removeFav,
 	onDelete,
-	onProfilePress
+	onProfilePress,
 }) {
 	const [favorite, setFavorite] = useState(favoriteState);
 	const authToken = useSelector((state) => state.authToken.authToken);
