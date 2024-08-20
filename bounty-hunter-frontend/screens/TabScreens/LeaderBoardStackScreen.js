@@ -24,28 +24,6 @@ function LeaderBoardStackScreen() {
 					headerShadowVisible: false,
 				}}
 			/>
-			<LeaderboardStack.Screen
-				name="FriendProfile"
-				component={FriendUserProfile}
-				options={({ navigation }) => ({
-					headerStyle: {
-						backgroundColor: GLOBAL_STYLES.colors.brown300,
-					},
-					title: "",
-					headerShadowVisible: false,
-				})}
-			/>
-			<LeaderboardStack.Screen
-				name="FriendWishlist"
-				component={FriendWishlist}
-				options={({ navigation }) => ({
-					headerStyle: {
-						backgroundColor: GLOBAL_STYLES.colors.brown300,
-					},
-					title: "",
-					headerShadowVisible: false,
-				})}
-			/>
 		</LeaderboardStack.Navigator>
 	);
 }

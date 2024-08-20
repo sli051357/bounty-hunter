@@ -9,6 +9,7 @@ def create_new_ref_number():
 #model for storing bio and profile image. Each user has only one owner.
 class UserProfileInfo(models.Model):
     friends = models.ManyToManyField(User, related_name='friends',blank=True)
+    favoritedFriends = models.ManyToManyField(User, related_name='favorited_friends',blank=True)
     bio_text = models.CharField(max_length=200)
     profile_image = models.ImageField(upload_to='users/res/',max_length=100,default="users/res/default_pfp.png")
     owner = models.OneToOneField(User, on_delete=models.CASCADE)

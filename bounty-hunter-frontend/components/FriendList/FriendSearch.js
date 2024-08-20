@@ -1,13 +1,27 @@
 import { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
+
+import { useSelector } from "react-redux";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { MaterialIcons } from "@expo/vector-icons";
-
+import apiService from "../../api/apiRequest";
 
 function FriendSearch({ user, imagePath }) {
-	function sendRequest() {
+	const authToken = useSelector((state) => state.authToken.authToken);
+	async function sendRequest() {
+		try {
+			const response = await apiService.sendFriendRequest(
+				user.username,
+				authToken,
+			);
+		} catch (error) {
+			console.log(error);
+		}
+		if (response.status === "fail") {
+			Alert.alert("Friend Request Failed!");
+		}
 		console.log("request sent");
 	}
 
@@ -30,14 +44,13 @@ function FriendSearch({ user, imagePath }) {
 					]}
 				>
 					<Pressable onPress={sendRequest}>
-                    <MaterialIcons
-                            name="person-add-alt"
-                            size={20}
-                            color={GLOBAL_STYLES.colors.brown700}
-                        />
+						<MaterialIcons
+							name="person-add-alt"
+							size={20}
+							color={GLOBAL_STYLES.colors.brown700}
+						/>
 					</Pressable>
 				</View>
-
 			</View>
 		</View>
 	);

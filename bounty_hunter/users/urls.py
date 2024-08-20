@@ -29,6 +29,10 @@ urlpatterns = [
     path('remove-friend/<slug:request_username>/', views.remove_friend, name="remove_friend"),
     path('get-csrf-token/', views.get_csrf_token, name="get_csrf_token"),
     path('res/<path:filename>/', views.pic_access, name='pic_access'),
+    path('remove-favorited-friend/', views.remove_favorite_friend, name="remove_favorited_friend"),
+    path('add-favorited-friend/', views.add_favorite_friend, name="remove_favorited_friend"),
+    path('get-favorited-friends/', views.get_favorite_friends, name="get_favorited_friends"),
+    path('profiles/search/', views.search_users, name="search_users"),
 
 
 

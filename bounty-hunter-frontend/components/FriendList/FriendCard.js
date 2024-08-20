@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import { AntDesign, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import apiService from "../../api/apiRequest";
 
 /* 
 * Implementation Notes:
@@ -11,10 +13,20 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendCard({ friend, imagePath }) {
-	const [favorite, setFavorite] = useState(friend.fav);
+function FriendCard({
+	id,
+	username,
+	imageUrl,
+	favoriteState,
+	addFav,
+	removeFav,
+	onDelete,
+	onProfilePress,
+}) {
+	const [favorite, setFavorite] = useState(favoriteState);
+	const authToken = useSelector((state) => state.authToken.authToken);
 
-	function editFavoriteStatus() {
+	async function editFavoriteStatus() {
 		setFavorite((curr) => !curr);
 	}
 
@@ -22,43 +34,87 @@ function FriendCard({ friend, imagePath }) {
 		console.log("Favor created");
 	}
 
+	function deleteFriend() {
+		console.log("Friend deleted");
+	}
+
 	return (
 		<View style={styles.card}>
 			<View style={styles.userDetails}>
 				{/* Profile Picture */}
-				<Image style={styles.picture} source={{ uri: imagePath }} />
+				<Pressable onPress={onProfilePress}>
+					<Image style={styles.picture} source={{ uri: imageUrl }} />
+				</Pressable>
 				{/* Friend Text */}
 				<View style={styles.friendText}>
-					<Text style={styles.usernameText}>{friend.nickname}</Text>
-					<Text style={styles.userID}>{friend.id}</Text>
+					<Text style={styles.usernameText}>{username}</Text>
+					<Text style={styles.userID}>{id}</Text>
 				</View>
 				<View style={{ marginLeft: 15 }}>
-					<Pressable onPress={editFavoriteStatus}>
-						{favorite ? (
+					{favorite ? (
+						<Pressable
+							onPress={() => {
+								removeFav(username);
+								editFavoriteStatus;
+							}}
+						>
 							<AntDesign
 								name="star"
 								size={24}
 								color={GLOBAL_STYLES.colors.orange700}
 							/>
-						) : (
+						</Pressable>
+					) : (
+						<Pressable
+							onPress={() => {
+								addFav(username);
+								editFavoriteStatus;
+							}}
+						>
 							<AntDesign
 								name="staro"
 								size={24}
 								color={GLOBAL_STYLES.colors.orange300}
 							/>
-						)}
-					</Pressable>
+						</Pressable>
+					)}
 				</View>
 			</View>
 
-			<View style={styles.favorButton}>
-				<Pressable onPress={createFavor}>
-					<FontAwesome6
-						name="money-bill-transfer"
-						size={24}
-						color={GLOBAL_STYLES.colors.brown700}
-					/>
-				</Pressable>
+			<View style={{ flexDirection: "row", marginLeft: "auto" }}>
+				<View
+					style={[
+						styles.button,
+						{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
+					]}
+				>
+					<Pressable onPress={createFavor}>
+						<FontAwesome6
+							name="money-bill-transfer"
+							size={24}
+							color={GLOBAL_STYLES.colors.brown300}
+						/>
+					</Pressable>
+				</View>
+
+				<View
+					style={[
+						styles.button,
+						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
+					]}
+				>
+					<Pressable
+						onPress={() => {
+							onDelete(username);
+						}}
+					>
+						<MaterialIcons
+							name="delete"
+							size={20}
+							color={GLOBAL_STYLES.colors.brown300}
+						/>
+					</Pressable>
+				</View>
 			</View>
 		</View>
 	);
@@ -92,11 +148,10 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		color: GLOBAL_STYLES.colors.brown700,
 	},
-	favorButton: {
-		justifySelf: "flex-end",
-		backgroundColor: GLOBAL_STYLES.colors.orange300,
+	button: {
 		padding: 10,
 		borderRadius: 5,
+		marginLeft: 10,
 	},
 	userDetails: {
 		flexDirection: "row",
