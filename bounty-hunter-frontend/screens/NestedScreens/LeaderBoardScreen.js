@@ -38,7 +38,7 @@ function LeaderBoardScreen() {
 							userImage={value.friendProfilePic}
 							rank={index + 1}
 							friendProfilePage={() =>
-								navigation.navigate("FriendProfile", { userId: "A12309899" })
+								console.log("Nothing")
 							}
 							key={value.friendId}
 						/>
