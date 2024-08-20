@@ -3,11 +3,40 @@ export const DUMMY_USER_PROFILE = {
 	ID: "A12345678",
 	rating: "92",
 	friends: [
-		{ nickname: "Superman012", id: "A87654321", fav: true },
-		{ nickname: "Joker13", id: "J13503923", fav: false },
-		{ nickname: "SamCat2013", id: "PU028385", fav: false },
-		{ nickname: "RoboCop_64", id: "0DK23JL", fav: false },
-		{ nickname: "WonderWoman45", id: "A1309524", fav: true },
+		{
+			nickname: "Superman012",
+			id: "A87654321",
+			fav: true,
+			imageUrl:
+				"https://static.wikia.nocookie.net/marvel_dc/images/a/a5/Superman_Vol_5_1_Textless.jpg/revision/latest/scale-to-width-down/1200?cb=20180711061148",
+		},
+		{
+			nickname: "Joker13",
+			id: "J13503923",
+			fav: false,
+			imageUrl:
+				"https://i.guim.co.uk/img/media/fbb1974c1ebbb6bf4c4beae0bb3d9cb93901953c/80_0_2400_1440/master/2400.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=ede2b27f1cea7c3be30b938195c0cc5c",
+		},
+		{
+			nickname: "SamCat2013",
+			id: "PU028385",
+			fav: false,
+			imageUrl: "https://upload.wikimedia.org/wikipedia/en/4/49/Streakycat.png",
+		},
+		{
+			nickname: "RoboCop_64",
+			id: "0DK23JL",
+			fav: false,
+			imageUrl:
+				"https://cdn11.bigcommerce.com/s-b70w3e4554/images/stencil/1280x1280/products/206/3015/PCS_011_Robocop__60529.1687876586.jpg?c=1",
+		},
+		{
+			nickname: "WonderWoman45",
+			id: "A1309524",
+			fav: true,
+			imageUrl:
+				"https://www.diamondartclub.com/cdn/shop/products/wonder-woman-pop-art-diamond-art-painting-30226211766465.jpg?v=1626580338&width=3133",
+		},
 	],
 	aboutMe: "JUSTICEEEEEEEEEE",
 	paymentMethods: [

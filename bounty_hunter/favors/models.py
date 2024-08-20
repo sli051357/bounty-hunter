@@ -11,6 +11,7 @@ from wishlist.models import Wishlist
 # Tag class
 class Tag(models.Model):
     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
+    emoji = models.CharField(max_length=1, default='')
     name = models.CharField(max_length=20)
     color = models.CharField(max_length=7, 
                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
@@ -35,7 +36,7 @@ class Favor(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
-    created_at = models.DateTimeField(default=timezone.now) # only gives date, not time
+    created_at = models.DateTimeField(default=datetime.now().date()) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
     points_value = models.IntegerField( default=100)
@@ -58,7 +59,7 @@ class Favor(models.Model):
     NONMONETARY = "Nonmonetary"
     total_owed_choices = [(MONETARY, "Monetary"), (NONMONETARY, "Nonmonetary"),]
     total_owed_type = models.CharField(max_length=11, choices=total_owed_choices)
-    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    total_owed_amt = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     total_owed_wishlist = models.ForeignKey(Wishlist, on_delete=models.SET_NULL, blank=True, null=True)     # should enable dropdown of wishlist items 
     
     # privacy settings
@@ -82,6 +83,17 @@ class Favor(models.Model):
 
     # action history
     bounty_edit_history = models.JSONField(default=list, blank=True)
+    
+    def save(self, *args, **kwargs):
+        # Check if the favor is being marked as complete
+        if self.completed and self.total_owed_wishlist:
+            # Delete the associated wishlist item
+            self.total_owed_wishlist.delete()
+            # Clear the reference to the wishlist item
+            self.total_owed_wishlist = None
+        
+        # Call the original save method
+        super(Favor, self).save(*args, **kwargs)
 
     def __str__(self):
         return "%s - created by %s" % (self.name, self.owner)

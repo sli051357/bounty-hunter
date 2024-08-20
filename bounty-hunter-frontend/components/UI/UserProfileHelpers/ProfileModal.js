@@ -33,7 +33,6 @@ function ProfileModal({ isVisible, onYes, onNo, onClose }) {
 					<Pressable onPress={onYes}>
 						<Text style={[styles.buttonText, { marginTop: 20 }]}>
 							Choose from Gallery
-							
 						</Text>
 					</Pressable>
 

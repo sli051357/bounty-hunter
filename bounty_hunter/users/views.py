@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from django.db.models import Q
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import base64
@@ -40,10 +41,105 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key
         })
     
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def add_favorite_friend(request):
+    #get post data
+    data = json.loads(request.body)
+    friend = get_object_or_404(User, username = data.get('friend', None))
+    #get profile
+    from_user = request.user
+    profile = get_object_or_404(UserProfileInfo, owner=from_user)
+
+    #if not favorited but is a friend, add them.
+    if friend in profile.friends.all() and friend not in profile.favoritedFriends.all():
+        profile.favoritedFriends.add(friend)
+        profile.friends.remove(friend)
+        profile.save()
+        return JsonResponse({"status":"success"})
+    else:
+        return JsonResponse({"status":"fail"})
+    
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def remove_favorite_friend(request):
+    #get post data
+    data = json.loads(request.body)
+    friend = get_object_or_404(User, username = data.get('friend', None))
+
+    #get profile
+    from_user = request.user
+    profile = get_object_or_404(UserProfileInfo, owner=from_user)
+
+    #if favorited and is a friend, add them.
+    if friend not in profile.friends.all() and friend in profile.favoritedFriends.all():
+        profile.favoritedFriends.remove(friend)
+        profile.friends.add(friend)
+        profile.save()
+        return JsonResponse({"status":"success"})
+    else:
+        return JsonResponse({"status":"fail"})
+    
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_favorite_friends(request):
+    print(request.user)
+    friends = get_object_or_404(UserProfileInfo, owner=request.user).favoritedFriends
+    data = {}
+    for f in friends.all():
+        user_profile = UserProfileInfo.objects.get(owner = f)
+        f_data = [
+            f.username,
+            user_profile.rating,
+            request.build_absolute_uri(user_profile.profile_image.url)
+        ]
+        data[f.username] = f_data
+
+    #for friend in friends.all():
+    #    data[friend.username] = "friend :)"
+    
+    return JsonResponse(data)
+
+# searches for users whose usernames contain that string
+def search_users(request):
+    search_query = request.GET.get('q', '')  # Get the search parameter from the URL
+    if search_query:
+        users = User.objects.filter(
+            Q(username__icontains=search_query) | 
+            Q(email__icontains=search_query)
+        )
+    else:
+        users = User.objects.none() 
+        
+    if users == User.objects.none():
+        return JsonResponse({"users":[]})
+
+    user_data = [
+            {
+                'username': user.username,
+                'id': user.username,
+                'imageUrl':  request.build_absolute_uri(UserProfileInfo.objects.get(owner=user).profile_image.url)
+            } for user in users
+        ]
+    print(user_data)
+
+    return JsonResponse({"users":user_data})
+
 
 def get_csrf_token(request):
     token = get_token(request)
     return JsonResponse({'csrfToken': token})
+
+def display_name(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+    data = {
+        "display_name":user_profile.display_name
+    }
+    return JsonResponse(data=data)
 
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -86,6 +182,9 @@ def linked_accs(request, request_username):
 
 #retrieves the list of friend requests    
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_incoming_friend_requests(request):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
@@ -93,28 +192,37 @@ def get_incoming_friend_requests(request):
     friend_requests = FriendRequest.objects.filter(to_user=request.user)
     data = {}
     for fr in friend_requests:
-        data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+        # data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
+        fr_profile = UserProfileInfo.objects.get(owner = fr.from_user)
+        fr_data = [
+            fr.from_user.username,
+            fr_profile.rating,
+            request.build_absolute_uri(fr_profile.profile_image.url),
+            fr.pk
+        ]
+        print(fr_data)
+        data[fr.pk] = fr_data
     return JsonResponse(data)
+    
     
 
 #retrieves the list of friends
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_friends_list(request):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
+    print(request.user)
     friends = get_object_or_404(UserProfileInfo, owner=request.user).friends
     data = {}
-    x = 1
     for f in friends.all():
         user_profile = UserProfileInfo.objects.get(owner = f)
-        f_data = {
-            "username": f.username,
-            "id": f.id,
-            "rating": user_profile.rating,
-            "image url":request.build_absolute_uri(user_profile.profile_image.url), #url of image
-        }
-        data[f"friend {x}"] = f_data
-        x += 1
+        f_data = [
+            f.username,
+            user_profile.rating,
+            request.build_absolute_uri(user_profile.profile_image.url)
+        ]
+        data[f.username] = f_data
 
     #for friend in friends.all():
     #    data[friend.username] = "friend :)"
@@ -131,11 +239,19 @@ def get_friend_count(request):
     return JsonResponse(count, safe=False)
 
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def send_friend_request(request, username):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
     from_user = request.user
     to_user = User.objects.get(username=username)
+
+    #can only send if friend or favorited friend
+    if UserProfileInfo.objects.get(owner=from_user).friends.contains(to_user) or UserProfileInfo.objects.get(owner=to_user).friends.contains(from_user):
+        return JsonResponse({"status":"fail"})
+    if UserProfileInfo.objects.get(owner=from_user).favoritedFriends.contains(to_user) or UserProfileInfo.objects.get(owner=to_user).favoritedFriends.contains(from_user):
+        return JsonResponse({"status":"fail"})
+    
     friend_req, created = FriendRequest.objects.get_or_create(from_user=from_user,to_user=to_user)
     if created:
         return JsonResponse({"status":"success"})
@@ -143,6 +259,9 @@ def send_friend_request(request, username):
         return JsonResponse({"status":"fail"})
 
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def accept_friend_request(request, pk):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
@@ -156,6 +275,9 @@ def accept_friend_request(request, pk):
         return JsonResponse({"status":"fail"})
     
 # @login_required
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def reject_friend_request(request, pk):
     if request.user == AnonymousUser:
         return JsonResponse(status=403, data={"status": "Permission Denied"})
@@ -167,13 +289,17 @@ def reject_friend_request(request, pk):
         return JsonResponse({"status":"fail"})
     
 # @login_required
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def remove_friend(request, request_username):
     curr_user = UserProfileInfo.objects.get(owner=request.user)
     friend = User.objects.get(username=request_username)
     # check if user is a friend of curr_user
-    if User.objects.get(username=request_username) in curr_user.friends.all():
+    if User.objects.get(username=request_username) in curr_user.friends.all() or User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
         curr_user.friends.remove(friend)
-        if User.objects.get(username=request_username) not in curr_user.friends.all():   # successfully removed
+        curr_user.favoritedFriends.remove(friend)
+        if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
             return JsonResponse({"status":"success"})
         else:
             return JsonResponse({"status":"fail"})
