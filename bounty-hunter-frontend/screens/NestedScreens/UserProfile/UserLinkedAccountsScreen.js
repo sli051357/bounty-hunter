@@ -115,7 +115,8 @@ function UserLinkedAccountsScreen() {
 						editPaymentType={editPaymentTypeHandler}
 						saveEdits={saveEditsHandler}
 						isEditing={true}
-						index={index} 
+						index={index}
+						key={value.id} 
 					/>
 				)
 				}
