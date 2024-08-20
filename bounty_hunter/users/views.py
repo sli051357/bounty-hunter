@@ -134,6 +134,14 @@ def get_csrf_token(request):
     token = get_token(request)
     return JsonResponse({'csrfToken': token})
 
+def display_name(request, request_username):
+    request_owner = get_object_or_404(User, username=request_username)
+    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
+    data = {
+        "display_name":user_profile.display_name
+    }
+    return JsonResponse(data=data)
+
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
@@ -303,8 +311,7 @@ def remove_friend(request, request_username):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_account(request):
-    request.user.is_active = False
-    request.user.save()
+    request.user.delete()
     return JsonResponse(data={"status":"success"})
 
 # we need to remake every post request to look like this.
