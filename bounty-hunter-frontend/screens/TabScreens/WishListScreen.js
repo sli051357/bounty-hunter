@@ -56,25 +56,6 @@ function WishlistScreen({ user }) {
 		return () => clearInterval(intervalId);
 	}, [fetchWishlist]);
 
-
-
-	const DUMMY_WISHLIST = [
-		{
-			title: "Lego Set",
-			description:
-				"https://www.lego.com/en-us/product/wildflower-bouquet-10313",
-			price: "55",
-			imagePath:
-				"https://www.lego.com/cdn/cs/set/assets/bltc4a6c2103a34f22e/10313_alt2.png?format=webply&fit=bounds&quality=70&width=800&height=800&dpr=1.5",
-		},
-		{
-			title: "CSE Tutoring (2hr)",
-			description: "Halp",
-			price: "40",
-			imagePath: "",
-		},
-	];
-
 	function isEditingHandler() {
 		setIsEditing((curr) => !curr);
 	}
@@ -120,7 +101,7 @@ function WishlistScreen({ user }) {
 
 			{/* Wishlist Mapping */}
 			<View>
-				{DUMMY_WISHLIST.map((item) => (
+				{/* {DUMMY_WISHLIST.map((item) => (
 					<WishlistCard
 						key={item.title}
 						title={item.title}
@@ -129,10 +110,10 @@ function WishlistScreen({ user }) {
 						imagePath={item.imagePath}
 						editStatus={isEditing}
 					/>
-				))}
+				))} */}
 
 				{Object.entries(userWishlist).map(
-					([title, description, price, username, imageUrl]) => (
+					([title, [name, description, price, username, imageUrl]]) => (
 						<WishlistCard
 							key={title}
 							title={title}
