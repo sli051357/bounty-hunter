@@ -8,9 +8,8 @@ import {
 	View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { addBounty } from "../../../store/bountyList";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import apiService from "../../../api/apiRequest";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
@@ -41,7 +40,21 @@ function CreateBountyScreen() {
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
-	const [tags, setTags] = useState(["Monetary"]);
+	const [tags, setTags] = useState([]);
+
+	async function fetchTagList() {
+		try {
+			const response = await apiService.viewTagsList()
+			console.log(response.tags)
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	useEffect(() => {
+		fetchTagList()
+	}, []) 
+
 
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -187,7 +200,7 @@ function CreateBountyScreen() {
 							<IconButton
 								icon="add-sharp"
 								iconSize={18}
-								onPress={() => console.log("Make tag function")}
+								onPress={() => navigation.navigate("AddTag")}
 								color={GLOBAL_STYLES.colors.orange700}
 							/>
 						</View>

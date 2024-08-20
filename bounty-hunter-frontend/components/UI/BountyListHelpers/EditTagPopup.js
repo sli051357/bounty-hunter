@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { GLOBAL_STYLES } from '../../../constants/styles';
 import Tag from './Tag';
 
 const EditTagPopup = ({ tag, visible, onClose, onSave }) => {

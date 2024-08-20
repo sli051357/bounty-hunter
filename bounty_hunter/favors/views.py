@@ -325,8 +325,27 @@ def favor_detail(request, favor_id):
 
 # view a list of all tags, with preset tags listed before custom tags
 def tag_list(request):
-    curr_user = request.user
-    tags_list = list(Tag.objects.filter(owner__username=curr_user.username).order_by("-tag_type").values())
+    # curr_user = request.user
+    # tags_list = list(Tag.objects.filter(owner__username=curr_user.username).order_by("-tag_type").values())
+    # print(tags_list)
+    # return JsonResponse({"tags": tags_list})
+    tags = Tag.objects.all()
+    tags_list = []
+    for t in tags:
+        t_data = {"emoji": t.emoji, 
+                  "id": t.id, 
+                  "name": t.name, 
+                  "owner": t.owner.username,
+                  "color": t.color,
+                  "created_at": t.created_at,
+                  "updated_at": t.updated_at,
+                  "tag_type": t.tag_type,
+                }
+        tags_list.append(t_data)
+        print("Tag appended; ", t.name)
+
+    print("Tags list end of method: ", tags_list)
+
     return JsonResponse({"tags": tags_list})
 
 # view a specific tag based on id
@@ -422,21 +441,39 @@ def edit_favor(request, favor_id):
 
 # create a new tag
 # @login_required
+# def create_tag(request):
+#     if request.user == AnonymousUser:
+#         return JsonResponse(status=403,data={"status": "Permission Denied"})
+#     if request.method == "POST":
+#         form = TagForm(request.POST)
+#         if form.is_valid():
+#             tag = form.save(commit=False)
+#             tag.owner = request.user
+#             # tag.tag_type = "Custom"
+#             tag.save()
+#             return JsonResponse({"success": True, "tag_id": tag.id})
+#         else:
+#             return JsonResponse({"success": False, "errors": form.errors})
+#     else:
+#         return JsonResponse({"error": "GET method not allowed"}, status=405)
+    
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_tag(request):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    if request.method == "POST":
-        form = TagForm(request.POST)
-        if form.is_valid():
-            tag = form.save(commit=False)
-            tag.owner = request.user
-            # tag.tag_type = "Custom"
-            tag.save()
-            return JsonResponse({"success": True, "tag_id": tag.id})
-        else:
-            return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        return JsonResponse({"error": "GET method not allowed"}, status=405)
+    data = json.loads(request.body)
+    emoji = data.get('emoji', None)
+    print(emoji)
+    owner = get_object_or_404(User,username=(data.get("owner", None)))
+    name = data.get("name", None)
+    color = data.get('color', None)
+    tag_type = data.get('tag_type', None)
+
+    newTag = Tag(emoji=emoji, owner=owner, name=name, color=color, tag_type=tag_type)
+    newTag.save()
+    print(newTag)
+
+    return JsonResponse({"success": True, "favor_id": newTag.id})
 
 # edit a tag 
 # @login_required

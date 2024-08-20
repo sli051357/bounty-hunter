@@ -33,7 +33,7 @@ function FilterModal({ isVisible, onClose, currFilters }) {
 	//console.log(statusFilters)
 
 	const statusList = ["Sent", "Received", "Incomplete", "Completed"];
-	const tagList = ["Travel", "Food", "Friends", "Shopping", "Custom"];
+	const tagList = ["Travel", "Food", "Shopping", "Custom"];
 
 	let content;
 

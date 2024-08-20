@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import { GLOBAL_STYLES } from "../../../constants/styles";
+import { GLOBAL_STYLES } from '../../../constants/styles';
 import EditTagPopup from './EditTagPopup';
 import Tag from './Tag';
 
-const TaggingComponent = () => {
+const AddTagScreen = () => {
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [emojiInput, setEmojiInput] = useState('🍀'); // default emoji
@@ -52,6 +52,9 @@ const TaggingComponent = () => {
             </TouchableOpacity>
             <TouchableOpacity style={[styles.presetTag, { backgroundColor: '#F2B093' }]}>
               <Text style={styles.presetTagText}>🍽️ Dining</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.presetTag, { backgroundColor: '#F2B093' }]}>
+              <Text style={styles.presetTagText}>✈️ Travel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -351,4 +354,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaggingComponent;
+export default AddTagScreen;
