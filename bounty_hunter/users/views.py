@@ -303,8 +303,7 @@ def remove_friend(request, request_username):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_account(request):
-    request.user.is_active = False
-    request.user.save()
+    request.user.delete()
     return JsonResponse(data={"status":"success"})
 
 # we need to remake every post request to look like this.
