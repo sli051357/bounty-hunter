@@ -24,6 +24,17 @@ function LeaderBoardStackScreen() {
 					headerShadowVisible: false,
 				}}
 			/>
+			<LeaderboardStack.Screen
+				name="FriendProfile"
+				component={FriendUserProfile}
+				options={{
+					headerStyle: {
+						backgroundColor: GLOBAL_STYLES.colors.brown300,
+					},
+					title: "",
+					headerShadowVisible: false,
+				}}
+			/>
 		</LeaderboardStack.Navigator>
 	);
 }

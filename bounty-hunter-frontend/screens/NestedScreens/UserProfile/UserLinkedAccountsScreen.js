@@ -10,13 +10,21 @@ import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function UserLinkedAccountsScreen() {
 	const username = useSelector((state) => state.username.username);
-	const [currPayments, setCurrPayments] = useState({});
+	const [currPayments, setCurrPayments] = useState([]);
+	const [newPayment, setNewPayment] = useState({
+		provider: "",
+		account: ""
+	})
+
+
+	//        {"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}
 
 	useFocusEffect(
 		useCallback(() => {
 			const fetchLinks = async () => {
 				try {
-					const response = apiService.getUserLinks(username);
+					const response = await apiService.getUserLinks(username);
+					console.log(response)
 					setCurrPayments(response);
 				} catch (error) {
 					console.log(error);
@@ -26,18 +34,46 @@ function UserLinkedAccountsScreen() {
 		}, [username]),
 	);
 
-	function editUsernameHandler() {}
+	function editPaymentTypeHandler(text, index) {
+		// if (index !== -1) {
+		// 	setCurrPayments((prev) => )
+		// }
+	}
 
-	function deletePaymentHandler() {}
+	function editUsernameHandler(text, index) {}
 
-	function saveEditsHandler() {}
+	function deletePaymentHandler(index) {}
+
+	function saveEditsHandler(index = -1) {}
 
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
 			<View style={styles.page}>
 				<Text style={styles.mainHeader}>Linked Accounts</Text>
-				<ManageLinks />
-				<ManageLinks />
+				{
+					currPayments.map((value, index) => 
+					<ManageLinks
+						username={value.account}
+						paymentName={value.provider}
+						editUsername={editUsernameHandler}
+						deletePayment={deletePaymentHandler}
+						editPaymentType={editPaymentTypeHandler}
+						saveEdits={saveEditsHandler}
+						isEditing={true}
+						index={index} 
+					/>
+				)
+				}
+				<ManageLinks 
+					username={newPayment.account}
+					paymentName={newPayment.provider}
+					editUsername={editUsernameHandler}
+					deletePayment={deletePaymentHandler}
+					editPaymentType={editPaymentTypeHandler}
+					saveEdits={saveEditsHandler}
+					isEditing={false}
+					index={-1}
+				/>
 			</View>
 		</ScrollViewHelper>
 	);

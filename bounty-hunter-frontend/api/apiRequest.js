@@ -80,7 +80,7 @@ const apiService = {
 		const response = await axiosInstance.get(
 			`/users/profiles/${username}/links/`,
 		);
-		return response.data;
+		return response.data.data;
 	},
 
 	// username: "username"
@@ -119,19 +119,21 @@ const apiService = {
 	// username: "username"
 	// data: "link"
 	// returns {"success": True} if successful, {"success": False} if fails
-	addAccountLink: async (username, data) => {
+	addAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/add-link/`,
-			data,
-		);
-		return response.data;
+			data, {
+				headers: { authorization: `Token ${token}` },
+				});
+			return response.data;
 	},
 
-	removeAccountLink: async (username, id, data) => {
+	removeAccountLink: async (username, data) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/remove-link/`,
-			data,
-		);
+			data, {
+			headers: { authorization: `Token ${token}` },
+			});
 		return response.data;
 	},
 

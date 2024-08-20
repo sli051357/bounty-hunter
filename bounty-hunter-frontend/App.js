@@ -27,8 +27,6 @@ import UserProfileStackScreen from "./screens/TabScreens/UserProfileStackScreen"
 import WishListScreen from "./screens/TabScreens/WishListScreen";
 import { persistor, store } from "./store/redux/store";
 
-import { StyleSheet, View } from 'react-native';
-import TaggingComponent from './components/UI/BountyListHelpers/AddTagScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

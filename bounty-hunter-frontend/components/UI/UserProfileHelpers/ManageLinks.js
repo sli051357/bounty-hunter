@@ -8,28 +8,36 @@ function ManageLinks({
 	paymentName,
 	editUsername,
 	deletePayment,
+	editPaymentType,
 	saveEdits,
+	isEditing = false,
+	index
 }) {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>{paymentName}:</Text>
+			<TextInput
+				style={[styles.text, styles.editBox]}
+				placeholder="Payment Provider..."
+				onChangeText={(text) => editPaymentType(text, index)}
+				value={paymentName}
+			/>
 			<TextInput
 				style={[styles.text, styles.editBox]}
 				placeholder="Username..."
-				onChangeText={(text) => editUsername(text)}
+				onChangeText={(text) => editUsername(text, index)}
 				value={username}
 			/>
 			<View style={styles.buttonContainer}>
-				<IconButton
+				{isEditing && <IconButton
 					icon="trash"
 					color={GLOBAL_STYLES.colors.blue300}
-					onPress={() => deletePayment("venmo")}
+					onPress={() => deletePayment(index)}
 					iconSize={28}
-				/>
+				/>}
 				<IconButton
 					icon="checkbox"
 					color={GLOBAL_STYLES.colors.blue300}
-					onPress={saveEdits}
+					onPress={() => saveEdits(index)}
 					iconSize={28}
 				/>
 			</View>

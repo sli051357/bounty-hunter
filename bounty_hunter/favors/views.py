@@ -549,9 +549,21 @@ def apply_transitions(favor):
         favor.deleted = True
     #favor must be complete.
     else:
+        recalculateRating(favor)
         favor.deleted = False
         favor.complete = True
         favor.active=False
+    favor.save()
+
+def recalculateRating(favor):
+    updateValue(favor)
+    favor.assignee.rating += favor.points_value
+    favor.save()
+
+def updateValue(favor):
+    difference = datetime.now().date() - favor.created_at
+    days_passed = int(difference / (1000 * 3600 * 24))
+    favor.points_value = favor.points_value -( days_passed*10)
     favor.save()
 
 

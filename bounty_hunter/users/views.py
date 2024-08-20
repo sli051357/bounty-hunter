@@ -81,7 +81,8 @@ def remove_favorite_friend(request):
         return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"status":"fail"})
-    
+
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -163,13 +164,12 @@ def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
 
-    data = {}
-
+    data = []
     for entry in linked_accs_list:
-        data[str(entry.id)] = [entry.provider_text, entry.account_text]
+        data.append({"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}) 
 
 
-    return JsonResponse(data)
+    return JsonResponse({"data":data})
 
 
 #retrieves the list of friend requests    
@@ -369,28 +369,26 @@ def edit_profile_pic(request, request_username):
         return JsonResponse(status=403, data={"status": "fail"})
 
 
-def add_link(request, request_username):
-    link = request.POST["link"]
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            new_link = LinkedAccounts(owner=request.user, account_text=link)
-            new_link.save()
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
-    else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def add_link(request, request_username):
+    data = json.loads(request.body)
+    provider = data.get("provider")
+    account = data.get("account")
+    new_link = LinkedAccounts(owner=request.user, account_text=account, provider_text = provider)
+    new_link.save()
+    return JsonResponse({"status":"success"})
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def remove_link(request, request_username):
-    id = request.POST["id"]
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            LinkedAccounts.objects.filter(id=id).delete()
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
-    else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
+    data = json.loads(request.body)
+    id = data.get('id')
+    LinkedAccounts.objects.filter(id=id).delete()
+    return JsonResponse({"status":"success"})
     
 
 def register_user(request):
