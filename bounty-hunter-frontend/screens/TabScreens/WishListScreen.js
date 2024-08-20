@@ -68,6 +68,7 @@ function WishlistScreen({ user }) {
 	function addItem() {
 		console.log("item added");
 		setIsAddVisible(false);
+		setRerender((curr) => !curr);
 	}
 
 	function cancelAdd() {

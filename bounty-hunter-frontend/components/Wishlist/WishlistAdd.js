@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
 	Modal,
 	Pressable,
@@ -9,6 +10,9 @@ import {
 	View,
 } from "react-native";
 import { GLOBAL_STYLES } from "../../constants/styles";
+import apiService from "../../api/apiRequest";
+import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
+import { useSelector } from "react-redux";
 
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -25,6 +29,8 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 	const [priceValidRender, setPriceValidRender] = React.useState(priceIsValid);
 
 	const [selectedImage, setSelectedImage] = React.useState(null);
+	const [isUploading, setIsUploading] = useState(false);
+	const username = useSelector((state) => state.username.username);
 
 	const pickImageAsync = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -47,8 +53,10 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 		onChangeNameText("");
 		onChangePriceText("");
 		onChangeLinkText("");
+		removeImage();
 	}
 
+	/////
 	function checkInputs() {
 		nameIsValid = nameText.length > 0;
 		priceIsValid = priceText.length > 0;
@@ -56,8 +64,35 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 		setPriceValidRender(priceIsValid);
 		if (nameIsValid === true && priceIsValid === true) {
 			clearInputs();
+			createItem();
 			onYes();
 		}
+	}
+
+	async function createItem() {
+		setIsUploading(true);
+		try {
+			const newItem = {
+				title: nameText,
+				description: linkText,
+				price: priceText,
+				photo: selectedImage,
+				owner: username,
+				deleted: false,
+			};
+			const response = await apiService.addWishlistItem(JSON.stringify(newItem));
+			console.log(response);
+		} catch (error) {
+			console.log(error);
+		}
+		setIsUploading(false);
+	}
+
+	if (isUploading) {
+		<LoadingOverlay
+			message="Inputting data..."
+			backgroundColor={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+		/>
 	}
 
 	function cancelAdd() {

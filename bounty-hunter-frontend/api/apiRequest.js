@@ -413,10 +413,14 @@ const apiService = {
 	// data: {"title": "item title", "price": "##", "url": "link", "photo": image field (upload_to='res/'), "owner": pick from user objects}
 	// returns {'form': data dictionary ^}, {'status': 'success', 'item_id': item.id}
 	addWishlistItem: async (data) => {
-		try {
-			const response = await axiosInstance.post("/wishlist/add/", data);
-			return response.data;
-		} catch (error) {}
+		const response = await axiosInstance.post(
+			`/wishlist/add/`, data,
+		);
+		return response.data;
+		// try {
+		// 	const response = await axiosInstance.post("/wishlist/add/", data);
+		// 	return response.data;
+		// } catch (error) {}
 	},
 
 	// id: id of item to remove

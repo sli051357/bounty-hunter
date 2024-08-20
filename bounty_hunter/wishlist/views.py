@@ -1,4 +1,5 @@
 import json
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views import View
@@ -66,8 +67,8 @@ def view_wishlist(request):
 
 # add wishlist item
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def add_wishlist_item(request):
     data = json.loads(request.body)
     title = data.get('title', None)
@@ -112,4 +113,6 @@ def remove_wishlist_item(request, wishlist_id):
     #         #return JsonResponse({"status": "fail"})
     # else:
     #     return JsonResponse({"status": "fail"})
+
+# get wishlist pic
 
