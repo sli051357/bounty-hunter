@@ -34,19 +34,25 @@ function UserSettingsScreen() {
 	});
 
 	function toggleEdit() {
-		setIsEditing((curr) => !curr);
+		if (isEditing) {
+			changeUsernameHandler();
+		} else {
+			setIsEditing(true);
+		}
 	}
 
+	function changeStateUsername(text) {
+		setCurrUsername(text);
+	}
 	// Turn into async function with await when API is set up
 	// Check conditions for username
-	async function changeUsernameHandler(text) {
+	async function changeUsernameHandler() {
 		//Check conditions for password, if so pass and error
 		try {
 			// Write Axios api call
-
-			dispatch(setUsername(text));
-			setCurrUsername(text);
-			toggleEdit();
+			// Input backend call for change pasword
+			dispatch(setUsername(currUsername));
+			setIsEditing(false);
 		} catch {
 			Alert.alert("Error in changing username", "Try again later");
 			setCurrUsername(username.username);
@@ -101,7 +107,7 @@ function UserSettingsScreen() {
 					currText={currUsername}
 					isEditing={isEditing}
 					helperText="Username must be between 6-14 charecters."
-					onPressSaveChanges={changeUsernameHandler}
+					onPressSaveChanges={changeStateUsername}
 				/>
 				<View style={[styles.viewSpacing, styles.changePasswordContainer]}>
 					<Text style={styles.changePasswordTitle}>Change Password</Text>

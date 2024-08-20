@@ -22,12 +22,12 @@ function FilterModal({ isVisible, onClose, currFilters }) {
 	const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 	const [isStart, setIsStart] = useState(false);
 
-	const [startDate, setStartDate] = useState(dayjs());
-	const [endDate, setEndDate] = useState(dayjs());
+	const [startDate, setStartDate] = useState(dayjs(currFilters.start_date));
+	const [endDate, setEndDate] = useState(dayjs(currFilters.end_date));
 	const [statusFilters, setStatusFilters] = useState(currFilters.status);
 	const [startPrice, setStartPrice] = useState(currFilters.price_low);
 	const [endPrice, setEndPrice] = useState(
-		currFilters.price_high === "MAX" ? 1000 : currFilters.price_high,
+		currFilters.price_high === 999999.99 ? 1000 : currFilters.price_high,
 	);
 	const [tags, setTags] = useState(currFilters.tags);
 	//console.log(statusFilters)
@@ -62,10 +62,12 @@ function FilterModal({ isVisible, onClose, currFilters }) {
 
 	function setAllFilters() {
 		onClose({
-			query: "or",
+			query: "and",
 			tags: tags,
 			status: statusFilters,
-			start_date: dayjs(startDate).format("YYYY-MM-DD"),
+			start_date: dayjs(startDate).isBefore(dayjs(endDate))
+				? dayjs(startDate).format("YYYY-MM-DD")
+				: dayjs(endDate).format("YYYY-MM-DD"),
 			end_date: dayjs(endDate).format("YYYY-MM-DD"),
 			price_low: startPrice,
 			price_high: endPrice === 1000 ? 999999.99 : endPrice,

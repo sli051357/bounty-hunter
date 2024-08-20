@@ -33,11 +33,11 @@ function ChangeContent({
 					titleColor={GLOBAL_STYLES.colors.orange700}
 					icon="checkmark-circle-sharp"
 					iconColor={GLOBAL_STYLES.colors.orange700}
-					onPress={onPressToggleEdit}
+					onPress={onPressSaveChanges}
 				/>
 				<TextInput
 					style={[styles.text, styles.editBox]}
-					onChangeText={(text) => onPressSaveChanges(text)}
+					onChangeText={(text) => onPressToggleEdit(text)}
 					value={currText}
 					multiline={true}
 					maxLength={175}
