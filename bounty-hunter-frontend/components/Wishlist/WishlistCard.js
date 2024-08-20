@@ -48,7 +48,7 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
 				</View>
 
 				<View style={{ marginLeft: 15 }}>
-					<WishlistImage selectedImage={imagePath} />
+					<WishlistImage selectedImage={{imagePath}} />
 				</View>
 			</View>
 

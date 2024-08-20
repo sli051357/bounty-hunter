@@ -24,17 +24,30 @@ from rest_framework.permissions import IsAuthenticated
 def view_wishlist(request):
     curr_user = request.user
     wishlist_items = Wishlist.objects.filter(owner=curr_user)
-    full_wishlist = []
+    data = {}
     for i in wishlist_items:
-        i_data = {
-            "title": i.title,
-            "price": i.price,
-            "description": i.description,
-            "photo": i.photo,
-            "owner": i.owner.username
-        }
-        full_wishlist.append(i_data)
-    return JsonResponse({"wishlist": full_wishlist})
+        i_data = [
+            i.title,
+            i.description,
+            i.price,
+            i.owner.username,
+            request.build_absolute_uri(i.photo.url)
+        ]
+        data[i.title] = i_data
+    print(data)
+    return JsonResponse(data)
+
+    # full_wishlist = []
+    # for i in wishlist_items:
+    #     i_data = {
+    #         "title": i.title,
+    #         "price": i.price,
+    #         "description": i.description,
+    #         "photo": request.build_absolute_uri(i.photo.url),
+    #         "owner": i.owner.username
+    #     }
+    #     full_wishlist.append(i_data)
+    # return JsonResponse({"wishlist": full_wishlist})
 
 # class AddWishlistItemView(View):
 #     def get(self, request):

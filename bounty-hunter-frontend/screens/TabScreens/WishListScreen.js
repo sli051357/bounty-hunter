@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
 	Image,
 	Pressable,
@@ -7,6 +7,9 @@ import {
 	Text,
 	View,
 } from "react-native";
+
+import { useSelector } from "react-redux";
+import apiService from "../../api/apiRequest";
 
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { GLOBAL_STYLES } from "../../constants/styles";
@@ -17,8 +20,43 @@ import WishlistCard from "../../components/Wishlist/WishlistCard.js";
 import WishlistDelete from "../../components/Wishlist/WishlistDelete.js";
 
 function WishlistScreen({ user }) {
+	const authToken = useSelector((state) => state.authToken.authToken);
+
+	const [userWishlist, setUserWishlist] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState(null);
+
 	const [isEditing, setIsEditing] = useState(false);
 	const [isAddVisible, setIsAddVisible] = useState(false);
+
+	const fetchWishlist = useCallback(async () => {
+		setError(null);
+		setIsLoading(true);
+
+		try {
+			const response = await apiService.viewWishlist(authToken);
+			if (!response) {
+				throw new Error("Undefined Information");
+			}
+			console.log(response);
+			setUserWishlist(response);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data: ", error);
+			setError("Failed to fetch wishlist. Please try again.");
+			setIsLoading(false);
+		}
+	}, [authToken]);
+	
+
+	useEffect(() => {
+		fetchWishlist();
+		
+		const intervalId = setInterval(() => fetchWishlist(), 120000);
+		return () => clearInterval(intervalId);
+	}, [fetchWishlist]);
+
+
 
 	const DUMMY_WISHLIST = [
 		{
@@ -92,6 +130,19 @@ function WishlistScreen({ user }) {
 						editStatus={isEditing}
 					/>
 				))}
+
+				{Object.entries(userWishlist).map(
+					([title, description, price, username, imageUrl]) => (
+						<WishlistCard
+							key={title}
+							title={title}
+							description={description}
+							price={price}
+							imagePath={imageUrl}
+							editStatus={isEditing}
+						/>
+					)
+				)}
 			</View>
 
 			{/* Add Button */}

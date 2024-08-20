@@ -395,12 +395,19 @@ const apiService = {
 		} catch (error) {}
 	},
 
+	// getFriendRequests: async (token) => {
+	// 	const response = await axiosInstance.get("/users/get-friend-requests/", {
+	// 		headers: { authorization: `Token ${token}` },
+	// 	});
+	// 	return response.data;
+	// },
+
 	// returns list of all wishlist objects
-	viewWishlist: async () => {
-		try {
-			const response = await axiosInstance.get("/wishlist/");
-			return response.data;
-		} catch (error) {}
+	viewWishlist: async (token) => {
+		const response = await axiosInstance.get("/wishlist/", {
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
 	},
 
 	// data: {"title": "item title", "price": "##", "url": "link", "photo": image field (upload_to='res/'), "owner": pick from user objects}
