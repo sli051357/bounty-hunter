@@ -12,4 +12,4 @@ class FavorForm(forms.ModelForm):
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
-        fields = ['name', 'color', 'tag_type']
+        fields = ['emoji', 'name', 'color']

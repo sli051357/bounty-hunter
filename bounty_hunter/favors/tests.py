@@ -255,75 +255,75 @@
 #             tag.pop('updated_at', None)
 #         return favor
 
-#     # # test for AND
-#     # def test_and_query(self):
-#     #     self.maxDiff = None
-#     #     self.client.login(username='user1', password='password123?')
-#     #     url = reverse('favor_list') + f'?query=and&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
-#     #     response = self.client.get(url)
-#     #     output = response.json()
-#     #     expected_tags = list(self.favor3.tags.all().values())
-#     #     expected_f_data = {"name": "Fav3", 
-#     #               "id": self.favor3.id, 
-#     #               "description": self.favor3.description, 
-#     #               "owner": self.favor3.owner.username,
-#     #               "assignee": self.favor3.assignee.username,
-#     #               "created_at": self.favor3.created_at,
-#     #               "updated_at": self.favor3.updated_at,
-#     #               "total_owed_type": self.favor3.total_owed_type,
-#     #               "total_owed_amt": self.favor3.total_owed_amt,
-#     #               "total_owed_wishlist": self.favor3.total_owed_wishlist,
-#     #               "privacy": self.favor3.privacy,
-#     #               "owner_status": self.favor3.owner_status,
-#     #               "assignee_status": self.favor3.assignee_status,
-#     #               "is_active": self.favor3.active, #only show active in frontend
-#     #               "is_deleted": self.favor3.deleted,
-#     #               "is_completed": self.favor3.completed,
-#     #               "tags": expected_tags,}
-#     #     expected = {"favors": [expected_f_data]}
-#     #     # print("assignee1 id: ", self.user_assignee1.id)
-#     #     # print("tag3 id: ", self.tag3.id)
-#     #     # Remove timestamps in output and expected data
-#     #     if output['favors']:
-#     #         output['favors'][0] = self.remove_timestamps(output['favors'][0])
-#     #     expected['favors'][0] = self.remove_timestamps(expected['favors'][0])
-#     #     self.assertEqual(output, expected)
+#     # test for AND
+#     def test_and_query(self):
+#         self.maxDiff = None
+#         self.client.login(username='user1', password='password123?')
+#         url = reverse('favor_list') + f'?query=and&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
+#         response = self.client.get(url)
+#         output = response.json()
+#         expected_tags = list(self.favor3.tags.all().values())
+#         expected_f_data = {"name": "Fav3", 
+#                   "id": self.favor3.id, 
+#                   "description": self.favor3.description, 
+#                   "owner": self.favor3.owner.username,
+#                   "assignee": self.favor3.assignee.username,
+#                   "created_at": self.favor3.created_at,
+#                   "updated_at": self.favor3.updated_at,
+#                   "total_owed_type": self.favor3.total_owed_type,
+#                   "total_owed_amt": self.favor3.total_owed_amt,
+#                   "total_owed_wishlist": self.favor3.total_owed_wishlist,
+#                   "privacy": self.favor3.privacy,
+#                   "owner_status": self.favor3.owner_status,
+#                   "assignee_status": self.favor3.assignee_status,
+#                   "is_active": self.favor3.active, #only show active in frontend
+#                   "is_deleted": self.favor3.deleted,
+#                   "is_completed": self.favor3.completed,
+#                   "tags": expected_tags,}
+#         expected = {"favors": [expected_f_data]}
+#         # print("assignee1 id: ", self.user_assignee1.id)
+#         # print("tag3 id: ", self.tag3.id)
+#         # Remove timestamps in output and expected data
+#         if output['favors']:
+#             output['favors'][0] = self.remove_timestamps(output['favors'][0])
+#         expected['favors'][0] = self.remove_timestamps(expected['favors'][0])
+#         self.assertEqual(output, expected)
 
-#     # # test for OR
-#     # def test_or_query(self):
-#     #     self.maxDiff = None
-#     #     self.client.login(username='user1', password='password123?')
-#     #     url = reverse('favor_list') + f'?query=or&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
-#     #     response = self.client.get(url)
-#     #     output = response.json()
-#     #     expected_f_data = []
-#     #     for f in list([self.favor1, self.favor3, self.favor4]):
-#     #         expected_tags = list(f.tags.all().values())
-#     #         individual = {"name": f.name, 
-#     #                 "id": f.id, 
-#     #                 "description": f.description, 
-#     #                 "owner": f.owner.username,
-#     #                 "assignee": f.assignee.username,
-#     #                 "created_at": f.created_at,
-#     #                 "updated_at": f.updated_at,
-#     #                 "total_owed_type": f.total_owed_type,
-#     #                 "total_owed_amt": f.total_owed_amt,
-#     #                 "total_owed_wishlist": f.total_owed_wishlist,
-#     #                 "privacy": f.privacy,
-#     #                 "owner_status": f.owner_status,
-#     #                 "assignee_status": f.assignee_status,
-#     #                 "is_active": f.active, 
-#     #                 "is_deleted": f.deleted,
-#     #                 "is_completed": f.completed,
-#     #                 "tags": expected_tags,}
-#     #         expected_f_data.append(individual)
-#     #     expected = {"favors": expected_f_data}
-#     #     #print("assignee1 id: ", self.user_assignee1.id)
-#     #     #print("tag3 id: ", self.tag3.id)
-#     #     # Remove timestamps in output and expected data
-#     #     output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
-#     #     expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
-#     #     self.assertEqual(output, expected)
+#     # test for OR
+#     def test_or_query(self):
+#         self.maxDiff = None
+#         self.client.login(username='user1', password='password123?')
+#         url = reverse('favor_list') + f'?query=or&assignee={self.user_assignee1.id}&tag={self.tag3.id}'
+#         response = self.client.get(url)
+#         output = response.json()
+#         expected_f_data = []
+#         for f in list([self.favor1, self.favor3, self.favor4]):
+#             expected_tags = list(f.tags.all().values())
+#             individual = {"name": f.name, 
+#                     "id": f.id, 
+#                     "description": f.description, 
+#                     "owner": f.owner.username,
+#                     "assignee": f.assignee.username,
+#                     "created_at": f.created_at,
+#                     "updated_at": f.updated_at,
+#                     "total_owed_type": f.total_owed_type,
+#                     "total_owed_amt": f.total_owed_amt,
+#                     "total_owed_wishlist": f.total_owed_wishlist,
+#                     "privacy": f.privacy,
+#                     "owner_status": f.owner_status,
+#                     "assignee_status": f.assignee_status,
+#                     "is_active": f.active, 
+#                     "is_deleted": f.deleted,
+#                     "is_completed": f.completed,
+#                     "tags": expected_tags,}
+#             expected_f_data.append(individual)
+#         expected = {"favors": expected_f_data}
+#         print("assignee1 id: ", self.user_assignee1.id)
+#         print("tag3 id: ", self.tag3.id)
+#         # Remove timestamps in output and expected data
+#         output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
+#         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
+#         self.assertEqual(output, expected)
         
 #     # test sort 
 #     def test_filter_sort(self):
@@ -427,17 +427,17 @@
 #         # Remove timestamps in output and expected data
 #         output['favors'] = [self.remove_timestamps(favor) for favor in output['favors']]
 #         expected['favors'] = [self.remove_timestamps(favor) for favor in expected['favors']]
-#         #print("EXPECTED: ", expected)
-#         #print("OUTPUT: ", output)
+#         print("EXPECTED: ", expected)
+#         print("OUTPUT: ", output)
 #         self.assertEqual(output, expected)
     
-#     #def test_test(self):
-#     #    self.maxDiff = None
-#     #    self.client.login(username='user1', password='password123?')
-#     #    url = reverse('favor_list') + f'?price_low=&price_high=&sort_by='
-#     #    response = self.client.get(url)
-#     #    output = response.json()
-#     #    print(output)
+#     def test_test(self):
+#        self.maxDiff = None
+#        self.client.login(username='user1', password='password123?')
+#        url = reverse('favor_list') + f'?price_low=&price_high=&sort_by='
+#        response = self.client.get(url)
+#        output = response.json()
+#        print(output)
         
 # class CreateFavorTestCase(TestCase): # test create favor 
 
@@ -558,7 +558,7 @@
 #         self.user_assignee = User.objects.create_user(username='assignee1', password='password123!')
 #         self.client.login(username='user1', password='password123!')
 
-#     def test_valid_create_favor(self):
+#     def test_valid_create_tag(self):
 #         t_data = {"name": "Travel", 
 #                     "color": "#11ab45", 
 #                     "owner": self.user_owner.id,
@@ -575,7 +575,7 @@
 #         self.assertEqual(tag.color, "#11ab45")
 #         self.assertEqual(tag.tag_type, "Custom")
 
-#     def test_invalid_create_favor(self):
+#     def test_invalid_create_tag(self):
 #         t_data = {"name": "Travel", 
 #                     "color": "#ZXY", 
 #                     "owner": self.user_owner.id,
@@ -587,7 +587,7 @@
 #         self.assertEqual(response.status_code, 200)
 #         self.assertFalse(output['status'])
 
-#     def test_create_favor_get(self):
+#     def test_create_tag_get(self):
 #         url = reverse('create_tag')
 #         response = self.client.get(url)
 #         output = response.json()

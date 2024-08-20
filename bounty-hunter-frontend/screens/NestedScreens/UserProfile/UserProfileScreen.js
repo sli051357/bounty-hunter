@@ -25,12 +25,10 @@ import ProfileImage from "../../../components/UI/UserProfileHelpers/ProfileImage
 import ProfileModal from "../../../components/UI/UserProfileHelpers/ProfileModal.js";
 
 import { Feather } from "@expo/vector-icons";
+import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
 import { GLOBAL_STYLES } from "../../../constants/styles.js";
-import {
-	DUMMY_FAVORS_OF_PROFILE,
-	DUMMY_USER_PROFILE,
-} from "../../../util/dummy-data.js";
+import { DUMMY_USER_PROFILE } from "../../../util/dummy-data.js";
 
 /*
     Implementation Details
@@ -61,18 +59,17 @@ import {
 function UserProfileScreen() {
 	// set authorization token here
 	const authToken = useSelector((state) => state.authToken);
-	//apiService.setAuthorizationHeader(authToken.authToken);
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
-	const payments = useSelector((state) => state.paymentMethods.paymentMethods);
+	const [paymentMethod, setPaymentMethod] = useState({});
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [rating, setRating] = useState("");
 	const [friendCount, setFriendCount] = useState("");
-	const dispatch = useDispatch();
+	const [recentBounties, setRecentBounties] = useState([]);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -92,11 +89,31 @@ function UserProfileScreen() {
 
 					//reload the payment method storage
 					const response2 = await apiService.getUserLinks(username.username);
-					dispatch(setPaymentMethod(response2));
+					console.log(response2);
+					setPaymentMethod(response2);
 
 					const response3 = await apiService.getUserPic(username.username);
 					setImageUrl(response3.url);
 					console.log(imageUrl);
+
+					const responseBounties = await apiService.viewBountyList(
+						{
+							query: "and",
+							tags: [],
+							status: ["Sent"],
+							start_date: dayjs().format("YYYY-MM-DD"),
+							end_date: dayjs().subtract(31, "day").format("YYYY-MM-DD"),
+							price_low: 0,
+							price_high: 999999.99,
+						},
+						{
+							sort_by: "date",
+							order: "descending",
+						},
+						"",
+						authToken.authToken,
+					);
+					setRecentBounties(responseBounties.favors);
 				} catch (error) {
 					console.log(error);
 				} finally {
@@ -105,7 +122,7 @@ function UserProfileScreen() {
 			};
 
 			fetchProfile();
-		}, [username.username, dispatch, imageUrl]),
+		}, [username.username, imageUrl, authToken.authToken]),
 	);
 
 	if (loading) {
@@ -157,21 +174,19 @@ function UserProfileScreen() {
 		);
 	}
 
-	const paymentMethodSection = <Text>Payments</Text>;
+	let paymentMethodSection = (
+		<EditPaymentMethods isEditing={isEditing} userData={paymentMethod} />
+	);
 
-	// let paymentMethodSection = (
-	// 	<EditPaymentMethods isEditing={isEditing} userData={payments} />
-	// );
-
-	// if (isEditing) {
-	// 	paymentMethodSection = (
-	// 		<EditPaymentMethods
-	// 			managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
-	// 			isEditing={isEditing}
-	// 			userData={payments}
-	// 		/>
-	// 	);
-	// }
+	if (isEditing) {
+		paymentMethodSection = (
+			<EditPaymentMethods
+				managePaymentsPage={() => navigation.navigate("LinkedAccounts")}
+				isEditing={isEditing}
+				userData={paymentMethod}
+			/>
+		);
+	}
 
 	function openPfpModal() {
 		setIsPfpModalVisible(true);
@@ -192,19 +207,26 @@ function UserProfileScreen() {
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,
-			base64:true,
+			base64: true,
 		});
 
 		if (!result.canceled) {
-			data = {"new_pic":result.assets[0].base64, "filename": result.assets[0].fileName};
-			response = await apiService.updateUserProfilePic(username.username, data, authToken.authToken);
-			if (response.status === "success"){
+			data = {
+				new_pic: result.assets[0].base64,
+				filename: result.assets[0].fileName,
+			};
+			response = await apiService.updateUserProfilePic(
+				username.username,
+				data,
+				authToken.authToken,
+			);
+			if (response.status === "success") {
 				setImageUrl(result.assets[0].uri);
 				setIsPfpModalVisible(false);
 			} else {
 				console.log("failed.");
 			}
-		} 
+		}
 	};
 
 	return (
@@ -307,7 +329,7 @@ function UserProfileScreen() {
 				{paymentMethodSection}
 				<View style={styles.recentBountiesStyles}>
 					<Text style={styles.subtitle}>Recent Bounties: </Text>
-					{DUMMY_FAVORS_OF_PROFILE.map((favor) => (
+					{recentBounties.map((favor) => (
 						<FavorCard
 							key={favor.description}
 							favor={favor}

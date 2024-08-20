@@ -94,16 +94,19 @@ function CreateBountyScreen() {
 		try {
 			// ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
 			// Will Set up Axios Sign Up later
+			console.log(favorDetails.paymentOwed);
 			const favor = {
 				assignee: favorDetails.assigneeId, // Same with Id
 				owner: username,
 				name: favorDetails.favorName,
 				tags: { tags: tags },
 				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
-				total_owed_amt: favorDetails.paymentOwed,
+				total_owed_amt: isMonetaryStatus ? favorDetails.paymentOwed : 0,
+				total_owed_wishlist: isMonetaryStatus ? "" : favorDetails.paymentOwed,
 				description: favorDetails.description,
 				privacy: favorDetails.privacyStatus ? "Public" : "Private",
 			};
+			console.log(favor.total_owed_wishlist);
 			const response = await apiService.createBounty(
 				JSON.stringify(favor),
 				authToken,
