@@ -10,6 +10,7 @@ import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function UserLinkedAccountsScreen() {
 	const username = useSelector((state) => state.username.username);
+	const authToken = useSelector((state) => state.authToken.authToken)
 	const [currPayments, setCurrPayments] = useState([]);
 	const [newPayment, setNewPayment] = useState({
 		provider: "",
@@ -17,34 +18,88 @@ function UserLinkedAccountsScreen() {
 	})
 
 
-	//        {"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}
+	//  {"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}
+
+	const fetchLinks = async () => {
+		try {
+			const response = await apiService.getUserLinks(username);
+			console.log(response)
+			setCurrPayments(response);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	useFocusEffect(
 		useCallback(() => {
-			const fetchLinks = async () => {
-				try {
-					const response = await apiService.getUserLinks(username);
-					console.log(response)
-					setCurrPayments(response);
-				} catch (error) {
-					console.log(error);
-				}
-			};
 			fetchLinks();
 		}, [username]),
 	);
 
 	function editPaymentTypeHandler(text, index) {
-		// if (index !== -1) {
-		// 	setCurrPayments((prev) => )
-		// }
+		if (index !== -1) {
+			setCurrPayments((prev) => [
+				...prev.slice(0, index),
+				{ ...prev[index], provider: text },
+				...prev.slice(index+1)
+			])
+		}else {
+			setNewPayment((prev) => ({
+				...prev,
+				provider: text
+			}))
+		}
 	}
 
-	function editUsernameHandler(text, index) {}
+	function editUsernameHandler(text, index) {
+		if (index !== -1) {
+			setCurrPayments((prev) => [
+				...prev.slice(0, index),
+				{ ...prev[index], account: text },
+				...prev.slice(index+1)
+			])
+		}else {
+			setNewPayment((prev) => ({
+				...prev,
+				account: text
+			}))
+		}
+	}
 
-	function deletePaymentHandler(index) {}
+	async function deletePaymentHandler(index) {
+		try {
+			const response = await apiService.removeAccountLink(username, currPayments[index], authToken)
+			console.log(response)
+			fetchLinks()
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
-	function saveEditsHandler(index = -1) {}
+	async function saveEditsHandler(index) {
+		if (index !== -1) {
+			try {
+				const responseDelete = await apiService.removeAccountLink(username, currPayments[index], authToken)
+				const responseAdd = await apiService.addAccountLink(username, currPayments[index], authToken)
+				console.log(responseAdd)
+				fetchLinks()
+			} catch (error) {
+				console.log(error)
+			}
+		} else {
+			try {
+				const responseAdd = await apiService.addAccountLink(username, newPayment, authToken)
+				setNewPayment({
+					provider: "",
+					account: ""
+				})
+				console.log(responseAdd)
+				fetchLinks()
+			} catch (error) {
+				console.log(error)
+			}
+		}
+	}
 
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>

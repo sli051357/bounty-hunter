@@ -128,7 +128,7 @@ const apiService = {
 			return response.data;
 	},
 
-	removeAccountLink: async (username, data) => {
+	removeAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/remove-link/`,
 			data, {
