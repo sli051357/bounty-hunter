@@ -8,6 +8,7 @@ def create_new_ref_number():
 
 #model for storing bio and profile image. Each user has only one owner.
 class UserProfileInfo(models.Model):
+    display_name = models.CharField(max_length=200,blank=True)
     friends = models.ManyToManyField(User, related_name='friends',blank=True)
     favoritedFriends = models.ManyToManyField(User, related_name='favorited_friends',blank=True)
     bio_text = models.CharField(max_length=200)
@@ -22,7 +23,11 @@ class UserProfileInfo(models.Model):
     public_status = models.BooleanField(default=True)
     rating = models.IntegerField(default=0)
 
-    
+    def save(self, *args, **kwargs):
+        # Set the display_name to the owner's username if it's not provided
+        if not self.display_name:
+            self.display_name = self.owner.username
+        super(UserProfileInfo, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.owner.username
