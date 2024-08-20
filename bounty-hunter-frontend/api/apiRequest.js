@@ -421,11 +421,12 @@ const apiService = {
 
 	// id: id of item to remove
 	// returns {'status': 'success', 'item_id': pk}
-	removeWishlistItem: async (id) => {
-		try {
-			const response = await axiosInstance.post(`/wishlist/remove/${id}`);
-			return response.data;
-		} catch (error) {}
+	removeWishlistItem: async (id, token) => {
+		const response = await axiosInstance.post(
+			`/wishlist/remove/${id}/`,
+			{ headers: { authorization: `Token ${token}` } },
+		);
+		return response.data;
 	},
 };
 

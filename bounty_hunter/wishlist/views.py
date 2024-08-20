@@ -24,6 +24,7 @@ from rest_framework.permissions import IsAuthenticated
 def view_wishlist(request):
     curr_user = request.user
     wishlist_items = Wishlist.objects.filter(owner=curr_user)
+    wishlist_items = wishlist_items.filter(deleted=False)
     data = {}
     for i in wishlist_items:
         i_data = [
@@ -31,7 +32,8 @@ def view_wishlist(request):
             i.description,
             i.price,
             i.owner.username,
-            request.build_absolute_uri(i.photo.url)
+            request.build_absolute_uri(i.photo.url),
+            i.pk,
         ]
         data[i.title] = i_data
     print(data)
@@ -74,7 +76,7 @@ def add_wishlist_item(request):
     price = data.get("price", None)
     photo = data.get("photo", None)
 
-    newWishlistItem = Wishlist(title=title, price=price, description=description, photo=photo, owner=owner)
+    newWishlistItem = Wishlist(title=title, price=price, description=description, photo=photo, owner=owner, deleted=False)
     newWishlistItem.save()
     
     return JsonResponse({"success": True, "wishlist_item_id": newWishlistItem.id})
@@ -87,9 +89,27 @@ def add_wishlist_item(request):
 
 # remove wishlist item
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def remove_wishlist_item(request, wishlist_id):
-    wishlist_item = get_object_or_404(Wishlist, pk=wishlist_id)
-    wishlist_item.delete()
-    return JsonResponse({"status": "success"})
+    curr_user = request.user
+    wishlist_item = get_object_or_404(Wishlist, id=wishlist_id)
+    #if wishlist_item in Wishlist.objects.all():
+    wishlist_item.deleted=True
+    wishlist_item.save()
+    wishlist_item.refresh_from_db()
+    if wishlist_item.deleted:
+        return JsonResponse({"status":"success"})
+    else:
+        return JsonResponse({"status":"fail"})
+    #else:
+        #return JsonResponse({"status":"fail"})
+    # if wishlist_item in Wishlist.objects.filter(owner__username=curr_user.username):
+    #     wishlist_item.delete()
+    #     #if wishlist_item not in Wishlist.objects.all():
+    #     return JsonResponse({"status": "success"})
+    #     #else:
+    #         #return JsonResponse({"status": "fail"})
+    # else:
+    #     return JsonResponse({"status": "fail"})
+
