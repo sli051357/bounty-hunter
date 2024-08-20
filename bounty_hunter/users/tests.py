@@ -1,19 +1,42 @@
 
-# from django.test import TestCase, Client
-# from django.urls import reverse
-# from django.contrib.auth.models import User
-# from .models import FriendRequest, UserProfileInfo
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth.models import User
+from .models import FriendRequest, UserProfileInfo
 
-# class FriendRequestTestCase(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.user1 = User.objects.create_user(username='user1', password='password')
-#         self.user2 = User.objects.create_user(username='user2', password='password')
-#         self.user3 = User.objects.create_user(username='user3', password='password')
-#         self.profile1 = UserProfileInfo.objects.create(owner=self.user1)
-#         self.profile2 = UserProfileInfo.objects.create(owner=self.user2)
-#         self.profile3 = UserProfileInfo.objects.create(owner=self.user3)
-#         self.client.login(username='user1', password='password')
+
+class DisplayNameTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(username='user1', password='password')
+        self.profile1 = UserProfileInfo.objects.create(owner=self.user1, display_name="User One")
+        self.client.login(username='user1', password='password')
+
+    def test_display_name(self):
+        # Test display name retrieval
+        response = self.client.get(reverse('display_name', args=[self.user1.username]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"display_name": "User One"})
+
+    def test_display_name_default(self):
+        # Test default display name when it is not set
+        user2 = User.objects.create_user(username='user2', password='password')
+        UserProfileInfo.objects.create(owner=user2)  # No need to assign the result to a variable
+    
+        response = self.client.get(reverse('display_name', args=[user2.username]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"display_name": "user2"})  # The display name should default to the username if not set
+        
+class FriendRequestTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(username='user1', password='password')
+        self.user2 = User.objects.create_user(username='user2', password='password')
+        self.user3 = User.objects.create_user(username='user3', password='password')
+        self.profile1 = UserProfileInfo.objects.create(owner=self.user1)
+        self.profile2 = UserProfileInfo.objects.create(owner=self.user2)
+        self.profile3 = UserProfileInfo.objects.create(owner=self.user3)
+        self.client.login(username='user1', password='password')
 
 #     def test_get_incoming_friend_requests(self):
 #         FriendRequest.objects.create(from_user=self.user2, to_user=self.user1)
