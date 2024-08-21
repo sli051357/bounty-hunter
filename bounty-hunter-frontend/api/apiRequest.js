@@ -2,6 +2,58 @@ import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 const apiService = {
+	getDisplayName: async (username) => {
+		const response = await axiosInstance.get(
+			`/users/profiles/${username}/display-name/`,
+		);
+		return response.data;
+	},
+
+	changeDisplayName: async (data, token) => {
+		const response = await axiosInstance.post(
+			"/users/profiles/change-display-name/",
+			data,
+			{ headers: { authorization: `Token ${token}` } },
+		);
+		return response.data;
+	},
+
+	addFavoritedFriend: async (data, token) => {
+		const response = await axiosInstance.post(
+			"/users/add-favorited-friend/",
+			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
+		);
+		return response.data;
+	},
+
+	removeFavoritedFriend: async (data, token) => {
+		const response = await axiosInstance.post(
+			"/users/remove-favorited-friend/",
+			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
+		);
+		return response.data;
+	},
+
+	getFavoritedFriends: async (token) => {
+		const response = await axiosInstance.get("/users/get-favorited-friends/", {
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
+	},
+
+	searchUsers: async (query) => {
+		const response = await axiosInstance.get(
+			`/users/profiles/search/?q=${query}`,
+		);
+		return response.data;
+	},
+
 	signUp: async (data) => {
 		const response = await axiosInstance.post("/users/register/", data);
 		return response.data;
@@ -44,7 +96,7 @@ const apiService = {
 		const response = await axiosInstance.get(
 			`/users/profiles/${username}/links/`,
 		);
-		return response.data;
+		return response.data.data;
 	},
 
 	// username: "username"
@@ -83,18 +135,24 @@ const apiService = {
 	// username: "username"
 	// data: "link"
 	// returns {"success": True} if successful, {"success": False} if fails
-	addAccountLink: async (username, data) => {
+	addAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/add-link/`,
 			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
 		);
 		return response.data;
 	},
 
-	removeAccountLink: async (username, id, data) => {
+	removeAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/remove-link/`,
 			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
 		);
 		return response.data;
 	},
@@ -138,13 +196,6 @@ const apiService = {
 		return response.data;
 	},
 
-	editBounty: async (id, data, token) => {
-		const response = await axiosInstance.post(`/favors/${id}/edit/`, data, {
-			headers: { authorization: `Token ${token}` },
-		});
-		return response.data;
-	},
-
 	// filterParams: { query: 'and'/'or', owner: user.id, assignee: friend.id, tag: tag.id, status: 'sent'/'received'/'incomplete'/'complete',
 	// start_date: 2024-01-30, end_date: 2024-02-30, price_low: 5.00, price_high: 10.50 } if none, leave blank ''
 	// sortParams: { sort_by: 'name'/'date'/'amount'/'assignee', order: 'ascending'/'descending' } if none, leave blank ''
@@ -163,15 +214,6 @@ const apiService = {
 		return response.data;
 	},
 
-	changeBountyStatus: async (id, data, token) => {
-		const response = await axiosInstance.post(
-			`/favors/${id}/change-status/`,
-			data,
-			{ headers: { authorization: `Token ${token}` } },
-		);
-		return response.data;
-	},
-
 	// id:id # of bounty you want to see
 	// returns {"name": favor.name, "id": favor.id, "description": favor.description, "owner": {"id": favor.owner.id, "email": favor.owner.email, "username": favor.owner.username},
 	// "assignee": {"id": favor.assignee.id, "email": favor.assignee.email, "username": favor.assignee.username}, "created_at": favor.created_at, "updated_at": favor.updated_at,
@@ -184,50 +226,66 @@ const apiService = {
 
 	// Once logged in, you don't need to pass in the id. This should send back data in the following format:
 	// {"<id of the friend request>": {"from_user": username1, "to_user": username2}, ...}
-	getFriendRequests: async () => {
-		const response = await axiosInstance.get("/users/get-friend-requests/");
+	getFriendRequests: async (token) => {
+		const response = await axiosInstance.get("/users/get-friend-requests/", {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
 	//Same thing here,  dont need to pass id. Sorrya bout the formatting, the response needs to be a dict.
 	//returns {'friend 1': {'username': 'user1', 'id': 0, 'rating': 0, 'image url': 'url'}, 'friend 2': {'username': 'user2', 'id': 1, 'rating': 0, 'image url': 'url'}}
-	getFriendsList: async () => {
-		const response = await axiosInstance.get("/users/get-friends-list/");
+
+	getFriendsList: async (token) => {
+		const response = await axiosInstance.get("/users/get-friends-list/", {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 
 	//username: the username of the friend to request.
 	//returns {"success": True}
-	sendFriendRequest: async (username) => {
+	sendFriendRequest: async (username, token) => {
 		const response = await axiosInstance.get(
 			`/users/send-friend-request/${username}/`,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
 		);
 		return response.data;
 	},
 
 	//requestID: the integer id of the request (make sure to cast to string)
 	//returns {"success": True}
-	acceptFriendRequest: async (requestID) => {
+	acceptFriendRequest: async (requestID, token) => {
+		// const response = await axiosInstance.get(
+		// 	`/users/accept-friend-request/${requestID}/`,
+		// );
+
 		const response = await axiosInstance.get(
 			`/users/accept-friend-request/${requestID}/`,
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
 
 	//requestID: the integer id of the request (make sure to cast to string)
 	//returns {"success": True}
-	rejectFriendRequest: async (requestID) => {
+	rejectFriendRequest: async (requestID, token) => {
 		const response = await axiosInstance.get(
 			`/users/reject-friend-request/${requestID}/`,
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
 
 	// username: "username of friend to remove"
 	// returns {"success": True} if successful, {"success": False} if not
-	removeFriend: async (username) => {
+	removeFriend: async (username, token) => {
 		const response = await axiosInstance.post(
 			`/users/remove-friend/${username}/`,
+			data,
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},

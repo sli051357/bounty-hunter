@@ -11,7 +11,15 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 - imagePath currently proves that you can pass different image paths with the same map, although this might not be necessary if "friend" contains the image file/link itself instead of a hard-coded asset
 */
 
-function FriendRequest({ user, imagePath }) {
+function FriendRequest({
+	id,
+	username,
+	imageUrl,
+	onYes,
+	onNo,
+	requestId,
+	onProfilePress,
+}) {
 	function addRequest() {
 		console.log("friend added");
 	}
@@ -23,12 +31,14 @@ function FriendRequest({ user, imagePath }) {
 	return (
 		<View style={styles.card}>
 			{/* Profile Picture */}
-			<Image style={styles.picture} source={{ uri: imagePath }} />
+			<Pressable onPress={onProfilePress}>
+				<Image style={styles.picture} source={{ uri: imageUrl }} />
+			</Pressable>
 
 			{/* Friend Text */}
 			<View>
-				<Text style={styles.usernameText}>{user.username}</Text>
-				<Text style={styles.userID}>{user.id}</Text>
+				<Text style={styles.usernameText}>{username}</Text>
+				<Text style={styles.userID}>{id}</Text>
 			</View>
 
 			<View style={{ flexDirection: "row", marginLeft: "auto" }}>
@@ -38,7 +48,11 @@ function FriendRequest({ user, imagePath }) {
 						{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
 					]}
 				>
-					<Pressable onPress={addRequest}>
+					<Pressable
+						onPress={() => {
+							onYes(requestId);
+						}}
+					>
 						<FontAwesome
 							name="check"
 							size={20}
@@ -53,7 +67,11 @@ function FriendRequest({ user, imagePath }) {
 						{ backgroundColor: GLOBAL_STYLES.colors.orange300 },
 					]}
 				>
-					<Pressable onPress={deleteRequest}>
+					<Pressable
+						onPress={() => {
+							onNo(requestId);
+						}}
+					>
 						<MaterialIcons
 							name="delete"
 							size={20}

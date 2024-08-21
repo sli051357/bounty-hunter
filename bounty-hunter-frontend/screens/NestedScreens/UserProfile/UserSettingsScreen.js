@@ -1,6 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import {
+	ActivityIndicator,
 	Alert,
 	Image,
 	KeyboardAvoidingView,
@@ -25,19 +26,41 @@ function UserSettingsScreen() {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 	const username = useSelector((state) => state.username);
-	const [currUsername, setCurrUsername] = useState(username.username);
+	const [currUsername, setCurrUsername] = useState("");
 	const [isEditing, setIsEditing] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const authToken = useSelector((state) => state.authToken);
 	const [newPassword, setNewPassword] = useState({
 		"new password": "",
 		"confirm new password": "",
 	});
 
+	useFocusEffect(
+		useCallback(() => {
+			const fetchDisplayName = async () => {
+				try {
+					response = await apiService.getDisplayName(username.username);
+					setCurrUsername(response.displayName);
+				} catch (error) {
+					console.log(error);
+				} finally {
+					setLoading(false);
+				}
+			};
+
+			fetchDisplayName();
+		}, [username.username]),
+	);
+
+	if (loading) {
+		return <ActivityIndicator size="large" color="#0000ff" />;
+	}
+
 	function toggleEdit() {
 		if (isEditing) {
 			changeUsernameHandler();
 		} else {
-			setIsEditing(true);
+			setIsEditing(!isEditing);
 		}
 	}
 
@@ -50,10 +73,16 @@ function UserSettingsScreen() {
 		//Check conditions for password, if so pass and error
 		try {
 			// Write Axios api call
-			// Input backend call for change pasword
-			dispatch(setUsername(currUsername));
+			response = await apiService.changeDisplayName(
+				{ displayName: currUsername },
+				authToken.authToken,
+			);
+			if (response.status !== "success") {
+				throw new Error("Request Failed.");
+			}
 			setIsEditing(false);
-		} catch {
+		} catch (error) {
+			console.log(error);
 			Alert.alert("Error in changing username", "Try again later");
 			setCurrUsername(username.username);
 		}
@@ -103,11 +132,11 @@ function UserSettingsScreen() {
 			<KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
 				<ChangeContent
 					title="Change Username"
-					onPressToggleEdit={toggleEdit}
+					onPressSaveChanges={changeStateUsername}
 					currText={currUsername}
 					isEditing={isEditing}
 					helperText="Username must be between 6-14 charecters."
-					onPressSaveChanges={changeStateUsername}
+					onPressToggleEdit={toggleEdit}
 				/>
 				<View style={[styles.viewSpacing, styles.changePasswordContainer]}>
 					<Text style={styles.changePasswordTitle}>Change Password</Text>

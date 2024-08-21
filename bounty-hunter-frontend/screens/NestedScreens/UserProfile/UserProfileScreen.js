@@ -61,6 +61,7 @@ function UserProfileScreen() {
 	const authToken = useSelector((state) => state.authToken);
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
+	const [displayName, setDisplayName] = useState("");
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
@@ -81,6 +82,9 @@ function UserProfileScreen() {
 
 					const responseHi = await apiService.getRating(username.username);
 					setRating(responseHi.rating);
+
+					const response5 = await apiService.getDisplayName(username.username);
+					setDisplayName(response5.displayName);
 
 					const responseHello = await apiService.getFriendCount(
 						username.username,
@@ -270,10 +274,8 @@ function UserProfileScreen() {
 							)}
 
 							<View>
-								<Text style={styles.usernameStyles}>{username.username}</Text>
-								<Text style={styles.smallTextBrown}>
-									#{DUMMY_USER_PROFILE.ID}
-								</Text>
+								<Text style={styles.usernameStyles}>{displayName}</Text>
+								<Text style={styles.smallTextBrown}>#{username.username}</Text>
 							</View>
 						</View>
 						<View style={styles.editView}>
