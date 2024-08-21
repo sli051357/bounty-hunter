@@ -77,10 +77,11 @@ def add_wishlist_item(request):
     #getting picture
     filename = data.get("filename")
     new_pic_string  = data.get("photo")
-
-    image_data = base64.b64decode(new_pic_string)
-    new_pic =  ContentFile(image_data, name=filename)
-
+    if new_pic_string:
+        image_data = base64.b64decode(new_pic_string)
+        new_pic =  ContentFile(image_data, name=filename)
+    else: 
+        new_pic = Wishlist._meta.get_field('photo').get_default()
 
     title = data.get('title', None)
     description = data.get("description", None)
@@ -103,7 +104,7 @@ def add_wishlist_item(request):
 #@authentication_classes([TokenAuthentication])
 #@permission_classes([IsAuthenticated])
 def remove_wishlist_item(request, wishlist_id):
-    curr_user = request.user
+    #curr_user = request.user
     wishlist_item = get_object_or_404(Wishlist, id=wishlist_id)
     #if wishlist_item in Wishlist.objects.all():
     wishlist_item.deleted=True
@@ -113,16 +114,6 @@ def remove_wishlist_item(request, wishlist_id):
         return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"status":"fail"})
-    #else:
-        #return JsonResponse({"status":"fail"})
-    # if wishlist_item in Wishlist.objects.filter(owner__username=curr_user.username):
-    #     wishlist_item.delete()
-    #     #if wishlist_item not in Wishlist.objects.all():
-    #     return JsonResponse({"status": "success"})
-    #     #else:
-    #         #return JsonResponse({"status": "fail"})
-    # else:
-    #     return JsonResponse({"status": "fail"})
 
 # get wishlist pic
 # write api request

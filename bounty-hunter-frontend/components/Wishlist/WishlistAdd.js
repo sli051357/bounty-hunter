@@ -20,16 +20,19 @@ import WishlistImage from "./WishlistImage";
 
 function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 	const [nameText, onChangeNameText] = React.useState("");
-	const [fileName, setFileName] = React.useState("");
 	const [priceText, onChangePriceText] = React.useState("");
 	const [linkText, onChangeLinkText] = React.useState("");
 
 	let nameIsValid = true;
 	let priceIsValid = true;
+	// let imageIsValid = true;
 	const [nameValidRender, setNameValidRender] = React.useState(nameIsValid);
 	const [priceValidRender, setPriceValidRender] = React.useState(priceIsValid);
+	// const [imageValidRender, setImageValidRender] = React.useState()
 
 	const [selectedImage, setSelectedImage] = React.useState(null);
+	const [base64Name, setBase64Name] = React.useState("");
+	const [fileName, setFileName] = React.useState("");
 	const [isUploading, setIsUploading] = useState(false);
 	const username = useSelector((state) => state.username.username);
 
@@ -42,13 +45,16 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 		});
 
 		if (!result.canceled) {
-			setSelectedImage(result.assets[0].base64);
+			setSelectedImage(result.assets[0].uri);
+			setBase64Name(result.assets[0].base64);
 			setFileName(result.assets[0].fileName);
 		}
 	};
 
 	function removeImage() {
 		setSelectedImage(null);
+		setBase64Name(null);
+		setFileName(null);
 	}
 
 	function clearInputs() {
@@ -81,7 +87,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 				description: linkText,
 				price: priceText,
 				filename: fileName,
-				photo: selectedImage,
+				photo: base64Name,
 				owner: username,
 				deleted: false,
 			};

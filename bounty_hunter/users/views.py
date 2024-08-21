@@ -357,17 +357,21 @@ def edit_profile_pic(request, request_username):
     image_data = base64.b64decode(new_pic_string)
     new_pic =  ContentFile(image_data, name=filename)
 
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            profile = get_object_or_404(UserProfileInfo, owner=request.user)
-            profile.profile_image = new_pic
-            profile.save()
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "fail"})
-    else:
-        return JsonResponse(status=403, data={"status": "fail"})
+    profile = get_object_or_404(UserProfileInfo, owner=request.user)
+    profile.profile_image = new_pic
+    profile.save()
+    return JsonResponse({"status":"success"})
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def remove_profile_pic(request):
+    print(request.user)
+    profile = get_object_or_404(UserProfileInfo, owner=request.user)
+    default_img = profile._meta.get_field('profile_image').get_default()
+    profile.profile_image = default_img    
+    profile.save()
+    return JsonResponse({"status":"success"})
 
 def add_link(request, request_username):
     link = request.POST["link"]

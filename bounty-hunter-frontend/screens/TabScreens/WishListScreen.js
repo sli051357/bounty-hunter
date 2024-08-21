@@ -21,7 +21,6 @@ import WishlistDelete from "../../components/Wishlist/WishlistDelete.js";
 
 function WishlistScreen({ user }) {
 	const authToken = useSelector((state) => state.authToken.authToken);
-	const [rerender, setRerender] = useState(false);
 
 	const [userWishlist, setUserWishlist] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -52,9 +51,9 @@ function WishlistScreen({ user }) {
 	useEffect(() => {
 		fetchWishlist();
 		
-		const intervalId = setInterval(() => fetchWishlist(), 120000);
+		const intervalId = setInterval(() => fetchWishlist(), 60000);
 		return () => clearInterval(intervalId);
-	}, [fetchWishlist, rerender]);
+	}, [fetchWishlist]);
 
 	function isEditingHandler() {
 		setIsEditing((curr) => !curr);
@@ -68,7 +67,8 @@ function WishlistScreen({ user }) {
 	function addItem() {
 		console.log("item added");
 		setIsAddVisible(false);
-		setRerender((curr) => !curr);
+		// setRerender((curr) => !curr);
+		fetchWishlist();
 	}
 
 	function cancelAdd() {
@@ -80,7 +80,7 @@ function WishlistScreen({ user }) {
 		data = itemId.toString();
 		response = await apiService.removeWishlistItem(itemId, authToken);
 		if (response.status === "success") {
-			setRerender((curr) => !curr);
+			fetchWishlist();
 		} else {
 			console.log("failed");
 		}
@@ -126,7 +126,7 @@ function WishlistScreen({ user }) {
 				{Object.entries(userWishlist).map(
 					([title, [name, description, price, username, imageUrl, pk]]) => (
 						<WishlistCard
-							key={title}
+							key={pk}
 							title={title}
 							description={description}
 							price={price}

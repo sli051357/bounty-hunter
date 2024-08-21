@@ -21,8 +21,10 @@ class UserProfileInfo(models.Model):
       ) #add back in editbale = False after debug.
     public_status = models.BooleanField(default=True)
     rating = models.IntegerField(default=0)
+
     def __str__(self):
         return self.owner.username
+
     
 
 #model for storing linked accounts. Many linked accounts may share a single owner.

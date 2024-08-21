@@ -4,10 +4,11 @@ import { GLOBAL_STYLES } from "../../constants/styles";
 import { Feather } from "@expo/vector-icons";
 
 export default function ImageViewer({ selectedImage }) {
+	const imageSource = { uri: selectedImage };
 	let content;
 
 	if (selectedImage) {
-		content = <Image source={{ uri: selectedImage }} style={styles.image} />;
+		content = <Image source={imageSource} style={styles.image} />;
 	} else {
 		content = (
 			<View

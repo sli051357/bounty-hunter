@@ -75,6 +75,16 @@ const apiService = {
 		return response.data;
 	},
 
+	removeUserPic: async (token) => {
+		const response = await axiosInstance.get(
+			`/users/profiles/remove-pfp/`,
+			{ headers: { authorization: `Token ${token}` } }
+		);
+		return response.data;
+	},
+
+	
+
 	//data is a dict of entries: data[str(entry.id)] = [entry.provider_text, entry.account_text]
 	getUserLinks: async (username) => {
 		const response = await axiosInstance.get(
