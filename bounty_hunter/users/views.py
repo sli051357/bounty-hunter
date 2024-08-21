@@ -26,7 +26,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
-BASE_URL = "http://132.249.238.228"
+BASE_URL = "http://132.249.238.228/"
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
