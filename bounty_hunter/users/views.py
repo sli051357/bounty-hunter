@@ -140,9 +140,21 @@ def display_name(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
     data = {
-        "display_name":user_profile.display_name
+        "displayName":user_profile.display_name
     }
     return JsonResponse(data=data)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def set_display_name(request):
+    data = json.loads(request.body)
+    new_display_name = data.get("displayName")
+    profile = get_object_or_404(UserProfileInfo, owner=request.user)
+    profile.display_name = new_display_name
+    profile.save()
+    return JsonResponse({"status":"success"})
 
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
