@@ -31,9 +31,9 @@ function UserLinkedAccountsScreen() {
 	};
 
 	useFocusEffect(
-		useCallback(() => {
+		fetched = useCallback(() => {
 			fetchLinks();
-		}, [username]),
+		}, [fetched]),
 	);
 
 	function editPaymentTypeHandler(text, index) {
