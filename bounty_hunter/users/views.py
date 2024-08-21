@@ -26,10 +26,9 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
-BASE_URL = "http://127.0.0.1:8000/"
+BASE_URL = "http://132.249.238.228"
 
 class CustomAuthToken(ObtainAuthToken):
-
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
