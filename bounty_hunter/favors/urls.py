@@ -10,7 +10,9 @@ urlpatterns = [
     path("create/", views.create_favor, name="create_favor"),
     # edit a favor - ex: /favors/1/edit
     path("<int:favor_id>/edit", views.edit_favor, name="edit_favor"),
-    # view all tags of a certain user - ex: /favors/tags
+    # action history - ex: /history/deleted
+    path("<int:favor_id>/history", views.get_favor_history, name="history"),
+    # view all tags - ex: /favors/tags
     path("tags/", views.tag_list, name="tag_list"),
     # view a specific tag - ex: /favors/tags/3
     path("tags/<int:tag_id>/", views.tag_detail, name="tag_detail"),

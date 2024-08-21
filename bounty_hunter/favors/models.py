@@ -81,6 +81,9 @@ class Favor(models.Model):
     owner_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
     assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
 
+    # action history
+    bounty_edit_history = models.JSONField(default=list, blank=True)
+    
     def save(self, *args, **kwargs):
         # Check if the favor is being marked as complete
         if self.completed and self.total_owed_wishlist:
