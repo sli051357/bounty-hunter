@@ -2,6 +2,23 @@ import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 const apiService = {
+
+	getDisplayName: async (username) => {
+		const response = await axiosInstance.get(
+			`/users/profiles/${username}/display-name/`,
+		);
+		return response.data;
+	},
+
+	changeDisplayName: async (data, token) => {
+		const response = await axiosInstance.post(
+			`/users/profiles/change-display-name/`,
+			data,
+			{headers: { authorization: `Token ${token}` },},
+		);
+		return response.data;
+	},
+
 	addFavoritedFriend: async (data, token) => {
 		const response = await axiosInstance.post(
 			"/users/add-favorited-friend/",
