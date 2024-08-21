@@ -93,7 +93,6 @@ def get_favorite_friends(request):
     for f in friends.all():
         user_profile = UserProfileInfo.objects.get(owner = f)
         f_data = [
-            f.username,
             user_profile.display_name,
             user_profile.rating,
             request.build_absolute_uri(user_profile.profile_image.url)
@@ -122,7 +121,6 @@ def search_users(request):
     user_data = [
             {
                 'username': user.username,
-                'id': user.username,
                 'displayName': UserProfileInfo.objects.get(owner=user).display_name,
                 'imageUrl':  request.build_absolute_uri(UserProfileInfo.objects.get(owner=user).profile_image.url)
             } for user in users
@@ -181,13 +179,6 @@ def friend_count(request, request_username):
     }
     return JsonResponse(data=data)
 
-def get_display_name(request, request_username):
-    request_owner = get_object_or_404(User, username=request_username)
-    user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
-    data = {
-        "displayName": user_profile.display_name
-    }
-    return JsonResponse(data=data)
 
 def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -216,7 +207,6 @@ def get_incoming_friend_requests(request):
         # data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
         fr_profile = UserProfileInfo.objects.get(owner = fr.from_user)
         fr_data = [
-            fr.from_user.username,
             fr_profile.display_name,
             fr_profile.rating,
             request.build_absolute_uri(fr_profile.profile_image.url),
@@ -240,7 +230,6 @@ def get_friends_list(request):
     for f in friends.all():
         user_profile = UserProfileInfo.objects.get(owner = f)
         f_data = [
-            f.username,
             user_profile.display_name,
             user_profile.rating,
             request.build_absolute_uri(user_profile.profile_image.url)
