@@ -20,6 +20,7 @@ import WishlistImage from "./WishlistImage";
 
 function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 	const [nameText, onChangeNameText] = React.useState("");
+	const [fileName, setFileName] = React.useState("");
 	const [priceText, onChangePriceText] = React.useState("");
 	const [linkText, onChangeLinkText] = React.useState("");
 
@@ -36,10 +37,13 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true,
 			quality: 1,
+			aspect: [1, 1],
+			base64: true,
 		});
 
 		if (!result.canceled) {
-			setSelectedImage(result.assets[0].uri);
+			setSelectedImage(result.assets[0].base64);
+			setFileName(result.assets[0].fileName);
 		}
 	};
 
@@ -76,6 +80,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 				title: nameText,
 				description: linkText,
 				price: priceText,
+				filename: fileName,
 				photo: selectedImage,
 				owner: username,
 				deleted: false,

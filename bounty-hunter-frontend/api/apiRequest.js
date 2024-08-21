@@ -432,6 +432,23 @@ const apiService = {
 		);
 		return response.data;
 	},
+
+	// getWishlistItemPic: async (id, token) => {
+	// 	const response = await axiosInstance.post(
+	// 		`wishlist/pic/${id}/`,
+	// 		{ headers: { authorization: `Token ${token}` } },
+	// 	);
+	// 	return response.data;
+	// },
+
+	// editWishlistItemPic: async (id, token, data) => {
+	// 	const response = await axiosInstance.post(
+	// 		`wishlist/pic/${id}/`,
+	// 		data,
+	// 		{ headers: { authorization: `Token ${token}` } },
+	// 	);
+	// 	return response.data;
+	// },
 };
 
 export default apiService;

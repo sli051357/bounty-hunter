@@ -6,6 +6,8 @@ from django.views import View
 from .models import Wishlist
 from .forms import WishlistForm
 from django.contrib.auth.models import User
+import base64
+from django.core.files.base import ContentFile
 
 from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import TokenAuthentication
@@ -70,14 +72,22 @@ def view_wishlist(request):
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
 def add_wishlist_item(request):
+
     data = json.loads(request.body)
+    #getting picture
+    filename = data.get("filename")
+    new_pic_string  = data.get("photo")
+
+    image_data = base64.b64decode(new_pic_string)
+    new_pic =  ContentFile(image_data, name=filename)
+
+
     title = data.get('title', None)
     description = data.get("description", None)
     owner = get_object_or_404(User,username=(data.get("owner", None)))
     price = data.get("price", None)
-    photo = data.get("photo", None)
 
-    newWishlistItem = Wishlist(title=title, price=price, description=description, photo=photo, owner=owner, deleted=False)
+    newWishlistItem = Wishlist(title=title, price=price, description=description, owner=owner, deleted=False, photo=new_pic)
     newWishlistItem.save()
     
     return JsonResponse({"success": True, "wishlist_item_id": newWishlistItem.id})
@@ -115,4 +125,28 @@ def remove_wishlist_item(request, wishlist_id):
     #     return JsonResponse({"status": "fail"})
 
 # get wishlist pic
+# write api request
+def get_wishlist_pic(request, wishlist_id):
+    wishlist_item = get_object_or_404(Wishlist, id=wishlist_id)
+
+    data = {
+        "url":request.build_absolute_uri(wishlist_item.photo.url)
+    }
+
+    return JsonResponse(data=data)
+
+# edit wishlist pic
+# write api request
+def edit_wishlist_pic(request, wishlist_id):
+    data = json.loads(request.body)
+    filename = data.get("filename")
+    new_pic_string  = data.get("new_pic")
+
+    image_data = base64.b64decode(new_pic_string)
+    new_pic =  ContentFile(image_data, name=filename)
+
+    wishlist_item = get_object_or_404(Wishlist, id=wishlist_id)
+    wishlist_item.photo = new_pic
+    wishlist_item.save()
+    return JsonResponse({"status":"success"})
 
