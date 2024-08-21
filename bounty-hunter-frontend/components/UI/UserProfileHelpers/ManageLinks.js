@@ -11,7 +11,7 @@ function ManageLinks({
 	editPaymentType,
 	saveEdits,
 	isEditing = false,
-	index
+	index,
 }) {
 	return (
 		<View style={styles.container}>
@@ -28,12 +28,14 @@ function ManageLinks({
 				value={username}
 			/>
 			<View style={styles.buttonContainer}>
-				{isEditing && <IconButton
-					icon="trash"
-					color={GLOBAL_STYLES.colors.blue300}
-					onPress={() => deletePayment(index)}
-					iconSize={28}
-				/>}
+				{isEditing && (
+					<IconButton
+						icon="trash"
+						color={GLOBAL_STYLES.colors.blue300}
+						onPress={() => deletePayment(index)}
+						iconSize={28}
+					/>
+				)}
 				<IconButton
 					icon="checkbox"
 					color={GLOBAL_STYLES.colors.blue300}

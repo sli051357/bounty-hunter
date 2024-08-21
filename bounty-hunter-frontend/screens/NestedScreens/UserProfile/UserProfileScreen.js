@@ -61,7 +61,7 @@ function UserProfileScreen() {
 	const authToken = useSelector((state) => state.authToken);
 	const navigation = useNavigation();
 	const username = useSelector((state) => state.username);
-	const [displayName,setDisplayName] = useState("");
+	const [displayName, setDisplayName] = useState("");
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
@@ -275,9 +275,7 @@ function UserProfileScreen() {
 
 							<View>
 								<Text style={styles.usernameStyles}>{displayName}</Text>
-								<Text style={styles.smallTextBrown}>
-									#{username.username}
-								</Text>
+								<Text style={styles.smallTextBrown}>#{username.username}</Text>
 							</View>
 						</View>
 						<View style={styles.editView}>

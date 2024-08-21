@@ -1,14 +1,14 @@
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { useState, useCallback } from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
+import apiService from "../../api/apiRequest";
 import LeaderboardFriendTab from "../../components/LeaderboardFriendTab";
 import ScrollViewHelper from "../../components/UI/ScrollViewHelper";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import { fullYear } from "../../util/date";
 import { DETAILED_FRIEND_LIST } from "../../util/dummy-data";
-import apiService from "../../api/apiRequest";
 
 /*
     Need an axios call to get current FriendList with
@@ -21,43 +21,47 @@ import apiService from "../../api/apiRequest";
 
 function LeaderBoardScreen() {
 	const navigation = useNavigation();
-	const authToken = useSelector((state) => state.authToken.authToken)
+	const authToken = useSelector((state) => state.authToken.authToken);
 	const username = useSelector((state) => state.username.username);
- 	const [friendList, setFriendList] = useState([])
+	const [friendList, setFriendList] = useState([]);
 	const [loading, setIsLoading] = useState(true);
 
 	useFocusEffect(
 		useCallback(() => {
 			const fetchProfile = async () => {
-				setIsLoading(true)
+				setIsLoading(true);
 				try {
 					const friendList = await apiService.getFriendsList(authToken);
 					const favoriteList = await apiService.getFavoritedFriends(authToken);
 					const myRating = await apiService.getRating(username);
 					const myProfilePic = await apiService.getUserPic(username);
-					const mergedList = {...friendList, ...favoriteList}
-					const tempFriendList = []
-					Object.entries(mergedList).map(([username, [id, rating, imageUrl]]) => {
-						const entry = {
-							friendUsername: username,
-							friendRating: rating,
-							friendProfilePic: imageUrl,
-							friendId: id
-						}
-						tempFriendList.push(entry)
-					});
+					const mergedList = { ...friendList, ...favoriteList };
+					const tempFriendList = [];
+					Object.entries(mergedList).map(
+						([username, [id, rating, imageUrl]]) => {
+							const entry = {
+								friendUsername: username,
+								friendRating: rating,
+								friendProfilePic: imageUrl,
+								friendId: id,
+							};
+							tempFriendList.push(entry);
+						},
+					);
 					tempFriendList.push({
 						friendUsername: username,
 						friendRating: myRating.rating,
 						friendProfilePic: myProfilePic.imageUrl,
-						friendId: username
-					})
-					console.log(tempFriendList)
-					setFriendList(tempFriendList.sort((a, b) => b.friendRating - a.friendRating))
+						friendId: username,
+					});
+					console.log(tempFriendList);
+					setFriendList(
+						tempFriendList.sort((a, b) => b.friendRating - a.friendRating),
+					);
 				} catch (error) {
 					console.log(error);
 				}
-				setIsLoading(false)
+				setIsLoading(false);
 			};
 
 			fetchProfile();

@@ -10,30 +10,29 @@ import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function UserLinkedAccountsScreen() {
 	const username = useSelector((state) => state.username.username);
-	const authToken = useSelector((state) => state.authToken.authToken)
+	const authToken = useSelector((state) => state.authToken.authToken);
 	const [currPayments, setCurrPayments] = useState([]);
 	const [newPayment, setNewPayment] = useState({
 		provider: "",
-		account: ""
-	})
-
+		account: "",
+	});
 
 	//  {"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}
 
-	const fetchLinks = async () => {
-		try {
-			const response = await apiService.getUserLinks(username);
-			console.log(response)
-			setCurrPayments(response);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	useFocusEffect(
-		fetched = useCallback(() => {
+		useCallback(() => {
+			const fetchLinks = async () => {
+				try {
+					const response = await apiService.getUserLinks(username);
+					console.log(response);
+					setCurrPayments(response);
+				} catch (error) {
+					console.log(error);
+				}
+			};
+
 			fetchLinks();
-		}, [fetched]),
+		}, [username]),
 	);
 
 	function editPaymentTypeHandler(text, index) {
@@ -41,13 +40,13 @@ function UserLinkedAccountsScreen() {
 			setCurrPayments((prev) => [
 				...prev.slice(0, index),
 				{ ...prev[index], provider: text },
-				...prev.slice(index+1)
-			])
-		}else {
+				...prev.slice(index + 1),
+			]);
+		} else {
 			setNewPayment((prev) => ({
 				...prev,
-				provider: text
-			}))
+				provider: text,
+			}));
 		}
 	}
 
@@ -56,47 +55,63 @@ function UserLinkedAccountsScreen() {
 			setCurrPayments((prev) => [
 				...prev.slice(0, index),
 				{ ...prev[index], account: text },
-				...prev.slice(index+1)
-			])
-		}else {
+				...prev.slice(index + 1),
+			]);
+		} else {
 			setNewPayment((prev) => ({
 				...prev,
-				account: text
-			}))
+				account: text,
+			}));
 		}
 	}
 
 	async function deletePaymentHandler(index) {
 		try {
-			const response = await apiService.removeAccountLink(username, currPayments[index], authToken)
-			console.log(response)
-			fetchLinks()
+			const response = await apiService.removeAccountLink(
+				username,
+				currPayments[index],
+				authToken,
+			);
+			console.log(response);
+			fetchLinks();
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
 	}
 
 	async function saveEditsHandler(index) {
 		if (index !== -1) {
 			try {
-				const responseDelete = await apiService.removeAccountLink(username, currPayments[index], authToken)
-				const responseAdd = await apiService.addAccountLink(username, currPayments[index], authToken)
-				console.log(responseAdd)
-				fetchLinks()
+				const responseDelete = await apiService.removeAccountLink(
+					username,
+					currPayments[index],
+					authToken,
+				);
+				const responseAdd = await apiService.addAccountLink(
+					username,
+					currPayments[index],
+					authToken,
+				);
+				console.log(responseAdd);
+				fetchLinks();
 			} catch (error) {
-				console.log(error)
+				console.log(error);
 			}
 		} else {
 			try {
-				const responseAdd = await apiService.addAccountLink(username, newPayment, authToken)
+				const responseAdd = await apiService.addAccountLink(
+					username,
+					newPayment,
+					authToken,
+				);
 				setNewPayment({
 					provider: "",
-					account: ""
-				})
-				console.log(responseAdd)
-				fetchLinks()
+					account: "",
+				});
+				console.log(responseAdd);
+				fetchLinks();
 			} catch (error) {
-				console.log(error)
+				console.log(error);
 			}
 		}
 	}
@@ -105,8 +120,7 @@ function UserLinkedAccountsScreen() {
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
 			<View style={styles.page}>
 				<Text style={styles.mainHeader}>Linked Accounts</Text>
-				{
-					currPayments.map((value, index) => 
+				{currPayments.map((value, index) => (
 					<ManageLinks
 						username={value.account}
 						paymentName={value.provider}
@@ -116,11 +130,10 @@ function UserLinkedAccountsScreen() {
 						saveEdits={saveEditsHandler}
 						isEditing={true}
 						index={index}
-						key={value.id} 
+						key={value.id}
 					/>
-				)
-				}
-				<ManageLinks 
+				))}
+				<ManageLinks
 					username={newPayment.account}
 					paymentName={newPayment.provider}
 					editUsername={editUsernameHandler}

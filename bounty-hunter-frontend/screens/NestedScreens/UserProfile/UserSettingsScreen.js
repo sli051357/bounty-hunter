@@ -1,9 +1,9 @@
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { useState, useCallback } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import {
+	ActivityIndicator,
 	Alert,
 	Image,
-	ActivityIndicator,
 	KeyboardAvoidingView,
 	Pressable,
 	ScrollView,
@@ -73,13 +73,16 @@ function UserSettingsScreen() {
 		//Check conditions for password, if so pass and error
 		try {
 			// Write Axios api call
-			response = await apiService.changeDisplayName({"displayName": currUsername}, authToken.authToken);
+			response = await apiService.changeDisplayName(
+				{ displayName: currUsername },
+				authToken.authToken,
+			);
 			if (response.status !== "success") {
 				throw new Error("Request Failed.");
 			}
 			setIsEditing(false);
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 			Alert.alert("Error in changing username", "Try again later");
 			setCurrUsername(username.username);
 		}

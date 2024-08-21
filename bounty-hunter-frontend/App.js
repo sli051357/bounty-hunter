@@ -27,7 +27,6 @@ import UserProfileStackScreen from "./screens/TabScreens/UserProfileStackScreen"
 import WishListScreen from "./screens/TabScreens/WishListScreen";
 import { persistor, store } from "./store/redux/store";
 
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -174,7 +173,7 @@ function AuthenticatedStack() {
 				name="Friends"
 				component={FriendListStackScreen}
 				options={{
-					headerShown: false
+					headerShown: false,
 				}}
 			/>
 

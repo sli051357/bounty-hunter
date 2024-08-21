@@ -2,7 +2,6 @@ import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 const apiService = {
-
 	getDisplayName: async (username) => {
 		const response = await axiosInstance.get(
 			`/users/profiles/${username}/display-name/`,
@@ -12,9 +11,9 @@ const apiService = {
 
 	changeDisplayName: async (data, token) => {
 		const response = await axiosInstance.post(
-			`/users/profiles/change-display-name/`,
+			"/users/profiles/change-display-name/",
 			data,
-			{headers: { authorization: `Token ${token}` },},
+			{ headers: { authorization: `Token ${token}` } },
 		);
 		return response.data;
 	},
@@ -139,18 +138,22 @@ const apiService = {
 	addAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/add-link/`,
-			data, {
+			data,
+			{
 				headers: { authorization: `Token ${token}` },
-				});
-			return response.data;
+			},
+		);
+		return response.data;
 	},
 
 	removeAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/remove-link/`,
-			data, {
-			headers: { authorization: `Token ${token}` },
-			});
+			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
+		);
 		return response.data;
 	},
 
