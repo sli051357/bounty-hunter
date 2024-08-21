@@ -14,6 +14,7 @@ import apiService from "../../api/apiRequest";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { GLOBAL_STYLES } from "../../constants/styles";
 
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
 import FloatingButton from "../../components/UI/FloatingButton.js";
 import WishlistAdd from "../../components/Wishlist/WishlistAdd.js";
 import WishlistCard from "../../components/Wishlist/WishlistCard.js";
@@ -87,7 +88,8 @@ function WishlistScreen({ user }) {
 	}
 
 	return (
-		<ScrollView style={styles.page} contentContainerStyle={{ flexGrow: 1 }}>
+		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
+		<View style={styles.page}>
 			<View>
 				<Text style={styles.headerText}>My Wishlist</Text>
 			</View>
@@ -149,7 +151,8 @@ function WishlistScreen({ user }) {
 			) : null}
 
 			<WishlistAdd isVisible={isAddVisible} onYes={addItem} onNo={cancelAdd} />
-		</ScrollView>
+		</View>
+		</ScrollViewHelper>
 	);
 }
 
