@@ -28,6 +28,7 @@ function FriendUserProfile({ route }) {
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
+	const [displayName, setDisplayName] = useState("");
 	const [bounties, setBounties] = useState([]);
 	const paymentMethods = [];
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
@@ -42,6 +43,9 @@ function FriendUserProfile({ route }) {
 					//set the bio
 					const response = await apiService.getUserBio(username);
 					setAboutMe(response.bio);
+
+					const response5 = await apiService.getDisplayName(username.username);
+					setDisplayName(response5.displayName);
 
 					const responseHi = await apiService.getRating(username);
 					setRating(responseHi.rating);
@@ -137,7 +141,7 @@ function FriendUserProfile({ route }) {
 							/>
 							<View>
 								<Text style={styles.usernameStyles}>{username}</Text>
-								<Text style={styles.smallTextBrown}>#{userId}</Text>
+								<Text style={styles.smallTextBrown}>#{displayName}</Text>
 							</View>
 						</View>
 						<View style={styles.editView}>

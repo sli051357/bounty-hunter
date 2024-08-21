@@ -2,6 +2,22 @@ import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 const apiService = {
+	getDisplayName: async (username) => {
+		const response = await axiosInstance.get(
+			`/users/profiles/${username}/display-name/`,
+		);
+		return response.data;
+	},
+
+	changeDisplayName: async (data, token) => {
+		const response = await axiosInstance.post(
+			"/users/profiles/change-display-name/",
+			data,
+			{ headers: { authorization: `Token ${token}` } },
+		);
+		return response.data;
+	},
+
 	addFavoritedFriend: async (data, token) => {
 		const response = await axiosInstance.post(
 			"/users/add-favorited-friend/",
@@ -80,7 +96,7 @@ const apiService = {
 		const response = await axiosInstance.get(
 			`/users/profiles/${username}/links/`,
 		);
-		return response.data;
+		return response.data.data;
 	},
 
 	// username: "username"
@@ -119,18 +135,24 @@ const apiService = {
 	// username: "username"
 	// data: "link"
 	// returns {"success": True} if successful, {"success": False} if fails
-	addAccountLink: async (username, data) => {
+	addAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/add-link/`,
 			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
 		);
 		return response.data;
 	},
 
-	removeAccountLink: async (username, id, data) => {
+	removeAccountLink: async (username, data, token) => {
 		const response = await axiosInstance.post(
 			`/users/profiles/${username}/remove-link/`,
 			data,
+			{
+				headers: { authorization: `Token ${token}` },
+			},
 		);
 		return response.data;
 	},

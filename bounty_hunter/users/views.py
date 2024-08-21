@@ -81,7 +81,8 @@ def remove_favorite_friend(request):
         return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"status":"fail"})
-    
+
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -92,7 +93,7 @@ def get_favorite_friends(request):
     for f in friends.all():
         user_profile = UserProfileInfo.objects.get(owner = f)
         f_data = [
-            f.username,
+            user_profile.display_name,
             user_profile.rating,
             request.build_absolute_uri(user_profile.profile_image.url)
         ]
@@ -120,7 +121,7 @@ def search_users(request):
     user_data = [
             {
                 'username': user.username,
-                'id': user.username,
+                'displayName': UserProfileInfo.objects.get(owner=user).display_name,
                 'imageUrl':  request.build_absolute_uri(UserProfileInfo.objects.get(owner=user).profile_image.url)
             } for user in users
         ]
@@ -137,9 +138,21 @@ def display_name(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
     data = {
-        "display_name":user_profile.display_name
+        "displayName":user_profile.display_name
     }
     return JsonResponse(data=data)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def set_display_name(request):
+    data = json.loads(request.body)
+    new_display_name = data.get("displayName")
+    profile = get_object_or_404(UserProfileInfo, owner=request.user)
+    profile.display_name = new_display_name
+    profile.save()
+    return JsonResponse({"status":"success"})
 
 def bio(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
@@ -171,13 +184,12 @@ def linked_accs(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     linked_accs_list = LinkedAccounts.objects.filter(owner=request_owner)
 
-    data = {}
-
+    data = []
     for entry in linked_accs_list:
-        data[str(entry.id)] = [entry.provider_text, entry.account_text]
+        data.append({"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}) 
 
 
-    return JsonResponse(data)
+    return JsonResponse({"data":data})
 
 
 #retrieves the list of friend requests    
@@ -195,7 +207,7 @@ def get_incoming_friend_requests(request):
         # data[fr.pk] = {"to_user":fr.to_user.username, "from_user":fr.from_user.username}
         fr_profile = UserProfileInfo.objects.get(owner = fr.from_user)
         fr_data = [
-            fr.from_user.username,
+            fr_profile.display_name,
             fr_profile.rating,
             request.build_absolute_uri(fr_profile.profile_image.url),
             fr.pk
@@ -218,7 +230,7 @@ def get_friends_list(request):
     for f in friends.all():
         user_profile = UserProfileInfo.objects.get(owner = f)
         f_data = [
-            f.username,
+            user_profile.display_name,
             user_profile.rating,
             request.build_absolute_uri(user_profile.profile_image.url)
         ]
@@ -311,8 +323,7 @@ def remove_friend(request, request_username):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_account(request):
-    request.user.is_active = False
-    request.user.save()
+    request.user.delete()
     return JsonResponse(data={"status":"success"})
 
 # we need to remake every post request to look like this.
@@ -377,28 +388,26 @@ def edit_profile_pic(request, request_username):
         return JsonResponse(status=403, data={"status": "fail"})
 
 
-def add_link(request, request_username):
-    link = request.POST["link"]
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            new_link = LinkedAccounts(owner=request.user, account_text=link)
-            new_link.save()
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
-    else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def add_link(request, request_username):
+    data = json.loads(request.body)
+    provider = data.get("provider")
+    account = data.get("account")
+    new_link = LinkedAccounts(owner=request.user, account_text=account, provider_text = provider)
+    new_link.save()
+    return JsonResponse({"status":"success"})
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def remove_link(request, request_username):
-    id = request.POST["id"]
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            LinkedAccounts.objects.filter(id=id).delete()
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "Permission Denied"})
-    else:
-        return JsonResponse(status=403, data={"status": "Permission Denied"})
+    data = json.loads(request.body)
+    id = data.get('id')
+    LinkedAccounts.objects.filter(id=id).delete()
+    return JsonResponse({"status":"success"})
     
 
 def register_user(request):
@@ -412,18 +421,8 @@ def register_user(request):
         user = get_object_or_404(User, email=email)
 
         print("email exists")
-        #check if user has been "deleted"
+        #check if user has not been activated
         if not user.is_active:
-            new_token = Token.objects.get(user=user)
-            send_mail(
-                subject="Reactivate your account",
-                message=BASE_URL + "users/verify/" + str(new_token.key),
-                from_email=EMAIL_HOST_USER,
-                recipient_list=[email],
-                fail_silently=False
-            )
-            return JsonResponse({"status": "success"})
-        else:
             return JsonResponse({"status": "fail"})  
         
     except Http404: # if user does not exist, check if username exists.

@@ -16,7 +16,7 @@ class DisplayNameTestCase(TestCase):
         # Test display name retrieval
         response = self.client.get(reverse('display_name', args=[self.user1.username]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"display_name": "User One"})
+        self.assertEqual(response.json(), {"displayName": "User One"})
 
     def test_display_name_default(self):
         # Test default display name when it is not set
@@ -25,7 +25,7 @@ class DisplayNameTestCase(TestCase):
     
         response = self.client.get(reverse('display_name', args=[user2.username]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"display_name": "user2"})  # The display name should default to the username if not set
+        self.assertEqual(response.json(), {"displayName": "user2"})  # The display name should default to the username if not set
         
 class FriendRequestTestCase(TestCase):
     def setUp(self):

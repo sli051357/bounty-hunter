@@ -15,13 +15,13 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 		<View style={styles.container}>
 			<Text style={styles.title}>Payment Methods:</Text>
 			<>
-				{Object.entries(userData).map(([id, [provider, username]]) => (
+				{userData.map((entry) => (
 					<PaymentMethod
-						key={id} // Use the id from the object as the key for the component
-						paymentName={provider} // The provider (e.g., "venmo", "zelle")
-						paymentUsername={username} // The username associated with the provider
+						key={entry.id} // Use the id from the object as the key for the component
+						paymentName={entry.provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={entry.account} // The username associated with the provider
 						icon="attach-outline" // The icon to display
-						onPress={() => copyPayment(username)} // Function to handle the press event
+						onPress={() => copyPayment(entry.account)} // Function to handle the press event
 					/>
 				))}
 			</>
@@ -32,13 +32,13 @@ function EditPaymentMethods({ isEditing, userData, managePaymentsPage }) {
 		payments = (
 			<View style={styles.container}>
 				<Text style={styles.title}>Payment Methods:</Text>
-				{Object.entries(userData).map(([id, [provider, username]]) => (
+				{userData.map((entry) => (
 					<PaymentMethod
-						key={id} // Use the id from the object as the key for the component
-						paymentName={provider} // The provider (e.g., "venmo", "zelle")
-						paymentUsername={username} // The username associated with the provider
+						key={entry.id} // Use the id from the object as the key for the component
+						paymentName={entry.provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={entry.account} // The username associated with the provider
 						icon="attach-outline" // The icon to display
-						onPress={() => copyPayment(username)} // Function to handle the press event
+						onPress={() => copyPayment(entry.account)} // Function to handle the press event
 					/>
 				))}
 				<Pressable onPress={managePaymentsPage}>

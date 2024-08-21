@@ -47,8 +47,8 @@ function FriendCard({
 				</Pressable>
 				{/* Friend Text */}
 				<View style={styles.friendText}>
-					<Text style={styles.usernameText}>{username}</Text>
-					<Text style={styles.userID}>{id}</Text>
+					<Text style={styles.usernameText}>{id}</Text>
+					<Text style={styles.userID}>{username}</Text>
 				</View>
 				<View style={{ marginLeft: 15 }}>
 					{favorite ? (
