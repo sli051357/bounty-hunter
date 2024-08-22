@@ -31,6 +31,7 @@ class UserProfileInfo(models.Model):
 
     def __str__(self):
         return self.owner.username
+
     
 
 #model for storing linked accounts. Many linked accounts may share a single owner.

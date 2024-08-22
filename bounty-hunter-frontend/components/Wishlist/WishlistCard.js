@@ -13,9 +13,8 @@ import Hyperlink from "react-native-hyperlink";
 import { GLOBAL_STYLES } from "../../constants/styles";
 
 import WishlistDelete from "./WishlistDelete";
-import WishlistImage from "./WishlistImage";
 
-function WishlistCard({ title, description, price, imagePath, editStatus }) {
+function WishlistCard({ title, description, price, imagePath, editStatus, itemId, onDelete }) {
 	const [isDeleteVisible, setIsDeleteVisible] = useState(false);
 
 	function considerDelete() {
@@ -23,8 +22,9 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
 		setIsDeleteVisible(true);
 	}
 
+	// this one
 	function deleteItem() {
-		console.log("item deleted");
+		onDelete(itemId);
 		setIsDeleteVisible(false);
 	}
 
@@ -48,7 +48,7 @@ function WishlistCard({ title, description, price, imagePath, editStatus }) {
 				</View>
 
 				<View style={{ marginLeft: 15 }}>
-					<WishlistImage selectedImage={imagePath} />
+					<Image source={{uri: imagePath}} style={[{width: 100, height: 100,}]} />
 				</View>
 			</View>
 

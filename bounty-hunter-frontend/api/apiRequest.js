@@ -91,6 +91,16 @@ const apiService = {
 		return response.data;
 	},
 
+	removeUserPic: async (token) => {
+		const response = await axiosInstance.get(
+			`/users/profiles/remove-pfp/`,
+			{ headers: { authorization: `Token ${token}` } }
+		);
+		return response.data;
+	},
+
+	
+
 	//data is a dict of entries: data[str(entry.id)] = [entry.provider_text, entry.account_text]
 	getUserLinks: async (username) => {
 		const response = await axiosInstance.get(
@@ -417,31 +427,60 @@ const apiService = {
 		} catch (error) {}
 	},
 
+	// getFriendRequests: async (token) => {
+	// 	const response = await axiosInstance.get("/users/get-friend-requests/", {
+	// 		headers: { authorization: `Token ${token}` },
+	// 	});
+	// 	return response.data;
+	// },
+
 	// returns list of all wishlist objects
-	viewWishlist: async () => {
-		try {
-			const response = await axiosInstance.get("/wishlist/");
-			return response.data;
-		} catch (error) {}
+	viewWishlist: async (token) => {
+		const response = await axiosInstance.get("/wishlist/", {
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
 	},
 
 	// data: {"title": "item title", "price": "##", "url": "link", "photo": image field (upload_to='res/'), "owner": pick from user objects}
 	// returns {'form': data dictionary ^}, {'status': 'success', 'item_id': item.id}
 	addWishlistItem: async (data) => {
-		try {
-			const response = await axiosInstance.post("/wishlist/add/", data);
-			return response.data;
-		} catch (error) {}
+		const response = await axiosInstance.post(
+			`/wishlist/add/`, data,
+		);
+		return response.data;
+		// try {
+		// 	const response = await axiosInstance.post("/wishlist/add/", data);
+		// 	return response.data;
+		// } catch (error) {}
 	},
 
 	// id: id of item to remove
 	// returns {'status': 'success', 'item_id': pk}
-	removeWishlistItem: async (id) => {
-		try {
-			const response = await axiosInstance.post(`/wishlist/remove/${id}`);
-			return response.data;
-		} catch (error) {}
+	removeWishlistItem: async (id, token) => {
+		const response = await axiosInstance.post(
+			`/wishlist/remove/${id}/`,
+			{ headers: { authorization: `Token ${token}` } },
+		);
+		return response.data;
 	},
+
+	// getWishlistItemPic: async (id, token) => {
+	// 	const response = await axiosInstance.post(
+	// 		`wishlist/pic/${id}/`,
+	// 		{ headers: { authorization: `Token ${token}` } },
+	// 	);
+	// 	return response.data;
+	// },
+
+	// editWishlistItemPic: async (id, token, data) => {
+	// 	const response = await axiosInstance.post(
+	// 		`wishlist/pic/${id}/`,
+	// 		data,
+	// 		{ headers: { authorization: `Token ${token}` } },
+	// 	);
+	// 	return response.data;
+	// },
 };
 
 export default apiService;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
 	Image,
 	Pressable,
@@ -8,34 +8,53 @@ import {
 	View,
 } from "react-native";
 
+import { useSelector } from "react-redux";
+import apiService from "../../api/apiRequest";
+
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { GLOBAL_STYLES } from "../../constants/styles";
 
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
 import FloatingButton from "../../components/UI/FloatingButton.js";
 import WishlistAdd from "../../components/Wishlist/WishlistAdd.js";
 import WishlistCard from "../../components/Wishlist/WishlistCard.js";
 import WishlistDelete from "../../components/Wishlist/WishlistDelete.js";
 
 function WishlistScreen({ user }) {
+	const authToken = useSelector((state) => state.authToken.authToken);
+
+	const [userWishlist, setUserWishlist] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState(null);
+
 	const [isEditing, setIsEditing] = useState(false);
 	const [isAddVisible, setIsAddVisible] = useState(false);
 
-	const DUMMY_WISHLIST = [
-		{
-			title: "Lego Set",
-			description:
-				"https://www.lego.com/en-us/product/wildflower-bouquet-10313",
-			price: "55",
-			imagePath:
-				"https://www.lego.com/cdn/cs/set/assets/bltc4a6c2103a34f22e/10313_alt2.png?format=webply&fit=bounds&quality=70&width=800&height=800&dpr=1.5",
-		},
-		{
-			title: "CSE Tutoring (2hr)",
-			description: "Halp",
-			price: "40",
-			imagePath: "",
-		},
-	];
+	const fetchWishlist = useCallback(async () => {
+		setError(null);
+		setIsLoading(true);
+
+		try {
+			const response = await apiService.viewWishlist(authToken);
+			if (!response) {
+				throw new Error("Undefined Information");
+			}
+			console.log(response);
+			setUserWishlist(response);
+			setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data: ", error);
+			setError("Failed to fetch wishlist. Please try again.");
+			setIsLoading(false);
+		}
+	}, [authToken]);
+	
+	useEffect(() => {
+		fetchWishlist();
+		
+		const intervalId = setInterval(() => fetchWishlist(), 60000);
+		return () => clearInterval(intervalId);
+	}, [fetchWishlist]);
 
 	function isEditingHandler() {
 		setIsEditing((curr) => !curr);
@@ -49,6 +68,8 @@ function WishlistScreen({ user }) {
 	function addItem() {
 		console.log("item added");
 		setIsAddVisible(false);
+		// setRerender((curr) => !curr);
+		fetchWishlist();
 	}
 
 	function cancelAdd() {
@@ -56,8 +77,19 @@ function WishlistScreen({ user }) {
 		setIsAddVisible(false);
 	}
 
+	async function deleteItem(itemId) {
+		data = itemId.toString();
+		response = await apiService.removeWishlistItem(itemId, authToken);
+		if (response.status === "success") {
+			fetchWishlist();
+		} else {
+			console.log("failed");
+		}
+	}
+
 	return (
-		<ScrollView style={styles.page} contentContainerStyle={{ flexGrow: 1 }}>
+		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
+		<View style={styles.page}>
 			<View>
 				<Text style={styles.headerText}>My Wishlist</Text>
 			</View>
@@ -82,7 +114,7 @@ function WishlistScreen({ user }) {
 
 			{/* Wishlist Mapping */}
 			<View>
-				{DUMMY_WISHLIST.map((item) => (
+				{/* {DUMMY_WISHLIST.map((item) => (
 					<WishlistCard
 						key={item.title}
 						title={item.title}
@@ -91,7 +123,22 @@ function WishlistScreen({ user }) {
 						imagePath={item.imagePath}
 						editStatus={isEditing}
 					/>
-				))}
+				))} */}
+
+				{Object.entries(userWishlist).map(
+					([title, [name, description, price, username, imageUrl, pk]]) => (
+						<WishlistCard
+							key={pk}
+							title={title}
+							description={description}
+							price={price}
+							imagePath={imageUrl}
+							itemId={pk}
+							editStatus={isEditing}
+							onDelete={deleteItem}
+						/>
+					)
+				)}
 			</View>
 
 			{/* Add Button */}
@@ -104,7 +151,8 @@ function WishlistScreen({ user }) {
 			) : null}
 
 			<WishlistAdd isVisible={isAddVisible} onYes={addItem} onNo={cancelAdd} />
-		</ScrollView>
+		</View>
+		</ScrollViewHelper>
 	);
 }
 
