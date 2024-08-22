@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { act, useCallback, useEffect, useState } from "react";
 import {
 	Button,
@@ -48,7 +48,36 @@ function BountiesListScreen() {
 	});
 	const [activeSearch, setActiveSearch] = useState("");
 	const [tempSearch, setTempSearch] = useState("");
-	console.log(userBountyList);
+
+	useFocusEffect(
+		useCallback(() => {
+			const fetchListFocus = async () => {
+				setError(null);
+				setIsLoading(true);
+				// console.log(filterParams)
+				// console.log(sortParams)
+				// console.log(searchParams)
+		
+				try {
+					const response = await apiService.viewBountyList(
+						activeFiltering,
+						activeSorting,
+						activeSearch,
+						authToken,
+					);
+					console.log(response.favors);
+					setUserBountyList(response.favors);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching data: ", error);
+					setError("Failed to fetch bounty list. Please try again.");
+					setIsLoading(false);
+				}
+			}
+			fetchListFocus();
+		}, [activeFiltering, activeSearch, activeSorting, authToken]),
+	  );
+
 	const fetchList = useCallback(async () => {
 		setError(null);
 		setIsLoading(true);

@@ -287,10 +287,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.assignee.CREATE ? 
@@ -300,10 +300,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.assignee.DELETE ? 
@@ -313,10 +313,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.assignee.COMPLETE ? 
@@ -326,10 +326,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.assignee.EDIT ? 
@@ -339,10 +339,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 
@@ -357,10 +357,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.owner.CREATE ? 
@@ -370,10 +370,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.owner.DELETE ? 
@@ -383,10 +383,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.owner.COMPLETE ? 
@@ -396,10 +396,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 								{favorDetails.button_states.owner.EDIT ? 
@@ -409,10 +409,10 @@ function BountyDetailsScreen({ route }) {
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 30,
+										paddingHorizontal: 10,
 										borderRadius: 6,
 									}}
-									textStyle={{ fontSize: 28, fontWeight: "bold" }}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
 								/>
 								: null}
 							</>
@@ -427,10 +427,10 @@ function BountyDetailsScreen({ route }) {
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.error700,
-								paddingHorizontal: 30,
+								paddingHorizontal: 10,
 								borderRadius: 6,
 							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
+							textStyle={{ fontSize: 14, fontWeight: "bold" }}
 						/>
 						<Button
 							title="Edit"
@@ -438,10 +438,10 @@ function BountyDetailsScreen({ route }) {
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.error700,
-								paddingHorizontal: 30,
+								paddingHorizontal: 10,
 								borderRadius: 6,
 							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
+							textStyle={{ fontSize: 14, fontWeight: "bold" }}
 						/>
 					</View>
 				</View>
