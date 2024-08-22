@@ -289,7 +289,8 @@ def favor_list(request): # ex: favors/
                   "assignee_status": f.assignee_status,
                   "active": f.active, 
                   "deleted": f.deleted, 
-                  "completed": f.completed,}
+                  "completed": f.completed,
+                  "button_states": f.button_states}
         #print(f.created_at)
         #print(type(f.total_owed_wishlist))
         favors_list.append(f_data)
@@ -422,18 +423,7 @@ def create_favor(request):
 def get_total_owed_wishlist(input):
     pass
 
-# action history
-def log_edit_history(favor, user, action, details=None):
-    history_entry = {
-        "timestamp": datetime.now().isoformat(),
-        "user": user.username,
-        "action": action,
-        "owner_status": favor.owner_status,
-        "assignee_status": favor.assignee_status,
-        "details": details
-    }
-    favor.bounty_edit_history.append(history_entry)
-    favor.save()
+
 
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made
@@ -468,11 +458,6 @@ def edit_favor(request, favor_id):
     
     return JsonResponse({"status":"success"})
 
-# @login_required
-def get_favor_history(request, favor_id):
-    favor = get_object_or_404(Favor, pk=favor_id)
-    history = favor.bounty_edit_history
-    return JsonResponse({"history": history})
 
 
 # create a new tag
@@ -554,6 +539,9 @@ def change_status(request, favor_id):
     else:
         print("sender is reciever")
         transition = (curr_state,(1,status))
+
+    print(transition)
+    
     if transition not in TRANSITIONS:
         print("invalid transition")
         return JsonResponse({"status": "fail"})
@@ -585,7 +573,6 @@ def change_status(request, favor_id):
 # updates favor based on current state of owner status and assignee status
 def apply_transitions(favor):
     curr_state = (favor.owner_status,favor.assignee_status)
-    log_edit_history(favor, favor.owner, f"Transitioned to {curr_state}")
     #if state has been created but not accepted:
     if curr_state == STATES[1]:
         favor.completed = False
@@ -632,25 +619,25 @@ def apply_transitions(favor):
     try:
         idx = STATES.index(curr_state)
     except ValueError:
-        print("invalid transition")
+        print("invalid transition in states")
     
     match idx:
         #favor is incomplete
         case 0:
             favor.button_states = {
                 "owner":{
-                        "CREATE":True,
+                        "CREATE":False,
                         "DELETE":True,
                         "COMPLETE":True,
                         "EDIT" : True,
                         "CANCEL": False
                 },
                 "assignee":{
-                        "CREATE":True,
+                        "CREATE":False,
                         "DELETE":True,
                         "COMPLETE":True,
                         "EDIT" : True,
-                        "CANCEL": True
+                        "CANCEL": False
                 }
             }
         #favor is created
@@ -819,18 +806,18 @@ def apply_transitions(favor):
         case 10:
             favor.button_states = {
                 "owner":{
-                        "CREATE":True,
+                        "CREATE":False,
                         "DELETE":True,
                         "COMPLETE":True,
                         "EDIT" : True,
                         "CANCEL": False
                 },
                 "assignee":{
-                        "CREATE":True,
+                        "CREATE":False,
                         "DELETE":True,
                         "COMPLETE":True,
                         "EDIT" : True,
-                        "CANCEL": True
+                        "CANCEL": False
                 }
             }
 

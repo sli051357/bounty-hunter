@@ -6,6 +6,7 @@ from django.utils import timezone
 #from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
 from wishlist.models import Wishlist
+from django.utils import timezone
 
 # Create your models here.
 # Tag class
@@ -31,12 +32,32 @@ from wishlist.models import Wishlist
 #         return self.name
 
 # Favor class
+
+
+def get_default_button_states():
+    return {
+           "owner":{
+                "CREATE":False,
+                "DELETE":False,
+                "COMPLETE":False,
+                "EDIT" : False,
+                "CANCEL": True
+           },
+           "assignee":{
+                "CREATE":True,
+                "DELETE":False,
+                "COMPLETE":False,
+                "EDIT" : False,
+                "CANCEL": True
+           }
+        }
+
 class Favor(models.Model):
     # related_name allows you to use User.owned_favors to see all favors they have created
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
     name = models.CharField(max_length=60)
     description = models.TextField(max_length=600)
-    created_at = models.DateTimeField(default=datetime.now().date()) # only gives date, not time
+    created_at = models.DateTimeField(default=timezone.now) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
     #tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
     points_value = models.IntegerField( default=100)
@@ -82,22 +103,7 @@ class Favor(models.Model):
     assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
 
     # action history
-    button_states = models.JSONField(default= dict({
-           "owner":{
-                "CREATE":False,
-                "DELETE":False,
-                "COMPLETE":False,
-                "EDIT" : False,
-                "CANCEL": True
-           },
-           "assignee":{
-                "CREATE":True,
-                "DELETE":False,
-                "COMPLETE":False,
-                "EDIT" : False,
-                "CANCEL": True
-           }
-        }))
+    button_states = models.JSONField(default= get_default_button_states)
     
     def save(self, *args, **kwargs):
         # Check if the favor is being marked as complete
