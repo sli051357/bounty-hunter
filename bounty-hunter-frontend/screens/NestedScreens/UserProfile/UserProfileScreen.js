@@ -102,7 +102,7 @@ function UserProfileScreen() {
 
 					const responseBounties = await apiService.viewBountyList(
 						{
-							query: "and",
+							query: "or",
 							tags: [],
 							status: ["Sent"],
 							start_date: dayjs().format("YYYY-MM-DD"),

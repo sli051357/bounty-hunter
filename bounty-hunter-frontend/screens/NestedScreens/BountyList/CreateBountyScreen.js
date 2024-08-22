@@ -18,6 +18,7 @@ import Button from "../../../components/UI/Button";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import today from "../../../util/date";
+import TagModal from "./../../../components/UI/BountyListHelpers/TagModal"
 
 function CreateBountyScreen() {
 	const navigation = useNavigation();
@@ -41,6 +42,8 @@ function CreateBountyScreen() {
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
 	const [tags, setTags] = useState([]);
+	const [tagModalVisable, setTagModalVisable] = useState(false);
+	console.log(tags)
 
 	async function fetchTagList() {
 		try {
@@ -85,8 +88,9 @@ function CreateBountyScreen() {
 		}));
 	}
 
-	function setTagsHandler(tag, isAdd) {
-		setTags((prev) => (isAdd ? [...prev, tag] : prev.filter((t) => t !== tag)));
+	function setTagsHandler(tags) {
+		setTags(tags);
+		setTagModalVisable(false);
 	}
 
 	function createFavorButtonHandler() {
@@ -112,7 +116,7 @@ function CreateBountyScreen() {
 				assignee: favorDetails.assigneeId, // Same with Id
 				owner: username,
 				name: favorDetails.favorName,
-				tags: { tags: tags },
+				tags: { "tags": tags },
 				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
 				total_owed_amt: isMonetaryStatus ? favorDetails.paymentOwed : 0,
 				total_owed_wishlist: isMonetaryStatus ? "" : favorDetails.paymentOwed,
@@ -200,7 +204,7 @@ function CreateBountyScreen() {
 							<IconButton
 								icon="add-sharp"
 								iconSize={18}
-								onPress={() => navigation.navigate("AddTag")}
+								onPress={() => setTagModalVisable(true)}
 								color={GLOBAL_STYLES.colors.orange700}
 							/>
 						</View>
@@ -238,6 +242,11 @@ function CreateBountyScreen() {
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
 					</View>
+					<TagModal 
+						isVisible={tagModalVisable}
+						onClose={setTagsHandler}
+						currTags={tags}
+					/>
 				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>

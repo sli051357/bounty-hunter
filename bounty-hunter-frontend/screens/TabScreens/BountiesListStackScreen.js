@@ -50,18 +50,6 @@ function BountiesListStackScreen() {
 					title: "",
 				}}
 			/>
-			<BountiesListStack.Screen
-				name="AddTag"
-				component={AddTagScreen}
-				options={{
-					headerStyle: {
-						backgroundColor: GLOBAL_STYLES.colors.brown300,
-					},
-					headerShadowVisible: false,
-					headerTitleAlign: "center",
-					title: "",
-				}}
-			/>
 		</BountiesListStack.Navigator>
 	);
 }

@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .forms import FavorForm, TagForm
 from django.db.models import Q
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, timedelta
 import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
@@ -182,7 +182,7 @@ def favor_list(request): # ex: favors/
         start_date = parse_date(start_date)
         end_date = parse_date(end_date)
 
-        end_date = end_date + datetime.timedelta(days=1) - datetime.timedelta(seconds=1)
+        end_date = end_date + timedelta(days=1) - timedelta(seconds=1)
 
         q_in = (Q(created_at__gte = start_date) & Q(created_at__lte = end_date))
         query = query_method(query, or_query, q_in)
@@ -324,29 +324,29 @@ def favor_detail(request, favor_id):
     return JsonResponse(favor_data)
 
 # view a list of all tags, with preset tags listed before custom tags
-def tag_list(request):
-    # curr_user = request.user
-    # tags_list = list(Tag.objects.filter(owner__username=curr_user.username).order_by("-tag_type").values())
-    # print(tags_list)
-    # return JsonResponse({"tags": tags_list})
-    tags = Tag.objects.all()
-    tags_list = []
-    for t in tags:
-        t_data = {"emoji": t.emoji, 
-                  "id": t.id, 
-                  "name": t.name, 
-                  "owner": t.owner.username,
-                  "color": t.color,
-                  "created_at": t.created_at,
-                  "updated_at": t.updated_at,
-                  "tag_type": t.tag_type,
-                }
-        tags_list.append(t_data)
-        print("Tag appended; ", t.name)
+# def tag_list(request):
+#     # curr_user = request.user
+#     # tags_list = list(Tag.objects.filter(owner__username=curr_user.username).order_by("-tag_type").values())
+#     # print(tags_list)
+#     # return JsonResponse({"tags": tags_list})
+#     tags = Tag.objects.all()
+#     tags_list = []
+#     for t in tags:
+#         t_data = {"emoji": t.emoji, 
+#                   "id": t.id, 
+#                   "name": t.name, 
+#                   "owner": t.owner.username,
+#                   "color": t.color,
+#                   "created_at": t.created_at,
+#                   "updated_at": t.updated_at,
+#                   "tag_type": t.tag_type,
+#                 }
+#         tags_list.append(t_data)
+#         print("Tag appended; ", t.name)
 
-    print("Tags list end of method: ", tags_list)
+#     print("Tags list end of method: ", tags_list)
 
-    return JsonResponse({"tags": tags_list})
+#     return JsonResponse({"tags": tags_list})
 
 # view a specific tag based on id
 def tag_detail(request, tag_id):
@@ -364,6 +364,7 @@ def tag_detail(request, tag_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_favor(request):
+    curr_user = request.user
     data = json.loads(request.body)
     #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
     name = data.get('name', None)
@@ -379,7 +380,8 @@ def create_favor(request):
     assignee_status = INCOMPLETE
     completed = False
     active = False
-    #tags = get_tags(data.get('tags', None))
+    new_tags = get_tags(data.get('tags', None), curr_user)
+    print("create_favor tags: ",new_tags)
     #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
 
     wishlist_item_name = data.get('total_owed_wishlist', None)
@@ -396,12 +398,27 @@ def create_favor(request):
                     active=active, owner_status=owner_status, 
                     assignee_status=assignee_status, completed=completed)
     newfavor.save()
-    
+    newfavor.tags.set(new_tags)
 
     return JsonResponse({"success": True, "favor_id": newfavor.id})
 
-def get_tags(input):
-    pass
+def get_tags(input, curr_user):
+    # tags = Tag.objects.filter(owner=curr_user)
+    # tags_list = []
+    # for t in tags:
+    #     t_data = {"color": t.color, 
+    #               "emoji": t.emoji, 
+    #               "text": t.text, 
+    #             }
+    #     tags_list.append(t_data)
+    tags_list = list(Tag.objects.filter(owner=curr_user).values('id'))
+    tag_ids = []
+    for t in tags_list:
+        tag_ids.append(t['id'])
+
+    print("List of tag ids: ", tag_ids)
+
+    return tag_ids
 
 def get_total_owed_wishlist(input):
     pass
@@ -481,19 +498,21 @@ def get_favor_history(request, favor_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_tag(request):
+    print(request.user)
     data = json.loads(request.body)
     emoji = data.get('emoji', None)
     print(emoji)
-    owner = get_object_or_404(User,username=(data.get("owner", None)))
+    owner = request.user
     name = data.get("name", None)
     color = data.get('color', None)
     tag_type = data.get('tag_type', None)
 
     newTag = Tag(emoji=emoji, owner=owner, name=name, color=color, tag_type=tag_type)
     newTag.save()
-    print(newTag)
+    print("new tag emoji: ",newTag.emoji)
+    print("new tag name: ", newTag.name)
 
-    return JsonResponse({"success": True, "favor_id": newTag.id})
+    return JsonResponse({"success": True, "tag_id": newTag.id})
 
 # edit a tag 
 # @login_required
@@ -628,15 +647,14 @@ def show_change_status(request, favor_id):
     return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
 # delete a tag based on tag id
-def delete_tag(request, tag_id):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    tag = get_object_or_404(Tag, pk=tag_id)
-    if request.method == "DELETE":
+@api_view(['POST'])
+def delete_tag(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    if tag.owner != request.user:
+        return JsonResponse({"success": False})
+    else:
         tag.delete()
         return JsonResponse({"success": True})
-    else:
-        return JsonResponse({"error": "must use DELETE method"}, status=405)
 
 
 
