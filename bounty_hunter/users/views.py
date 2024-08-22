@@ -16,6 +16,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.template import loader
 
 from django.db.models import Q
 from rest_framework.authentication import TokenAuthentication
@@ -457,14 +458,19 @@ def verify(request, token):
     try:
         request_user = get_object_or_404(Token,key=token).user
     except Http404:
-        return JsonResponse({"status":"fail", "error":"token not found"})
+        c={}
+        t = loader.get_template("users/verification-failure.html")
+        return HttpResponse(t.render(c,request))
     if request_user.is_active:
-        return JsonResponse({"status":"fail", "error":"account is already active"})
+        c={}
+        t = loader.get_template("users/verification-failure.html")
+        return HttpResponse(t.render(c,request))
     
     request_user.is_active = True
     request_user.save()
-    return JsonResponse({"status":"success"})
-
+    c={}
+    t = loader.get_template("users/verification-success.html")
+    return HttpResponse(t.render(c,request))
 # for verifying in forgot password. Post the request here.
 def verify_code(request):
     data = json.loads(request.body)
