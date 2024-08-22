@@ -252,35 +252,6 @@ function BountyDetailsScreen({ route }) {
 							isActive={favorDetails.privacyStatus}
 						/>
 					</View>
-					<View style={styles.bountyLogContainer}>
-						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
-						<View style={styles.bountyTabContainer}>
-							{currEditBountyHistory.map((tab, index) => {
-								//console.log(tab);
-								let typeOnPress = null;
-								let disabled = false;
-								if (tab.type === "Complete Request") {
-									disabled = username === favorDetails.assigneeId;
-									typeOnPress = completeBountyRequestResponseHandler;
-								} else if (tab.type === "Delete Request") {
-									disabled = username === favorDetails.assigneeId;
-									typeOnPress = deleteBountyRequestResponseHandler;
-								} else if (tab.type === "Creation") {
-									disabled = username === favorDetails.senderId;
-									typeOnPress = bountyAcceptanceHandler;
-								}
-								return (
-									<BountyLogTab
-										key={index.toString()}
-										type={tab.type}
-										tabDescription={tab.description}
-										onPress={typeOnPress}
-										disabled={disabled}
-									/>
-								);
-							})}
-						</View>
-					</View>
 					<View style={styles.buttonsContainer}>
 						<Button
 							title="Cancel"
@@ -411,5 +382,35 @@ const styles = StyleSheet.create({
 		gap: 12,
 	},
 });
+
+/*{ <View style={styles.bountyLogContainer}>
+						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
+						<View style={styles.bountyTabContainer}>
+							{currEditBountyHistory.map((tab, index) => {
+								//console.log(tab);
+								let typeOnPress = null;
+								let disabled = false;
+								if (tab.type === "Complete Request") {
+									disabled = username === favorDetails.assigneeId;
+									typeOnPress = completeBountyRequestResponseHandler;
+								} else if (tab.type === "Delete Request") {
+									disabled = username === favorDetails.assigneeId;
+									typeOnPress = deleteBountyRequestResponseHandler;
+								} else if (tab.type === "Creation") {
+									disabled = username === favorDetails.senderId;
+									typeOnPress = bountyAcceptanceHandler;
+								}
+								return (
+									<BountyLogTab
+										key={index.toString()}
+										type={tab.type}
+										tabDescription={tab.description}
+										onPress={typeOnPress}
+										disabled={disabled}
+									/>
+								);
+							})}
+						</View>
+</View> } */
 
 export default BountyDetailsScreen;
