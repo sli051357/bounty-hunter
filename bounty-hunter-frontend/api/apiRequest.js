@@ -92,14 +92,11 @@ const apiService = {
 	},
 
 	removeUserPic: async (token) => {
-		const response = await axiosInstance.get(
-			`/users/profiles/remove-pfp/`,
-			{ headers: { authorization: `Token ${token}` } }
-		);
+		const response = await axiosInstance.get("/users/profiles/remove-pfp/", {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
-
-	
 
 	//data is a dict of entries: data[str(entry.id)] = [entry.provider_text, entry.account_text]
 	getUserLinks: async (username) => {
@@ -347,9 +344,9 @@ const apiService = {
 	// returns {"success": True, "tag_id": tag.id} or {"success": False, "errors": form.errors} or {"error": "GET method not allowed"}
 	createTag: async (data, token) => {
 		try {
-			const response = await axiosInstance.post("/favors/tags/create/", 
-			data,
-			{ headers: { authorization: `Token ${token}` } },);
+			const response = await axiosInstance.post("/favors/tags/create/", data, {
+				headers: { authorization: `Token ${token}` },
+			});
 			return response.data;
 		} catch (error) {}
 	},
@@ -446,9 +443,7 @@ const apiService = {
 	// data: {"title": "item title", "price": "##", "url": "link", "photo": image field (upload_to='res/'), "owner": pick from user objects}
 	// returns {'form': data dictionary ^}, {'status': 'success', 'item_id': item.id}
 	addWishlistItem: async (data) => {
-		const response = await axiosInstance.post(
-			`/wishlist/add/`, data,
-		);
+		const response = await axiosInstance.post("/wishlist/add/", data);
 		return response.data;
 		// try {
 		// 	const response = await axiosInstance.post("/wishlist/add/", data);
@@ -459,10 +454,9 @@ const apiService = {
 	// id: id of item to remove
 	// returns {'status': 'success', 'item_id': pk}
 	removeWishlistItem: async (id, token) => {
-		const response = await axiosInstance.post(
-			`/wishlist/remove/${id}/`,
-			{ headers: { authorization: `Token ${token}` } },
-		);
+		const response = await axiosInstance.post(`/wishlist/remove/${id}/`, {
+			headers: { authorization: `Token ${token}` },
+		});
 		return response.data;
 	},
 

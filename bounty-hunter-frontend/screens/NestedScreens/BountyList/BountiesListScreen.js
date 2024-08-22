@@ -48,7 +48,7 @@ function BountiesListScreen() {
 	});
 	const [activeSearch, setActiveSearch] = useState("");
 	const [tempSearch, setTempSearch] = useState("");
-	console.log(userBountyList)
+	console.log(userBountyList);
 	const fetchList = useCallback(async () => {
 		setError(null);
 		setIsLoading(true);
@@ -79,7 +79,7 @@ function BountiesListScreen() {
 		const intervalId = setInterval(() => fetchList(), 120000);
 
 		return () => clearInterval(intervalId);
-	}, [activeFiltering, activeSearch, activeSorting, authToken]);
+	}, [fetchList]);
 
 	function handleRetry() {
 		fetchList();

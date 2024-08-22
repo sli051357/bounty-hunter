@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"
+import utc from "dayjs/plugin/utc";
 //import IconButton from "./UI/IconButton";
 import { GLOBAL_STYLES } from "../constants/styles";
 
@@ -53,9 +53,7 @@ function FavorCard({ favor, onPress }) {
 							: favor.total_owed_wishlist}
 					</Text>
 					<Ionicons
-						name={
-							!favor.completed  ? "code-working" : "checkbox"
-						}
+						name={!favor.completed ? "code-working" : "checkbox"}
 						size={22}
 						color={GLOBAL_STYLES.colors.blue300}
 						style={styles.icon}

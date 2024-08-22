@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Image,
 	Pressable,
@@ -14,8 +14,8 @@ import apiService from "../../api/apiRequest";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { GLOBAL_STYLES } from "../../constants/styles";
 
-import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
 import FloatingButton from "../../components/UI/FloatingButton.js";
+import ScrollViewHelper from "../../components/UI/ScrollViewHelper.js";
 import WishlistAdd from "../../components/Wishlist/WishlistAdd.js";
 import WishlistCard from "../../components/Wishlist/WishlistCard.js";
 import WishlistDelete from "../../components/Wishlist/WishlistDelete.js";
@@ -48,10 +48,10 @@ function WishlistScreen({ user }) {
 			setIsLoading(false);
 		}
 	}, [authToken]);
-	
+
 	useEffect(() => {
 		fetchWishlist();
-		
+
 		const intervalId = setInterval(() => fetchWishlist(), 60000);
 		return () => clearInterval(intervalId);
 	}, [fetchWishlist]);
@@ -89,32 +89,32 @@ function WishlistScreen({ user }) {
 
 	return (
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
-		<View style={styles.page}>
-			<View>
-				<Text style={styles.headerText}>My Wishlist</Text>
-			</View>
+			<View style={styles.page}>
+				<View>
+					<Text style={styles.headerText}>My Wishlist</Text>
+				</View>
 
-			{/* Edit Button */}
-			<View>
-				{!isEditing ? (
-					<Pressable onPress={isEditingHandler} style={styles.editButton}>
-						<Text style={styles.editButtonText}>Edit</Text>
-						<Feather
-							name="edit-2"
-							size={13}
-							color={GLOBAL_STYLES.colors.orange700}
-						/>
-					</Pressable>
-				) : (
-					<Pressable onPress={isEditingHandler} style={styles.doneButton}>
-						<Text style={styles.doneButtonText}>Done</Text>
-					</Pressable>
-				)}
-			</View>
+				{/* Edit Button */}
+				<View>
+					{!isEditing ? (
+						<Pressable onPress={isEditingHandler} style={styles.editButton}>
+							<Text style={styles.editButtonText}>Edit</Text>
+							<Feather
+								name="edit-2"
+								size={13}
+								color={GLOBAL_STYLES.colors.orange700}
+							/>
+						</Pressable>
+					) : (
+						<Pressable onPress={isEditingHandler} style={styles.doneButton}>
+							<Text style={styles.doneButtonText}>Done</Text>
+						</Pressable>
+					)}
+				</View>
 
-			{/* Wishlist Mapping */}
-			<View>
-				{/* {DUMMY_WISHLIST.map((item) => (
+				{/* Wishlist Mapping */}
+				<View>
+					{/* {DUMMY_WISHLIST.map((item) => (
 					<WishlistCard
 						key={item.title}
 						title={item.title}
@@ -125,33 +125,37 @@ function WishlistScreen({ user }) {
 					/>
 				))} */}
 
-				{Object.entries(userWishlist).map(
-					([title, [name, description, price, username, imageUrl, pk]]) => (
-						<WishlistCard
-							key={pk}
-							title={title}
-							description={description}
-							price={price}
-							imagePath={imageUrl}
-							itemId={pk}
-							editStatus={isEditing}
-							onDelete={deleteItem}
-						/>
-					)
-				)}
-			</View>
+					{Object.entries(userWishlist).map(
+						([title, [name, description, price, username, imageUrl, pk]]) => (
+							<WishlistCard
+								key={pk}
+								title={title}
+								description={description}
+								price={price}
+								imagePath={imageUrl}
+								itemId={pk}
+								editStatus={isEditing}
+								onDelete={deleteItem}
+							/>
+						),
+					)}
+				</View>
 
-			{/* Add Button */}
-			{isEditing ? (
-				<FloatingButton
-					onPress={considerAdd}
-					icon="add"
-					color={GLOBAL_STYLES.colors.orange700}
+				{/* Add Button */}
+				{isEditing ? (
+					<FloatingButton
+						onPress={considerAdd}
+						icon="add"
+						color={GLOBAL_STYLES.colors.orange700}
+					/>
+				) : null}
+
+				<WishlistAdd
+					isVisible={isAddVisible}
+					onYes={addItem}
+					onNo={cancelAdd}
 				/>
-			) : null}
-
-			<WishlistAdd isVisible={isAddVisible} onYes={addItem} onNo={cancelAdd} />
-		</View>
+			</View>
 		</ScrollViewHelper>
 	);
 }

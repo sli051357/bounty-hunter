@@ -2,21 +2,21 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
 	FlatList,
+	Pressable,
 	StyleSheet,
 	Text,
 	TextInput,
-	Pressable,
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
+import apiService from "../../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import EditTagPopup from "./EditTagPopup";
 import Tag from "./Tag";
-import apiService from "../../../api/apiRequest";
-import { useSelector } from "react-redux";
 
 const AddTagScreen = ({ currTags, tagsUpdateHandler }) => {
-	const authToken = useSelector((state) => state.authToken.authToken)
+	const authToken = useSelector((state) => state.authToken.authToken);
 	const [tags, setTags] = useState(currTags);
 	const [tagInput, setTagInput] = useState("");
 	const [emojiInput, setEmojiInput] = useState("🍀"); // default emoji
@@ -25,28 +25,28 @@ const AddTagScreen = ({ currTags, tagsUpdateHandler }) => {
 	);
 
 	useEffect(() => {
-		tagsUpdateHandler(tags)
-	}, [tags])
+		tagsUpdateHandler(tags);
+	}, [tagsUpdateHandler, tags]);
 
 	async function createTagCustom(tag) {
 		try {
-			const response = await apiService.createTag(tag, authToken)
+			const response = await apiService.createTag(tag, authToken);
 		} catch (error) {
-			console.error(error)
+			console.error(error);
 		}
 	}
 
 	async function deleteTagCustom(tag) {
 		try {
-			const response = await apiService.deleteTag(tag.name)
+			const response = await apiService.deleteTag(tag.name);
 		} catch (error) {
-			console.error(error)
+			console.error(error);
 		}
 	}
 
 	function addPresetTag(text, color, emoji) {
 		const index = tags.findIndex((tag) => tag.text === text);
-		console.log(index)
+		console.log(index);
 		if (index === -1) {
 			setTags((prev) => [
 				...prev,
@@ -67,15 +67,15 @@ const AddTagScreen = ({ currTags, tagsUpdateHandler }) => {
 					name: tagInput.trim(),
 					emoji: emojiInput.trim(),
 					color: selectedColor,
-					tag_type: "Custom"
+					tag_type: "Custom",
 				},
 			]);
 			createTagCustom({
 				name: tagInput.trim(),
 				emoji: emojiInput.trim(),
 				color: selectedColor,
-				tag_type: "Custom"
-			})
+				tag_type: "Custom",
+			});
 			setTagInput("");
 			setEmojiInput("🍀"); // reset to default
 		}
@@ -83,7 +83,7 @@ const AddTagScreen = ({ currTags, tagsUpdateHandler }) => {
 
 	const removeTag = (index) => {
 		const tagToRemove = tags[index];
-		deleteTagCustom(tagToRemove)
+		deleteTagCustom(tagToRemove);
 		const newTags = tags.filter((_, i) => i !== index);
 		setTags(newTags);
 	};
@@ -93,22 +93,31 @@ const AddTagScreen = ({ currTags, tagsUpdateHandler }) => {
 			<View style={styles.container}>
 				<Text style={styles.title}>Tags</Text>
 
-        {/* preset tags */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preset</Text>
-          <View style={styles.line} />
-          <View style={styles.presetTagsContainer}>
-            <Pressable style={[styles.presetTag, { backgroundColor: '#F2B093' }]} onPress={() => addPresetTag("Shopping", "#F2B093", "🛍️")}>
-              <Text style={styles.presetTagText}>🛍️ Shopping</Text>
-            </Pressable>
-            <Pressable style={[styles.presetTag, { backgroundColor: '#F2B093' }]} onPress={() => addPresetTag("Dining", "#F2B093", "🍽️")}>
-              <Text style={styles.presetTagText}>🍽️ Dining</Text>
-            </Pressable>
-            <Pressable style={[styles.presetTag, { backgroundColor: '#F2B093' }]} onPress={() => addPresetTag("Travel", "#F2B093", "✈️")}>
-              <Text style={styles.presetTagText}>✈️ Travel</Text>
-            </Pressable>
-          </View>
-        </View>
+				{/* preset tags */}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Preset</Text>
+					<View style={styles.line} />
+					<View style={styles.presetTagsContainer}>
+						<Pressable
+							style={[styles.presetTag, { backgroundColor: "#F2B093" }]}
+							onPress={() => addPresetTag("Shopping", "#F2B093", "🛍️")}
+						>
+							<Text style={styles.presetTagText}>🛍️ Shopping</Text>
+						</Pressable>
+						<Pressable
+							style={[styles.presetTag, { backgroundColor: "#F2B093" }]}
+							onPress={() => addPresetTag("Dining", "#F2B093", "🍽️")}
+						>
+							<Text style={styles.presetTagText}>🍽️ Dining</Text>
+						</Pressable>
+						<Pressable
+							style={[styles.presetTag, { backgroundColor: "#F2B093" }]}
+							onPress={() => addPresetTag("Travel", "#F2B093", "✈️")}
+						>
+							<Text style={styles.presetTagText}>✈️ Travel</Text>
+						</Pressable>
+					</View>
+				</View>
 
 				{/* custom tags */}
 				<View style={styles.section}>

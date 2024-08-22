@@ -17,7 +17,7 @@ import FilterItem from "./FilterItem";
 import FilterSlider from "./FilterSlider";
 
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"
+import utc from "dayjs/plugin/utc";
 
 function FilterModal({ isVisible, onClose, currFilters }) {
 	dayjs.extend(utc);

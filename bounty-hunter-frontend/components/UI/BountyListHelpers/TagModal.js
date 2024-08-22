@@ -1,3 +1,5 @@
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
 	Modal,
 	Pressable,
@@ -6,26 +8,22 @@ import {
 	Text,
 	View,
 } from "react-native";
-import { useState } from "react";
 import { GLOBAL_STYLES } from "../../../constants/styles";
-import { Ionicons } from "@expo/vector-icons";
-import AddTagScreen from "./AddTagScreen";
 import ScrollViewHelper from "../ScrollViewHelper";
-
-
+import AddTagScreen from "./AddTagScreen";
 
 function TagModal({ isVisible, onClose, currTags }) {
-    const [tagsList, setTagsList] = useState(currTags);
+	const [tagsList, setTagsList] = useState(currTags);
 
-    function updateTagList(tags) {
-        setTagsList(tags)
-    }
+	function updateTagList(tags) {
+		setTagsList(tags);
+	}
 
 	return (
 		<Modal visible={isVisible} transparent={true}>
 			<View style={styles.modalContainer}>
 				<View style={styles.modalStyle}>
-                    <Pressable onPress={() => onClose(tagsList)}>
+					<Pressable onPress={() => onClose(tagsList)}>
 						<Ionicons
 							name="chevron-back"
 							size={24}
@@ -33,12 +31,14 @@ function TagModal({ isVisible, onClose, currTags }) {
 							style={{ marginBottom: 10 }}
 						/>
 					</Pressable>
-                    <ScrollViewHelper backgroundColor={{backgroundColor: GLOBAL_STYLES.colors.brown300}}>
-                        <AddTagScreen 
-                            currTags={tagsList}
-                            tagsUpdateHandler={updateTagList}
-                        />
-                    </ScrollViewHelper>
+					<ScrollViewHelper
+						backgroundColor={{ backgroundColor: GLOBAL_STYLES.colors.brown300 }}
+					>
+						<AddTagScreen
+							currTags={tagsList}
+							tagsUpdateHandler={updateTagList}
+						/>
+					</ScrollViewHelper>
 				</View>
 			</View>
 		</Modal>

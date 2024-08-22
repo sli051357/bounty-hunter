@@ -30,7 +30,16 @@ function UserLinkedAccountsScreen() {
 
 	useFocusEffect(
 		useCallback(() => {
-			fetchLinks();
+			const fetchLinksCallBack = async () => {
+				try {
+					const response = await apiService.getUserLinks(username);
+					console.log(response);
+					setCurrPayments(response);
+				} catch (error) {
+					console.log(error);
+				}
+			};
+			fetchLinksCallBack();
 		}, [username]),
 	);
 

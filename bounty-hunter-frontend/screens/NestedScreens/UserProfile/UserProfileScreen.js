@@ -142,7 +142,7 @@ function UserProfileScreen() {
 		} catch (error) {
 			console.log(error);
 		}
-		
+
 		const response3 = await apiService.getUserPic(username.username);
 		setImageUrl(response3.url);
 	}

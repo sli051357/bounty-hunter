@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Modal,
 	Pressable,
@@ -9,10 +9,10 @@ import {
 	TextInput,
 	View,
 } from "react-native";
-import { GLOBAL_STYLES } from "../../constants/styles";
+import { useSelector } from "react-redux";
 import apiService from "../../api/apiRequest";
 import LoadingOverlay from "../../components/UI/AccountHelpers/LoadingOverlay";
-import { useSelector } from "react-redux";
+import { GLOBAL_STYLES } from "../../constants/styles";
 
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -91,7 +91,9 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 				owner: username,
 				deleted: false,
 			};
-			const response = await apiService.addWishlistItem(JSON.stringify(newItem));
+			const response = await apiService.addWishlistItem(
+				JSON.stringify(newItem),
+			);
 			console.log(response);
 		} catch (error) {
 			console.log(error);
@@ -103,7 +105,7 @@ function WishlistAdd({ isVisible, onYes, onNo, onClose }) {
 		<LoadingOverlay
 			message="Inputting data..."
 			backgroundColor={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-		/>
+		/>;
 	}
 
 	function cancelAdd() {
