@@ -1,0 +1,6 @@
+<form action="{% url 'verification-success' %}" method="get">
+    {% csrf_token %}
+    <fieldset>
+        <p>Your email has been successfully verified!</p>
+    </fieldset>
+</form>
