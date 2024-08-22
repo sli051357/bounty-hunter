@@ -1,10 +1,7 @@
 import json
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from django.views import View
 from .models import Wishlist
-from .forms import WishlistForm
 from django.contrib.auth.models import User
 import base64
 from django.core.files.base import ContentFile

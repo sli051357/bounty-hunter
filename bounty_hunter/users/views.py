@@ -7,7 +7,6 @@ from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse, Http404
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
 from django.middleware.csrf import get_token
 import json
 import os
@@ -19,8 +18,6 @@ from rest_framework.permissions import IsAuthenticated
 from django.template import loader
 
 from django.db.models import Q
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 import base64
 from django.core.files.base import ContentFile
 

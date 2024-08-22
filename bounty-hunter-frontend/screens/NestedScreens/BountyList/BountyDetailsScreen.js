@@ -34,11 +34,14 @@ function BountyDetailsScreen({ route }) {
 		paymentOwed: favor.total_owed_amt,
 		description: favor.description,
 		privacyStatus: favor.privacy,
+		button_states: favor.button_states
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
 		favor.paymentType === "Monetary",
 	);
 	const [isUploading, setIsUploading] = useState(false);
+
+	console.log(favorDetails.button_states);
 
 	// Sender Restricted Function
 	function setFavorDetailsHandler(text, type) {
@@ -64,6 +67,27 @@ function BountyDetailsScreen({ route }) {
 			...prevState,
 			privacyStatus: status,
 		}));
+	}
+
+	async function requestCreateBountyHandler() {
+		setIsUploading(true);
+		try {
+			const data = { "status": "Create" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
+			}
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could not accept favor!");
+		}
+		setIsUploading(false);
+		setIsUploading(false);
+		navigation.navigate("BountiesList");
 	}
 
 	async function requestEditBountyHandler() {
@@ -252,59 +276,148 @@ function BountyDetailsScreen({ route }) {
 							isActive={favorDetails.privacyStatus}
 						/>
 					</View>
-					<View style={styles.bountyLogContainer}>
-						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
-						<View style={styles.bountyTabContainer}>
-							{currEditBountyHistory.map((tab, index) => {
-								//console.log(tab);
-								let typeOnPress = null;
-								let disabled = false;
-								if (tab.type === "Complete Request") {
-									disabled = username === favorDetails.assigneeId;
-									typeOnPress = completeBountyRequestResponseHandler;
-								} else if (tab.type === "Delete Request") {
-									disabled = username === favorDetails.assigneeId;
-									typeOnPress = deleteBountyRequestResponseHandler;
-								} else if (tab.type === "Creation") {
-									disabled = username === favorDetails.senderId;
-									typeOnPress = bountyAcceptanceHandler;
-								}
-								return (
-									<BountyLogTab
-										key={index.toString()}
-										type={tab.type}
-										tabDescription={tab.description}
-										onPress={typeOnPress}
-										disabled={disabled}
-									/>
-								);
-							})}
-						</View>
-					</View>
 					<View style={styles.buttonsContainer}>
-						<Button
-							title="Cancel"
-							onPress={requestCancelBountyHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.brown500,
-								paddingHorizontal: 30,
-								borderRadius: 6,
-							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-						/>
+						{
+							username === favorDetails.assigneeId ? 
+							<>
+								{favorDetails.button_states.assignee.CANCEL ? 
+									<Button
+									title="Cancel"
+									onPress={requestCancelBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.assignee.CREATE ? 
+									<Button
+									title="Accept"
+									onPress={requestCreateBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.assignee.DELETE ? 
+									<Button
+									title="Delete Request"
+									onPress={requestDeleteBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.assignee.COMPLETE ? 
+									<Button
+									title="Complete Request"
+									onPress={requestCompleteBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.assignee.EDIT ? 
+									<Button
+									title="Edit"
+									onPress={requestEditBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
 
-						<Button
-							title="Complete"
-							onPress={requestCompleteBountyHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
-							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.blue300,
-								paddingHorizontal: 48,
-								borderRadius: 6,
-							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-						/>
+			
+							</>
+						: 
+							<>
+								{favorDetails.button_states.owner.CANCEL ? 
+									<Button
+									title="Cancel"
+									onPress={requestCancelBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.owner.CREATE ? 
+									<Button
+									title="Accept"
+									onPress={requestCreateBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.owner.DELETE ? 
+									<Button
+									title="Delete Request"
+									onPress={requestDeleteBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.owner.COMPLETE ? 
+									<Button
+									title="Complete Request"
+									onPress={requestCompleteBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+								{favorDetails.button_states.owner.EDIT ? 
+									<Button
+									title="Edit"
+									onPress={requestEditBountyHandler}
+									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
+									containerStyle={{
+										backgroundColor: GLOBAL_STYLES.colors.brown500,
+										paddingHorizontal: 10,
+										borderRadius: 6,
+									}}
+									textStyle={{ fontSize: 14, fontWeight: "bold" }}
+								/>
+								: null}
+							</>
+						}
+						
 					</View>
 
 					<View style={styles.buttonsContainer}>
@@ -314,10 +427,10 @@ function BountyDetailsScreen({ route }) {
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.error700,
-								paddingHorizontal: 30,
+								paddingHorizontal: 10,
 								borderRadius: 6,
 							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
+							textStyle={{ fontSize: 14, fontWeight: "bold" }}
 						/>
 						<Button
 							title="Edit"
@@ -325,10 +438,10 @@ function BountyDetailsScreen({ route }) {
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.error700,
-								paddingHorizontal: 30,
+								paddingHorizontal: 10,
 								borderRadius: 6,
 							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
+							textStyle={{ fontSize: 14, fontWeight: "bold" }}
 						/>
 					</View>
 				</View>
@@ -411,5 +524,35 @@ const styles = StyleSheet.create({
 		gap: 12,
 	},
 });
+
+/*{ <View style={styles.bountyLogContainer}>
+						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
+						<View style={styles.bountyTabContainer}>
+							{currEditBountyHistory.map((tab, index) => {
+								//console.log(tab);
+								let typeOnPress = null;
+								let disabled = false;
+								if (tab.type === "Complete Request") {
+									disabled = username === favorDetails.assigneeId;
+									typeOnPress = completeBountyRequestResponseHandler;
+								} else if (tab.type === "Delete Request") {
+									disabled = username === favorDetails.assigneeId;
+									typeOnPress = deleteBountyRequestResponseHandler;
+								} else if (tab.type === "Creation") {
+									disabled = username === favorDetails.senderId;
+									typeOnPress = bountyAcceptanceHandler;
+								}
+								return (
+									<BountyLogTab
+										key={index.toString()}
+										type={tab.type}
+										tabDescription={tab.description}
+										onPress={typeOnPress}
+										disabled={disabled}
+									/>
+								);
+							})}
+						</View>
+</View> } */
 
 export default BountyDetailsScreen;

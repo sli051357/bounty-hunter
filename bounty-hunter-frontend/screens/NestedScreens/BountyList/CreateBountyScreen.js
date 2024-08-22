@@ -45,17 +45,17 @@ function CreateBountyScreen() {
 	const [tagModalVisable, setTagModalVisable] = useState(false);
 	console.log(tags);
 
-	useEffect(() => {
-		async function fetchTagList() {
-			try {
-				const response = await apiService.viewTagsList();
-				console.log(response.tags);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		fetchTagList();
-	}, []);
+	// useEffect(() => {
+	// 	async function fetchTagList() {
+	// 		try {
+	// 			const response = await apiService.viewTagsList();
+	// 			console.log(response.tags);
+	// 		} catch (error) {
+	// 			console.log(error);
+	// 		}
+	// 	}
+	// 	fetchTagList();
+	// }, []);
 
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -67,14 +67,14 @@ function CreateBountyScreen() {
 	function setIsMonetaryStatusHandeler(text) {
 		if (text === "Monetary") {
 			setIsMonetaryStatus(true);
-			setTagsHandler("Monetary", false);
-			setTagsHandler("Monetary", true);
-			setTagsHandler("Non-Monetary", false);
+			// setTagsHandler("Monetary", false);
+			// setTagsHandler("Monetary", true);
+			// setTagsHandler("Non-Monetary", false);
 		} else {
 			setIsMonetaryStatus(false);
-			setTagsHandler("Non-Monetary", false);
-			setTagsHandler("Non-Monetary", true);
-			setTagsHandler("Monetary", false);
+			// setTagsHandler("Non-Monetary", false);
+			// setTagsHandler("Non-Monetary", true);
+			// setTagsHandler("Monetary", false);
 		}
 	}
 
@@ -114,7 +114,7 @@ function CreateBountyScreen() {
 				assignee: favorDetails.assigneeId, // Same with Id
 				owner: username,
 				name: favorDetails.favorName,
-				tags: { tags: tags },
+				//tags: { tags: tags },
 				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
 				total_owed_amt: isMonetaryStatus ? favorDetails.paymentOwed : 0,
 				total_owed_wishlist: isMonetaryStatus ? "" : favorDetails.paymentOwed,
@@ -202,7 +202,7 @@ function CreateBountyScreen() {
 							<IconButton
 								icon="add-sharp"
 								iconSize={18}
-								onPress={() => setTagModalVisable(true)}
+								onPress={() => console.log("Tags Create Func")}
 								color={GLOBAL_STYLES.colors.orange700}
 							/>
 						</View>

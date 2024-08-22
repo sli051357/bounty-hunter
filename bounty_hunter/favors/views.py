@@ -1,13 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User, AnonymousUser
-from .models import Favor, Tag
+from .models import Favor
 from django.http import JsonResponse
-from .forms import FavorForm, TagForm
 from django.db.models import Q
-from django.contrib.auth.models import User
 from datetime import datetime, timedelta
-import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
 from wishlist.models import Wishlist
@@ -19,8 +15,6 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 import json
 
 CREATE = "Create"
@@ -132,10 +126,10 @@ def favor_list(request): # ex: favors/
     if assignee_id and assignee_id != '':
         query = query_method(query, or_query, Q(assignee__id=assignee_id))
 
-    # filter by tag id
-    tag_id = request.GET.get('tag')
-    if tag_id and tag_id != '':
-        query = query_method(query, or_query, Q(tags__id=tag_id))
+    # # filter by tag id
+    # tag_id = request.GET.get('tag')
+    # if tag_id and tag_id != '':
+    #     query = query_method(query, or_query, Q(tags__id=tag_id))
 
     #print(Favor.objects.filter(completed=False))
 
@@ -273,7 +267,7 @@ def favor_list(request): # ex: favors/
     # display favors and corresponding tags
     favors_list = []
     for f in favors:
-        tags = list(f.tags.all().values())
+        # tags = list(f.tags.all().values())
         f_data = {"name": f.name, 
                   "id": f.id, 
                   "description": f.description, 
@@ -290,7 +284,7 @@ def favor_list(request): # ex: favors/
                   "active": f.active, 
                   "deleted": f.deleted, 
                   "completed": f.completed,
-                  "tags": tags,}
+                  "button_states": f.button_states}
         #print(f.created_at)
         #print(type(f.total_owed_wishlist))
         favors_list.append(f_data)
@@ -302,7 +296,7 @@ def favor_list(request): # ex: favors/
 # view a specific favor based on id
 def favor_detail(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id)
-    tags = list(favor.tags.all().values())
+    # tags = list(favor.tags.all().values())
     favor_data = {"name": favor.name, 
                   "id": favor.id, 
                   "description": favor.description, 
@@ -319,7 +313,7 @@ def favor_detail(request, favor_id):
                   "active": favor.active, #only show active in frontend
                   "deleted": favor.deleted, 
                   "completed": favor.completed,
-                  "tags": tags,}
+                  "button_states": favor.button_states}
     
     return JsonResponse(favor_data)
 
@@ -349,14 +343,14 @@ def favor_detail(request, favor_id):
 #     return JsonResponse({"tags": tags_list})
 
 # view a specific tag based on id
-def tag_detail(request, tag_id):
-    tag = get_object_or_404(Tag, pk=tag_id)
-    favors = list(Favor.objects.filter(tags=tag).values())
-    tag_data = {"name": tag.name,
-                "id": tag.id,
-                "color": tag.color,
-                "favors": favors}
-    return JsonResponse(tag_data)
+# def tag_detail(request, tag_id):
+#     tag = get_object_or_404(Tag, pk=tag_id)
+#     favors = list(Favor.objects.filter(tags=tag).values())
+#     tag_data = {"name": tag.name,
+#                 "id": tag.id,
+#                 "color": tag.color,
+#                 "favors": favors}
+#     return JsonResponse(tag_data)
 
 # create a new favor
 # @login_required
@@ -364,7 +358,6 @@ def tag_detail(request, tag_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_favor(request):
-    curr_user = request.user
     data = json.loads(request.body)
     #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
     name = data.get('name', None)
@@ -380,8 +373,8 @@ def create_favor(request):
     assignee_status = INCOMPLETE
     completed = False
     active = False
-    new_tags = get_tags(data.get('tags', None), curr_user)
-    print("create_favor tags: ",new_tags)
+    #new_tags = get_tags(data.get('tags', None), curr_user)
+    #print("create_favor tags: ",new_tags)
     #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
 
     wishlist_item_name = data.get('total_owed_wishlist', None)
@@ -398,43 +391,32 @@ def create_favor(request):
                     active=active, owner_status=owner_status, 
                     assignee_status=assignee_status, completed=completed)
     newfavor.save()
-    newfavor.tags.set(new_tags)
+    #newfavor.tags.set(new_tags)
 
     return JsonResponse({"success": True, "favor_id": newfavor.id})
 
-def get_tags(input, curr_user):
-    # tags = Tag.objects.filter(owner=curr_user)
-    # tags_list = []
-    # for t in tags:
-    #     t_data = {"color": t.color, 
-    #               "emoji": t.emoji, 
-    #               "text": t.text, 
-    #             }
-    #     tags_list.append(t_data)
-    tags_list = list(Tag.objects.filter(owner=curr_user).values('id'))
-    tag_ids = []
-    for t in tags_list:
-        tag_ids.append(t['id'])
+# def get_tags(input, curr_user):
+#     # tags = Tag.objects.filter(owner=curr_user)
+#     # tags_list = []
+#     # for t in tags:
+#     #     t_data = {"color": t.color, 
+#     #               "emoji": t.emoji, 
+#     #               "text": t.text, 
+#     #             }
+#     #     tags_list.append(t_data)
+#     tags_list = list(Tag.objects.filter(owner=curr_user).values('id'))
+#     tag_ids = []
+#     for t in tags_list:
+#         tag_ids.append(t['id'])
 
-    print("List of tag ids: ", tag_ids)
+#     print("List of tag ids: ", tag_ids)
 
-    return tag_ids
+#     return tag_ids
 
 def get_total_owed_wishlist(input):
     pass
 
-# action history
-def log_edit_history(favor, user, action, details=None):
-    history_entry = {
-        "timestamp": datetime.now().isoformat(),
-        "user": user.username,
-        "action": action,
-        "owner_status": favor.owner_status,
-        "assignee_status": favor.assignee_status,
-        "details": details
-    }
-    favor.bounty_edit_history.append(history_entry)
-    favor.save()
+
 
 # edit a favor 
 # when edit favor request is made, a second request to update the statuses must also be made
@@ -469,11 +451,6 @@ def edit_favor(request, favor_id):
     
     return JsonResponse({"status":"success"})
 
-# @login_required
-def get_favor_history(request, favor_id):
-    favor = get_object_or_404(Favor, pk=favor_id)
-    history = favor.bounty_edit_history
-    return JsonResponse({"history": history})
 
 
 # create a new tag
@@ -494,41 +471,41 @@ def get_favor_history(request, favor_id):
 #     else:
 #         return JsonResponse({"error": "GET method not allowed"}, status=405)
     
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def create_tag(request):
-    print(request.user)
-    data = json.loads(request.body)
-    emoji = data.get('emoji', None)
-    print(emoji)
-    owner = request.user
-    name = data.get("name", None)
-    color = data.get('color', None)
-    tag_type = data.get('tag_type', None)
+# @api_view(['POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def create_tag(request):
+#     print(request.user)
+#     data = json.loads(request.body)
+#     emoji = data.get('emoji', None)
+#     print(emoji)
+#     owner = request.user
+#     name = data.get("name", None)
+#     color = data.get('color', None)
+#     tag_type = data.get('tag_type', None)
 
-    newTag = Tag(emoji=emoji, owner=owner, name=name, color=color, tag_type=tag_type)
-    newTag.save()
-    print("new tag emoji: ",newTag.emoji)
-    print("new tag name: ", newTag.name)
+#     newTag = Tag(emoji=emoji, owner=owner, name=name, color=color, tag_type=tag_type)
+#     newTag.save()
+#     print("new tag emoji: ",newTag.emoji)
+#     print("new tag name: ", newTag.name)
 
-    return JsonResponse({"success": True, "tag_id": newTag.id})
+#     return JsonResponse({"success": True, "tag_id": newTag.id})
 
-# edit a tag 
-# @login_required
-def edit_tag(request, tag_id):
-    if request.user == AnonymousUser:
-        return JsonResponse(status=403,data={"status": "Permission Denied"})
-    tag = get_object_or_404(Tag, pk=tag_id)
-    if request.method == "POST":
-        form = TagForm(request.POST, instance=tag)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({"success": True})
-        else:
-            return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        return JsonResponse({"error": "GET method not allowed"}, status=405)
+# # edit a tag 
+# # @login_required
+# def edit_tag(request, tag_id):
+#     if request.user == AnonymousUser:
+#         return JsonResponse(status=403,data={"status": "Permission Denied"})
+#     tag = get_object_or_404(Tag, pk=tag_id)
+#     if request.method == "POST":
+#         form = TagForm(request.POST, instance=tag)
+#         if form.is_valid():
+#             form.save()
+#             return JsonResponse({"success": True})
+#         else:
+#             return JsonResponse({"success": False, "errors": form.errors})
+#     else:
+#         return JsonResponse({"error": "GET method not allowed"}, status=405)
     
 # change status of favor users for all statuses. 
 @api_view(['POST'])
@@ -555,6 +532,9 @@ def change_status(request, favor_id):
     else:
         print("sender is reciever")
         transition = (curr_state,(1,status))
+
+    print(transition)
+    
     if transition not in TRANSITIONS:
         print("invalid transition")
         return JsonResponse({"status": "fail"})
@@ -586,7 +566,6 @@ def change_status(request, favor_id):
 # updates favor based on current state of owner status and assignee status
 def apply_transitions(favor):
     curr_state = (favor.owner_status,favor.assignee_status)
-    log_edit_history(favor, favor.owner, f"Transitioned to {curr_state}")
     #if state has been created but not accepted:
     if curr_state == STATES[1]:
         favor.completed = False
@@ -629,7 +608,215 @@ def apply_transitions(favor):
         favor.deleted = False
         favor.complete = True
         favor.active=False
+
+    try:
+        idx = STATES.index(curr_state)
+    except ValueError:
+        print("invalid transition in states")
+    
+    match idx:
+        #favor is incomplete
+        case 0:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":True,
+                        "COMPLETE":True,
+                        "EDIT" : True,
+                        "CANCEL": False
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":True,
+                        "COMPLETE":True,
+                        "EDIT" : True,
+                        "CANCEL": False
+                }
+            }
+        #favor is created
+        case 1:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":True,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                }
+            }
+        #favor is to be deleted
+        case 2:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": False
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": False
+                }
+            }
+        #favor has been requested to be completed by assignee
+        case 3:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":True,
+                        "EDIT" : False,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                }
+            }
+        #favor has been reqeusted for completion by owner
+        case 4:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":True,
+                        "EDIT" : False,
+                        "CANCEL": True
+                }
+            }
+        # favor is completed
+        case 5:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": False
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": False
+                }
+            }
+        # favor requested deletion by owner
+        case 6:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":True,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                }
+            }
+        # assignee request deletion
+        case 7:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":True,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                }
+            }
+        # owner request edit
+        case 8:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : True,
+                        "CANCEL": True
+                }
+            }
+        #assignee request edit
+        case 9:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : True,
+                        "CANCEL": True
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":False,
+                        "COMPLETE":False,
+                        "EDIT" : False,
+                        "CANCEL": True
+                }
+            }
+        #edit complete, should be same as state 0.
+        case 10:
+            favor.button_states = {
+                "owner":{
+                        "CREATE":False,
+                        "DELETE":True,
+                        "COMPLETE":True,
+                        "EDIT" : True,
+                        "CANCEL": False
+                },
+                "assignee":{
+                        "CREATE":False,
+                        "DELETE":True,
+                        "COMPLETE":True,
+                        "EDIT" : True,
+                        "CANCEL": False
+                }
+            }
+
+
     favor.save()
+
 
 def recalculateRating(favor):
     updateValue(favor)
@@ -646,16 +833,12 @@ def updateValue(favor):
 def show_change_status(request, favor_id):
     return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
-# delete a tag based on tag id
-@api_view(['POST'])
-def delete_tag(request, tag_name):
-    tag = get_object_or_404(Tag, name=tag_name)
-    if tag.owner != request.user:
-        return JsonResponse({"success": False})
-    else:
-        tag.delete()
-        return JsonResponse({"success": True})
-
-
-
-
+# # delete a tag based on tag id
+# @api_view(['POST'])
+# def delete_tag(request, tag_name):
+#     tag = get_object_or_404(Tag, name=tag_name)
+#     if tag.owner != request.user:
+#         return JsonResponse({"success": False})
+#     else:
+#         tag.delete()
+#         return JsonResponse({"success": True})
