@@ -36,6 +36,7 @@ frontend-format:
 
 build-job:       # build frontend app here
   stage: build
+  image: python:latest
   before_script:
     - python --version ; pip --version  # For debugging
     - pip install virtualenv
