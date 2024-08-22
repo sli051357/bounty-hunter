@@ -1,5 +1,4 @@
 from django.db import models
-import PIL
 from django.contrib.auth.models import User
 import random
 

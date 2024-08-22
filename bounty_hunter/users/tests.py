@@ -2,7 +2,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import FriendRequest, UserProfileInfo
+from .models import UserProfileInfo
 
 
 class DisplayNameTestCase(TestCase):

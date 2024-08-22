@@ -1,5 +1,4 @@
 from django.urls import path
-import rest_framework.authtoken.views
 from . import views
 
 

@@ -1,13 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User, AnonymousUser
 from .models import Favor
 from django.http import JsonResponse
-from .forms import FavorForm
 from django.db.models import Q
-from django.contrib.auth.models import User
 from datetime import datetime, timedelta
-import types
 from decimal import Decimal
 from django.utils.dateparse import parse_date
 from wishlist.models import Wishlist
@@ -19,8 +15,6 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 import json
 
 CREATE = "Create"
@@ -349,14 +343,14 @@ def favor_detail(request, favor_id):
 #     return JsonResponse({"tags": tags_list})
 
 # view a specific tag based on id
-def tag_detail(request, tag_id):
-    tag = get_object_or_404(Tag, pk=tag_id)
-    favors = list(Favor.objects.filter(tags=tag).values())
-    tag_data = {"name": tag.name,
-                "id": tag.id,
-                "color": tag.color,
-                "favors": favors}
-    return JsonResponse(tag_data)
+# def tag_detail(request, tag_id):
+#     tag = get_object_or_404(Tag, pk=tag_id)
+#     favors = list(Favor.objects.filter(tags=tag).values())
+#     tag_data = {"name": tag.name,
+#                 "id": tag.id,
+#                 "color": tag.color,
+#                 "favors": favors}
+#     return JsonResponse(tag_data)
 
 # create a new favor
 # @login_required
@@ -364,7 +358,6 @@ def tag_detail(request, tag_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_favor(request):
-    curr_user = request.user
     data = json.loads(request.body)
     #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
     name = data.get('name', None)
@@ -840,12 +833,12 @@ def updateValue(favor):
 def show_change_status(request, favor_id):
     return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
-# delete a tag based on tag id
-@api_view(['POST'])
-def delete_tag(request, tag_name):
-    tag = get_object_or_404(Tag, name=tag_name)
-    if tag.owner != request.user:
-        return JsonResponse({"success": False})
-    else:
-        tag.delete()
-        return JsonResponse({"success": True})
+# # delete a tag based on tag id
+# @api_view(['POST'])
+# def delete_tag(request, tag_name):
+#     tag = get_object_or_404(Tag, name=tag_name)
+#     if tag.owner != request.user:
+#         return JsonResponse({"success": False})
+#     else:
+#         tag.delete()
+#         return JsonResponse({"success": True})

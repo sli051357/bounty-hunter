@@ -1,12 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+# from django.core.validators import RegexValidator
 #from django.test import tag
 from django.utils import timezone
 #from django.contrib.postgres.fields import ArrayField
-from datetime import datetime
+# from datetime import datetime
 from wishlist.models import Wishlist
-from django.utils import timezone
 
 # Create your models here.
 # Tag class
