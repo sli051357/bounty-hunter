@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
-from django.test import tag
+#from django.test import tag
 from django.utils import timezone
 #from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
@@ -9,26 +9,26 @@ from wishlist.models import Wishlist
 
 # Create your models here.
 # Tag class
-class Tag(models.Model):
-    # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
-    emoji = models.CharField(max_length=1, default='')
-    name = models.CharField(max_length=20)
-    color = models.CharField(max_length=7, 
-                            validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
-                            help_text="Enter a valid hex code, ie #123456 or #ABC")
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name="owned_tags")
+# class Tag(models.Model):
+#     # currently forces each tag to have a name - do we want to have default tag names? or make names optional?
+#     emoji = models.CharField(max_length=1, default='')
+#     name = models.CharField(max_length=20)
+#     color = models.CharField(max_length=7, 
+#                             validators=[RegexValidator(regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex code, ie #123456 or #ABC")],
+#                             help_text="Enter a valid hex code, ie #123456 or #ABC")
+#     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name="owned_tags")
 
-    # preset or custom tag 
-    PRESET = "Preset"
-    CUSTOM = "Custom"
-    tag_type_choices = [(PRESET, "Preset"), (CUSTOM, "Custom"),]
-    tag_type = models.CharField(max_length=6, choices=tag_type_choices)
+#     # preset or custom tag 
+#     PRESET = "Preset"
+#     CUSTOM = "Custom"
+#     tag_type_choices = [(PRESET, "Preset"), (CUSTOM, "Custom"),]
+#     tag_type = models.CharField(max_length=6, choices=tag_type_choices)
 
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+#     created_at = models.DateTimeField(default=timezone.now)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 # Favor class
 class Favor(models.Model):
@@ -38,7 +38,7 @@ class Favor(models.Model):
     description = models.TextField(max_length=600)
     created_at = models.DateTimeField(default=datetime.now().date()) # only gives date, not time
     updated_at = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
+    #tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
     points_value = models.IntegerField( default=100)
 
     deleted = models.BooleanField(default=False) 
@@ -82,7 +82,22 @@ class Favor(models.Model):
     assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
 
     # action history
-    bounty_edit_history = models.JSONField(default=list, blank=True)
+    button_states = models.JSONField(default= dict({
+           "owner":{
+                "CREATE":False,
+                "DELETE":False,
+                "COMPLETE":False,
+                "EDIT" : False,
+                "CANCEL": True
+           },
+           "assignee":{
+                "CREATE":True,
+                "DELETE":False,
+                "COMPLETE":False,
+                "EDIT" : False,
+                "CANCEL": True
+           }
+        }))
     
     def save(self, *args, **kwargs):
         # Check if the favor is being marked as complete
