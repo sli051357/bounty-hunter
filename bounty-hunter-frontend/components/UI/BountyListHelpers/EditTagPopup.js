@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { GLOBAL_STYLES } from "../../../constants/styles";
 import Tag from "./Tag";
 
 const EditTagPopup = ({ tag, visible, onClose, onSave }) => {

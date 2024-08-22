@@ -1,56 +1,91 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	FlatList,
+	Pressable,
 	StyleSheet,
 	Text,
 	TextInput,
-	TouchableOpacity,
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
+import apiService from "../../../api/apiRequest";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import EditTagPopup from "./EditTagPopup";
 import Tag from "./Tag";
 
-const TaggingComponent = () => {
-	const [tags, setTags] = useState([]);
+const AddTagScreen = ({ currTags, tagsUpdateHandler }) => {
+	const authToken = useSelector((state) => state.authToken.authToken);
+	const [tags, setTags] = useState(currTags);
 	const [tagInput, setTagInput] = useState("");
 	const [emojiInput, setEmojiInput] = useState("🍀"); // default emoji
 	const [selectedColor, setSelectedColor] = useState(
 		GLOBAL_STYLES.colors.brown500,
-	); // default color
-	const [editTagVisible, setEditTagVisible] = useState(false);
-	const [currentTag, setCurrentTag] = useState(null);
+	);
+
+	useEffect(() => {
+		tagsUpdateHandler(tags);
+	}, [tagsUpdateHandler, tags]);
+
+	async function createTagCustom(tag) {
+		try {
+			const response = await apiService.createTag(tag, authToken);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async function deleteTagCustom(tag) {
+		try {
+			const response = await apiService.deleteTag(tag.name);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	function addPresetTag(text, color, emoji) {
+		const index = tags.findIndex((tag) => tag.text === text);
+		console.log(index);
+		if (index === -1) {
+			setTags((prev) => [
+				...prev,
+				{
+					name: text,
+					emoji: emoji,
+					color: color,
+				},
+			]);
+		}
+	}
 
 	const addTag = () => {
 		if (tagInput.trim() && emojiInput.trim()) {
 			setTags([
 				...tags,
 				{
-					text: tagInput.trim(),
+					name: tagInput.trim(),
 					emoji: emojiInput.trim(),
 					color: selectedColor,
+					tag_type: "Custom",
 				},
 			]);
+			createTagCustom({
+				name: tagInput.trim(),
+				emoji: emojiInput.trim(),
+				color: selectedColor,
+				tag_type: "Custom",
+			});
 			setTagInput("");
 			setEmojiInput("🍀"); // reset to default
 		}
 	};
 
 	const removeTag = (index) => {
+		const tagToRemove = tags[index];
+		deleteTagCustom(tagToRemove);
 		const newTags = tags.filter((_, i) => i !== index);
 		setTags(newTags);
-	};
-
-	const editTag = (index) => {
-		setCurrentTag(tags[index]);
-		setEditTagVisible(true);
-	};
-
-	const saveEditedTag = (updatedTag) => {
-		setTags(tags.map((tag) => (tag === currentTag ? updatedTag : tag)));
-		setEditTagVisible(false);
 	};
 
 	return (
@@ -63,34 +98,31 @@ const TaggingComponent = () => {
 					<Text style={styles.sectionTitle}>Preset</Text>
 					<View style={styles.line} />
 					<View style={styles.presetTagsContainer}>
-						<TouchableOpacity
+						<Pressable
 							style={[styles.presetTag, { backgroundColor: "#F2B093" }]}
+							onPress={() => addPresetTag("Shopping", "#F2B093", "🛍️")}
 						>
 							<Text style={styles.presetTagText}>🛍️ Shopping</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
+						</Pressable>
+						<Pressable
 							style={[styles.presetTag, { backgroundColor: "#F2B093" }]}
+							onPress={() => addPresetTag("Dining", "#F2B093", "🍽️")}
 						>
 							<Text style={styles.presetTagText}>🍽️ Dining</Text>
-						</TouchableOpacity>
+						</Pressable>
+						<Pressable
+							style={[styles.presetTag, { backgroundColor: "#F2B093" }]}
+							onPress={() => addPresetTag("Travel", "#F2B093", "✈️")}
+						>
+							<Text style={styles.presetTagText}>✈️ Travel</Text>
+						</Pressable>
 					</View>
 				</View>
 
 				{/* custom tags */}
 				<View style={styles.section}>
 					<View style={styles.customTagsHeader}>
-						<Text style={styles.sectionTitle}>Custom</Text>
-						<TouchableOpacity
-							style={styles.editButton}
-							onPress={() => setEditTagVisible(true)}
-						>
-							<MaterialIcons
-								name="edit"
-								size={20}
-								color={GLOBAL_STYLES.colors.blue300}
-							/>
-							<Text style={styles.editText}>Edit</Text>
-						</TouchableOpacity>
+						<Text style={styles.sectionTitle}>Selected</Text>
 					</View>
 					<View style={styles.line} />
 					<FlatList
@@ -99,10 +131,10 @@ const TaggingComponent = () => {
 						renderItem={({ item, index }) => (
 							<View style={[styles.tag, { backgroundColor: item.color }]}>
 								<Text style={styles.emoji}>{item.emoji}</Text>
-								<Text style={styles.tagText}>{item.text}</Text>
-								<TouchableOpacity onPress={() => removeTag(index)}>
+								<Text style={styles.tagText}>{item.name}</Text>
+								<Pressable onPress={() => removeTag(index)}>
 									<Text style={styles.removeButtonText}>X</Text>
-								</TouchableOpacity>
+								</Pressable>
 							</View>
 						)}
 						horizontal={true}
@@ -134,7 +166,7 @@ const TaggingComponent = () => {
 						{/* color options */}
 						<View style={styles.colorPickerContainer}>
 							{/* color presets */}
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#F3674D" },
@@ -142,7 +174,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#F3674D")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#F78C44" },
@@ -150,7 +182,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#F78C44")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#FFDE80" },
@@ -158,7 +190,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#FFDE80")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#FDF389" },
@@ -166,7 +198,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#FDF389")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#95CF93" },
@@ -174,7 +206,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#95CF93")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#52C8ED" },
@@ -182,7 +214,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#52C8ED")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#5381C1" },
@@ -190,7 +222,7 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#5381C1")}
 							/>
-							<TouchableOpacity
+							<Pressable
 								style={[
 									styles.colorOption,
 									{ backgroundColor: "#8E71B2" },
@@ -198,24 +230,16 @@ const TaggingComponent = () => {
 								]}
 								onPress={() => setSelectedColor("#8E71B2")}
 							/>
-							<TouchableOpacity style={styles.addColorOption}>
+							<Pressable style={styles.addColorOption}>
 								{/* placeholder for adding new colors */}
 								<Text style={styles.addColorText}>+</Text>
-							</TouchableOpacity>
+							</Pressable>
 						</View>
-						<TouchableOpacity style={styles.createButton} onPress={addTag}>
+						<Pressable style={styles.createButton} onPress={addTag}>
 							<Text style={styles.createButtonText}>Create</Text>
-						</TouchableOpacity>
+						</Pressable>
 					</View>
 					{/* edit tag popup */}
-					{editTagVisible && (
-						<EditTagPopup
-							tag={currentTag}
-							visible={editTagVisible}
-							onClose={() => setEditTagVisible(false)}
-							onSave={saveEditedTag}
-						/>
-					)}
 				</View>
 			</View>
 		</SafeAreaView>
@@ -378,4 +402,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default TaggingComponent;
+export default AddTagScreen;

@@ -36,8 +36,20 @@ frontend-format:
 
 build-job:       # build frontend app here
   stage: build
+  image: python:latest
+  before_script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
   script:
     - echo "building app..."
+    - cd bounty_hunter
+    - python manage.py makemigrations
+    - python manage.py makemigrations --merge
+    - python manage.py migrate
+    - python manage.py flush --noinput
 
 
 backend-unit-test:   

@@ -14,7 +14,15 @@ import { GLOBAL_STYLES } from "../../constants/styles";
 
 import WishlistDelete from "./WishlistDelete";
 
-function WishlistCard({ title, description, price, imagePath, editStatus, itemId, onDelete }) {
+function WishlistCard({
+	title,
+	description,
+	price,
+	imagePath,
+	editStatus,
+	itemId,
+	onDelete,
+}) {
 	const [isDeleteVisible, setIsDeleteVisible] = useState(false);
 
 	function considerDelete() {
@@ -48,7 +56,10 @@ function WishlistCard({ title, description, price, imagePath, editStatus, itemId
 				</View>
 
 				<View style={{ marginLeft: 15 }}>
-					<Image source={{uri: imagePath}} style={[{width: 100, height: 100,}]} />
+					<Image
+						source={{ uri: imagePath }}
+						style={[{ width: 100, height: 100 }]}
+					/>
 				</View>
 			</View>
 

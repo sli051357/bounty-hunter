@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import AddTagScreen from "../../components/UI/BountyListHelpers/AddTagScreen";
 import IconButton from "../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../constants/styles";
 import BountiesListScreen from "../NestedScreens/BountyList/BountiesListScreen";

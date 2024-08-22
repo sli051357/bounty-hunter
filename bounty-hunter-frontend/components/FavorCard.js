@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 //import IconButton from "./UI/IconButton";
 import { GLOBAL_STYLES } from "../constants/styles";
 
@@ -18,9 +19,9 @@ Implementation Notes:
 */
 
 function FavorCard({ favor, onPress }) {
-	// console.log(favor.description);
+	dayjs.extend(utc);
 	return (
-		<Pressable onPress={!favor.completed && !favor.active ? onPress : null}>
+		<Pressable onPress={!favor.completed ? onPress : null}>
 			<View style={styles.container}>
 				<View style={[styles.innerContainer, { alignItems: "flex-start" }]}>
 					<View style={styles.iconsContainer}>
@@ -44,7 +45,7 @@ function FavorCard({ favor, onPress }) {
 				</View>
 				<View style={[styles.innerContainer, { alignItems: "flex-end" }]}>
 					<Text style={styles.text}>
-						Created: {dayjs(favor.created_at).format("YYYY-MM-DD")}
+						Created: {dayjs(favor.created_at).utc().format("YYYY-MM-DD")}
 					</Text>
 					<Text style={styles.mainTextRight}>
 						{favor.total_owed_type === "Monetary"
@@ -52,9 +53,7 @@ function FavorCard({ favor, onPress }) {
 							: favor.total_owed_wishlist}
 					</Text>
 					<Ionicons
-						name={
-							!favor.completed && !favor.active ? "code-working" : "checkbox"
-						}
+						name={!favor.completed ? "code-working" : "checkbox"}
 						size={22}
 						color={GLOBAL_STYLES.colors.blue300}
 						style={styles.icon}

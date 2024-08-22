@@ -17,8 +17,10 @@ import FilterItem from "./FilterItem";
 import FilterSlider from "./FilterSlider";
 
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 function FilterModal({ isVisible, onClose, currFilters }) {
+	dayjs.extend(utc);
 	const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 	const [isStart, setIsStart] = useState(false);
 
@@ -33,7 +35,7 @@ function FilterModal({ isVisible, onClose, currFilters }) {
 	//console.log(statusFilters)
 
 	const statusList = ["Sent", "Received", "Incomplete", "Completed"];
-	const tagList = ["Travel", "Food", "Friends", "Shopping", "Custom"];
+	const tagList = ["Travel", "Food", "Shopping", "Custom"];
 
 	let content;
 
@@ -66,9 +68,9 @@ function FilterModal({ isVisible, onClose, currFilters }) {
 			tags: tags,
 			status: statusFilters,
 			start_date: dayjs(startDate).isBefore(dayjs(endDate))
-				? dayjs(startDate).format("YYYY-MM-DD")
-				: dayjs(endDate).format("YYYY-MM-DD"),
-			end_date: dayjs(endDate).format("YYYY-MM-DD"),
+				? dayjs(startDate).utc().format("YYYY-MM-DD")
+				: dayjs(endDate).utc().format("YYYY-MM-DD"),
+			end_date: dayjs(endDate).utc().format("YYYY-MM-DD"),
 			price_low: startPrice,
 			price_high: endPrice === 1000 ? 999999.99 : endPrice,
 		});

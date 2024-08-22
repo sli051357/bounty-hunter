@@ -18,10 +18,19 @@ function UserLinkedAccountsScreen() {
 	});
 
 	//  {"id": entry.id,"provider":entry.provider_text, "account":entry.account_text}
+	const fetchLinks = async () => {
+		try {
+			const response = await apiService.getUserLinks(username);
+			console.log(response);
+			setCurrPayments(response);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	useFocusEffect(
 		useCallback(() => {
-			const fetchLinks = async () => {
+			const fetchLinksCallBack = async () => {
 				try {
 					const response = await apiService.getUserLinks(username);
 					console.log(response);
@@ -30,8 +39,7 @@ function UserLinkedAccountsScreen() {
 					console.log(error);
 				}
 			};
-
-			fetchLinks();
+			fetchLinksCallBack();
 		}, [username]),
 	);
 

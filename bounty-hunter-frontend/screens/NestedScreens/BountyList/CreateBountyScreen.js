@@ -8,9 +8,8 @@ import {
 	View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { addBounty } from "../../../store/bountyList";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import apiService from "../../../api/apiRequest";
 import LoadingOverlay from "../../../components/UI/AccountHelpers/LoadingOverlay";
 import InputFields from "../../../components/UI/BountyListHelpers/InputFields";
@@ -19,6 +18,7 @@ import Button from "../../../components/UI/Button";
 import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 import today from "../../../util/date";
+import TagModal from "./../../../components/UI/BountyListHelpers/TagModal";
 
 function CreateBountyScreen() {
 	const navigation = useNavigation();
@@ -41,7 +41,21 @@ function CreateBountyScreen() {
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
-	const [tags, setTags] = useState(["Monetary"]);
+	const [tags, setTags] = useState([]);
+	const [tagModalVisable, setTagModalVisable] = useState(false);
+	console.log(tags);
+
+	useEffect(() => {
+		async function fetchTagList() {
+			try {
+				const response = await apiService.viewTagsList();
+				console.log(response.tags);
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		fetchTagList();
+	}, []);
 
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -72,8 +86,9 @@ function CreateBountyScreen() {
 		}));
 	}
 
-	function setTagsHandler(tag, isAdd) {
-		setTags((prev) => (isAdd ? [...prev, tag] : prev.filter((t) => t !== tag)));
+	function setTagsHandler(tags) {
+		setTags(tags);
+		setTagModalVisable(false);
 	}
 
 	function createFavorButtonHandler() {
@@ -187,7 +202,7 @@ function CreateBountyScreen() {
 							<IconButton
 								icon="add-sharp"
 								iconSize={18}
-								onPress={() => console.log("Make tag function")}
+								onPress={() => setTagModalVisable(true)}
 								color={GLOBAL_STYLES.colors.orange700}
 							/>
 						</View>
@@ -225,6 +240,11 @@ function CreateBountyScreen() {
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
 					</View>
+					<TagModal
+						isVisible={tagModalVisable}
+						onClose={setTagsHandler}
+						currTags={tags}
+					/>
 				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>

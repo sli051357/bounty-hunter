@@ -38,7 +38,7 @@ function BountiesListScreen() {
 	const [activeSortingDisplay, setActiveSortingDisplay] =
 		useState("Newest First");
 	const [activeFiltering, setActiveFiltering] = useState({
-		query: "and",
+		query: "or",
 		tags: [],
 		status: [],
 		start_date: dayjs().format("YYYY-MM-DD"),
@@ -48,7 +48,7 @@ function BountiesListScreen() {
 	});
 	const [activeSearch, setActiveSearch] = useState("");
 	const [tempSearch, setTempSearch] = useState("");
-
+	console.log(userBountyList);
 	const fetchList = useCallback(async () => {
 		setError(null);
 		setIsLoading(true);
