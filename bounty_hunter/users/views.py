@@ -16,6 +16,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.template import loader
 
 from django.db.models import Q
 from rest_framework.authentication import TokenAuthentication
@@ -26,10 +27,9 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 
 EMAIL_HOST_USER = "sdsc.team.pentagon@gmail.com"
-BASE_URL = "http://127.0.0.1:8000/"
+BASE_URL = "http://132.249.238.228/"
 
 class CustomAuthToken(ObtainAuthToken):
-
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
@@ -376,17 +376,21 @@ def edit_profile_pic(request, request_username):
     image_data = base64.b64decode(new_pic_string)
     new_pic =  ContentFile(image_data, name=filename)
 
-    if request.user.is_authenticated:
-        if request.user.username == request_username:
-            profile = get_object_or_404(UserProfileInfo, owner=request.user)
-            profile.profile_image = new_pic
-            profile.save()
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse(status=403, data={"status": "fail"})
-    else:
-        return JsonResponse(status=403, data={"status": "fail"})
+    profile = get_object_or_404(UserProfileInfo, owner=request.user)
+    profile.profile_image = new_pic
+    profile.save()
+    return JsonResponse({"status":"success"})
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def remove_profile_pic(request):
+    print(request.user)
+    profile = get_object_or_404(UserProfileInfo, owner=request.user)
+    default_img = profile._meta.get_field('profile_image').get_default()
+    profile.profile_image = default_img    
+    profile.save()
+    return JsonResponse({"status":"success"})
 
 
 @api_view(['POST'])
@@ -458,14 +462,19 @@ def verify(request, token):
     try:
         request_user = get_object_or_404(Token,key=token).user
     except Http404:
-        return JsonResponse({"status":"fail", "error":"token not found"})
+        c={}
+        t = loader.get_template("users/verification-failure.html")
+        return HttpResponse(t.render(c,request))
     if request_user.is_active:
-        return JsonResponse({"status":"fail", "error":"account is already active"})
+        c={}
+        t = loader.get_template("users/verification-failure.html")
+        return HttpResponse(t.render(c,request))
     
     request_user.is_active = True
     request_user.save()
-    return JsonResponse({"status":"success"})
-
+    c={}
+    t = loader.get_template("users/verification-success.html")
+    return HttpResponse(t.render(c,request))
 # for verifying in forgot password. Post the request here.
 def verify_code(request):
     data = json.loads(request.body)

@@ -133,6 +133,20 @@ function UserProfileScreen() {
 		return <ActivityIndicator size="large" color="#0000ff" />;
 	}
 
+	async function handleRemoveProfilePic() {
+		try {
+			const response = await apiService.removeUserPic(authToken.authToken);
+			if (response.status !== "success") {
+				throw new Error("axios request failure");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		
+		const response3 = await apiService.getUserPic(username.username);
+		setImageUrl(response3.url);
+	}
+
 	//if hit the save button, try to save the bio.
 	async function toggleEdit() {
 		console.log(`token = ${authToken.authToken}`);
@@ -201,7 +215,7 @@ function UserProfileScreen() {
 	}
 
 	function removePfp() {
-		setImageUrl(null);
+		handleRemoveProfilePic();
 		setIsPfpModalVisible(false);
 	}
 
