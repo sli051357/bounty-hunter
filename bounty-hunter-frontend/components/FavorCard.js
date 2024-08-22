@@ -21,7 +21,7 @@ Implementation Notes:
 function FavorCard({ favor, onPress }) {
 	dayjs.extend(utc);
 	return (
-		<Pressable onPress={!favor.completed && favor.active ? onPress : null}>
+		<Pressable onPress={!favor.completed ? onPress : null}>
 			<View style={styles.container}>
 				<View style={[styles.innerContainer, { alignItems: "flex-start" }]}>
 					<View style={styles.iconsContainer}>

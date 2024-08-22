@@ -34,13 +34,6 @@ function BountyDetailsScreen({ route }) {
 		paymentOwed: favor.total_owed_amt,
 		description: favor.description,
 		privacyStatus: favor.privacy,
-		bountyEditHistory: [
-			{
-				sender: username,
-				description: "Would you like to accept this bounty?",
-				type: "Creation",
-			},
-		],
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
 		favor.paymentType === "Monetary",
