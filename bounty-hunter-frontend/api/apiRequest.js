@@ -363,18 +363,17 @@ const apiService = {
 		} catch (error) {}
 	},
 
-	// id: favor id
-	// data: {"status": "Create"/"Delete"/"Edit"/"Cancel"/"Complete"/"Incomplete"}
-	// returns {"success": True} or {"success": False, "errors": "invalid favor state"/"invalid input"}
-	// changeBountyStatus: async (id, data) => {
-	// 	try {
-	// 		const response = await axiosInstance.post(
-	// 			`/favors/${id}/change-status`,
-	// 			data,
-	// 		);
-	// 		return response.data;
-	// 	} catch (error) {}
-	// },
+
+	changeBountyStatus: async (id, data, token) => {
+		try {
+			const response = await axiosInstance.post(
+				`/favors/${id}/change-status/`,
+				data,
+				{headers: { authorization: `Token ${token}` }},
+			);
+			return response.data;
+		} catch (error) {}
+	},
 
 	// id: favor id
 	// returns render(request,"favors/test_change_status.html", {"favor_id": favor_id})

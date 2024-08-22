@@ -63,7 +63,7 @@ function BountiesListScreen() {
 				activeSearch,
 				authToken,
 			);
-			//console.log(response.favors);
+			console.log(response.favors);
 			setUserBountyList(response.favors);
 			setIsLoading(false);
 		} catch (error) {

@@ -41,6 +41,8 @@ function BountyDetailsScreen({ route }) {
 	);
 	const [isUploading, setIsUploading] = useState(false);
 
+	console.log(favorDetails.button_states);
+
 	// Sender Restricted Function
 	function setFavorDetailsHandler(text, type) {
 		setFavorDetails((prevState) => ({
@@ -65,6 +67,27 @@ function BountyDetailsScreen({ route }) {
 			...prevState,
 			privacyStatus: status,
 		}));
+	}
+
+	async function requestCreateBountyHandler() {
+		setIsUploading(true);
+		try {
+			const data = { "status": "Create" };
+			const response = await apiService.changeBountyStatus(
+				favor.id,
+				data,
+				authToken,
+			);
+			if (response.status === "fail") {
+				throw new Error("invalid input");
+			}
+		} catch (error) {
+			console.log(error);
+			Alert.alert("Could not accept favor!");
+		}
+		setIsUploading(false);
+		setIsUploading(false);
+		navigation.navigate("BountiesList");
 	}
 
 	async function requestEditBountyHandler() {
@@ -273,7 +296,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.assignee.CREATE ? 
 									<Button
 									title="Accept"
-									onPress={requestCancelBountyHandler}
+									onPress={requestCreateBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -286,7 +309,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.assignee.DELETE ? 
 									<Button
 									title="Delete Request"
-									onPress={requestCancelBountyHandler}
+									onPress={requestDeleteBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -299,7 +322,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.assignee.COMPLETE ? 
 									<Button
 									title="Complete Request"
-									onPress={requestCancelBountyHandler}
+									onPress={requestCompleteBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -312,7 +335,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.assignee.EDIT ? 
 									<Button
 									title="Edit"
-									onPress={requestCancelBountyHandler}
+									onPress={requestEditBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -343,7 +366,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.owner.CREATE ? 
 									<Button
 									title="Accept"
-									onPress={requestCancelBountyHandler}
+									onPress={requestCreateBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -356,7 +379,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.owner.DELETE ? 
 									<Button
 									title="Delete Request"
-									onPress={requestCancelBountyHandler}
+									onPress={requestDeleteBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -369,7 +392,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.owner.COMPLETE ? 
 									<Button
 									title="Complete Request"
-									onPress={requestCancelBountyHandler}
+									onPress={requestCompleteBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -382,7 +405,7 @@ function BountyDetailsScreen({ route }) {
 								{favorDetails.button_states.owner.EDIT ? 
 									<Button
 									title="Edit"
-									onPress={requestCancelBountyHandler}
+									onPress={requestEditBountyHandler}
 									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 									containerStyle={{
 										backgroundColor: GLOBAL_STYLES.colors.brown500,
@@ -395,18 +418,6 @@ function BountyDetailsScreen({ route }) {
 							</>
 						}
 						
-
-						<Button
-							title="Complete"
-							onPress={requestCompleteBountyHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
-							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.blue300,
-								paddingHorizontal: 48,
-								borderRadius: 6,
-							}}
-							textStyle={{ fontSize: 28, fontWeight: "bold" }}
-						/>
 					</View>
 
 					<View style={styles.buttonsContainer}>
