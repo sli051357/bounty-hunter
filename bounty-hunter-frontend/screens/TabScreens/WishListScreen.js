@@ -157,6 +157,7 @@ function WishlistScreen({ user }) {
 				/>
 			</View>
 		</ScrollViewHelper>
+
 	);
 }
 
