@@ -82,7 +82,7 @@ function LoginScreen() {
 	return (
 		<>
 			<LinearGradient
-				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.orange300]}
 				style={styles.background}
 			/>
 			<View style={{ flex: 1, marginTop: insets.top + 40 }}>
