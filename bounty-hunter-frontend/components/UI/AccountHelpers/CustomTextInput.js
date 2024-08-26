@@ -39,9 +39,10 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		fontSize: 16,
-		fontWeight: "bold",
+		// fontWeight: "bold",
 		textAlign: "left",
 		color: GLOBAL_STYLES.colors.brown700,
+		fontFamily: "BaiJamjuree-SemiBold",
 	},
 	textInput: {
 		fontSize: 16,
@@ -49,20 +50,23 @@ const styles = StyleSheet.create({
 		borderColor: GLOBAL_STYLES.colors.brown700,
 		color: GLOBAL_STYLES.colors.brown700,
 		padding: 4,
-		borderWidth: 2,
+		paddingHorizontal: 8,
+		borderWidth: 1.5,
 		maxWidth: "100%",
 		overflow: "hidden",
+		fontFamily: 'BaiJamjuree-Regular',
 	},
 	helperText: {
 		fontSize: 12,
 		textAlign: "left",
-		color: GLOBAL_STYLES.colors.brown700,
+		color: GLOBAL_STYLES.colors.orange700,
+		fontFamily: 'BaiJamjuree-Regular',
 	},
 	textIsInvalid: {
-		color: GLOBAL_STYLES.colors.error700,
+		color: GLOBAL_STYLES.colors.brown700,
 	},
 	inputIsInValid: {
-		borderColor: GLOBAL_STYLES.colors.error300,
+		borderColor: GLOBAL_STYLES.colors.orange700,
 	},
 });
 
