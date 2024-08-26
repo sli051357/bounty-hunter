@@ -21,7 +21,7 @@ import IconButton from "../../../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../../../constants/styles";
 
 function BountiesListScreen() {
-	const authToken = useSelector((state) => state.authToken.authToken);
+	const username = useSelector((state) => state.username.username);
 	const navigation = useNavigation();
 	const [userBountyList, setUserBountyList] = useState([]);
 	// console.log(userBountyList[userBountyList.length - 1])
@@ -63,7 +63,7 @@ function BountiesListScreen() {
 						activeFiltering,
 						activeSorting,
 						activeSearch,
-						authToken,
+						username,
 					);
 					console.log(response.favors);
 					setUserBountyList(response.favors);
@@ -75,7 +75,7 @@ function BountiesListScreen() {
 				}
 			}
 			fetchListFocus();
-		}, [activeFiltering, activeSearch, activeSorting, authToken]),
+		}, [activeFiltering, activeSearch, activeSorting, username]),
 	  );
 
 	const fetchList = useCallback(async () => {
@@ -90,7 +90,7 @@ function BountiesListScreen() {
 				activeFiltering,
 				activeSorting,
 				activeSearch,
-				authToken,
+				username,
 			);
 			console.log(response.favors);
 			setUserBountyList(response.favors);
@@ -100,7 +100,7 @@ function BountiesListScreen() {
 			setError("Failed to fetch bounty list. Please try again.");
 			setIsLoading(false);
 		}
-	}, [activeFiltering, activeSearch, activeSorting, authToken]);
+	}, [activeFiltering, activeSearch, activeSorting, username]);
 
 	useEffect(() => {
 		fetchList();

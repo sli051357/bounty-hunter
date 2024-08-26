@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     # view all favors - ex: /favors/
-    path("", views.favor_list, name="favor_list"), 
+    path("<slug:username>/", views.favor_list, name="favor_list"), 
     # view a specific favor - ex: /favors/2
     path("<int:favor_id>/", views.favor_detail, name="favor_detail"),
     # create a new favor - ex: /favors/create

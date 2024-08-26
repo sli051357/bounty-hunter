@@ -209,15 +209,14 @@ const apiService = {
 	// searchParam: 'some keyword(s) in these quotation marks - searches by bounty title, description, or assignee name'
 	// returns {"favors": list of all favors, including all info about a favor}
 	// to know what each individual favor looks like, see return object below
-	viewBountyList: async (filterParams, sortParams, searchParam, token) => {
+	viewBountyList: async (filterParams, sortParams, searchParam, username) => {
 		const params = new URLSearchParams({
 			...filterParams,
 			...sortParams,
 			search: searchParam,
 		}); // combines all params into one object of URL query format
-		const response = await axiosInstance.get(`/favors?${params}`, {
-			headers: { authorization: `Token ${token}` },
-		}); // puts params into url
+		console.log(username)
+		const response = await axiosInstance.get(`/favors/${username}/?${params}`); // puts params into url
 		return response.data;
 	},
 
