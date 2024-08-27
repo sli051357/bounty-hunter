@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSelector } from "react-redux";
@@ -58,7 +58,7 @@ function UpdatePasswordScreen() {
 	return (
 		<>
 			<LinearGradient
-				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.orange300]}
 				style={styles.background}
 			/>
 			<View style={{ flex: 1, marginTop: insets.top + 40 }}>
@@ -87,12 +87,12 @@ function UpdatePasswordScreen() {
 							helperText="Passwords do not match!"
 							secureTextEntry={true}
 						/>
-						<Button
-							title="Update Password"
+						<Pressable
 							onPress={confirmChangesHandler}
-							buttonStyles={styles.buttonStyles}
-							containerStyle={{ alignSelf: "center" }}
-						/>
+							style={styles.buttonStyles}
+						>
+							<Text style={styles.buttonText}>Update Password</Text>
+						</Pressable>
 					</View>
 				</View>
 			</View>
@@ -122,24 +122,32 @@ const styles = StyleSheet.create({
 		padding: 12,
 		marginHorizontal: "5%",
 		width: "90%",
+		marginTop: "10%",
 	},
 	header: {
 		textAlign: "center",
 		fontSize: 32,
-		color: GLOBAL_STYLES.colors.blue300,
-		fontWeight: "900",
+		color: GLOBAL_STYLES.colors.orange700,
 		alignSelf: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	buttonStyles: {
 		borderRadius: 6,
 		paddingHorizontal: 32,
 		paddingVertical: 8,
 		backgroundColor: GLOBAL_STYLES.colors.blue300,
+		alignSelf: "center",
+	},
+	buttonText: {
+		fontFamily: 'BaiJamjuree-Medium',
+		color: GLOBAL_STYLES.colors.brown300,
+		fontSize: 20,
 	},
 	description: {
 		textAlign: "center",
 		fontSize: 22,
 		color: GLOBAL_STYLES.colors.brown700,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 });
 

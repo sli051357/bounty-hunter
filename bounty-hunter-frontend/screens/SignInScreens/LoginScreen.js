@@ -16,7 +16,7 @@ import { setUsername } from "../../store/username";
 function LoginScreen() {
 	const insets = useSafeAreaInsets();
 	const [signInUser, setSignInUser] = useState({
-		"username or email": "",
+		"username": "",
 		password: "",
 	});
 	const [error, setError] = useState({
@@ -41,11 +41,11 @@ function LoginScreen() {
 			// const token = await apiService.signIn(signInUser);
 			// dispatch(setAuthToken(token))
 			console.log(signInUser);
-			dispatch(setUsername(signInUser["username or email"]));
+			dispatch(setUsername(signInUser["username"]));
 
 			//trying sign in
 			const data = {
-				username: signInUser["username or email"],
+				username: signInUser["username"],
 				password: signInUser.password,
 			};
 			console.log(data);
@@ -90,10 +90,10 @@ function LoginScreen() {
 					<View style={styles.container}>
 						<Text style={styles.header}>Login</Text>
 						<CustomTextInput
-							typeTitle="username or email"
+							typeTitle="username"
 							onPress={signInUserChangeHandler}
 							maxLength={64}
-							value={signInUser["username or email"]}
+							value={signInUser["username"]}
 							keyboardType="default"
 							helperText=""
 							secureTextEntry={false}
@@ -114,7 +114,7 @@ function LoginScreen() {
 							/>
 							<Link
 								to={{ screen: "InputEmailVerifyScreen" }}
-								style={[styles.description, styles.link, {marginTop: -10,}]}
+								style={[styles.description, styles.link, ]}
 							>
 								Forgot Password?
 							</Link>

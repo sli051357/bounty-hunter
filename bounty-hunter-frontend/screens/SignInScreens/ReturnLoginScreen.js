@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import { useDispatch } from "react-redux";
 
 import Button from "../../components/UI/Button";
@@ -18,17 +18,18 @@ function ReturnLoginScreen() {
 	return (
 		<>
 			<LinearGradient
-				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.orange300]}
 				style={styles.background}
 			/>
 			<View style={styles.page}>
 				<Text style={styles.header}>Password Updated!</Text>
-				<Button
-					title="Return to Login"
+
+				<Pressable
 					onPress={returnToLoginHandler}
-					buttonStyles={styles.buttonStyles}
-					containerStyle={{ alignSelf: "center" }}
-				/>
+					style={styles.buttonStyles}
+				>
+					<Text style={styles.buttonText}>Return to Login</Text>
+				</Pressable>
 			</View>
 		</>
 	);
@@ -45,15 +46,21 @@ const styles = StyleSheet.create({
 	header: {
 		textAlign: "center",
 		fontSize: 32,
-		color: GLOBAL_STYLES.colors.blue300,
-		fontWeight: "900",
+		color: GLOBAL_STYLES.colors.orange700,
 		alignSelf: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	buttonStyles: {
 		borderRadius: 6,
 		paddingHorizontal: 32,
 		paddingVertical: 8,
 		backgroundColor: GLOBAL_STYLES.colors.blue300,
+		alignSelf: "center",
+	},
+	buttonText: {
+		fontFamily: 'BaiJamjuree-Medium',
+		color: GLOBAL_STYLES.colors.brown300,
+		fontSize: 20,
 	},
 	background: {
 		position: "absolute",
