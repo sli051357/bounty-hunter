@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
 	},
 	inputIsInValid: {
 		borderColor: GLOBAL_STYLES.colors.orange700,
+		borderWidth: 2,
 	},
 });
 

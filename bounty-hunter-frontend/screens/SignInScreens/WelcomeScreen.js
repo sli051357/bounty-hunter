@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 	link: {
 		textDecorationLine: "underline",
 		color: GLOBAL_STYLES.colors.orange700,
-		fontFamily: 'BaiJamjuree-Medium',
+		fontFamily: "BaiJamjuree-Medium",
 	},
 });
 

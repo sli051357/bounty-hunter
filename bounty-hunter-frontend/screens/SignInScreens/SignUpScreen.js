@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "flex-start",
 		justifyContent: "center",
-		gap: 12,
+		gap: 10,
 		padding: 12,
 		marginHorizontal: "5%",
 		width: "90%",
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
 		color: GLOBAL_STYLES.colors.orange700,
 		// fontWeight: "900",
 		alignSelf: "center",
-		fontFamily: 'BaiJamjuree-Bold',
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	buttonStyles: {
 		borderRadius: 6,
