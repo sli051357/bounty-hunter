@@ -95,6 +95,7 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'prod_db.sqlite3',
     # }
 }
+#
 
 # if is_prod:
 #     DATABASES['default'] = DATABASES['prod_db']
