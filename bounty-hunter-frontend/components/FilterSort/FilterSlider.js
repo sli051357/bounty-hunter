@@ -15,7 +15,7 @@ function FilterSlider({ minPrice, maxPrice, onPress }) {
 				<MultiSlider
 					values={[minPrice, maxPrice]}
 					onValuesChange={handlePriceFilterChange}
-					sliderLength={350}
+					sliderLength={325}
 					min={0}
 					max={1000}
 					step={1}

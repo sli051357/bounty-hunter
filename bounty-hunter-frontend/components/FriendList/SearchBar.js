@@ -72,11 +72,11 @@ const styles = StyleSheet.create({
 	searchIcon: {
 		color: GLOBAL_STYLES.colors.brown700,
 		marginLeft: 5,
-		marginRight: 20,
 	},
 	textInput: {
-		fontFamily: "BaiJamjuree-Medium",
+		fontFamily: "BaiJamjuree-Regular",
 		fontSize: 14,
+		marginLeft: 3,
 	},
 });
 

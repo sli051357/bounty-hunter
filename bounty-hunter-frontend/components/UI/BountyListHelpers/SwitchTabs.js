@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 	defaultPressableStyles: {
 		backgroundColor: GLOBAL_STYLES.colors.brown500,
 		borderRadius: 20,
-		paddingHorizontal: 6,
+		paddingHorizontal: 10,
 		paddingVertical: 2,
 	},
 	selectedPressableStyles: {
@@ -57,9 +57,11 @@ const styles = StyleSheet.create({
 	},
 	defaultText: {
 		color: GLOBAL_STYLES.colors.brown700,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	selectedText: {
 		color: GLOBAL_STYLES.colors.brown300,
+		fontFamily: "BaiJamjuree-Medium",
 	},
 });
 
