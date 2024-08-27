@@ -17,7 +17,7 @@ function LeaderboardFriendTab({
 				<View style={styles.userDetailsView}>
 					<Text style={styles.rankingText}>{rank}</Text>
 					<Image
-						source={require("./../assets/profile.jpeg")}
+						source={userImage}
 						style={styles.image}
 					/>
 					<Text style={styles.usernameText}>{username}</Text>
