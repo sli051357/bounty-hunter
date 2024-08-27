@@ -3,14 +3,12 @@ from . import views
 
 urlpatterns = [
     # view all favors - ex: /favors/
+    path("create/", views.create_favor, name="create_favor"),
     path("<slug:username>/", views.favor_list, name="favor_list"), 
     # view a specific favor - ex: /favors/2
     path("<int:favor_id>/", views.favor_detail, name="favor_detail"),
     path("delete/<int:favor_id>/", views.delete_favor, name="delete"),
     path("complete/<int:favor_id>/", views.complete_favor, name="complete"),
-
-    # create a new favor - ex: /favors/crea te
-    path("create/", views.create_favor, name="create_favor"),
     # edit a favor - ex: /favors/1/edit
     # path("<int:favor_id>/edit", views.edit_favor, name="edit_favor"),
     # action history - ex: /history/deleted

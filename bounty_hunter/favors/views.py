@@ -278,7 +278,6 @@ def favor_list(request, username): # ex: favors/
                   "total_owed_wishlist": f.total_owed_wishlist.title if f.total_owed_wishlist else None,
                   "privacy": f.privacy,
                   "active": f.active, 
-                  "deleted": f.deleted, 
                   "completed": f.completed}
         #print(f.created_at)
         #print(type(f.total_owed_wishlist))
@@ -304,7 +303,6 @@ def favor_detail(request, favor_id):
                   "total_owed_wishlist": favor.total_owed_wishlist.title if favor.total_owed_wishlist else None,
                   "privacy": favor.privacy,
                   "active": favor.active, #only show active in frontend
-                  "deleted": favor.deleted, 
                   "completed": favor.completed,}
     
     return JsonResponse(favor_data)
@@ -385,6 +383,8 @@ def create_favor(request):
     #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
     name = data.get('name', None)
     #print(name)
+    print(data.get("owner", None))
+    print(data.get("assignee", None))
     owner = get_object_or_404(User,username=(data.get("owner", None)))
     description = data.get("description", None)
     assignee = get_object_or_404(User,username=(data.get("assignee", None)))
