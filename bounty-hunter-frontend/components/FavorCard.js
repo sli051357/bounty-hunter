@@ -39,10 +39,12 @@ function FavorCard({ favor, onPress }) {
 			setIsLoading(true);
 			try {
 				const assignPicResponse = await apiService.getUserPic(favor.assignee);
-				const senderPicResponse = await apiService.getUserPic(favor.sender);
+				const senderPicResponse = await apiService.getUserPic(favor.owner);
+				console.log(assignPicResponse)
+				console.log(senderPicResponse)
 				setPicInfo({
-					assignee: assignPicResponse,
-					sender: senderPicResponse,
+					assignee: assignPicResponse.url,
+					sender: senderPicResponse.url,
 				});
 			} catch (error) {
 				console.error(error);
@@ -50,7 +52,7 @@ function FavorCard({ favor, onPress }) {
 			setIsLoading(false);
 		}
 		getProfilePictures();
-	}, [favor.sender, favor.assignee]);
+	}, [favor.owner, favor.assignee]);
 
 	if (isLoading) {
 		return <ActivityIndicator size="large" color="#0000ff" />;

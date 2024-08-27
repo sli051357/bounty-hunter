@@ -17,53 +17,53 @@ from rest_framework.permissions import IsAuthenticated
 
 import json
 
-CREATE = "Create"
-DELETE = "Delete"
-COMPLETE = "Complete"
-INCOMPLETE = "Incomplete"
-EDIT = "Edit"
-CANCEL = "Cancel" 
+# CREATE = "Create"
+# DELETE = "Delete"
+# COMPLETE = "Complete"
+# INCOMPLETE = "Incomplete"
+# EDIT = "Edit"
+# CANCEL = "Cancel" 
 
-STATES =[(INCOMPLETE,INCOMPLETE), (CREATE,INCOMPLETE), (DELETE,DELETE), 
-         (INCOMPLETE,COMPLETE), (COMPLETE,INCOMPLETE),(COMPLETE,COMPLETE),
-         (DELETE,INCOMPLETE),(INCOMPLETE,DELETE),
-         (EDIT,INCOMPLETE),(INCOMPLETE,EDIT),(EDIT,EDIT) ]
+# STATES =[(INCOMPLETE,INCOMPLETE), (CREATE,INCOMPLETE), (DELETE,DELETE), 
+#          (INCOMPLETE,COMPLETE), (COMPLETE,INCOMPLETE),(COMPLETE,COMPLETE),
+#          (DELETE,INCOMPLETE),(INCOMPLETE,DELETE),
+#          (EDIT,INCOMPLETE),(INCOMPLETE,EDIT),(EDIT,EDIT) ]
 
 
 
-TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
-               (STATES[1],(0,CANCEL)): STATES[2],
-               (STATES[1],(1,CANCEL)): STATES[2],
+# TRANSITIONS = {(STATES[1],(1,CREATE)): STATES[0],#creation
+#                (STATES[1],(0,CANCEL)): STATES[2],
+#                (STATES[1],(1,CANCEL)): STATES[2],
 
-               (STATES[0],(0,DELETE)): STATES[6],#deletion
-               (STATES[0],(1,DELETE)):STATES[7],
-               (STATES[6],(1,CANCEL)):STATES[0],
-               (STATES[7],(1,CANCEL)):STATES[0],
-               (STATES[6],(0,CANCEL)):STATES[0],
-               (STATES[7],(0,CANCEL)):STATES[0],
-               (STATES[7],(0,DELETE)):STATES[2],
-               (STATES[6],(1,DELETE)):STATES[2],
+#                (STATES[0],(0,DELETE)): STATES[6],#deletion
+#                (STATES[0],(1,DELETE)):STATES[7],
+#                (STATES[6],(1,CANCEL)):STATES[0],
+#                (STATES[7],(1,CANCEL)):STATES[0],
+#                (STATES[6],(0,CANCEL)):STATES[0],
+#                (STATES[7],(0,CANCEL)):STATES[0],
+#                (STATES[7],(0,DELETE)):STATES[2],
+#                (STATES[6],(1,DELETE)):STATES[2],
 
-               (STATES[0],(0,COMPLETE)):STATES[4],#completion
-               (STATES[0],(1,COMPLETE)):STATES[3],
-               (STATES[4],(1,CANCEL)):STATES[0],
-               (STATES[3],(1,CANCEL)):STATES[0],
-               (STATES[4],(0,CANCEL)):STATES[0],
-               (STATES[3],(0,CANCEL)):STATES[0],
-               (STATES[3],(0,DELETE)):STATES[5],
-               (STATES[4],(1,DELETE)):STATES[5],
+#                (STATES[0],(0,COMPLETE)):STATES[4],#completion
+#                (STATES[0],(1,COMPLETE)):STATES[3],
+#                (STATES[4],(1,CANCEL)):STATES[0],
+#                (STATES[3],(1,CANCEL)):STATES[0],
+#                (STATES[4],(0,CANCEL)):STATES[0],
+#                (STATES[3],(0,CANCEL)):STATES[0],
+#                (STATES[3],(0,DELETE)):STATES[5],
+#                (STATES[4],(1,DELETE)):STATES[5],
 
-               (STATES[0],(0,EDIT)):STATES[8],#edit
-               (STATES[0],(1,EDIT)):STATES[9],
-               (STATES[8],(1,CANCEL)):STATES[0],
-               (STATES[9],(1,CANCEL)):STATES[0],
-               (STATES[8],(0,CANCEL)):STATES[0],
-               (STATES[9],(0,CANCEL)):STATES[0],
-               (STATES[9],(0,EDIT)):STATES[10],
-               (STATES[8],(1,EDIT)):STATES[10],
+#                (STATES[0],(0,EDIT)):STATES[8],#edit
+#                (STATES[0],(1,EDIT)):STATES[9],
+#                (STATES[8],(1,CANCEL)):STATES[0],
+#                (STATES[9],(1,CANCEL)):STATES[0],
+#                (STATES[8],(0,CANCEL)):STATES[0],
+#                (STATES[9],(0,CANCEL)):STATES[0],
+#                (STATES[9],(0,EDIT)):STATES[10],
+#                (STATES[8],(1,EDIT)):STATES[10],
             
             
-                }
+#                 }
 
 MONETARY = "Monetary"
 NONMONETARY = "Nonmonetary"
@@ -277,12 +277,8 @@ def favor_list(request, username): # ex: favors/
                   "total_owed_amt": f.total_owed_amt,
                   "total_owed_wishlist": f.total_owed_wishlist.title if f.total_owed_wishlist else None,
                   "privacy": f.privacy,
-                  "owner_status": f.owner_status,
-                  "assignee_status": f.assignee_status,
                   "active": f.active, 
-                  "deleted": f.deleted, 
-                  "completed": f.completed,
-                  "button_states": f.button_states}
+                  "completed": f.completed}
         #print(f.created_at)
         #print(type(f.total_owed_wishlist))
         favors_list.append(f_data)
@@ -306,14 +302,41 @@ def favor_detail(request, favor_id):
                   "total_owed_amt": favor.total_owed_amt,
                   "total_owed_wishlist": favor.total_owed_wishlist.title if favor.total_owed_wishlist else None,
                   "privacy": favor.privacy,
-                  "owner_status": favor.owner_status,
-                  "assignee_status": favor.assignee_status,
                   "active": favor.active, #only show active in frontend
-                  "deleted": favor.deleted, 
-                  "completed": favor.completed,
-                  "button_states": favor.button_states}
+                  "completed": favor.completed,}
     
     return JsonResponse(favor_data)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_favor(request, favor_id):
+    Favor.objects.filter(pk=favor_id).delete()
+    return JsonResponse({"status":"success"}) 
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def complete_favor(request, favor_id):
+    favor = get_object_or_404(Favor, pk=favor_id )    
+    favor.completed = True
+    favor.save()
+    return JsonResponse({"status":"success"}) 
+
+
+
+def recalculateRating(favor):
+    updateValue(favor)
+    favor.assignee.rating += favor.points_value
+    favor.save()
+
+def updateValue(favor):
+    difference = datetime.now().date() - favor.created_at
+    days_passed = int(difference / (1000 * 3600 * 24))
+    favor.points_value = favor.points_value -( days_passed*10)
+    favor.save()
+
+
 
 # view a list of all tags, with preset tags listed before custom tags
 # def tag_list(request):
@@ -360,17 +383,14 @@ def create_favor(request):
     #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
     name = data.get('name', None)
     #print(name)
+    print(data.get("owner", None))
+    print(data.get("assignee", None))
     owner = get_object_or_404(User,username=(data.get("owner", None)))
     description = data.get("description", None)
     assignee = get_object_or_404(User,username=(data.get("assignee", None)))
     total_owed_type = data.get('total_owed_type', None)
     total_owed_amt = data.get('total_owed_amt', None)
     privacy = data.get('privacy', None)
-    active = data.get('active', None)
-    owner_status = CREATE
-    assignee_status = INCOMPLETE
-    completed = False
-    active = False
     #new_tags = get_tags(data.get('tags', None), curr_user)
     #print("create_favor tags: ",new_tags)
     #total_owed_wishlist = get_total_owed_wishlist(data.get('total_owed_wishlist', None))
@@ -385,9 +405,7 @@ def create_favor(request):
 
     newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
                     total_owed_type=total_owed_type, total_owed_amt=total_owed_amt, 
-                    total_owed_wishlist=total_owed_wishlist, privacy=privacy, 
-                    active=active, owner_status=owner_status, 
-                    assignee_status=assignee_status, completed=completed)
+                    total_owed_wishlist=total_owed_wishlist, privacy=privacy, )
     newfavor.save()
     #newfavor.tags.set(new_tags)
 
@@ -417,37 +435,34 @@ def get_total_owed_wishlist(input):
 
 
 # edit a favor 
-# when edit favor request is made, a second request to update the statuses must also be made
-# @login_required
-def edit_favor(request, favor_id):
-    # this gets the favor and sets it to inactive
-    data = json.loads(request.body)
-    #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
-    name = data.get('name', None)
-    print(name)
-    owner = get_object_or_404(User,username=(data.get("owner", None)))
-    description = data.get("description", None)
-    assignee = get_object_or_404(User,username=(data.get("assignee", None)))
-    total_owed_type = data.get('total_owed_type', None)
-    total_owed_amt = data.get('total_owed_amt', None)
-    privacy = data.get('privacy', None)
-    active = data.get('active', None)
-    owner_status = CREATE
-    assignee_status = INCOMPLETE
-    completed = False
-    active = False
+# # when edit favor request is made, a second request to update the statuses must also be made
+# # @login_required
+# def edit_favor(request, favor_id):
+#     # this gets the favor and sets it to inactive
+#     data = json.loads(request.body)
+#     #fields = ['name', 'description', 'assignee', 'total_owed_type','total_owed_amt', 'total_owed_wishlist', 'privacy', 'active', 'completed', 'tags']
+#     name = data.get('name', None)
+#     print(name)
+#     owner = get_object_or_404(User,username=(data.get("owner", None)))
+#     description = data.get("description", None)
+#     assignee = get_object_or_404(User,username=(data.get("assignee", None)))
+#     total_owed_type = data.get('total_owed_type', None)
+#     total_owed_amt = data.get('total_owed_amt', None)
+#     privacy = data.get('privacy', None)
+#     active = data.get('active', None)
+#     completed = False
+#     active = False
 
-    newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
-                    total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
-                    active=active, owner_status=owner_status, 
-                    assignee_status=assignee_status, completed=completed)
-    newfavor.previous_favor = get_object_or_404(Favor, pk=favor_id)
-    newfavor.save()
-    newfavor.previous_favor.active = False
-    newfavor.previous_favor.save()
+#     newfavor = Favor(name=name, owner=owner, description=description, assignee=assignee, 
+#                     total_owed_type=total_owed_type, total_owed_amt=total_owed_amt,privacy=privacy, 
+#                     active=active, completed=completed)
+#     newfavor.previous_favor = get_object_or_404(Favor, pk=favor_id)
+#     newfavor.save()
+#     newfavor.previous_favor.active = False
+#     newfavor.previous_favor.save()
 
     
-    return JsonResponse({"status":"success"})
+#     return JsonResponse({"status":"success"})
 
 
 
@@ -505,331 +520,318 @@ def edit_favor(request, favor_id):
 #     else:
 #         return JsonResponse({"error": "GET method not allowed"}, status=405)
     
-# change status of favor users for all statuses. 
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def change_status(request, favor_id):
-    data = json.loads(request.body)
-    status = data.get("status", None)
-    print("changing status to " + status)
-    print("logged on as "+ request.user.username)
-    favor = get_object_or_404(Favor, pk=favor_id)
-    curr_state = (favor.owner_status,favor.assignee_status)
+# # change status of favor users for all statuses. 
+# @api_view(['POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def change_status(request, favor_id):
+#     data = json.loads(request.body)
+#     status = data.get("status", None)
+#     print("changing status to " + status)
+#     print("logged on as "+ request.user.username)
+#     favor = get_object_or_404(Favor, pk=favor_id)
+#     curr_state = (favor.owner_status,favor.assignee_status)
     
 
-    #checks if input is valid
-    if (curr_state not in STATES):
-        curr_state = STATES[0]
-        print("invalid state of favor, resetting.")
-        return JsonResponse({"status": "fail"})
+#     #checks if input is valid
+#     if (curr_state not in STATES):
+#         curr_state = STATES[0]
+#         print("invalid state of favor, resetting.")
+#         return JsonResponse({"status": "fail"})
 
-    if favor.owner == request.user:
-        print("sender is owner")
-        transition = (curr_state,(0,status))
-    else:
-        print("sender is reciever")
-        transition = (curr_state,(1,status))
+#     if favor.owner == request.user:
+#         print("sender is owner")
+#         transition = (curr_state,(0,status))
+#     else:
+#         print("sender is reciever")
+#         transition = (curr_state,(1,status))
 
-    print(transition)
+#     print(transition)
     
-    if transition not in TRANSITIONS:
-        print("invalid transition")
-        return JsonResponse({"status": "fail"})
-    (favor.owner_status,favor.assignee_status) = TRANSITIONS[transition]
+#     if transition not in TRANSITIONS:
+#         print("invalid transition")
+#         return JsonResponse({"status": "fail"})
+#     (favor.owner_status,favor.assignee_status) = TRANSITIONS[transition]
 
-    #check if favor has been edited, and cancelled. assumes that the old/new favor has already been created.
-    DELETE_OLD = {(STATES[8],(1,CANCEL)):STATES[0],
-               (STATES[9],(1,CANCEL)):STATES[0],
-               (STATES[8],(0,CANCEL)):STATES[0],
-               (STATES[9],(0,CANCEL)):STATES[0]}
-    #if edits are cancelled, re-enable old favor and delete current one.
-    if transition in DELETE_OLD:
-        temp = favor.previous_favor
-        temp.active = True
-        temp.save()
+#     #check if favor has been edited, and cancelled. assumes that the old/new favor has already been created.
+#     DELETE_OLD = {(STATES[8],(1,CANCEL)):STATES[0],
+#                (STATES[9],(1,CANCEL)):STATES[0],
+#                (STATES[8],(0,CANCEL)):STATES[0],
+#                (STATES[9],(0,CANCEL)):STATES[0]}
+#     #if edits are cancelled, re-enable old favor and delete current one.
+#     if transition in DELETE_OLD:
+#         temp = favor.previous_favor
+#         temp.active = True
+#         temp.save()
 
-        favor.delete()
-        favor.save()
+#         favor.delete()
+#         favor.save()
     
-        favor = temp
+#         favor = temp
         
-    favor.save()
+#     favor.save()
 
-    apply_transitions(favor)
+#     apply_transitions(favor)
     
-    return JsonResponse({"status": "success"})
+#     return JsonResponse({"status": "success"})
 
 
-# updates favor based on current state of owner status and assignee status
-def apply_transitions(favor):
-    curr_state = (favor.owner_status,favor.assignee_status)
-    #if state has been created but not accepted:
-    if curr_state == STATES[1]:
-        favor.completed = False
-        favor.active = False
-        favor.deleted = False
+# # updates favor based on current state of owner status and assignee status
+# def apply_transitions(favor):
+#     curr_state = (favor.owner_status,favor.assignee_status)
+#     #if state has been created but not accepted:
+#     if curr_state == STATES[1]:
+#         favor.completed = False
+#         favor.active = False
+#         favor.deleted = False
 
-    #if favor is incomplete, or has requested to be completed/deleted:
-    elif curr_state in [STATES[0],STATES[3],STATES[4],STATES[6],STATES[7]]:
-        favor.completed = False
-        favor.active = True
-        favor.deleted = False
-        favor.previous_favor = None
+#     #if favor is incomplete, or has requested to be completed/deleted:
+#     elif curr_state in [STATES[0],STATES[3],STATES[4],STATES[6],STATES[7]]:
+#         favor.completed = False
+#         favor.active = True
+#         favor.deleted = False
+#         favor.previous_favor = None
 
     
-    #favor has been requested to be edited
-    elif curr_state in [STATES[8],STATES[9]]:
-        favor.completed = False
-        favor.active = True
-        favor.deleted = False
+#     #favor has been requested to be edited
+#     elif curr_state in [STATES[8],STATES[9]]:
+#         favor.completed = False
+#         favor.active = True
+#         favor.deleted = False
 
-    #favor has been successfully edited, reset favor to regular adn delete old favor
-    elif curr_state in [STATES[10]]:
-        favor.owner_status = INCOMPLETE
-        favor.assignee_status = INCOMPLETE
-        favor.previous_favor.delete()
-        favor.previous_favor = None
-        favor.completed = False
-        favor.active = True
-        favor.deleted = False
+#     #favor has been successfully edited, reset favor to regular adn delete old favor
+#     elif curr_state in [STATES[10]]:
+#         favor.owner_status = INCOMPLETE
+#         favor.assignee_status = INCOMPLETE
+#         favor.previous_favor.delete()
+#         favor.previous_favor = None
+#         favor.completed = False
+#         favor.active = True
+#         favor.deleted = False
         
     
-    #if favor is deleted
-    elif curr_state in [STATES[2]]:
-        favor.completed = False
-        favor.active = False
-        favor.deleted = True
-    #favor must be complete.
-    else:
-        recalculateRating(favor)
-        favor.deleted = False
-        favor.complete = True
-        favor.active=False
+#     #if favor is deleted
+#     elif curr_state in [STATES[2]]:
+#         favor.completed = False
+#         favor.active = False
+#         favor.deleted = True
+#     #favor must be complete.
+#     else:
+#         recalculateRating(favor)
+#         favor.deleted = False
+#         favor.complete = True
+#         favor.active=False
 
-    try:
-        idx = STATES.index(curr_state)
-    except ValueError:
-        print("invalid transition in states")
+#     try:
+#         idx = STATES.index(curr_state)
+#     except ValueError:
+#         print("invalid transition in states")
     
-    match idx:
-        #favor is incomplete
-        case 0:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":True,
-                        "COMPLETE":True,
-                        "EDIT" : True,
-                        "CANCEL": False
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":True,
-                        "COMPLETE":True,
-                        "EDIT" : True,
-                        "CANCEL": False
-                }
-            }
-        #favor is created
-        case 1:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":True,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                }
-            }
-        #favor is to be deleted
-        case 2:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": False
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": False
-                }
-            }
-        #favor has been requested to be completed by assignee
-        case 3:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":True,
-                        "EDIT" : False,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                }
-            }
-        #favor has been reqeusted for completion by owner
-        case 4:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":True,
-                        "EDIT" : False,
-                        "CANCEL": True
-                }
-            }
-        # favor is completed
-        case 5:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": False
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": False
-                }
-            }
-        # favor requested deletion by owner
-        case 6:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":True,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                }
-            }
-        # assignee request deletion
-        case 7:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":True,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                }
-            }
-        # owner request edit
-        case 8:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : True,
-                        "CANCEL": True
-                }
-            }
-        #assignee request edit
-        case 9:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : True,
-                        "CANCEL": True
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":False,
-                        "COMPLETE":False,
-                        "EDIT" : False,
-                        "CANCEL": True
-                }
-            }
-        #edit complete, should be same as state 0.
-        case 10:
-            favor.button_states = {
-                "owner":{
-                        "CREATE":False,
-                        "DELETE":True,
-                        "COMPLETE":True,
-                        "EDIT" : True,
-                        "CANCEL": False
-                },
-                "assignee":{
-                        "CREATE":False,
-                        "DELETE":True,
-                        "COMPLETE":True,
-                        "EDIT" : True,
-                        "CANCEL": False
-                }
-            }
+#     match idx:
+#         #favor is incomplete
+#         case 0:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":True,
+#                         "COMPLETE":True,
+#                         "EDIT" : True,
+#                         "CANCEL": False
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":True,
+#                         "COMPLETE":True,
+#                         "EDIT" : True,
+#                         "CANCEL": False
+#                 }
+#             }
+#         #favor is created
+#         case 1:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":True,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 }
+#             }
+#         #favor is to be deleted
+#         case 2:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": False
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": False
+#                 }
+#             }
+#         #favor has been requested to be completed by assignee
+#         case 3:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":True,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 }
+#             }
+#         #favor has been reqeusted for completion by owner
+#         case 4:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":True,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 }
+#             }
+#         # favor is completed
+#         case 5:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": False
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": False
+#                 }
+#             }
+#         # favor requested deletion by owner
+#         case 6:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":True,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 }
+#             }
+#         # assignee request deletion
+#         case 7:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":True,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 }
+#             }
+#         # owner request edit
+#         case 8:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : True,
+#                         "CANCEL": True
+#                 }
+#             }
+#         #assignee request edit
+#         case 9:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : True,
+#                         "CANCEL": True
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":False,
+#                         "COMPLETE":False,
+#                         "EDIT" : False,
+#                         "CANCEL": True
+#                 }
+#             }
+#         #edit complete, should be same as state 0.
+#         case 10:
+#             favor.button_states = {
+#                 "owner":{
+#                         "CREATE":False,
+#                         "DELETE":True,
+#                         "COMPLETE":True,
+#                         "EDIT" : True,
+#                         "CANCEL": False
+#                 },
+#                 "assignee":{
+#                         "CREATE":False,
+#                         "DELETE":True,
+#                         "COMPLETE":True,
+#                         "EDIT" : True,
+#                         "CANCEL": False
+#                 }
+#             }
 
 
-    favor.save()
+#     favor.save()
 
 
-def recalculateRating(favor):
-    updateValue(favor)
-    favor.assignee.rating += favor.points_value
-    favor.save()
 
-def updateValue(favor):
-    difference = datetime.now().date() - favor.created_at
-    days_passed = int(difference / (1000 * 3600 * 24))
-    favor.points_value = favor.points_value -( days_passed*10)
-    favor.save()
-
-
-def show_change_status(request, favor_id):
-    return render(request,"favors/test_change_status.html", {"favor_id": favor_id})
 
 # # delete a tag based on tag id
 # @api_view(['POST'])

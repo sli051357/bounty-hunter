@@ -220,6 +220,20 @@ const apiService = {
 		return response.data;
 	},
 
+	deleteBounty: async (id,token) => {
+		const response = await axiosInstance.get(`/favors/delete/${id}/`,{
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
+	},
+
+	completeBounty: async (id,token) => {
+		const response = await axiosInstance.get(`/favors/complete/${id}/`,{
+			headers: { authorization: `Token ${token}` },
+		});
+		return response.data;
+	},
+
 	// id:id # of bounty you want to see
 	// returns {"name": favor.name, "id": favor.id, "description": favor.description, "owner": {"id": favor.owner.id, "email": favor.owner.email, "username": favor.owner.username},
 	// "assignee": {"id": favor.assignee.id, "email": favor.assignee.email, "username": favor.assignee.username}, "created_at": favor.created_at, "updated_at": favor.updated_at,
@@ -357,28 +371,6 @@ const apiService = {
 			const response = await axiosInstance.post(
 				`/favors/tags/${id}/edit`,
 				data,
-			);
-			return response.data;
-		} catch (error) {}
-	},
-
-	changeBountyStatus: async (id, data, token) => {
-		try {
-			const response = await axiosInstance.post(
-				`/favors/${id}/change-status/`,
-				data,
-				{ headers: { authorization: `Token ${token}` } },
-			);
-			return response.data;
-		} catch (error) {}
-	},
-
-	// id: favor id
-	// returns render(request,"favors/test_change_status.html", {"favor_id": favor_id})
-	showChangeStatus: async (id) => {
-		try {
-			const response = await axiosInstance.post(
-				`/favors/${id}/test-change-status`,
 			);
 			return response.data;
 		} catch (error) {}

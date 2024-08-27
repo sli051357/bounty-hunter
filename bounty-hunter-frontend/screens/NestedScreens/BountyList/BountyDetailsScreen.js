@@ -34,14 +34,11 @@ function BountyDetailsScreen({ route }) {
 		paymentOwed: favor.total_owed_amt,
 		description: favor.description,
 		privacyStatus: favor.privacy,
-		button_states: favor.button_states,
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
 		favor.paymentType === "Monetary",
 	);
 	const [isUploading, setIsUploading] = useState(false);
-
-	console.log(favorDetails.button_states);
 
 	// Sender Restricted Function
 	function setFavorDetailsHandler(text, type) {
@@ -69,83 +66,20 @@ function BountyDetailsScreen({ route }) {
 		}));
 	}
 
-	async function requestCreateBountyHandler() {
-		setIsUploading(true);
-		try {
-			const data = { status: "Create" };
-			const response = await apiService.changeBountyStatus(
-				favor.id,
-				data,
-				authToken,
-			);
-			if (response.status === "fail") {
-				throw new Error("invalid input");
-			}
-		} catch (error) {
-			console.log(error);
-			Alert.alert("Could not accept favor!");
-		}
-		setIsUploading(false);
-		setIsUploading(false);
-		navigation.navigate("BountiesList");
-	}
-
-	async function requestEditBountyHandler() {
-		setIsUploading(true);
-		try {
-			const data = { status: "Edit" };
-			const response = await apiService.changeBountyStatus(
-				favor.id,
-				data,
-				authToken,
-			);
-			if (response.status === "fail") {
-				throw new Error("invalid input");
-			}
-			//create the new edited favor
-
-			const new_favor = {
-				assignee: favorDetails.assigneeId, // Same with Id
-				owner: username,
-				name: favorDetails.favorName,
-				total_owed_type: isMonetaryStatus ? "Monetary" : "Nonmonetary",
-				total_owed_amt: favorDetails.paymentOwed,
-				description: favorDetails.description,
-				privacy: favorDetails.privacyStatus ? "Public" : "Private",
-			};
-			const response2 = await apiService.editBounty(
-				favor.id,
-				JSON.stringify(new_favor),
-				authToken,
-			);
-			console.log(response2);
-			//dispatch(addBounty(favor));
-		} catch (error) {
-			console.log(error);
-			Alert.alert("it favor!", "Cancel your current request.");
-		}
-		setIsUploading(false);
-		setIsUploading(false);
-		navigation.navigate("BountiesList");
-	}
-
 	async function requestDeleteBountyHandler() {
 		setIsUploading(true);
 		try {
-			const data = { status: "Delete" };
-			const response = await apiService.changeBountyStatus(
+			const response = await apiService.deleteBounty(
 				favor.id,
-				data,
 				authToken,
 			);
-			if (response.status === "fail") {
-				throw new Error("invalid input");
+			if (response.status !== "success") {
+				throw new Error("request failed");
 			}
 		} catch (error) {
 			console.log(error);
-			Alert.alert("Could not delete favor!", "Cancel your current request.");
+			Alert.alert("Could not delete favor!", "Network Error");
 		}
-		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
@@ -153,44 +87,21 @@ function BountyDetailsScreen({ route }) {
 	async function requestCompleteBountyHandler() {
 		setIsUploading(true);
 		try {
-			const data = { status: "Complete" };
-			const response = await apiService.changeBountyStatus(
+			const response = await apiService.completeBounty(
 				favor.id,
-				data,
 				authToken,
 			);
-			if (response.status === "fail") {
-				throw new Error("invalid input");
+			if (response.status !== "success") {
+				throw new Error("request failed");
 			}
 		} catch (error) {
 			console.log(error);
-			Alert.alert("Could not complete favor!", "Cancel your current request.");
+			Alert.alert("Could not complete favor!", "Network Error");
 		}
-		setIsUploading(false);
 		setIsUploading(false);
 		navigation.navigate("BountiesList");
 	}
 
-	async function requestCancelBountyHandler() {
-		setIsUploading(true);
-		try {
-			const data = { status: "Cancel" };
-			const response = await apiService.changeBountyStatus(
-				favor.id,
-				data,
-				authToken,
-			);
-			if (response.status === "fail") {
-				throw new Error("invalid input");
-			}
-		} catch (error) {
-			console.log(error);
-			Alert.alert("Could not cancel your request!");
-		}
-		setIsUploading(false);
-		setIsUploading(false);
-		navigation.navigate("BountiesList");
-	}
 
 	if (isUploading) {
 		<LoadingOverlay
@@ -255,18 +166,8 @@ function BountyDetailsScreen({ route }) {
 						keyboardType="default"
 						multiLineStyles={{ minHeight: 155, flex: 1 }}
 						multiline={true}
+						editable={false}
 					/>
-					<View style={styles.tagsContainer}>
-						<Text style={styles.tagHeader}>Tags</Text>
-						<View style={styles.addTagContainer}>
-							<IconButton
-								icon="add-sharp"
-								iconSize={18}
-								onPress={() => console.log("Make tag function")}
-								color={GLOBAL_STYLES.colors.orange700}
-							/>
-						</View>
-					</View>
 					<View style={styles.privacyStatusContainer}>
 						<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
 						<SwitchTabs
@@ -274,186 +175,27 @@ function BountyDetailsScreen({ route }) {
 							tabTwo="Private"
 							onPress={setPrivacyHandler}
 							isActive={favorDetails.privacyStatus}
+							editable={false}
 						/>
 					</View>
-					<View style={styles.buttonsContainer}>
-						{username === favorDetails.assigneeId ? (
-							<>
-								{favorDetails.button_states.assignee.CANCEL ? (
-									<Button
-										title="Cancel"
-										onPress={requestCancelBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.assignee.CREATE ? (
-									<Button
-										title="Accept"
-										onPress={requestCreateBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.assignee.DELETE ? (
-									<Button
-										title="Delete Request"
-										onPress={requestDeleteBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.assignee.COMPLETE ? (
-									<Button
-										title="Complete Request"
-										onPress={requestCompleteBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.assignee.EDIT ? (
-									<Button
-										title="Edit"
-										onPress={requestEditBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-							</>
-						) : (
-							<>
-								{favorDetails.button_states.owner.CANCEL ? (
-									<Button
-										title="Cancel"
-										onPress={requestCancelBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.owner.CREATE ? (
-									<Button
-										title="Accept"
-										onPress={requestCreateBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.owner.DELETE ? (
-									<Button
-										title="Delete Request"
-										onPress={requestDeleteBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.owner.COMPLETE ? (
-									<Button
-										title="Complete Request"
-										onPress={requestCompleteBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-								{favorDetails.button_states.owner.EDIT ? (
-									<Button
-										title="Edit"
-										onPress={requestEditBountyHandler}
-										buttonStyles={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-										}}
-										containerStyle={{
-											backgroundColor: GLOBAL_STYLES.colors.brown500,
-											paddingHorizontal: 10,
-											borderRadius: 6,
-										}}
-										textStyle={{ fontSize: 14, fontWeight: "bold" }}
-									/>
-								) : null}
-							</>
-						)}
-					</View>
-
 					<View style={styles.buttonsContainer}>
 						<Button
 							title="Delete"
 							onPress={requestDeleteBountyHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
+							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.error700,
+								backgroundColor: GLOBAL_STYLES.colors.brown500,
 								paddingHorizontal: 10,
 								borderRadius: 6,
 							}}
 							textStyle={{ fontSize: 14, fontWeight: "bold" }}
 						/>
 						<Button
-							title="Edit"
-							onPress={requestEditBountyHandler}
-							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.error700 }}
+							title="Complete"
+							onPress={requestCompleteBountyHandler}
+							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
 							containerStyle={{
-								backgroundColor: GLOBAL_STYLES.colors.error700,
+								backgroundColor: GLOBAL_STYLES.colors.blue300,
 								paddingHorizontal: 10,
 								borderRadius: 6,
 							}}
@@ -540,35 +282,5 @@ const styles = StyleSheet.create({
 		gap: 12,
 	},
 });
-
-/*{ <View style={styles.bountyLogContainer}>
-						<Text style={styles.bountyLogHeader}>Bounty Log</Text>
-						<View style={styles.bountyTabContainer}>
-							{currEditBountyHistory.map((tab, index) => {
-								//console.log(tab);
-								let typeOnPress = null;
-								let disabled = false;
-								if (tab.type === "Complete Request") {
-									disabled = username === favorDetails.assigneeId;
-									typeOnPress = completeBountyRequestResponseHandler;
-								} else if (tab.type === "Delete Request") {
-									disabled = username === favorDetails.assigneeId;
-									typeOnPress = deleteBountyRequestResponseHandler;
-								} else if (tab.type === "Creation") {
-									disabled = username === favorDetails.senderId;
-									typeOnPress = bountyAcceptanceHandler;
-								}
-								return (
-									<BountyLogTab
-										key={index.toString()}
-										type={tab.type}
-										tabDescription={tab.description}
-										onPress={typeOnPress}
-										disabled={disabled}
-									/>
-								);
-							})}
-						</View>
-</View> } */
 
 export default BountyDetailsScreen;

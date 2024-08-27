@@ -3,13 +3,14 @@ from . import views
 
 urlpatterns = [
     # view all favors - ex: /favors/
+    path("create/", views.create_favor, name="create_favor"),
     path("<slug:username>/", views.favor_list, name="favor_list"), 
     # view a specific favor - ex: /favors/2
     path("<int:favor_id>/", views.favor_detail, name="favor_detail"),
-    # create a new favor - ex: /favors/create
-    path("create/", views.create_favor, name="create_favor"),
+    path("delete/<int:favor_id>/", views.delete_favor, name="delete"),
+    path("complete/<int:favor_id>/", views.complete_favor, name="complete"),
     # edit a favor - ex: /favors/1/edit
-    path("<int:favor_id>/edit", views.edit_favor, name="edit_favor"),
+    # path("<int:favor_id>/edit", views.edit_favor, name="edit_favor"),
     # action history - ex: /history/deleted
     # view all tags - ex: /favors/tags
     # #path("tags/", views.tag_list, name="tag_list"),
@@ -24,9 +25,8 @@ urlpatterns = [
     # # for whoever is logged in, get net amount owed to the user
     path("amount-owed/<slug:to_user_username>", views.get_total_amt_owed, name="get_total_amt_owed"),
 
-    # more paths for filters, editing/creating favors, etc
-    path("<int:favor_id>/change-status/",views.change_status, name="change_status"),
-    path("<int:favor_id>/test-change-status/",views.show_change_status, name="show_change_status")
+    # # more paths for filters, editing/creating favors, etc
+    # path("<int:favor_id>/change-status/",views.change_status, name="change_status"),
 
 ]
 
