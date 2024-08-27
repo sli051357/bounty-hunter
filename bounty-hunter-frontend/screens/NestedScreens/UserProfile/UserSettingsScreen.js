@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
 	},
 	changePasswordTitle: {
 		fontSize: 22,
-		fontWeight: "600",
 		color: GLOBAL_STYLES.colors.orange700,
+		fontFamily: "BaiJamjuree-SemiBold",
 	},
 	buttonStyles: {
 		borderRadius: 6,
