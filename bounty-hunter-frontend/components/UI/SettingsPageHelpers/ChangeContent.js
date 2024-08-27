@@ -54,17 +54,20 @@ const styles = StyleSheet.create({
 	text: {
 		color: GLOBAL_STYLES.colors.brown700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	editBox: {
-		borderColor: GLOBAL_STYLES.colors.orange700,
+		borderColor: GLOBAL_STYLES.colors.brown700,
 		borderRadius: 8,
 		padding: 4,
-		borderWidth: 2,
+		paddingHorizontal: 8,
+		borderWidth: 1.5,
 	},
 	helperText: {
-		color: GLOBAL_STYLES.colors.brown700,
-		fontWeight: "600",
+		color: GLOBAL_STYLES.colors.orange700,
 		textAlign: "left",
+		fontFamily: "BaiJamjuree-Regular",
+		marginTop: 5,
 	},
 });
 

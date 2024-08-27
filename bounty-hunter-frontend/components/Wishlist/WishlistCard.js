@@ -45,7 +45,7 @@ function WishlistCard({
 		<View style={{ paddingLeft: "5%", paddingRight: "5%" }}>
 			{/* Wishlist Card */}
 			<View style={styles.card}>
-				<View style={{ width: "69%", flexWrap: "wrap" }}>
+				<View style={{ width: "65%", flexWrap: "wrap" }}>
 					<Text style={styles.titleText}>{title}</Text>
 
 					<Hyperlink linkDefault={true} linkStyle={styles.linkStyle}>

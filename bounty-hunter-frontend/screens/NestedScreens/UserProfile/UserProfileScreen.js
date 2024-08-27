@@ -315,23 +315,29 @@ function UserProfileScreen() {
 									/>
 								</>
 							) : (
-								<Button
-									title="Save"
+								// <Button
+								// 	title="Save"
+								// 	onPress={toggleEdit}
+								// 	containerStyle={{ borderRadius: 20 }}
+								// 	buttonStyles={{
+								// 		backgroundColor: GLOBAL_STYLES.colors.orange700,
+								// 		borderRadius: 20,
+								// 		paddingHorizontal: 6,
+								// 	}}
+								// />
+								<Pressable 
 									onPress={toggleEdit}
-									containerStyle={{ borderRadius: 20 }}
-									buttonStyles={{
-										backgroundColor: GLOBAL_STYLES.colors.orange700,
-										borderRadius: 20,
-										paddingHorizontal: 6,
-									}}
-								/>
+									style={styles.buttonStyles}
+								>
+									<Text style={styles.buttonText}>Save</Text>
+								</Pressable>
 							)}
 						</View>
 					</View>
 					<View style={styles.userMainDetailsBottomView}>
 						<View style={styles.editView}>
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
-								Rating:
+								Rating:{" "}
 							</Text>
 							<Text style={styles.scoreTextStyles}>{rating}</Text>
 						</View>
@@ -382,10 +388,12 @@ const styles = StyleSheet.create({
 	smallTextBrown: {
 		color: GLOBAL_STYLES.colors.brown700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	smallTextOrange: {
 		color: GLOBAL_STYLES.colors.orange700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Medium",
 	},
 	userMainDetails: {
 		flex: 1,
@@ -409,9 +417,10 @@ const styles = StyleSheet.create({
 	},
 	usernameStyles: {
 		fontSize: 30,
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		textAlign: "left",
+		fontFamily: "BaiJamjuree-Bold",
+		marginBottom: -10,
 	},
 	editView: {
 		flexDirection: "row",
@@ -425,20 +434,30 @@ const styles = StyleSheet.create({
 		justifyContent: "space-around",
 	},
 	scoreTextStyles: {
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		fontSize: 22,
 		textAlign: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	subtitle: {
 		color: GLOBAL_STYLES.colors.orange700,
-		fontWeight: "bold",
 		textAlign: "left",
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-SemiBold",
 	},
 	recentBountiesStyles: {
 		flex: 1,
 		gap: 8,
 	},
+	buttonStyles: {
+		backgroundColor: GLOBAL_STYLES.colors.orange700,
+		borderRadius: 20,
+		paddingHorizontal: 10,
+	},
+	buttonText: {
+		color: GLOBAL_STYLES.colors.brown300,
+		fontFamily: "BaiJamjuree-Medium",
+		fontSize: 18,
+	}
 });
 export default UserProfileScreen;

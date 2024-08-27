@@ -63,12 +63,13 @@ const styles = StyleSheet.create({
 	text: {
 		color: GLOBAL_STYLES.colors.brown700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	title: {
 		color: GLOBAL_STYLES.colors.orange700,
-		fontWeight: "bold",
 		textAlign: "left",
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-SemiBold",
 	},
 	editBox: {
 		fontSize: 18,
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
 		color: GLOBAL_STYLES.colors.blue300,
 		textDecorationLine: "underline",
 		textAlign: "left",
+		fontFamily: "BaiJamjuree-Regular",
 	},
 });
 

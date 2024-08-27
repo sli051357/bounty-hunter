@@ -158,11 +158,12 @@ function UserSettingsScreen() {
 						helperText=""
 						secureTextEntry={true}
 					/>
-					<Button
-						title="Change Password"
+					<Pressable 
 						onPress={confirmChangesHandler}
-						buttonStyles={styles.buttonStyles}
-					/>
+						style={styles.buttonStyles}
+					>
+						<Text style={styles.buttonText}>Change Password</Text>
+					</Pressable>
 				</View>
 				<View style={styles.viewSpacing}>
 					<TitleWithButton
@@ -214,6 +215,11 @@ const styles = StyleSheet.create({
 		paddingVertical: 8,
 		backgroundColor: GLOBAL_STYLES.colors.orange700,
 	},
+	buttonText: {
+		fontSize: 18,
+		color: GLOBAL_STYLES.colors.brown300,
+		fontFamily: "BaiJamjuree-Medium",
+	}
 });
 
 export default UserSettingsScreen;
