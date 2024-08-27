@@ -90,14 +90,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    'prod_db': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'prod_db.sqlite3',
-    }
+    # 'prod_db': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'prod_db.sqlite3',
+    # }
 }
 
-if is_prod:
-    DATABASES['default'] = DATABASES['prod_db']
+# if is_prod:
+#     DATABASES['default'] = DATABASES['prod_db']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
