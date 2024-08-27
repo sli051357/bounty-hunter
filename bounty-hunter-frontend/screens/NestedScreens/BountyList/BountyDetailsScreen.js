@@ -34,7 +34,7 @@ function BountyDetailsScreen({ route }) {
 		paymentOwed: favor.total_owed_amt,
 		description: favor.description,
 		privacyStatus: favor.privacy,
-		button_states: favor.button_states
+		button_states: favor.button_states,
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(
 		favor.paymentType === "Monetary",
@@ -72,7 +72,7 @@ function BountyDetailsScreen({ route }) {
 	async function requestCreateBountyHandler() {
 		setIsUploading(true);
 		try {
-			const data = { "status": "Create" };
+			const data = { status: "Create" };
 			const response = await apiService.changeBountyStatus(
 				favor.id,
 				data,
@@ -277,147 +277,163 @@ function BountyDetailsScreen({ route }) {
 						/>
 					</View>
 					<View style={styles.buttonsContainer}>
-						{
-							username === favorDetails.assigneeId ? 
+						{username === favorDetails.assigneeId ? (
 							<>
-								{favorDetails.button_states.assignee.CANCEL ? 
+								{favorDetails.button_states.assignee.CANCEL ? (
 									<Button
-									title="Cancel"
-									onPress={requestCancelBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.assignee.CREATE ? 
+										title="Cancel"
+										onPress={requestCancelBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.assignee.CREATE ? (
 									<Button
-									title="Accept"
-									onPress={requestCreateBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.assignee.DELETE ? 
+										title="Accept"
+										onPress={requestCreateBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.assignee.DELETE ? (
 									<Button
-									title="Delete Request"
-									onPress={requestDeleteBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.assignee.COMPLETE ? 
+										title="Delete Request"
+										onPress={requestDeleteBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.assignee.COMPLETE ? (
 									<Button
-									title="Complete Request"
-									onPress={requestCompleteBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.assignee.EDIT ? 
+										title="Complete Request"
+										onPress={requestCompleteBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.assignee.EDIT ? (
 									<Button
-									title="Edit"
-									onPress={requestEditBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-
-			
+										title="Edit"
+										onPress={requestEditBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
 							</>
-						: 
+						) : (
 							<>
-								{favorDetails.button_states.owner.CANCEL ? 
+								{favorDetails.button_states.owner.CANCEL ? (
 									<Button
-									title="Cancel"
-									onPress={requestCancelBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.owner.CREATE ? 
+										title="Cancel"
+										onPress={requestCancelBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.owner.CREATE ? (
 									<Button
-									title="Accept"
-									onPress={requestCreateBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.owner.DELETE ? 
+										title="Accept"
+										onPress={requestCreateBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.owner.DELETE ? (
 									<Button
-									title="Delete Request"
-									onPress={requestDeleteBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.owner.COMPLETE ? 
+										title="Delete Request"
+										onPress={requestDeleteBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.owner.COMPLETE ? (
 									<Button
-									title="Complete Request"
-									onPress={requestCompleteBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
-								{favorDetails.button_states.owner.EDIT ? 
+										title="Complete Request"
+										onPress={requestCompleteBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
+								{favorDetails.button_states.owner.EDIT ? (
 									<Button
-									title="Edit"
-									onPress={requestEditBountyHandler}
-									buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
-									containerStyle={{
-										backgroundColor: GLOBAL_STYLES.colors.brown500,
-										paddingHorizontal: 10,
-										borderRadius: 6,
-									}}
-									textStyle={{ fontSize: 14, fontWeight: "bold" }}
-								/>
-								: null}
+										title="Edit"
+										onPress={requestEditBountyHandler}
+										buttonStyles={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+										}}
+										containerStyle={{
+											backgroundColor: GLOBAL_STYLES.colors.brown500,
+											paddingHorizontal: 10,
+											borderRadius: 6,
+										}}
+										textStyle={{ fontSize: 14, fontWeight: "bold" }}
+									/>
+								) : null}
 							</>
-						}
-						
+						)}
 					</View>
 
 					<View style={styles.buttonsContainer}>

@@ -215,7 +215,7 @@ const apiService = {
 			...sortParams,
 			search: searchParam,
 		}); // combines all params into one object of URL query format
-		console.log(username)
+		console.log(username);
 		const response = await axiosInstance.get(`/favors/${username}/?${params}`); // puts params into url
 		return response.data;
 	},
@@ -362,13 +362,12 @@ const apiService = {
 		} catch (error) {}
 	},
 
-
 	changeBountyStatus: async (id, data, token) => {
 		try {
 			const response = await axiosInstance.post(
 				`/favors/${id}/change-status/`,
 				data,
-				{headers: { authorization: `Token ${token}` }},
+				{ headers: { authorization: `Token ${token}` } },
 			);
 			return response.data;
 		} catch (error) {}

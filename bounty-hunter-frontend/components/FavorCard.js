@@ -1,8 +1,17 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	Image,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { useEffect, useState } from "react";
+import apiService from "../api/apiRequest";
 //import IconButton from "./UI/IconButton";
 import { GLOBAL_STYLES } from "../constants/styles";
 
@@ -19,28 +28,50 @@ Implementation Notes:
 */
 
 function FavorCard({ favor, onPress }) {
+	const [picInfo, setPicInfo] = useState({
+		assignee: "",
+		sender: "",
+	});
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		async function getProfilePictures() {
+			setIsLoading(true);
+			try {
+				const assignPicResponse = await apiService.getUserPic(favor.assignee);
+				const senderPicResponse = await apiService.getUserPic(favor.sender);
+				setPicInfo({
+					assignee: assignPicResponse,
+					sender: senderPicResponse,
+				});
+			} catch (error) {
+				console.error(error);
+			}
+			setIsLoading(false);
+		}
+		getProfilePictures();
+	}, [favor.sender, favor.assignee]);
+
+	if (isLoading) {
+		return <ActivityIndicator size="large" color="#0000ff" />;
+	}
+
 	dayjs.extend(utc);
 	return (
 		<Pressable onPress={!favor.completed ? onPress : null}>
 			<View style={styles.container}>
 				<View style={[styles.innerContainer, { alignItems: "flex-start" }]}>
 					<View style={styles.iconsContainer}>
-						<Image
-							style={styles.icon}
-							source={require("../assets/batman.jpeg")}
-						/>
+						<Image style={styles.icon} source={{ uri: picInfo.sender }} />
 						<Ionicons
 							name="arrow-forward"
 							size={22}
 							color={GLOBAL_STYLES.colors.blue300}
 							style={styles.icon}
 						/>
-						<Image
-							style={styles.icon}
-							source={require("../assets/profile.jpeg")}
-						/>
+						<Image style={styles.icon} source={{ uri: picInfo.assignee }} />
 					</View>
-					<Text style={styles.mainTextLeft}>{favor.assignee}</Text>
+					<Text style={styles.mainTextLeft}>{favor.name}</Text>
 					<Text style={styles.text}>{favor.description}</Text>
 				</View>
 				<View style={[styles.innerContainer, { alignItems: "flex-end" }]}>
