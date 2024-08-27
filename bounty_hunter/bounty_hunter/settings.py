@@ -96,9 +96,8 @@ DATABASES = {
     # }
 }
 #
-
-# if is_prod:
-#     DATABASES['default'] = DATABASES['prod_db']
+if is_prod:
+    DATABASES['default'] = DATABASES['prod_db']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
