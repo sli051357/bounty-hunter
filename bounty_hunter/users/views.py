@@ -253,14 +253,27 @@ def get_friend_count(request):
 @permission_classes([IsAuthenticated])
 def send_friend_request(request, username):
     from_user = request.user
-    to_user = User.objects.get(username=username)
 
-    #can only send if friend or favorited friend
-    if UserProfileInfo.objects.get(owner=from_user).friends.contains(to_user) or UserProfileInfo.objects.get(owner=to_user).friends.contains(from_user):
-        return JsonResponse({"status":"fail"})
-    if UserProfileInfo.objects.get(owner=from_user).favoritedFriends.contains(to_user) or UserProfileInfo.objects.get(owner=to_user).favoritedFriends.contains(from_user):
-        return JsonResponse({"status":"fail"})
+    try:
+        to_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return JsonResponse({"status": "fail", "reason": "User does not exist"}, status=404)
     
+    # Prevent sending a friend request to oneself
+    if from_user == to_user:
+        return JsonResponse({"status": "fail", "reason": "Cannot send friend request to yourself"}, status=400)
+
+    # Can only send if not already friends or favorited friends
+    from_user_profile = UserProfileInfo.objects.get(owner=from_user)
+    to_user_profile = UserProfileInfo.objects.get(owner=to_user)
+    
+    if from_user_profile.friends.contains(to_user) or to_user_profile.friends.contains(from_user):
+        return JsonResponse({"status": "fail", "reason": "Already friends"}, status=400)
+    
+    if from_user_profile.favoritedFriends.contains(to_user) or to_user_profile.favoritedFriends.contains(from_user):
+        return JsonResponse({"status": "fail", "reason": "Already favorited"}, status=400)
+    
+    # Create or return existing friend request
     friend_req, created = FriendRequest.objects.get_or_create(from_user=from_user,to_user=to_user)
     if created:
         return JsonResponse({"status":"success"})
@@ -305,16 +318,17 @@ def remove_friend(request, request_username):
     curr_user = UserProfileInfo.objects.get(owner=request.user)
     friend = User.objects.get(username=request_username)
     # check if user is a friend of curr_user
-    if User.objects.get(username=request_username) in curr_user.friends.all() or User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
+    if User.objects.get(username=request_username) in curr_user.friends.all():
         curr_user.friends.remove(friend)
+
+    elif User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
         curr_user.favoritedFriends.remove(friend)
-        if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse({"status":"fail"})
+    
+    if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
+        return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"status":"fail"})
-
+    
 # @login_required
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])

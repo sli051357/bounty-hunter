@@ -11,8 +11,6 @@ import {
 	View,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setPaymentMethod } from "../../../store/payment";
 
 import apiService from "../../../api/apiRequest.js";
 import FavorCard from "../../../components/FavorCard.js";
@@ -75,6 +73,7 @@ function UserProfileScreen() {
 	useFocusEffect(
 		useCallback(() => {
 			const fetchProfile = async () => {
+				setLoading(true);
 				try {
 					//set the bio
 					const response = await apiService.getUserBio(username.username);
@@ -115,18 +114,21 @@ function UserProfileScreen() {
 							order: "descending",
 						},
 						"",
-						authToken.authToken,
+						username.username,
 					);
 					setRecentBounties(responseBounties.favors);
 				} catch (error) {
 					console.log(error);
-				} finally {
-					setLoading(false);
 				}
+				setLoading(false);
 			};
 
 			fetchProfile();
-		}, [username.username, imageUrl, authToken.authToken]),
+
+			return () => {
+				setIsEditing(false);
+			};
+		}, [username.username, imageUrl]),
 	);
 
 	if (loading) {

@@ -38,11 +38,11 @@ function LeaderBoardScreen() {
 					const mergedList = { ...friendList, ...favoriteList };
 					const tempFriendList = [];
 					Object.entries(mergedList).map(
-						([username, [id, rating, imageUrl]]) => {
+						([username, [id, rating, url]]) => {
 							const entry = {
 								friendUsername: username,
 								friendRating: rating,
-								friendProfilePic: imageUrl,
+								friendProfilePic: {uri:url},
 								friendId: id,
 							};
 							tempFriendList.push(entry);
@@ -51,7 +51,7 @@ function LeaderBoardScreen() {
 					tempFriendList.push({
 						friendUsername: username,
 						friendRating: myRating.rating,
-						friendProfilePic: myProfilePic.imageUrl,
+						friendProfilePic: {uri: myProfilePic.url},
 						friendId: username,
 					});
 					console.log(tempFriendList);

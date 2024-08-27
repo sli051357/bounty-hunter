@@ -1,5 +1,8 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import {
+	ActivityIndicator,
+	Button,
 	Image,
 	Pressable,
 	ScrollView,
@@ -30,6 +33,34 @@ function WishlistScreen({ user }) {
 	const [isEditing, setIsEditing] = useState(false);
 	const [isAddVisible, setIsAddVisible] = useState(false);
 
+	useFocusEffect(
+		useCallback(() => {
+			const fetchFocusWishlist = async () => {
+				setError(null);
+				setIsLoading(true);
+
+				try {
+					const response = await apiService.viewWishlist(authToken);
+					if (!response) {
+						throw new Error("Undefined Information");
+					}
+					console.log(response);
+					setUserWishlist(response);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching data: ", error);
+					setError("Failed to fetch wishlist. Please try again.");
+					setIsLoading(false);
+				}
+			};
+			fetchFocusWishlist();
+
+			return () => {
+				setIsEditing(false);
+			};
+		}, [authToken]),
+	);
+
 	const fetchWishlist = useCallback(async () => {
 		setError(null);
 		setIsLoading(true);
@@ -52,9 +83,13 @@ function WishlistScreen({ user }) {
 	useEffect(() => {
 		fetchWishlist();
 
-		const intervalId = setInterval(() => fetchWishlist(), 60000);
+		const intervalId = setInterval(() => fetchWishlist(), 120000);
 		return () => clearInterval(intervalId);
 	}, [fetchWishlist]);
+
+	function handleRetry() {
+		fetchWishlist();
+	}
 
 	function isEditingHandler() {
 		setIsEditing((curr) => !curr);
@@ -85,6 +120,19 @@ function WishlistScreen({ user }) {
 		} else {
 			console.log("failed");
 		}
+	}
+
+	if (isLoading) {
+		return <ActivityIndicator size="large" color="#0000ff" />;
+	}
+
+	if (error) {
+		return (
+			<View style={styles.errorContainer}>
+				<Text style={styles.errorText}>{error}</Text>
+				<Button title="Retry" onPress={handleRetry} />
+			</View>
+		);
 	}
 
 	return (
