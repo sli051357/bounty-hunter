@@ -305,16 +305,17 @@ def remove_friend(request, request_username):
     curr_user = UserProfileInfo.objects.get(owner=request.user)
     friend = User.objects.get(username=request_username)
     # check if user is a friend of curr_user
-    if User.objects.get(username=request_username) in curr_user.friends.all() or User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
+    if User.objects.get(username=request_username) in curr_user.friends.all():
         curr_user.friends.remove(friend)
+
+    elif User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
         curr_user.favoritedFriends.remove(friend)
-        if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
-            return JsonResponse({"status":"success"})
-        else:
-            return JsonResponse({"status":"fail"})
+    
+    if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
+        return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"status":"fail"})
-
+    
 # @login_required
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
