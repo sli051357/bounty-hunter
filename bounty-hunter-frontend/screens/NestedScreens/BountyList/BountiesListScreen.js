@@ -57,7 +57,7 @@ function BountiesListScreen() {
 				// console.log(filterParams)
 				// console.log(sortParams)
 				// console.log(searchParams)
-		
+
 				try {
 					const response = await apiService.viewBountyList(
 						activeFiltering,
@@ -73,10 +73,10 @@ function BountiesListScreen() {
 					setError("Failed to fetch bounty list. Please try again.");
 					setIsLoading(false);
 				}
-			}
+			};
 			fetchListFocus();
 		}, [activeFiltering, activeSearch, activeSorting, username]),
-	  );
+	);
 
 	const fetchList = useCallback(async () => {
 		setError(null);
