@@ -33,24 +33,6 @@ from wishlist.models import Wishlist
 # Favor class
 
 
-def get_default_button_states():
-    return {
-           "owner":{
-                "CREATE":False,
-                "DELETE":False,
-                "COMPLETE":False,
-                "EDIT" : False,
-                "CANCEL": True
-           },
-           "assignee":{
-                "CREATE":True,
-                "DELETE":False,
-                "COMPLETE":False,
-                "EDIT" : False,
-                "CANCEL": True
-           }
-        }
-
 class Favor(models.Model):
     # related_name allows you to use User.owned_favors to see all favors they have created
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_favors")
@@ -61,15 +43,14 @@ class Favor(models.Model):
     #tags = models.ManyToManyField(Tag, blank=True, related_name="tagged_favors")
     points_value = models.IntegerField( default=100)
 
-    deleted = models.BooleanField(default=False) 
     completed = models.BooleanField(default=False)
 
     # is inactive if has been edited, or hasn't been accepted yet. Upon edits, old favor becomes inactive and new one becomes active. If accepted, old favor gets deleted, 
     # if rejected reactivate old favor and delete new one.
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
 
     #set to None if hasnt been edited.
-    previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    # previous_favor = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
     # related_name allows you to use User.assigned_favors to view all assigned favors
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assigned_favors")
@@ -94,15 +75,6 @@ class Favor(models.Model):
     INCOMPLETE = "Incomplete"
     EDIT = "Edit"
     CANCEL = "Cancel" 
-
-    status_choices = [(CREATE, "Create"),(DELETE,"Delete"),(EDIT, "Edit"),(CANCEL, "Cancel"),(COMPLETE, "Complete"), (INCOMPLETE, "Incomplete")]
-
-    # these contain the state of the favor
-    owner_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
-    assignee_status = models.CharField(max_length=16, choices=status_choices, default=INCOMPLETE)
-
-    # action history
-    button_states = models.JSONField(default= get_default_button_states)
     
     def save(self, *args, **kwargs):
         # Check if the favor is being marked as complete

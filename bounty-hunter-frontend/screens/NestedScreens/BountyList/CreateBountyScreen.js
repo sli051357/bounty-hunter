@@ -31,13 +31,6 @@ function CreateBountyScreen() {
 		paymentOwed: "",
 		description: "",
 		privacyStatus: false,
-		bountyEditHistory: [
-			{
-				sender: username,
-				description: "Would you like to accept this bounty?",
-				type: "Creation",
-			},
-		],
 	});
 	const [isMonetaryStatus, setIsMonetaryStatus] = useState(true);
 	const [isUploading, setIsUploading] = useState(false);
@@ -240,11 +233,6 @@ function CreateBountyScreen() {
 							textStyle={{ fontSize: 28, fontWeight: "bold" }}
 						/>
 					</View>
-					<TagModal
-						isVisible={tagModalVisable}
-						onClose={setTagsHandler}
-						currTags={tags}
-					/>
 				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>
