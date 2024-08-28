@@ -19,6 +19,7 @@ import IconButton from "../UI/IconButton";
 import ScrollViewHelper from "../UI/ScrollViewHelper";
 import EditAboutMe from "../UI/UserProfileHelpers/EditAboutMe";
 import ViewPaymentMethods from "./ViewPaymentMethods";
+import dayjs from "dayjs"
 
 function FriendUserProfile({ route }) {
 	const navigation = useNavigation();
@@ -30,7 +31,7 @@ function FriendUserProfile({ route }) {
 	const [imageUrl, setImageUrl] = useState("");
 	const [displayName, setDisplayName] = useState("");
 	const [bounties, setBounties] = useState([]);
-	const [paymentMethods, setPaymentMethods] = useState({});
+	const [paymentMethods, setPaymentMethods] = useState([]);
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [rating, setRating] = useState("");
@@ -44,7 +45,7 @@ function FriendUserProfile({ route }) {
 					const response = await apiService.getUserBio(username);
 					setAboutMe(response.bio);
 
-					const response5 = await apiService.getDisplayName(username.username);
+					const response5 = await apiService.getDisplayName(username);
 					setDisplayName(response5.displayName);
 
 					const responseHi = await apiService.getRating(username);
@@ -59,12 +60,13 @@ function FriendUserProfile({ route }) {
 
 					const responseLinks = await apiService.getUserLinks(username)
 					setPaymentMethods(responseLinks)
+					console.log(responseLinks)
 
 					const responseBounties = await apiService.viewBountyList(
 						{
 							query: "or",
 							tags: [],
-							status: ["Sent"],
+							status: [],
 							start_date: dayjs().format("YYYY-MM-DD"),
 							end_date: dayjs().subtract(31, "day").format("YYYY-MM-DD"),
 							price_low: 0,

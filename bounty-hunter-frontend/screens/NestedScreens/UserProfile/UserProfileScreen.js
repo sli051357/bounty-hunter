@@ -103,7 +103,7 @@ function UserProfileScreen() {
 						{
 							query: "or",
 							tags: [],
-							status: ["Sent"],
+							status: [],
 							start_date: dayjs().format("YYYY-MM-DD"),
 							end_date: dayjs().subtract(31, "day").format("YYYY-MM-DD"),
 							price_low: 0,
