@@ -311,7 +311,7 @@ def reject_friend_request(request, pk):
         return JsonResponse({"status":"fail"})
     
 # @login_required
-@api_view(['POST'])
+@api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def remove_friend(request, request_username):
