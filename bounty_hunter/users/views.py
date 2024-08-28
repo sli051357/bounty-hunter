@@ -317,14 +317,21 @@ def reject_friend_request(request, pk):
 def remove_friend(request, request_username):
     curr_user = UserProfileInfo.objects.get(owner=request.user)
     friend = User.objects.get(username=request_username)
+    friend_user = UserProfileInfo.objects.get(owner=friend)
     # check if user is a friend of curr_user
     if User.objects.get(username=request_username) in curr_user.friends.all():
         curr_user.friends.remove(friend)
-
     elif User.objects.get(username=request_username) in curr_user.favoritedFriends.all():
         curr_user.favoritedFriends.remove(friend)
+
+    # remove curr user from friend's friend list
+    if request.user in friend_user.friends.all():
+        friend_user.friends.remove(request.user)
+    # or remove curr user from friend's favorites list
+    elif request.user in friend_user.favoritedFriends.all():
+        friend_user.favoritedFriends.remove(request.user)
     
-    if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all():   # successfully removed
+    if User.objects.get(username=request_username) not in curr_user.friends.all() and User.objects.get(username=request_username) not in curr_user.favoritedFriends.all() and request.user not in friend_user.friends.all() and request.user not in friend_user.favoritedFriends.all():   # successfully removed    
         return JsonResponse({"status":"success"})
     else:
         return JsonResponse({"status":"fail"})
