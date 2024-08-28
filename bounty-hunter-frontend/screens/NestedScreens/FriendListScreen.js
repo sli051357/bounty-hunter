@@ -217,9 +217,9 @@ function FriendListScreen() {
 		fetchFavoriteList();
 		fetchFriendRequestList();
 		// console.log(authToken);
-		const intervalId = setInterval(fetchFriendsList, 60000);
-		const intervalId2 = setInterval(fetchFavoriteList, 60000);
-		const intervalId3 = setInterval(fetchFriendRequestList, 60000);
+		const intervalId = setInterval(fetchFriendsList, 30000);
+		const intervalId2 = setInterval(fetchFavoriteList, 30000);
+		const intervalId3 = setInterval(fetchFriendRequestList, 30000);
 		console.log(rerender);
 
 		return () => {

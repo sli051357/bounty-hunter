@@ -30,7 +30,7 @@ function FriendUserProfile({ route }) {
 	const [imageUrl, setImageUrl] = useState("");
 	const [displayName, setDisplayName] = useState("");
 	const [bounties, setBounties] = useState([]);
-	const paymentMethods = [];
+	const [paymentMethods, setPaymentMethods] = useState({});
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [rating, setRating] = useState("");
@@ -56,6 +56,29 @@ function FriendUserProfile({ route }) {
 					const response3 = await apiService.getUserPic(username);
 					setImageUrl(response3.url);
 					console.log(imageUrl);
+
+					const responseLinks = await apiService.getUserLinks(username)
+					setPaymentMethods(responseLinks)
+
+					const responseBounties = await apiService.viewBountyList(
+						{
+							query: "or",
+							tags: [],
+							status: ["Sent"],
+							start_date: dayjs().format("YYYY-MM-DD"),
+							end_date: dayjs().subtract(31, "day").format("YYYY-MM-DD"),
+							price_low: 0,
+							price_high: 999999.99,
+						},
+						{
+							sort_by: "date",
+							order: "descending",
+						},
+						"",
+						username,
+					);
+					setBounties(responseBounties.favors);
+					
 				} catch (error) {
 					console.log(error);
 				} finally {
