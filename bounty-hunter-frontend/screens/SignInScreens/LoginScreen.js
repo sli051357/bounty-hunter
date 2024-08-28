@@ -74,7 +74,7 @@ function LoginScreen() {
 					]}
 					style={styles.background}
 				/>
-				<LoadingOverlay message="Creating user..." />
+				<LoadingOverlay message="Signing in..." />
 			</>
 		);
 	}

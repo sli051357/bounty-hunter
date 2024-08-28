@@ -27,32 +27,47 @@ function UpdatePasswordScreen() {
 	}
 
 	async function confirmChangesHandler() {
+		if (newPassword["new password"] === undefined || newPassword["confirm new password"] === undefined ) {
+			Alert.alert("Enter a password");
+		} else {
+			const passwordIsValid =
+			newPassword["new password"].length >= 8 &&
+			newPassword["new password"].length < 23 &&
+			!newPassword["new password"].includes(" ");
+			const confirmPasswordIsValid =
+				(newPassword["confirm new password"] === newPassword["new password"]) && passwordIsValid;
+
+			if (!confirmPasswordIsValid) {
+				Alert.alert("Invalid Password");
+			} else {
+				// routing for resetting password. Authenticated Request
+				try {
+					const data = {
+						pass1: newPassword["new password"],
+						pass2: newPassword["confirm new password"],
+					};
+					const response = await apiService.resetPassword(
+						data,
+						passToken.passToken,
+					);
+					if (response.status === "fail") {
+						throw new Error("request failed.");
+					}
+					if (response["status"] === "success") {
+						navigation.navigate("ReturnLoginScreen");
+					} else {
+						Alert.alert("Invalid Password");
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}
+
 		setNewPassword({
 			"new password": "",
 			"confirm new password": "",
 		});
-
-		// routing for resetting password. Authenticated Request
-		try {
-			const data = {
-				pass1: newPassword["new password"],
-				pass2: newPassword["confirm new password"],
-			};
-			const response = await apiService.resetPassword(
-				data,
-				passToken.passToken,
-			);
-			if (response.status === "fail") {
-				throw new Error("request failed.");
-			}
-		} catch (error) {
-			console.log(error);
-		}
-		if (response.status === "fail") {
-			Alert.alert("Invalid Password");
-		} else {
-			navigation.navigate("ReturnLoginScreen");
-		}
 	}
 
 	return (

@@ -98,29 +98,45 @@ function UserSettingsScreen() {
 	// Turn into async function with await when API is set up
 	// Check conditions for password
 	async function confirmChangesHandler() {
-		console.log(newPassword);
-
-		// routing for resetting password. Authenticated Request
-		try {
-			const data = {
-				pass1: newPassword["new password"],
-				pass2: newPassword["confirm new password"],
-			};
-			const response = await apiService.resetPassword(
-				data,
-				authToken.authToken,
-			);
-			if (response.status === "fail") {
-				throw new Error("request failed.");
-			}
-		} catch (error) {
-			console.log(error);
-		}
-		if (response.status === "fail") {
-			Alert.alert("Invalid Password");
+		if (newPassword["new password"] === undefined || newPassword["confirm new password"] === undefined ) {
+			Alert.alert("Enter a password");
 		} else {
-			navigation.navigate("ReturnLoginScreen");
+			const passwordIsValid =
+			newPassword["new password"].length >= 8 &&
+			newPassword["new password"].length < 23 &&
+			!newPassword["new password"].includes(" ");
+			const confirmPasswordIsValid =
+				(newPassword["confirm new password"] === newPassword["new password"]) && passwordIsValid;
+
+			if (!confirmPasswordIsValid) {
+				Alert.alert("Invalid Password");
+				console.log("failed checking")
+			} else {
+				// routing for resetting password. Authenticated Request
+				try {
+					const data = {
+						pass1: newPassword["new password"],
+						pass2: newPassword["confirm new password"],
+					};
+					const response = await apiService.resetPassword(
+						data,
+						authToken.authToken,
+					);
+					if (response.status === "fail") {
+						throw new Error("request failed.");
+					}
+					if (response["status"] === "success") {
+						Alert.alert("Success!");
+					} else {
+						Alert.alert("Invalid Password");
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			}
 		}
+
+		
 		setNewPassword({
 			password: "",
 			"confirm password": "",
