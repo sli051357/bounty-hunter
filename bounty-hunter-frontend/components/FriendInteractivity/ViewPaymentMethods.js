@@ -12,19 +12,17 @@ function ViewPaymentMethods({ paymentData, onPress }) {
 	const payments = (
 		<View style={styles.container}>
 			<Text style={styles.title}>Payment Methods:</Text>
-			{paymentData.map((payment) => {
-				if (payment.username.length > 0) {
-					return (
-						<PaymentMethod
-							paymentName={`${payment.paymentName}: `}
-							paymentUsername={payment.username}
-							key={payment.paymentName}
-							icon={"attach-outline"}
-							onPress={() => copyPayment(payment.username)}
-						/>
-					);
-				}
-			})}
+			<>
+				{paymentData.map((entry) => (
+					<PaymentMethod
+						key={entry.id} // Use the id from the object as the key for the component
+						paymentName={entry.provider} // The provider (e.g., "venmo", "zelle")
+						paymentUsername={entry.account} // The username associated with the provider
+						icon="attach-outline" // The icon to display
+						onPress={() => copyPayment(entry.account)} // Function to handle the press event
+					/>
+				))}
+			</>
 			<PaymentMethod
 				paymentName="Wishlist"
 				paymentUsername=""
