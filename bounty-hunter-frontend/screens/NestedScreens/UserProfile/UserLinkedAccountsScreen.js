@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
 	mainHeader: {
 		fontFamily: "BaiJamjuree-Bold",
 		fontSize: 36,
-		color: GLOBAL_STYLES.colors.blue300,
+		color: GLOBAL_STYLES.colors.orange700,
 		textAlign: "center",
 	},
 });

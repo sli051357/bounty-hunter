@@ -1,7 +1,7 @@
 import { Link } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
@@ -16,7 +16,7 @@ import { setUsername } from "../../store/username";
 function LoginScreen() {
 	const insets = useSafeAreaInsets();
 	const [signInUser, setSignInUser] = useState({
-		"username or email": "",
+		"username": "",
 		password: "",
 	});
 	const [error, setError] = useState({
@@ -41,11 +41,11 @@ function LoginScreen() {
 			// const token = await apiService.signIn(signInUser);
 			// dispatch(setAuthToken(token))
 			console.log(signInUser);
-			dispatch(setUsername(signInUser["username or email"]));
+			dispatch(setUsername(signInUser["username"]));
 
 			//trying sign in
 			const data = {
-				username: signInUser["username or email"],
+				username: signInUser["username"],
 				password: signInUser.password,
 			};
 			console.log(data);
@@ -82,7 +82,7 @@ function LoginScreen() {
 	return (
 		<>
 			<LinearGradient
-				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.orange300]}
 				style={styles.background}
 			/>
 			<View style={{ flex: 1, marginTop: insets.top + 40 }}>
@@ -90,16 +90,16 @@ function LoginScreen() {
 					<View style={styles.container}>
 						<Text style={styles.header}>Login</Text>
 						<CustomTextInput
-							typeTitle="username or email"
+							typeTitle="username"
 							onPress={signInUserChangeHandler}
 							maxLength={64}
-							value={signInUser["username or email"]}
+							value={signInUser["username"]}
 							keyboardType="default"
 							helperText=""
 							secureTextEntry={false}
 							isInValid={error.emailOrUsername}
 						/>
-						<View style={{ width: "100%" }}>
+						<View style={{ width: "100%", }}>
 							<CustomTextInput
 								typeTitle="password"
 								onPress={signInUserChangeHandler}
@@ -114,17 +114,23 @@ function LoginScreen() {
 							/>
 							<Link
 								to={{ screen: "InputEmailVerifyScreen" }}
-								style={[styles.description, styles.link]}
+								style={[styles.description, styles.link, ]}
 							>
 								Forgot Password?
 							</Link>
 						</View>
-						<Button
+						{/* <Button
 							title="Login"
 							onPress={confirmChangesHandler}
 							buttonStyles={styles.buttonStyles}
 							containerStyle={{ alignSelf: "center" }}
-						/>
+						/> */}
+						<Pressable
+							onPress={confirmChangesHandler}
+							style={styles.buttonStyles}
+						>
+							<Text style={styles.buttonText}>Login</Text>
+						</Pressable>
 					</View>
 				</View>
 			</View>
@@ -149,24 +155,33 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "flex-start",
-		justifyContent: "flex-start",
-		gap: 22,
+		justifyContent: "center",
+		gap: 10,
 		padding: 12,
 		// marginHorizontal: '10%',
 		width: "90%",
+		marginTop: '-20%',
 	},
 	header: {
 		textAlign: "center",
 		fontSize: 32,
-		color: GLOBAL_STYLES.colors.blue300,
-		fontWeight: "900",
+		color: GLOBAL_STYLES.colors.orange700,
+		// fontWeight: "900",
 		alignSelf: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	buttonStyles: {
 		borderRadius: 6,
 		paddingHorizontal: 32,
 		paddingVertical: 8,
 		backgroundColor: GLOBAL_STYLES.colors.blue300,
+		alignSelf: "center",
+		marginTop: 10,
+	},
+	buttonText: {
+		fontFamily: "BaiJamjuree-Medium",
+		color: GLOBAL_STYLES.colors.brown300,
+		fontSize: 20,
 	},
 	description: {
 		textAlign: "right",
@@ -175,6 +190,8 @@ const styles = StyleSheet.create({
 	},
 	link: {
 		textDecorationLine: "underline",
+		color: GLOBAL_STYLES.colors.orange700,
+		fontFamily: "BaiJamjuree-Medium",
 	},
 });
 

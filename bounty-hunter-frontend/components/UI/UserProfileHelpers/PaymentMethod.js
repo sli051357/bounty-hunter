@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
 		gap: 8,
 		alignItems: "center",
 		justifyContent: "flex-start",
-		marginVertical: 8,
 	},
 	title: {
 		fontSize: 18,
 		color: GLOBAL_STYLES.colors.brown700,
 		textAlign: "center",
+		fontFamily: "BaiJamjuree-Regular",
 	},
 });
 

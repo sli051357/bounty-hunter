@@ -185,10 +185,10 @@ function BountyDetailsScreen({ route }) {
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.brown500 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.brown500,
-								paddingHorizontal: 10,
+								paddingHorizontal: 30,
 								borderRadius: 6,
 							}}
-							textStyle={{ fontSize: 14, fontWeight: "bold" }}
+							textStyle={{ fontSize: 24, fontFamily: "BaiJamjuree-Bold" }}
 						/>
 						<Button
 							title="Complete"
@@ -196,10 +196,10 @@ function BountyDetailsScreen({ route }) {
 							buttonStyles={{ backgroundColor: GLOBAL_STYLES.colors.blue300 }}
 							containerStyle={{
 								backgroundColor: GLOBAL_STYLES.colors.blue300,
-								paddingHorizontal: 10,
+								paddingHorizontal: 30,
 								borderRadius: 6,
 							}}
-							textStyle={{ fontSize: 14, fontWeight: "bold" }}
+							textStyle={{ fontSize: 24, fontFamily: "BaiJamjuree-Bold" }}
 						/>
 					</View>
 				</View>
@@ -224,9 +224,9 @@ const styles = StyleSheet.create({
 	mainHeader: {
 		color: GLOBAL_STYLES.colors.blue300,
 		fontSize: 28,
-		fontWeight: "bold",
 		textAlign: "center",
 		alignSelf: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	tagsContainer: {
 		flex: 1,
@@ -253,9 +253,9 @@ const styles = StyleSheet.create({
 	},
 	privacyStatusHeader: {
 		fontSize: 18,
-		fontWeight: "bold",
 		textAlign: "left",
 		color: GLOBAL_STYLES.colors.orange700,
+		fontFamily: "BaiJamjuree-SemiBold",
 	},
 	buttonsContainer: {
 		flexDirection: "row",
@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		alignSelf: "center",
 		gap: 16,
+		marginTop: 10,
 	},
 	bountyLogContainer: {
 		flex: 1,

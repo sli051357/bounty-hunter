@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -30,6 +30,29 @@ function FriendListScreen() {
 	const [search, setSearch] = useState(true);
 	const authToken = useSelector((state) => state.authToken.authToken);
 
+	useFocusEffect(
+		useCallback(() => {
+			const fetchFavoriteListFocus = async () => {
+				setError(null);
+				setIsLoading(true);
+				try {
+					const response = await apiService.getFavoritedFriends(authToken);
+					if (!response) {
+						throw new Error("Undefined Information");
+					}
+					console.log(response);
+					setFavoriteList(response);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching data: ", error);
+					setError("Failed to fetch Favorite Friends. Please Try Again");
+					setIsLoading(false);
+				}
+			};
+			fetchFavoriteListFocus();
+		}, [authToken]),
+	);
+
 	const fetchFavoriteList = useCallback(() => {
 		async function fetchFavoriteList() {
 			setError(null);
@@ -51,6 +74,29 @@ function FriendListScreen() {
 		fetchFavoriteList();
 	}, [authToken]);
 
+	useFocusEffect(
+		useCallback(() => {
+			const fetchFriendsListFocus = async () => {
+				setError(null);
+				setIsLoading(true);
+				try {
+					const response = await apiService.getFriendsList(authToken);
+					if (!response) {
+						throw new Error("Undefined Information");
+					}
+					console.log(response);
+					setFriendList(response);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching data: ", error);
+					setError("Failed to fetch Friend List. Please Try Again");
+					setIsLoading(false);
+			}
+			};
+			fetchFriendsListFocus();
+		}, [authToken]),
+	);
+
 	const fetchFriendsList = useCallback(() => {
 		async function fetchFriendsList() {
 			setError(null);
@@ -71,6 +117,29 @@ function FriendListScreen() {
 		}
 		fetchFriendsList();
 	}, [authToken]);
+
+	useFocusEffect(
+		useCallback(() => {
+			const fetchFriendRequestListFocus = async () => {
+				setError(null);
+				setIsLoading(true);
+				try {
+					const response = await apiService.getFriendRequests(authToken);
+					if (!response) {
+						throw new Error("Undefined Information");
+					}
+					console.log(response);
+					setFriendRequestList(response);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching friend request: ", error);
+					setError("Failed to fetch Friend Requests. Please Try Again");
+					setIsLoading(false);
+				}
+			};
+			fetchFriendRequestListFocus();
+		}, [authToken]),
+	);
 
 	const fetchFriendRequestList = useCallback(() => {
 		async function fetchFriendRequestList() {

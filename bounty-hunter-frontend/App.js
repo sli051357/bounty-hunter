@@ -181,9 +181,7 @@ function AuthenticatedStack() {
 				name="Wishlist"
 				component={WishListScreen}
 				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerShadowVisible: false,
+					headerShown: false,
 				}}
 			/>
 

@@ -66,9 +66,9 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		borderColor: GLOBAL_STYLES.colors.brown700,
 		color: GLOBAL_STYLES.colors.brown700,
-		paddingHorizontal: 6,
-		paddingVertical: 8,
-		borderWidth: 2,
+		paddingHorizontal: 8,
+		paddingVertical: 6,
+		borderWidth: 1.5,
 		maxWidth: "100%",
 		overflow: "hidden",
 		flex: 1,
@@ -79,10 +79,12 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		alignItems: "center",
 		gap: 6,
+		marginTop: 10,
 	},
 	text: {
 		color: GLOBAL_STYLES.colors.brown700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 });
 

@@ -281,9 +281,9 @@ const styles = StyleSheet.create({
 	},
 	mainHeader: {
 		fontSize: 36,
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		textAlign: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	viewSpacing: {
 		marginVertical: 8,
@@ -311,6 +311,7 @@ const styles = StyleSheet.create({
 		color: GLOBAL_STYLES.colors.brown700,
 		marginLeft: 8,
 		fontSize: 14,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	buttonContainer: {
 		flexDirection: "row",

@@ -136,6 +136,7 @@ function WishlistScreen({ user }) {
 	}
 
 	return (
+		<View style={styles.container}>
 		<ScrollViewHelper backgroundColor={GLOBAL_STYLES.colors.brown300}>
 			<View style={styles.page}>
 				<View>
@@ -162,17 +163,6 @@ function WishlistScreen({ user }) {
 
 				{/* Wishlist Mapping */}
 				<View>
-					{/* {DUMMY_WISHLIST.map((item) => (
-					<WishlistCard
-						key={item.title}
-						title={item.title}
-						description={item.description}
-						price={item.price}
-						imagePath={item.imagePath}
-						editStatus={isEditing}
-					/>
-				))} */}
-
 					{Object.entries(userWishlist).map(
 						([title, [name, description, price, username, imageUrl, pk]]) => (
 							<WishlistCard
@@ -188,27 +178,31 @@ function WishlistScreen({ user }) {
 						),
 					)}
 				</View>
-
-				{/* Add Button */}
-				{isEditing ? (
-					<FloatingButton
-						onPress={considerAdd}
-						icon="add"
-						color={GLOBAL_STYLES.colors.orange700}
-					/>
-				) : null}
-
-				<WishlistAdd
-					isVisible={isAddVisible}
-					onYes={addItem}
-					onNo={cancelAdd}
-				/>
 			</View>
 		</ScrollViewHelper>
+
+		{/* Add Button */}
+		{isEditing ? (
+			<FloatingButton
+				onPress={considerAdd}
+				icon="add"
+				color={GLOBAL_STYLES.colors.orange700}
+			/>
+			) : null}
+
+			<WishlistAdd
+				isVisible={isAddVisible}
+				onYes={addItem}
+				onNo={cancelAdd}
+			/>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
 	page: {
 		backgroundColor: GLOBAL_STYLES.colors.brown300,
 		flex: 1,

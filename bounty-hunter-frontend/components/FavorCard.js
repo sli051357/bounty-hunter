@@ -99,7 +99,7 @@ function FavorCard({ favor, onPress }) {
 
 const styles = StyleSheet.create({
 	container: {
-		borderWidth: 3,
+		borderWidth: 2,
 		width: "100%",
 		borderColor: GLOBAL_STYLES.colors.brown500,
 		flexDirection: "row",
@@ -124,19 +124,20 @@ const styles = StyleSheet.create({
 	},
 	mainTextLeft: {
 		fontSize: 22,
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		textAlign: "left",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	mainTextRight: {
 		fontSize: 22,
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		textAlign: "right",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	text: {
 		color: GLOBAL_STYLES.colors.brown700,
 		fontSize: 12,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 });
 

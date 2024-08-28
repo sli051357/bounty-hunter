@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Link } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 
 import Button from "../../components/UI/Button";
 import { GLOBAL_STYLES } from "../../constants/styles";
@@ -16,7 +16,7 @@ function WelcomeScreen() {
 	return (
 		<View style={styles.page}>
 			<LinearGradient
-				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.orange300]}
 				style={styles.background}
 			/>
 			<View style={styles.container}>
@@ -25,16 +25,17 @@ function WelcomeScreen() {
 					Keep track of favors owed between you and your friends with bounties!
 					Collect or distribute them today.
 				</Text>
-				<Button
-					title="Sign Up"
+				<Pressable
 					onPress={signUpDirector}
-					buttonStyles={styles.buttonStyles}
-				/>
+					style={styles.buttonStyles}
+				>
+					<Text style={styles.buttonText}>Sign Up</Text>
+				</Pressable>
 				<View style={styles.loginContainer}>
 					<Text style={styles.description}>Already have an account?</Text>
 					<Link
 						to={{ screen: "LoginScreen" }}
-						style={[styles.description, styles.link]}
+						style={[styles.description, styles.link, {marginLeft: 3,}]}
 					>
 						Log In
 					</Link>
@@ -68,14 +69,16 @@ const styles = StyleSheet.create({
 	header: {
 		textAlign: "center",
 		fontSize: 32,
-		color: GLOBAL_STYLES.colors.brown700,
-		fontWeight: "900",
+		color: GLOBAL_STYLES.colors.orange700,
+		// fontWeight: "900",
+		fontFamily: 'BaiJamjuree-Bold',
 	},
 	description: {
 		textAlign: "center",
 		fontSize: 18,
 		color: GLOBAL_STYLES.colors.brown700,
 		marginBottom: 22,
+		fontFamily: 'BaiJamjuree-Regular',
 	},
 	loginContainer: {
 		flexDirection: "row",
@@ -86,9 +89,18 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 32,
 		paddingVertical: 8,
 		backgroundColor: GLOBAL_STYLES.colors.blue300,
+		marginTop: -10,
+		marginBottom: 5,
+	},
+	buttonText: {
+		fontFamily: 'BaiJamjuree-Medium',
+		color: GLOBAL_STYLES.colors.brown300,
+		fontSize: 20,
 	},
 	link: {
 		textDecorationLine: "underline",
+		color: GLOBAL_STYLES.colors.orange700,
+		fontFamily: "BaiJamjuree-Medium",
 	},
 });
 

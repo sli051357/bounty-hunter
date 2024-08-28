@@ -7,6 +7,7 @@ import {
 	StyleSheet,
 	Text,
 	View,
+	Pressable,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
@@ -134,7 +135,7 @@ function SignUpScreen() {
 	return (
 		<>
 			<LinearGradient
-				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.blue300]}
+				colors={[GLOBAL_STYLES.colors.brown300, GLOBAL_STYLES.colors.orange300]}
 				style={styles.background}
 			/>
 			<View style={{ flex: 1, marginTop: insets.top }}>
@@ -186,12 +187,18 @@ function SignUpScreen() {
 									secureTextEntry={true}
 									isInValid={error.confirmPasswordIsInvalid}
 								/>
-								<Button
+								{/* <Button
 									title="Sign Up"
 									onPress={confirmChangesHandler}
 									buttonStyles={styles.buttonStyles}
 									containerStyle={{ alignSelf: "center" }}
-								/>
+								/> */}
+								<Pressable
+									onPress={confirmChangesHandler}
+									style={styles.buttonStyles}
+								>
+									<Text style={styles.buttonText}>Sign Up</Text>
+								</Pressable>
 							</View>
 						</View>
 					</KeyboardAvoidingView>
@@ -219,7 +226,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "flex-start",
 		justifyContent: "center",
-		gap: 12,
+		gap: 10,
 		padding: 12,
 		marginHorizontal: "5%",
 		width: "90%",
@@ -227,15 +234,23 @@ const styles = StyleSheet.create({
 	header: {
 		textAlign: "center",
 		fontSize: 32,
-		color: GLOBAL_STYLES.colors.brown700,
-		fontWeight: "900",
+		color: GLOBAL_STYLES.colors.orange700,
+		// fontWeight: "900",
 		alignSelf: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	buttonStyles: {
 		borderRadius: 6,
 		paddingHorizontal: 32,
 		paddingVertical: 8,
 		backgroundColor: GLOBAL_STYLES.colors.blue300,
+		alignSelf: 'center',
+		marginTop: 10,
+	},
+	buttonText: {
+		fontFamily: 'BaiJamjuree-Medium',
+		color: GLOBAL_STYLES.colors.brown300,
+		fontSize: 20,
 	},
 });
 
