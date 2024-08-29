@@ -1,0 +1,89 @@
+stages:          # List of stages for jobs, and their order of execution
+  - format
+  - build
+  - test
+  - deploy
+
+backend-format:
+  stage: format
+  image: python:latest
+  before_script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install ruff
+  script:
+    - ruff check --fix
+    - ruff format 
+  cache: 
+    paths:
+      - py_modules/
+
+frontend-format:
+  stage: format
+  image: node:latest
+  before_script:
+    - cd bounty-hunter-frontend/
+    - npm ci
+  script:
+    - npx @biomejs/biome check --write --unsafe .
+    - cd ..
+  cache:
+    paths:
+      - node_modules/
+
+
+build-job:       # build frontend app here
+  stage: build
+  image: python:latest
+  before_script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+  script:
+    - echo "building app..."
+    - cd bounty_hunter
+    - python manage.py makemigrations
+    - python manage.py makemigrations --merge
+    - python manage.py migrate
+
+
+backend-unit-test:   
+  stage: test    
+  image: python:latest
+  script:
+    - python --version ; pip --version  # For debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+    - cd bounty_hunter/
+    - python manage.py test
+    - cd ..
+
+frontend-unit-test:   # put frontend tests here
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+      - echo "frontend tests"
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  before_script: 
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - chmod 400 "$PRIVATE_KEY"
+    - ssh-add "$PRIVATE_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan 132.249.238.228 >> ~/.ssh/known_hosts
+  script:
+    - echo "Deploying application..."
+    # right now git pulls from dev - change later to main 
+    - ssh ubuntu@132.249.238.228 "bash -c 'IS_PROD=True && cd monetary-favor-tackers && pip install virtualenv && virtualenv venv && source venv/bin/activate && pip install -r requirements.txt && cd bounty_hunter && git fetch --all && git reset --hard origin/dev && sudo systemctl restart gunicorn && sudo systemctl restart nginx'"
+    - echo "Application successfully deployed." 
+  #only:
+  # - dev   # deploys from dev branch change to main later

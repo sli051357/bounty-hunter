@@ -18,10 +18,29 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.e7han1024.bountyhunterfrontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "assets/fonts/BaiJamjuree-Bold.ttf",
+            "assets/fonts/BaiJamjuree-SemiBold.ttf",
+            "assets/fonts/BaiJamjuree-Regular.ttf",
+            "assets/fonts/BaiJamjuree-Medium.ttf"
+          ]
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "baccbba5-422a-48fe-a7a4-6e11b13b6d07"
+      }
     }
   }
 }

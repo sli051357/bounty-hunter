@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+
+<h1>Create New Favor</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Favor</button>
+</form>

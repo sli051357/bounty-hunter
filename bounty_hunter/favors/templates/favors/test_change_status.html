@@ -1,0 +1,8 @@
+<form action="{% url 'change_status' favor_id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <input name="status" type="text" value="status" /> <br /> 
+        <input name="favor_id" type="hidden" value="{{ favor.id }}" /> <br /> 
+    </fieldset>
+	<button type="submit" value="Submit">Submit</button>
+</form> 

@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+
+<h1>Create New Tag</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Tag</button>
+</form>
