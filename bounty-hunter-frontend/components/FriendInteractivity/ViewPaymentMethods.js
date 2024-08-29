@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		color: GLOBAL_STYLES.colors.orange700,
-		fontWeight: "bold",
+		fontFamily: "BaiJamjuree-SemiBold",
 		textAlign: "left",
 		fontSize: 18,
 	},

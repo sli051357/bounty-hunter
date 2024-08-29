@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "space-between",
 		margin: 10,
 	},
 	picture: {
@@ -136,12 +135,15 @@ const styles = StyleSheet.create({
 	},
 	userDetails: {
 		flexDirection: "row",
-		justifyContent: "flex-end",
+		justifyContent: "flex-start",
 		alignItems: "center",
+		flexWrap: "wrap",
 	},
 	friendText: {
 		alignItems: "flex-start",
 		justifyContent: "flex-start",
+		flexWrap: "wrap",
+		maxWidth: "65%",
 	},
 });
 

@@ -137,7 +137,7 @@ function FriendUserProfile({ route }) {
 									borderRadius: 6,
 									paddingVertical: 6,
 								}}
-								textStyle={{ fontSize: 14 }}
+								textStyle={{ fontSize: 14, fontFamily: "BaiJamjuree-SemiBold", color: GLOBAL_STYLES.colors.brown300 }}
 							/>
 							<Button
 								title="Confirm"
@@ -149,7 +149,7 @@ function FriendUserProfile({ route }) {
 									borderRadius: 6,
 									paddingVertical: 6,
 								}}
-								textStyle={{ fontSize: 14 }}
+								textStyle={{ fontSize: 14, color: GLOBAL_STYLES.colors.brown300, fontFamily: "BaiJamjuree-SemiBold" }}
 							/>
 						</View>
 					</View>
@@ -162,7 +162,7 @@ function FriendUserProfile({ route }) {
 						<View style={styles.imageAndUsernameView}>
 							<Image
 								style={styles.profilePicture}
-								source={require("../../assets/profile.jpeg")}
+								source={{ uri: imageUrl }}
 							/>
 							<View>
 								<Text style={styles.usernameStyles}>{username}</Text>
@@ -191,7 +191,7 @@ function FriendUserProfile({ route }) {
 					<View style={styles.userMainDetailsBottomView}>
 						<View style={styles.editView}>
 							<Text style={[styles.smallTextOrange, { textAlign: "center" }]}>
-								Rating:
+								Rating:{" "}
 							</Text>
 							<Text style={styles.scoreTextStyles}>{rating}</Text>
 						</View>
@@ -239,10 +239,12 @@ const styles = StyleSheet.create({
 	smallTextBrown: {
 		color: GLOBAL_STYLES.colors.brown700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	smallTextOrange: {
 		color: GLOBAL_STYLES.colors.orange700,
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-Medium",
 	},
 	userMainDetails: {
 		flex: 1,
@@ -266,9 +268,10 @@ const styles = StyleSheet.create({
 	},
 	usernameStyles: {
 		fontSize: 30,
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		textAlign: "left",
+		fontFamily: "BaiJamjuree-Bold",
+		marginBottom: -10,
 	},
 	editView: {
 		flexDirection: "row",
@@ -282,16 +285,16 @@ const styles = StyleSheet.create({
 		justifyContent: "space-around",
 	},
 	scoreTextStyles: {
-		fontWeight: "bold",
 		color: GLOBAL_STYLES.colors.blue300,
 		fontSize: 22,
 		textAlign: "center",
+		fontFamily: "BaiJamjuree-Bold",
 	},
 	subtitle: {
 		color: GLOBAL_STYLES.colors.orange700,
-		fontWeight: "bold",
 		textAlign: "left",
 		fontSize: 18,
+		fontFamily: "BaiJamjuree-SemiBold",
 	},
 	recentBountiesStyles: {
 		flex: 1,
@@ -301,7 +304,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		backgroundColor: GLOBAL_STYLES.colors.gray500,
 	},
 	modalContent: {
 		maxWidth: 300,
@@ -318,10 +321,12 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		borderColor: GLOBAL_STYLES.colors.brown700,
 		color: GLOBAL_STYLES.colors.brown700,
-		padding: 4,
-		borderWidth: 2,
+		paddingHorizontal: 8,
+		paddingVertical: 4,
+		borderWidth: 1.5,
 		minWidth: "100%",
 		overflow: "hidden",
+		fontFamily: "BaiJamjuree-Regular",
 	},
 	modalButtonsContainer: {
 		flexDirection: "row",
@@ -332,6 +337,7 @@ const styles = StyleSheet.create({
 	modalHeader: {
 		fontSize: 18,
 		fontFamily: "BaiJamjuree-Bold",
+		color: GLOBAL_STYLES.colors.orange700,
 		textAlign: "center",
 	},
 });
