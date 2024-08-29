@@ -35,7 +35,8 @@
             "assets/fonts/BaiJamjuree-Medium.ttf"
           ]
         }
-      ]
+      ],
+      "./util/securitySettings.js"
     ],
     "extra": {
       "eas": {
