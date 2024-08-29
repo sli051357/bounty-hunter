@@ -190,17 +190,6 @@ function CreateBountyScreen() {
 						multiLineStyles={{ minHeight: 155, flex: 1 }}
 						multiline={true}
 					/>
-					<View style={styles.tagsContainer}>
-						<Text style={styles.tagHeader}>Tags</Text>
-						<View style={styles.addTagContainer}>
-							<IconButton
-								icon="add-sharp"
-								iconSize={18}
-								onPress={() => console.log("Tags Create Func")}
-								color={GLOBAL_STYLES.colors.orange700}
-							/>
-						</View>
-					</View>
 					<View style={styles.privacyStatusContainer}>
 						<Text style={styles.privacyStatusHeader}>Privacy Status</Text>
 						<SwitchTabs

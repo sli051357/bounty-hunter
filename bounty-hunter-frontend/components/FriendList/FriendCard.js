@@ -30,10 +30,6 @@ function FriendCard({
 		setFavorite((curr) => !curr);
 	}
 
-	function createFavor() {
-		console.log("Favor created");
-	}
-
 	function deleteFriend() {
 		console.log("Friend deleted");
 	}
@@ -82,21 +78,6 @@ function FriendCard({
 			</View>
 
 			<View style={{ flexDirection: "row", marginLeft: "auto" }}>
-				<View
-					style={[
-						styles.button,
-						{ backgroundColor: GLOBAL_STYLES.colors.orange700 },
-					]}
-				>
-					<Pressable onPress={createFavor}>
-						<FontAwesome6
-							name="money-bill-transfer"
-							size={24}
-							color={GLOBAL_STYLES.colors.brown300}
-						/>
-					</Pressable>
-				</View>
-
 				<View
 					style={[
 						styles.button,
