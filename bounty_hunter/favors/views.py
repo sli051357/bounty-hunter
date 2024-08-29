@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User, AnonymousUser
 from .models import Favor
+from users.models import UserProfileInfo
 from django.http import JsonResponse
 from django.db.models import Q
 from datetime import datetime, timedelta
@@ -321,20 +322,20 @@ def complete_favor(request, favor_id):
     favor = get_object_or_404(Favor, pk=favor_id )    
     favor.completed = True
     favor.save()
+
+    #update assignees rating
+    assignee = get_object_or_404(UserProfileInfo, owner=favor.assignee)
+    assignee.rating += favor.points_value
+    assignee.save()
+
     return JsonResponse({"status":"success"}) 
+    
 
-
-
-def recalculateRating(favor):
-    updateValue(favor)
-    favor.assignee.rating += favor.points_value
-    favor.save()
-
-def updateValue(favor):
-    difference = datetime.now().date() - favor.created_at
-    days_passed = int(difference / (1000 * 3600 * 24))
-    favor.points_value = favor.points_value -( days_passed*10)
-    favor.save()
+# def updateValue(favor):
+#     difference = datetime.now().date() - favor.created_at
+#     days_passed = int(difference / (1000 * 3600 * 24))
+#     favor.points_value = favor.points_value -( days_passed*10)
+#     favor.save()
 
 
 

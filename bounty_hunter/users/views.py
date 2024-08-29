@@ -170,7 +170,7 @@ def rating(request, request_username):
 def friend_count(request, request_username):
     request_owner = get_object_or_404(User, username=request_username)
     user_profile = get_object_or_404(UserProfileInfo, owner=request_owner)
-    count = user_profile.friends.count()
+    count = user_profile.friends.count() + user_profile.favoritedFriends.count()
     data = {
         "friendCount": str(count)
     }
