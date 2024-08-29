@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 	},
 	modalStyle: {
-		height: "25%",
+		height: "30%",
 		width: "100%",
 		backgroundColor: GLOBAL_STYLES.colors.brown300,
 		borderTopRightRadius: 18,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 		fontFamily: "BaiJamjuree-Regular",
 		fontSize: 17,
 		color: GLOBAL_STYLES.colors.brown700,
-		marginTop: 10,
+		marginBottom: 10,
 	},
 });
 
