@@ -63,7 +63,7 @@ function UserProfileScreen() {
 	const [isEditing, setIsEditing] = useState(false);
 	const [aboutMe, setAboutMe] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
-	const [paymentMethod, setPaymentMethod] = useState({});
+	const [paymentMethod, setPaymentMethod] = useState([]);
 	const [isPfpModalVisible, setIsPfpModalVisible] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [rating, setRating] = useState("");
