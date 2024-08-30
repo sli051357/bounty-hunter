@@ -26,6 +26,15 @@
     },
     "plugins": [
       [
+        "expo-build-properties", 
+        {
+          "android" : {
+            "userCleartextTraffic":true
+          }
+        }
+      ],
+
+      [
         "expo-font",
         {
           "fonts": [
@@ -35,8 +44,7 @@
             "assets/fonts/BaiJamjuree-Medium.ttf"
           ]
         }
-      ],
-      "./util/securitySettings.js"
+      ]
     ],
     "extra": {
       "eas": {
